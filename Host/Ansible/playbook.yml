@@ -1,0 +1,6 @@
+---
+- name: First playbook
+  hosts: fleet
+  roles:
+    - ./roles/
+...

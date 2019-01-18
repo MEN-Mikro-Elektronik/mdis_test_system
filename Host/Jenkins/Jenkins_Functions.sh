@@ -1,0 +1,308 @@
+#! /bin/bash
+
+
+############################################################################
+# echo result so that can be easly found in log 
+# 
+# parameters:
+# $1    command
+#
+function make_visible_in_log {
+        echo -e "\n############################################################################"
+        echo "############################################################################"
+        echo "$1"  
+        echo "############################################################################"
+        echo "############################################################################"
+
+}
+
+############################################################################
+# Run commands on remote tested device
+# 
+# parameters:
+# $1    command
+#
+function run_cmd_on_remote_pc {
+
+        sshpass -p ${MenPcPassword} ssh -o StrictHostKeyChecking=no ${MenPcLogin}@${MenPcIpAddr} "${1}"
+}
+
+############################################################################
+# Run commands on remote input switch device
+# 
+# parameters:
+# $1    command
+#
+function run_cmd_on_remote_input_switch {
+
+        sshpass -p ${MenPcPassword} ssh -o StrictHostKeyChecking=no ${MenPcLogin}@${MenBoxPcIpAddr} "${1}"
+}
+
+############################################################################
+# Run scritps from this machine on remote device, since there is no 
+# 
+# parameters:
+# $1    script
+#
+function run_script_on_remote_pc {
+        sshpass -p ${MenPcPassword} ssh -o StrictHostKeyChecking=no ${MenPcLogin}@${MenPcIpAddr} \
+        bash -s < "${1}"
+}
+
+############################################################################
+# Check if file exists on UAT. Function return true/false
+# 
+# parameters:
+# $1    file name with full path
+#
+function check_file_exists_on_UAT {
+
+        local FilePath=${1}
+        local CheckFileExistsCmd="[ -f ${FilePath} ] && echo \"true\" || echo \"false\""
+        local FileExist=$(run_cmd_on_remote_pc "${CheckFileExistsCmd}")
+        echo ${FileExist}
+
+}
+
+############################################################################
+# Write result of input change into lock file
+#
+# parameters:
+# $1      Command code 
+# $2      Log prefix - optional
+#
+function write_command_code_lock_file_result {
+        local CommandCodeResult=${1}
+        local LogPrefix=${2}
+
+        local FileExist=$(check_file_exists_on_UAT "${LockFileName}")
+
+        if [ "${FileExist}" = "false" ]; then
+                echo "${LogPrefix} ERR_LOCK_NO_EXISTS"
+                return ${ERR_LOCK_NO_EXISTS}
+        fi
+
+        # Check if there is no result written yet
+        local ResultExists=$(check_command_code_result_exist)
+        echo ${ResultExists}
+
+        if [ -z "${ResultExists}" ]; then
+                echo "${LogPrefix} No result in lock file" 
+        else
+                echo "${LogPrefix} Result is written into lock file" 
+                return ${ERR_OK}
+        fi 
+
+        local WriteSuccessCmd="echo \"${MenPcPassword}\" | sudo -S --prompt= echo -n \" : ${LockFileSuccess}\" >> ${LockFileName}"
+        local WriteFailedCmd="echo \"${MenPcPassword}\" | sudo -S --prompt= echo -n \" : ${LockFileFailed}\" >> ${LockFileName}"
+
+        if [ "${CommandCodeResult}" = "${LockFileSuccess}" ]; then
+                local res=$(run_cmd_on_remote_pc "${WriteSuccessCmd}")
+                if [ $? -ne 0 ]; then
+                        echo "${LogPrefix} Error while write_command_code_lock_file_result success"
+                fi
+                echo "${LogPrefix} write_command_code_lock_file_result: success" 
+        elif [ "${CommandCodeResult}" = "${LockFileFailed}" ];then 
+                local res=$(run_cmd_on_remote_pc "${WriteFailedCmd}")
+                if [ $? -ne 0 ]; then
+                        echo "${LogPrefix} Error while write_command_code_lock_file_result failed"
+                fi
+                echo "${LogPrefix} write_command_code_lock_file_result: failed" 
+        else
+                echo "${LogPrefix} Write_command_code_status: Unknown status code"
+                return ${ERR_LOCK_INVALID}
+        fi     
+}
+
+############################################################################
+# Read which input should be changed 
+#
+# parameters:
+# $1      Command code 
+#
+function read_command_code_lock_file {
+
+        local FileExist=$(check_file_exists_on_UAT "${LockFileName}")
+
+        if [ "${FileExist}" = "false" ]; then
+                echo "ERR_LOCK_NO_EXISTS"
+                return ${ERR_LOCK_NO_EXISTS}
+        fi
+        
+        local ReadCommandCodeCmd="cat ${LockFileName} | awk '{print \$3}'"
+        local CommandCode=$(run_cmd_on_remote_pc "${ReadCommandCodeCmd}")
+        echo "${CommandCode}"
+}
+
+############################################################################
+# Check if input change result was written into file
+#
+# parameters:
+# $1      Command code 
+#
+function check_command_code_result_exist {
+
+        local FileExist=$(check_file_exists_on_UAT "${LockFileName}")
+
+        if [ "${FileExist}" = "false" ]; then
+                echo "ERR_LOCK_NO_EXISTS"
+                return ${ERR_LOCK_NO_EXISTS}
+        fi
+        
+        local ReadCommandCodeCmd="cat ${LockFileName} | awk '{print \$5}'"
+        local CommandCode=$(run_cmd_on_remote_pc "${ReadCommandCodeCmd}")
+        echo "${CommandCode}"
+}
+
+############################################################################
+# Check input on remote switch device.
+# This function is valid only for BL51E !! 
+#
+# parameters:
+# $1      Command code 
+# $2      Log Prefix - optional 
+#
+function change_input_BL51E {
+
+        local CommandCode=${1}
+        local LogPrefix=${2}
+
+        echo "${LogPrefix} Function change_input_BL51E: ${CommandCode}"
+        
+        local I801Loaded=$(run_cmd_on_remote_input_switch "lsmod | grep i2c_i801 | wc -l")
+
+        if [ "${I801Loaded}" -eq "0" ]; then
+                echo "${LogPrefix} Error: i2c_i801 is not loaded"
+                echo "${LogPrefix} Modprobe i2c_i801 ... "
+                run_cmd_on_remote_input_switch "echo ${MenPcPassword} | sudo -S --prompt= modprobe i2c_i801"
+                if [ "${?}" -ne "0" ]; then
+                        echo "${LogPrefix} Modprobe i2c_i801 error"
+                        return ${ERR_MODPROBE}
+                else
+                        echo "${LogPrefix} Modprobe i2c_i801 success"
+                fi
+        fi
+
+        # now find smbus in i2cdetect dump 
+        local I2CNR=$(run_cmd_on_remote_input_switch "echo ${MenPcPassword} | sudo -S --prompt= i2cdetect -y -l | grep smbus | awk '{print \$1}' | sed 's/i2c-//'" )
+        local RegisterData=$(run_cmd_on_remote_input_switch "echo ${MenPcPassword} | sudo -S --prompt= i2cget -y ${I2CNR} 0x22 | sed 's/0x//' ")
+
+        check_input_state_is_set ${CommandCode} ${RegisterData} ${LogPrefix}
+        if [ $? -eq "1" ]; then
+                #echo "${LogPrefix} Nothing to do, Input: ${CommandCode} is set"
+                return ${ERR_OK}
+        fi
+
+        local RegisterDataMask="00000000"
+        local FillWith=1
+
+        case $(echo "${CommandCode}") in
+                ${IN_0_ENABLE});&
+                ${IN_0_DISABLE})
+                        local Index=6
+                        RegisterDataMask=$(echo ${RegisterDataMask:0:Index-1}${FillWith}${RegisterDataMask:Index})
+                        ;;
+                ${IN_1_ENABLE});&
+                ${IN_1_DISABLE})
+                        local Index=5
+                        RegisterDataMask=$(echo ${RegisterDataMask:0:Index-1}${FillWith}${RegisterDataMask:Index})
+                        ;;
+                *)
+                echo "${LogPrefix} invalid input switch value ${CommandCode}"
+                ;;
+        esac
+
+        RegisterDataToWrite=$(echo "obase=16; $((16#${RegisterData}^2#${RegisterDataMask}))" | bc )
+        echo "${LogPrefix} RegisterDataToWrite : 0x${RegisterDataToWrite}"
+
+        run_cmd_on_remote_input_switch "echo ${MenPcPassword} | sudo -S --prompt= i2cset -y ${I2CNR} 0x22 0x${RegisterDataToWrite}"
+
+        # Check if value is set
+        RegisterData=$(run_cmd_on_remote_input_switch "echo ${MenPcPassword} | sudo -S --prompt= i2cget -y ${I2CNR} 0x22 | sed 's/0x//' ")
+        check_input_state_is_set ${CommandCode} ${RegisterData} ${LogPrefix}
+        if [ $? -eq "1" ]; then
+                return ${ERR_OK}
+        else
+                echo "${LogPrefix}  ERR_SWITCH: ${CommandCode} is set"
+                return ${ERR_SWITCH}
+        fi 
+}
+
+############################################################################
+# Add padding at the beginning of a variable 
+# example:
+# pad value             1110
+# output:           00001110
+#
+# parameters:
+# $1      Binary value 
+#
+function add_byte_padding {
+        # padding to 8 characters, add 0-s at the beginning 
+        local ByteToPad=${1}
+        local Lenght=$(echo ${#ByteToPad})
+        local PaddWithCharacters=$((8-${Lenght}))
+        if [ ${PaddWithCharacters} -ne "0" ]; then
+                for i in `seq 0 $((${PaddWithCharacters}-1))`
+                do
+                       ByteToPad=$(echo ${ByteToPad} | sed 's/^/0/')
+                done
+        fi
+        echo ${ByteToPad}
+}
+
+############################################################################
+# Check if output is currently set as enable / disable 
+# Returns true if input state has been already set 
+#
+#
+# parameters:
+# $1      Command Code
+# $2      i2c current register value
+# $3      log prefix - optional 
+#
+function check_input_state_is_set {
+        local CommandCode=${1}
+        local RegValue=${2}
+        local LogPrefix=${3}
+        local ReturnValue="0"
+
+        #echo "${LogPrefix} function check_input_state"
+        # To enable input - value bit should be set to 0, 1 otherwise
+        case $(echo "${CommandCode}") in
+                ${IN_0_ENABLE})
+                        local Index="6"
+                        local BitValue=$(echo "obase=2; $((16#${RegValue}))" | bc | head -c ${Index} | tail -c 1)
+                        #echo "${LogPrefix} BitValue: ${BitValue}"
+                        if [ "${BitValue}" = "0" ]; then
+                                ReturnValue="1"
+                        fi
+                        ;;
+                ${IN_1_ENABLE})
+                        local Index="5"
+                        local BitValue=$(echo "obase=2; $((16#${RegValue}))" | bc | head -c ${Index} | tail -c 1)
+                        if [ "${BitValue}" = "0" ]; then
+                                ReturnValue="1"
+                        fi
+                        ;;
+                ${IN_0_DISABLE})
+                        local Index="6"
+                        local BitValue=$(echo "obase=2; $((16#${RegValue}))" | bc | head -c ${Index} | tail -c 1)
+                        if [ "${BitValue}" = "1" ]; then
+                                ReturnValue="1"
+                        fi
+                        ;;
+                ${IN_1_DISABLE})
+                        local Index="5"
+                        local BitValue=$(echo "obase=2; $((16#${RegValue}))" | bc | head -c ${Index} | tail -c 1)
+                        if [ "${BitValue}" = "1" ]; then
+                                ReturnValue="1"
+                        fi
+                        ;;
+                *)
+                echo "${LogPrefix} invalid input switch value: ${CommandCode}"
+                ;;
+        esac
+
+        return ${ReturnValue}
+}

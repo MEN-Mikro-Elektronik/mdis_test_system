@@ -1,0 +1,10 @@
+---
+my_packages:
+        - vim
+        - git
+        - build-essential
+        - i2c-tools
+
+#source_folder:
+#        - /home/men/
+...
