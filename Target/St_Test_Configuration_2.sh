@@ -13,7 +13,7 @@ source "${MyDir}/St_Functions.sh"
 # $2     Unique test ID - date
 
 Today=${2}
-TestConfiguration="St_Test_Configuration_1"
+TestConfiguration="St_Test_Configuration_2"
 CommitSha="$(get_mdis_sources_commit_sha)"
 OsNameKernel="$(get_os_name_with_kernel_ver)"
 
@@ -58,11 +58,11 @@ cd "${MainTestDirectoryPath}"
 
 echo ${1} | sudo -S --prompt= "${MyDir}/ST_xxxx_G204_M77_M_Module_Test.sh" ${TestSummaryDirectory}
 echo ${1} | sudo -S --prompt= "${MyDir}/ST_xxxx_G215_Interface_Test.sh" ${TestSummaryDirectory}
+echo ${1} | sudo -S --prompt= "${MyDir}/ST_xxxx_F023P_Interface_Test.sh" ${TestSummaryDirectory}
 echo ${1} | sudo -S --prompt= "${MyDir}/ST_xxxx_F215_Interface_Test.sh" ${TestSummaryDirectory}
 echo ${1} | sudo -S --prompt= "${MyDir}/ST_xxxx_M66_M31_M_Module_Test.sh" ${TestSummaryDirectory}
 
-# TEST SETUP 1
-echo "Create Test Results summary for Test Configuration 1"
+echo "Create Test Results summary for Test Configuration 2"
 cd "${TestSummaryDirectory}"
 
 SystemInfo="$(uname -a)"

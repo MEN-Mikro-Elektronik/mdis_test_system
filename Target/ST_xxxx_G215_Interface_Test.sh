@@ -2,17 +2,17 @@
 MyDir="$(dirname "$0")"
 source $MyDir/St_Functions.sh
 
-# This script performs tests on F215 with 2xSA01, 2xSA08, 2xSA15
+# This script performs tests on G215 with 2xSA01, 2xSA08, 2xSA15
 # Test is described in details in 13MD05-90_xx_xx-JPE
 CurrDir="$pwd"
-cd ${MainTestDirectoryPath}/${MainTestDirectoryName}/
+cd "${MainTestDirectoryPath}/${MainTestDirectoryName}"
 
 ScriptName=${0##*/}
 TestCaseName="${ScriptName%.*}_Test_Case"
 TestCaseLogName="${ScriptName%.*}_log.txt"
 
 # Move to correct Test_Summary directory
-cd $1
+cd "$1"
 
 ###############################################################################
 ###############################################################################
@@ -36,7 +36,7 @@ CmdResult=${ERR_UNDEFINED}
 # Board in this Test Case always have
 VenID="0x1a88"   
 DevID="0x4d45"
-SubVenID="0x006a"
+SubVenID="0x00a2"
 BoardInSystem="1" # Depends on the test case
 InputToChange=${IN_0_ENABLE}
 
@@ -172,20 +172,20 @@ done
 
 ResultsSummaryTmp="${ResultsFileLogName}.tmp"
 echo "${TestCaseName}    " | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1 
-echo "@1 - ${TestCaseStep1}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1 
-echo "@2 - ${TestCaseStep2}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1 
-echo "@3 - ${TestCaseStep3}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1 
-echo "@4 - ${TestCaseStep4}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1 
-echo "@5 - ${TestCaseStep5}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1 
-echo "@6 - ${TestCaseStep6}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1 
-echo "@7 - ${TestCaseStep7}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1 
-echo "@8 - ${TestCaseStep8}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1 
-echo "@9 - ${TestCaseStep9}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1 
+echo "@1 - ${TestCaseStep1}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1
+echo "@2 - ${TestCaseStep2}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1
+echo "@3 - ${TestCaseStep3}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1
+echo "@4 - ${TestCaseStep4}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1
+echo "@5 - ${TestCaseStep5}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1
+echo "@6 - ${TestCaseStep6}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1
+echo "@7 - ${TestCaseStep7}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1
+echo "@8 - ${TestCaseStep8}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1
+echo "@9 - ${TestCaseStep9}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1
 
 # Clean after Test Case
 run_test_case_common_end_actions ${TestCaseLogName} ${TestCaseName}
 
 # move to previous directory
-cd $CurrDir
+cd "$CurrDir"
 
 exit ${CmdResult}

@@ -17,13 +17,13 @@ function create_main_test_directory {
         echo "create_main_test_directory"
         if [ ! -d "${MainTestDirectoryPath}/${MainTestDirectoryName}" ]; then
                 # create and move to Test Case directory 
-                mkdir "${MainTestDirectoryName}"
+                mkdir "${MainTestDirectoryPath}/${MainTestDirectoryName}"
                 if [ $? -ne 0 ]; then
                         echo "ERR: ${ERR_CREATE} - cannot create directory"
                         return ${ERR_CREATE}
                 fi
         else
-                echo "${MainTestDirectoryName} directory exists"
+                echo "${MainTestDirectoryPath}/${MainTestDirectoryName} directory exists"
         fi
 
         return ${ERR_OK}
@@ -95,7 +95,7 @@ function create_13MD05-90_directory {
                         return ${ERR_DOWNLOAD}
                 fi
         else
-                cd ${MdisSourcesDirectoryName}
+                cd "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}"
                 local CommitId="$(git log --pretty=format:'%H' -n 1)"
                 local GitBranch="$(git branch | awk NR==1'{print $2}')"
                 echo "On Branch: ${GitBranch}"
@@ -136,7 +136,7 @@ function download_13MD05_90_repository {
                 echo "ERR: ${ERR_CREATE} - cannot download MDIS"
                 return ${ERR_CREATE}
         fi
-        cd ${MdisSourcesDirectoryName}
+        cd "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}"
         local CommitId="$(git log --pretty=format:'%H' -n 1)"
         echo "CommitId: ${CommitId}"
         if [ ! -z "${GitMdisCommitSha}" ]; then 
@@ -148,6 +148,7 @@ function download_13MD05_90_repository {
         else
                 #Go to most current commit 
                 git pull origin
+                git submodule update
         fi
         cd ..
         return ${ERR_OK}
@@ -162,8 +163,15 @@ function download_13MD05_90_repository {
 function install_13MD05_90_sources {
 
         if [ -d "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" ]; then
+                local CurrentKernel="$(uname --kernel-release)"
+                local SystemName="$(hostnamectl | grep "Operating System" | awk '{ print $3 }')"
+                if [ "${SystemName}" == "CentOS" ]; then
+                        echo "${MenPcPassword}" | sudo --stdin --prompt="" ln --symbolic --no-dereference --force "/usr/src/kernels/${CurrentKernel}" "/usr/src/linux"
+                else
+                        echo "${MenPcPassword}" | sudo --stdin --prompt="" ln --symbolic --no-dereference --force "/usr/src/linux-headers-${CurrentKernel}" "/usr/src/linux"
+                fi
                 # install sources of MDIS
-                # echo ${MenPcPasswordsudo} | sudo -S --prompt= rm -rf /opt/menlinux
+                # echo ${MenPcPassword} | sudo -S --prompt= rm -rf /opt/menlinux
                 cd ${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName} 
                 echo ${MenPcPassword} | sudo -S --prompt= ./INSTALL -f
         else
@@ -186,7 +194,7 @@ if [ $? -ne 0 ]; then
         exit ${ERR_CONF}
 fi
 
-cd ${MainTestDirectoryName}
+cd "${MainTestDirectoryPath}/${MainTestDirectoryName}"
 
 create_result_directory
 CmdResult=$?

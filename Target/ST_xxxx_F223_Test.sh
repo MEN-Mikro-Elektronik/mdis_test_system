@@ -5,14 +5,14 @@ source $MyDir/St_Functions.sh
 # This script performs tests on F223 board.
 # Test is described in details in 13MD05-90_xx_xx-JPE
 CurrDir="$pwd"
-cd $MainTestDirectoryPath/$MainTestDirectoryName/
+cd "$MainTestDirectoryPath/$MainTestDirectoryName"
 
 ScriptName=${0##*/}
 TestCaseName="${ScriptName%.*}_Test_Case"
 TestCaseLogName="${ScriptName%.*}_log.txt"
 
 # Move to correct Test_Summary directory
-cd $1
+cd "$1"
 
 ###############################################################################
 ###############################################################################
@@ -155,7 +155,7 @@ echo "@7 - ${TestCaseStep7}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>
 echo "@8 - ${TestCaseStep8}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1
 
 # move to previous directory
-cd ${CurrDir}
+cd "${CurrDir}"
 
 exit ${CmdResult}
 

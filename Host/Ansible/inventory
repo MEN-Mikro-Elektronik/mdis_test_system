@@ -6,7 +6,7 @@ menSwitch
 menUat
 
 [menSwitch]
-10.1.1.159 ansible_connection=ssh ansible_ssh_user=root ansible_ssh_pass=men
+10.1.1.167 ansible_connection=ssh ansible_ssh_user=root ansible_ssh_pass=men
 
 [menUat]
-10.1.1.193 ansible_connection=ssh ansible_ssh_user=root ansible_ssh_pass=men
+10.1.1.46 ansible_connection=ssh ansible_ssh_user=root ansible_ssh_pass=men

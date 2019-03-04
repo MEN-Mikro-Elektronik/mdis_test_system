@@ -4,6 +4,8 @@ my_packages:
         - git
         - build-essential
         - i2c-tools
+        - libelf-dev
+        - net-tools
 
 #source_folder:
 #        - /home/men/

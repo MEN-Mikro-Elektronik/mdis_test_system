@@ -306,3 +306,38 @@ function check_input_state_is_set {
 
         return ${ReturnValue}
 }
+
+function grub_get_os {
+        echo "$(run_cmd_on_remote_pc "grep --perl-regexp --only-matching \"\\s*set default=.*\" ${GrubConfFile} | sed \"s/\\s*set default=\\s*//g\" | sed \"s/\\\"//g\"")"
+}
+
+function grub_set_os {
+        local ExpOs="$(echo "${1}" | sed "s/\//\\\\\\\\\//g")"
+        run_cmd_on_remote_pc "GrubCfg=\"\$(cat ${GrubConfFile})\" && echo \"\$GrubCfg\" | sed \"s/\\s*set default=.*/set default=\\\"${ExpOs}\\\"/g\" > ${GrubConfFile}"
+}
+
+function reboot_and_wait {
+        local TryCount=0
+        local Return=1
+
+        run_cmd_on_remote_pc "echo \"${MenPcPassword}\" | sudo --stdin --prompt=\"\" shutdown -r +1"
+        echo "Waiting for ${MenPcIpAddr}..."
+        sleep 120
+        while true; do
+                if ping -c 1 -W 2 "${MenPcIpAddr}"
+                then
+                        Return=0
+                        break
+                else
+                        TryCount=$((TryCount + 1))
+                        if [ "${TryCount}" -ge 30 ]; then
+                                Return=1
+                                break
+                        fi
+                        echo "Waiting for ${MenPcIpAddr}..."
+                        sleep 10
+                fi
+        done
+
+        return "${Return}"
+}

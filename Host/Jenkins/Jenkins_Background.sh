@@ -7,7 +7,7 @@ LogPrefix="[Background_Job]"
 
 # This script checks 
 #       if tests are running correctly, 
-#       if there is any action required from device side - example change inputs
+#       if there is any action required from target side - example change inputs
 
 CheckFileExistsCmd="[ -f ${LockFileName} ] && echo \"true\" || echo \"false\""
 FileExist=$(run_cmd_on_remote_pc "${CheckFileExistsCmd}")

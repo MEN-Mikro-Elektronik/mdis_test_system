@@ -27,6 +27,8 @@ ERR_NOT_DEFINED=18      # 18 - error, some variable is not defined
 ERR_DOWNLOAD=19         # 19 - error while downloading the sources
 ERR_CONF=20             # 20 - configuration error
 ERR_DIR_EXISTS=21       # 21 - directory exists
+ERR_DIR_NOT_EXISTS=22   # 22 - directory does not exist
+ERR_WARNING=23          # 23 - warning
 ERR_UNDEFINED=99        # 99 - undefined error
 
 # Command code description (common for all test cases and this script)
@@ -41,8 +43,15 @@ IN_2_DISABLE=202        # change input 2 to disable (with BL51 stands for RELAY 
 IN_3_DISABLE=203        # change input 3 to disable (with BL51 stands for RELAY 2) 
 IN_4_DISABLE=204        # change input 4 to disable
 
-# Address of Pc that will be tested, Pc should contain all required hardware modules
+# Address of Target that will be tested
 MenPcIpAddr=""
+
+#------------------------------------------------------------------------------
+#-------------------------PLEASE SPECIFY THE TEST SETUP------------------------
+#------------------------------------------------------------------------------
+TestSetup=""
+
+
 # Credentials for Pc that will be tested - required by ssh connection and sudo cmds
 MenPcLogin=""
 MenPcPassword=""
@@ -55,9 +64,7 @@ InputSwitchTimeout=10 #seconds
 GitTestSourcesMenUser=""
 GitTestSourcesMenPassword=""
 GitTestSourcesAddr=""
-# Fill with proper Git clone command
-GitTestSourcesCmd="sshpass -p ${GitTestSourcesMenPassword} \
-git clone -b master "
+GitTestSourcesCmd=""
 
 # Credentials, address, and command to download Git repository with 13MD05-90 sources
 GitMdisBranch="jpe-dev"
@@ -77,7 +84,7 @@ GitMdisCommitSha=""
 #               |--Commit_xxxx
 #               `--Commit_xxxx
 #
-MainTestDirectoryPath="/home/men"
+MainTestDirectoryPath="/media/tests"
 MdisSourcesDirectoryName="13MD05-90" 
 TestSourcesDirectoryName="Test_Sources"
 MainTestDirectoryName="MDIS_Test"
@@ -87,7 +94,6 @@ MdisResultsDirectoryPath="${MainTestDirectoryPath}/${MainTestDirectoryName}/${Md
 GitTestCommonDirPath="${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}/Common"
 GitTestTargetDirPath="${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}/Target"
 GitTestHostDirPath="${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}/Host/Jenkins"
-
 
 ResultsFileLogName="Results_summary.log"
 
@@ -116,9 +122,52 @@ PingPacketTimeout=1
 # Host to test
 PingTestHost=www.google.com
 
+# Uart loopback message to test
+EchoTestMessage="UART LOOPBACK TEST"
+
 # GRUB configuration file
 GrubConfFile=/media/tests/boot.cfg
-# Default OS to boot
-GrubDefaultOs="Ubuntu"
-# List of OSes to test (GRUB menu entries)
-GrubOses=("Ubuntu, with Linux 4.15.0-34-generic (on /dev/sda4)" "CentOS Linux 7 (Core) (on /dev/sda6)")
+# List of OSes to test (GRUB menu entries). The first is the default OS and is
+# not used for tests.
+
+#F26L
+GrubOsesF26L=("0" \
+          "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda13)" \
+          "Ubuntu, with Linux 4.15.0-20-generic (on /dev/sda4)" \
+          "Ubuntu, with Linux 4.15.0-29-generic (on /dev/sda5)" \
+         )
+
+#F23P
+GrubOsesF23P=("0" \
+          "Ubuntu, with Linux 3.13.0-32-generic (on /dev/sda10)" \
+          "Ubuntu, with Linux 4.4.0-31-generic (on /dev/sda11)" \
+          "Ubuntu, with Linux 4.4.0-31-generic (on /dev/sda12)" \
+          "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda13)" \
+          "Ubuntu, with Linux 4.15.0-20-generic (on /dev/sda4)" \
+          "Ubuntu, with Linux 4.15.0-29-generic (on /dev/sda5)" \
+          "CentOS Linux 7 (Core) (on /dev/sda6)" \
+          "CentOS Linux 7 (Core) (on /dev/sda9)" \
+         )
+#G22
+GrubOsesG22=("0" \
+          "Ubuntu, with Linux 3.13.0-32-generic (on /dev/sda10)" \
+          "Ubuntu, with Linux 4.4.0-31-generic (on /dev/sda11)" \
+          "Ubuntu, with Linux 4.4.0-31-generic (on /dev/sda12)" \
+          "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda13)" \
+          "Ubuntu, with Linux 4.15.0-20-generic (on /dev/sda4)" \
+          "Ubuntu, with Linux 4.15.0-29-generic (on /dev/sda5)" \
+          "CentOS Linux 7 (Core) (on /dev/sda6)" \
+          "CentOS Linux 7 (Core) (on /dev/sda9)" \
+         )
+#G25A
+GrubOsesG25A=("0" \
+          "Ubuntu, with Linux 3.13.0-32-generic (on /dev/sda10)" \
+          "Ubuntu, with Linux 4.4.0-31-generic (on /dev/sda11)" \
+          "Ubuntu, with Linux 4.4.0-31-generic (on /dev/sda12)" \
+          "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda13)" \
+          "Ubuntu, with Linux 4.15.0-20-generic (on /dev/sda4)" \
+          "Ubuntu, with Linux 4.15.0-29-generic (on /dev/sda5)" \
+          "CentOS Linux 7 (Core) (on /dev/sda6)" \
+          "CentOS Linux 7 (Core) (on /dev/sda9)" \
+         )
+

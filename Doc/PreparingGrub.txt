@@ -1,6 +1,7 @@
 To boot a particular OS with GRUB we need to make GRUB read configuration from
 file at run time. Follow below steps in order to do that.
 
+1. GRUB script
 Create the grub script file "/etc/grub.d/99_men".
 Add executable permisions to the file:
 # chmod a+x /etc/grub.d/99_men
@@ -24,12 +25,18 @@ The UUID variable is the partition UUID where the configuration file is
 located. Use blkid to find a partition.
 The CONF variable is the path to the configuration file on UUID partition.
 
+2. GRUB flat menu
+Open "/etc/default/grub" file.
+Add this line to the file:
+GRUB_DISABLE_SUBMENU=y
+
+3. GRUB configuration file
 Create the configuration file "/media/tests/boot.cfg".
 Add this content to the file:
 --start of file--
 set timeout_style=menu
 set timeout=30
-set default="Ubuntu"
+set default=0
 --end of file--
 
 The timeout_style variable is a style of boot. Set it to menu to show the menu
@@ -39,5 +46,6 @@ The timeout variable is a timeout in seconds after the OS is booted. Set it to
 The default variable is the name of the OS to boot. It is the name of a menu
 entry.
 
+4. Update GRUB
 Update GRUB configuration:
 # update-grub

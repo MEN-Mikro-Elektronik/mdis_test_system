@@ -16,7 +16,7 @@ source "${MyDir}/../Common/Conf.sh"
 # $1    Test Case directory name
 #
 function create_directory {
-        local DirectoryName="$1" 
+        local DirectoryName="$1"
         if [ ! -d "${DirectoryName}" ]; then
                 # create and move to Test Case directory 
                 mkdir "${DirectoryName}"
@@ -25,7 +25,7 @@ function create_directory {
                         return ${ERR_CREATE} 
                 fi
         else
-                echo "ERR_DIR_EXISTS :$1 - cannot create directory - directory exists" 
+                echo "Directory: ${DirectoryName} exists ..." 
                 return ${ERR_DIR_EXISTS}
         fi
 
@@ -52,17 +52,17 @@ function scan_and_install {
                 return ${ERR_SCAN} 
         fi
 
-        #echo ${MenPcPassword} | sudo -S --prompt= make > make_output.txt 2>&1
-        #if [ $? -ne 0 ]; then
-        #        echo "ERR 3 :make error" 
-        #        exit ${ERR_MAKE}
-        #fi
+        echo ${MenPcPassword} | sudo -S --prompt= make > make_output.txt 2>&1
+        if [ $? -ne 0 ]; then
+                echo "ERR 3 :make error" 
+                exit ${ERR_MAKE}
+        fi
 
-        #echo ${MenPcPassword} | sudo -S --prompt= make install > make_install_output.txt 2>&1
-        #if [ $? -ne 0 ]; then
-        #        echo "ERR 4 :make install error"
-        #        exit ${ERR_INSTALL}
-        #fi
+        echo ${MenPcPassword} | sudo -S --prompt= make install > make_install_output.txt 2>&1
+        if [ $? -ne 0 ]; then
+                echo "ERR 4 :make install error"
+                exit ${ERR_INSTALL}
+        fi
 }
 
 
@@ -75,11 +75,12 @@ function scan_and_install {
 function get_test_summary_directory_name {
         local CurrDir="$pwd" 
 
-        cd ${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}/
-        local CommitIdShortened="$(git log --pretty=format:'%h' -n 1)"
+        cd "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}"
+        local CommitIdShortened
+        CommitIdShortened=$(git log --pretty=format:'%h' -n 1)
         local SystemName=`hostnamectl | grep "Operating System" | awk '{ print $3 $4 }'`
         local TestResultsDirectoryName="Results_${SystemName}_commit_${CommitIdShortened}"
-        cd ${CurrDir}
+        cd "${CurrDir}"
 
         echo "${TestResultsDirectoryName}"
 }
@@ -91,10 +92,11 @@ function get_test_summary_directory_name {
 #       None 
 #
 function get_mdis_sources_commit_sha {
-        cd ${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}/
-        local CommitIdShortened="$(git log --pretty=format:'%h' -n 1)"
+        cd "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}"
+        local CommitIdShortened
+        CommitIdShortened=$(git log --pretty=format:'%h' -n 1)
         local SystemName=`hostnamectl | grep "Operating System" | awk '{ print $3"_"$4 }'`
-        cd ${CurrDir}
+        cd "${CurrDir}"
 
         echo "${CommitIdShortened}"
 }
@@ -106,10 +108,10 @@ function get_mdis_sources_commit_sha {
 #       None 
 #
 function get_os_name_with_kernel_ver {
-        cd ${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}/
+        cd "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}"
         local SystemName=`hostnamectl | grep "Operating System" | awk '{ print $3 $4 }'`
         local Kernel=`uname -r`
-        cd ${CurrDir}
+        cd "${CurrDir}"
         echo "${SystemName}_${Kernel}"
 }
 
@@ -140,7 +142,7 @@ function run_test_case_common_actions {
         fi
 
         # Move into test case directory
-        cd ${TestCaseName}
+        cd "${TestCaseName}"
 
         # Create log file
         touch ${TestCaseLogName}
@@ -159,8 +161,18 @@ function run_test_case_common_actions {
                 return ${CmdResult}
         fi
 
+        # Check this files:
+        # make_output.txt
+        # make_install_output.txt 2>&1
+
         # Check if any errors exists in output files
-        warning_check
+        warning_check "make_output.txt"
+        CmdResult=$?
+        if [ ${CmdResult} -ne 0 ]; then
+                return ${CmdResult}
+        fi
+
+        warning_check "make_install_output.txt"
         CmdResult=$?
         if [ ${CmdResult} -ne 0 ]; then
                 return ${CmdResult}
@@ -247,7 +259,7 @@ function obtain_device_list_chameleon_device {
         local DevNr=0   
 
         # Check how many boards are present 
-        BoardsCnt=$(echo ${MenPcPassword} | sudo -S --prompt= /opt/menlinux/BIN/fpga_load_x86-64 -s | grep "${VenID} * ${DevID} * ${SubVenID}" | wc -l)
+        BoardsCnt=$(echo ${MenPcPassword} | sudo -S --prompt= /opt/menlinux/BIN/fpga_load_x86-32 -s | grep "${VenID} * ${DevID} * ${SubVenID}" | wc -l)
 
         echo "There are: ${BoardsCnt} mezzaine ${VenID} ${DevID} ${SubVenID} board(s) in the system" 
 
@@ -262,10 +274,10 @@ function obtain_device_list_chameleon_device {
         echo "Obtain modules name from mezz ${BoardNumber}"
 
         # Obtain BUS number
-        BusNr=$(echo ${MenPcPassword} | sudo -S --prompt= /opt/menlinux/BIN/fpga_load_x86-64 -s | grep "${VenID} * ${DevID} * ${SubVenID}" | awk NR==${BoardNumber}'{print $3}')
+        BusNr=$(echo ${MenPcPassword} | sudo -S --prompt= /opt/menlinux/BIN/fpga_load_x86-32 -s | grep "${VenID} * ${DevID} * ${SubVenID}" | awk NR==${BoardNumber}'{print $3}')
         
         # Obtain DEVICE number
-        DevNr=$(echo ${MenPcPassword} | sudo -S --prompt= /opt/menlinux/BIN/fpga_load_x86-64 -s | grep "${VenID} * ${DevID} * ${SubVenID}" | awk NR==${BoardNumber}'{print $4}')
+        DevNr=$(echo ${MenPcPassword} | sudo -S --prompt= /opt/menlinux/BIN/fpga_load_x86-32 -s | grep "${VenID} * ${DevID} * ${SubVenID}" | awk NR==${BoardNumber}'{print $4}')
         
         echo "Device BUS:${BusNr}, Dev:${DevNr}"  
 
@@ -437,6 +449,7 @@ function uart_loopback_test {
 
 ############################################################################
 # Test RS232 with men_lx_z25 IpCore 
+
 #
 # parameters:
 # $1      name of file with log 
@@ -465,77 +478,175 @@ function uart_test_lx_z25 {
                 return ${ERR_NOEXIST}
         fi
 
-        for item in "${Arr[@]}"; do 
-                # Conditions must be met: i2c-i801 is loaded, mcb_pci is 
-                echo ${MenPcPassword} | sudo -S --prompt= chmod o+rw /dev/ttyS${item}
-                if [ $? -ne 0 ]; then
-                        echo "${LogPrefix} Could not chmod o+rw on ttyS${item}"\
-                          | tee -a ${LogFileName} 2>&1
-                fi
-                sleep 1
-                # Below command prevent infitite loopback on serial port 
-                echo ${MenPcPassword} | sudo -S --prompt= stty -F /dev/ttyS${item} -echo -onlcr
-                if [ $? -ne 0 ]; then
-                        echo "${LogPrefix} Could not stty -F on ttyS${item}"\
-                          | tee -a ${LogFileName} 2>&1
-                fi
-                sleep 1
-                # Listen on port in background
-                echo ${MenPcPassword} | sudo -S --prompt= cat /dev/ttyS${item}\
-                  > echo_on_serial_S${item}.txt &
-                
-                if [ $? -ne 0 ]; then
-                        echo "${LogPrefix} Could not cat on ttyS${item} in background"\
-                          | tee -a ${LogFileName} 2>&1
-                fi
-                sleep 1 
-                # Save background process PID 
-                CatEchoTestPID=$!
-                # Send data into port
-                echo ${MenPcPassword} | sudo -S --prompt= echo ${EchoTestMessage} > /dev/ttyS${item}
-                if [ $? -ne 0 ]; then
-                        echo "${LogPrefix} Could not echo on ttyS${item}"\
-                          | tee -a ${LogFileName} 2>&1
-                fi
-                # Kill process
-                sleep 1 
-                echo ${MenPcPassword} | sudo -S --prompt= kill ${CatEchoTestPID}
-                if [ $? -ne 0 ]; then
-                        echo "${LogPrefix} Could not kill cat backgroung process ${CatEchoTestPID} on ttyS${item}"\
-                          | tee -a ${LogFileName} 2>&1
-                fi
-                # Compare and check if echo test message was received.
-                sleep 1 
-                grep -a "${EchoTestMessage}" echo_on_serial_S${item}.txt
-                if [ $? -eq 0 ]; then
-                        echo "${LogPrefix} Echo succeed on ttyS${item}"\
-                          | tee -a ${LogFileName} 2>&1
-                else
-                        echo "${LogPrefix} Echo failed on ttyS${item}"\
-                          | tee -a ${LogFileName} 2>&1
-                fi
+        local tty0="ttyS$(cat ${FILE} | awk NR==1'{print $1}')"
+        local tty1="ttyS$(cat ${FILE} | awk NR==2'{print $1}')"
 
-                #rm echo_on_serial_S${item}.txt
-        done
+        uart_test_tty ${tty1} ${tty0}
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix}  ERR_VALUE: ${tty1} with ${tty0}" | tee -a ${LogFileName} 
+                return ${ERR_VALUE}
+        fi
+        
+        sleep 1
+        echo ${MenPcPassword} | sudo -S --prompt= rmmod men_lx_z25 
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix}  ERR_VALUE: could not rmmod m" | tee -a ${LogFileName} 
+                return ${ERR_VALUE}
+        fi
+
+        echo ${MenPcPassword} | sudo -S --prompt= modprobe men_lx_z25 baud_base=1843200 mode=se,se
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix}  ERR_VALUE: could not  modprobe men_lx_z25 baud_base=1843200 mode=se,se" | tee -a ${LogFileName} 
+                return ${ERR_VALUE}
+        fi
+        sleep 1
+
+        uart_test_tty ${tty0} ${tty1}
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix}  ERR_VALUE: ${tty0} with ${tty1}" | tee -a ${LogFileName} 
+                return ${ERR_VALUE}
+        fi
+
+        return ${ERR_OK}
+
+        # Be aware of Linux kernel bug 
+        # https://bugs.launchpad.net/ubuntu/+source/linux-signed-hwe/+bug/1815021
+        #
+        #for item in "${Arr[@]}"; do 
+        #        # Conditions must be met: i2c-i801 is loaded, mcb_pci is disabled
+        #        echo ${MenPcPassword} | sudo -S --prompt= chmod o+rw /dev/ttyS${item}
+        #        if [ $? -ne 0 ]; then
+        #                echo "${LogPrefix} Could not chmod o+rw on ttyS${item}"\
+        #                  | tee -a ${LogFileName} 2>&1
+        #        fi
+        #        sleep 2
+        #        # Below command prevent infitite loopback on serial port 
+        #        echo ${MenPcPassword} | sudo -S --prompt= stty -F /dev/ttyS${item} -echo -onlcr
+        #        if [ $? -ne 0 ]; then
+        #                echo "${LogPrefix} Could not stty -F on ttyS${item}"\
+        #                  | tee -a ${LogFileName} 2>&1
+        #        fi
+        #        sleep 2
+        #        # Listen on port in background
+        #        echo ${MenPcPassword} | sudo -S --prompt= cat /dev/ttyS${item}\
+        #          > echo_on_serial_S${item}.txt &
+        #        
+        #        if [ $? -ne 0 ]; then
+        #                echo "${LogPrefix} Could not cat on ttyS${item} in background"\
+        #                  | tee -a ${LogFileName} 2>&1
+        #        fi
+        #        sleep 2 
+        #        # Save background process PID 
+        #        CatEchoTestPID=$!
+        #        # Send data into port
+        #        echo ${MenPcPassword} | sudo -S --prompt= echo ${EchoTestMessage} > /dev/ttyS${item}
+        #        if [ $? -ne 0 ]; then
+        #                echo "${LogPrefix} Could not echo on ttyS${item}"\
+        #                  | tee -a ${LogFileName} 2>&1
+        #        fi
+        #        # Kill process
+        #        sleep 2 
+        #        echo ${MenPcPassword} | sudo -S --prompt= kill -9 ${CatEchoTestPID}
+        #        if [ $? -ne 0 ]; then
+        #                echo "${LogPrefix} Could not kill cat backgroung process ${CatEchoTestPID} on ttyS${item}"\
+        #                  | tee -a ${LogFileName} 2>&1
+        #        fi
+        #        # Compare and check if echo test message was received.
+        #        sleep 1 
+        #        grep -a "${EchoTestMessage}" echo_on_serial_S${item}.txt
+        #        if [ $? -eq 0 ]; then
+        #                echo "${LogPrefix} Echo succeed on ttyS${item}"\
+        #                  | tee -a ${LogFileName} 2>&1
+        #        else
+        #                echo "${LogPrefix} Echo failed on ttyS${item}"\
+        #                  | tee -a ${LogFileName} 2>&1
+        #                return ${ERR_VALUE}
+        #        fi
+        #
+        #        #rm echo_on_serial_S${item}.txt
+        #done
 }
 
 ############################################################################
 # Test RS232 at given tty_xx device
 # Example:
-#       uart_test_tty xxxx 
+#       uart_test_tty xxxx yyyy
 #
-# where x is: ttyS0 ... ttySx / ttyD0 ... ttyDx  
-# It two uarts are connected with each other, then pass two parameters
+# where x is: ttyS0 ... ttySx / ttyD0 ... ttyDx
+# where y is: ttyS0 ... ttySx / ttyD0 ... ttyDx  
+# It two uarts are connected with each other, then pass two different parameters
+# It uart is connected with loopback, then pass two same parameters
 # Example:
 #       uart_test_tty xxxx yyyy
 #       uart_test_tty ttyD0 ttyD1
+#       uart_test_tty ttyD0 ttyD0
 # parameters:
 # $1      tty 0 name
 # $2      tty 1 name
 #
 function uart_test_tty {
-        local tty0=$1
-        local tty1=$2
+        local tty0=${1}
+        local tty1=${2}
+
+        
+        #Conditions must be met: i2c-i801 is loaded, mcb_pci is 
+        echo ${MenPcPassword} | sudo -S --prompt= chmod o+rw /dev/${tty0}
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix} Could not chmod o+rw on ${tty0}"\
+                  | tee -a ${LogFileName} 2>&1
+        fi
+        sleep 1
+        # Below command prevent infitite loopback on serial port 
+        echo ${MenPcPassword} | sudo -S --prompt= stty -F /dev/${tty0} -onlcr
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix} Could not stty -F on ttyS${item}"\
+                  | tee -a ${LogFileName} 2>&1
+        fi
+        sleep 1
+        # Listen on port in background
+        echo ${MenPcPassword} | sudo -S --prompt= cat /dev/${tty1}\
+          > echo_on_serial_${tty1}.txt &
+        
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix} Could not cat on ${tty1} in background"\
+                  | tee -a ${LogFileName} 2>&1
+        fi
+        sleep 1 
+        # Save background process PID 
+        CatEchoTestPID=$!
+
+        # Send data into port
+        echo ${MenPcPassword} | sudo -S --prompt= echo ${EchoTestMessage} > /dev/${tty0}
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix} Could not echo on ${tty0}"\
+                  | tee -a ${LogFileName} 2>&1
+        fi
+        # Kill process
+        sleep 1 
+        # Set up previous settings
+        echo ${MenPcPassword} | sudo -S --prompt= chmod o-rw /dev/${tty0}
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix} Could not chmod o+rw on ${tty0}"\
+                  | tee -a ${LogFileName} 2>&1
+        fi
+
+        echo ${MenPcPassword} | sudo -S --prompt= kill ${CatEchoTestPID}
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix} Could not kill cat backgroung process ${CatEchoTestPID} on ${tty1}"\
+                  | tee -a ${LogFileName} 2>&1
+        fi
+        # Compare and check if echo test message was received.
+        sleep 1 
+        grep -a "${EchoTestMessage}" echo_on_serial_${tty1}.txt
+        if [ $? -eq 0 ]; then
+                echo "${LogPrefix} Echo succeed on ${tty1}"\
+                  | tee -a ${LogFileName} 2>&1
+                return ${ERR_OK}
+        else
+                echo "${LogPrefix} Echo failed on ${tty1}"\
+                  | tee -a ${LogFileName} 2>&1
+        fi
+        
         return ${ERR_VALUE}
 }
 
@@ -606,7 +717,7 @@ function obtain_tty_number_list_from_board {
         local BoardMaxSlot=8
 
         for i in $(seq 0 ${BoardMaxSlot}); do
-                echo ${MenPcPassword} | sudo -S --prompt= /opt/menlinux/BIN/fpga_load_x86-64 ${VenID} ${DevID} ${SubVenID} $i -t > /dev/null 2>&1
+                echo ${MenPcPassword} | sudo -S --prompt= /opt/menlinux/BIN/fpga_load_x86-32 ${VenID} ${DevID} ${SubVenID} $i -t > /dev/null 2>&1
                 if [ $? -eq 0 ]; then
                         BoardCnt=$((${BoardCnt}+1))
                 else
@@ -618,7 +729,7 @@ function obtain_tty_number_list_from_board {
 
         # Save chamelon table for board(s)
         for i in $(seq 1 ${BoardCnt}); do
-                echo ${MenPcPassword} | sudo -S --prompt= /opt/menlinux/BIN/fpga_load_x86-64 ${VenID} ${DevID} ${SubVenID} $((${i}-1)) -t >> Board_${VenID}_${DevID}_${SubVenID}_${i}_chameleon_table.txt
+                echo ${MenPcPassword} | sudo -S --prompt= /opt/menlinux/BIN/fpga_load_x86-32 ${VenID} ${DevID} ${SubVenID} $((${i}-1)) -t >> Board_${VenID}_${DevID}_${SubVenID}_${i}_chameleon_table.txt
                 if [ $? -eq 0 ]; then
                         echo "Chameleon for Board_${VenID}_${DevID}_${SubVenID}_${i} board saved (1)" | tee -a ${TestCaseLogName} 2>&1
                 else
@@ -663,6 +774,179 @@ function obtain_tty_number_list_from_board {
 }
 
 ############################################################################
+# run m77 test 
+# 
+# parameters:
+# $1    Test case log file name
+# $2    Test case name
+# $3    M77 board number
+function m_module_m77_test {
+        local TestCaseLogName=${1}
+        local TestCaseName=${2}
+        local M77Nr=${3}
+        local LogPrefix="[m77_test]"
+        
+        # modprobe men_ sth sth 
+        echo ${MenPcPassword} | sudo -S --prompt= modprobe men_mdis_kernel
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_mdis_kernel" | tee -a ${LogFileName} 
+                return ${ERR_VALUE}
+        fi
+
+        echo ${MenPcPassword} | sudo -S --prompt= mdis_createdev -b d203_a24_1
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix}  ERR_VALUE: could not mdis_createdev -b d203_a24_1" | tee -a ${LogFileName} 
+                return ${ERR_VALUE}
+        fi
+
+        echo ${MenPcPassword} | sudo -S --prompt= modprobe men_lx_m77 devName=m77_${M77Nr} brdName=d203_a24_1 slotNo=0 mode=7,7,7,7
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_lx_m77 devName=m77_${M77Nr} brdName=d203_a24_1 slotNo=0 mode=7,7,7,7" | tee -a ${LogFileName} 
+                return ${ERR_VALUE}
+        fi
+        local tty0="ttyD0"
+        local tty1="ttyD1"
+        local tty2="ttyD2"
+        local tty3="ttyD3"
+
+        uart_test_tty ${tty0} ${tty1}
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix}  ERR_VALUE: ${tty0} with ${tty1}" | tee -a ${LogFileName} 
+                return ${ERR_VALUE}
+        fi
+
+        uart_test_tty ${tty3} ${tty2}
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix}  ERR_VALUE: ${tty3} with ${tty2}" | tee -a ${LogFileName} 
+                return ${ERR_VALUE}
+        fi
+
+        sleep 2 
+        echo ${MenPcPassword} | sudo -S --prompt= rmmod men_lx_m77 
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix}  ERR_VALUE: could not rmmod m" | tee -a ${LogFileName} 
+                return ${ERR_VALUE}
+        fi
+
+        echo ${MenPcPassword} | sudo -S --prompt= modprobe men_lx_m77 devName=m77_${M77Nr} brdName=d203_a24_1 slotNo=0 mode=7,7,7,7
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_lx_m77 devName=m77_${M77Nr} brdName=d203_a24_1 slotNo=0 mode=7,7,7,7" | tee -a ${LogFileName} 
+                return ${ERR_VALUE}
+        fi
+
+        uart_test_tty ${tty1} ${tty0}
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix}  ERR_VALUE: ${tty1} with ${tty0}" | tee -a ${LogFileName} 
+                return ${ERR_VALUE}
+        fi
+
+        uart_test_tty ${tty2} ${tty3}
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix}  ERR_VALUE: ${tty2} with ${tty3}" | tee -a ${LogFileName} 
+                return ${ERR_VALUE}
+        fi
+
+        return ${ERR_OK}
+}
+
+############################################################################
+# run m72 test 
+# 
+# parameters:
+# $1    Test case log file name
+# $2    Test case name
+# $3    M72 board number
+function m_module_m72_test {
+        local TestCaseLogName=${1}
+        local TestCaseName=${2}
+        local M72Nr=${3}
+        local LogPrefix="[m72_test]"
+
+        echo ${MenPcPassword} | sudo -S --prompt= modprobe men_ll_m72
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m72" | tee -a ${LogFileName} 
+                return ${ERR_VALUE}
+        fi
+
+        # Run m72_out in background. 
+        echo ${MenPcPassword} | sudo -S --prompt= stdbuf -oL m72_out m72_1 0 < /dev/null > m72_out.log & 
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix} Could not run m72_out "\
+                  | tee -a ${LogFileName} 2>&1
+
+        fi
+        # Save background process PID 
+        M72_Out_PID=$!
+
+        # Here output from m72_out should be 0
+        echo ${MenPcPassword} | sudo -S --prompt= stdbuf -oL m72_single m72_1 1 < /dev/null > m72_single_run.log &
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix} Could not run m72_out "\
+                  | tee -a ${LogFileName} 2>&1
+        fi
+
+        M72_Single_PID=$!
+        
+        # Count changes for a while ...
+        sleep 10
+        echo "${LogPrefix} Processes to kill: "
+        echo "${LogPrefix} M72_Out_PID: ${M72_Out_PID}"
+        echo "${LogPrefix} M72_Single_PID: ${M72_Single_PID}"
+
+        # Kill background processes  sudo stdbuf 
+        echo ${MenPcPassword} | sudo -S --prompt= kill -9 ${M72_Out_PID}
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix} Could not kill m72_out"\
+                  | tee -a ${LogFileName} 2>&1
+        fi
+
+        echo ${MenPcPassword} | sudo -S --prompt= kill -9 ${M72_Single_PID}
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix} Could not kill m72_single"\
+                  | tee -a ${LogFileName} 2>&1
+        fi
+
+        # Kill bacground processess m72_single, m72_out
+        M72_Out_PID=$(ps aux | grep m72_single | awk 'NR==1 {print $2}')
+        M72_Single_PID=$(ps aux | grep m72_out | awk 'NR==1 {print $2}')
+
+        echo ${MenPcPassword} | sudo -S --prompt= kill -9 ${M72_Out_PID}
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix} Could not kill m72_out"\
+                  | tee -a ${LogFileName} 2>&1
+        fi
+
+        echo ${MenPcPassword} | sudo -S --prompt= kill -9 ${M72_Single_PID}
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix} Could not kill m72_single"\
+                  | tee -a ${LogFileName} 2>&1
+        fi
+
+        # Here output from m72_out should != 0 
+        # It should be enough just to check the last line of counter, 
+        # counter should be != 000000
+
+        # to get last line
+        # tac FILE | egrep -m 1 .
+        # awk '/./{line=$0} END{print line}' FILE
+
+        echo "${LogPrefix} Counter value is $(awk '/./{line=$0} END{print line}' m72_single_run.log)"\
+          | tee -a ${LogFileName} 2>&1
+
+        local CounterValue=$(( 16#$( awk '/./{line=$0} END{print line}' m72_single_run.log | sed 's/counter=//' | awk -F'x' '{print $2}')))
+        echo "${LogPrefix} Counter value is ${CounterValue}"\
+          | tee -a ${LogFileName} 2>&1
+
+        if [ ${CounterValue} -eq "0" ]; then 
+                echo "${LogPrefix} Counter value is ${CounterValue} = 0, ERROR"\
+                  | tee -a ${LogFileName} 2>&1
+                return ${ERR_VALUE}
+        fi 
+
+        return ${ERR_OK}
+}
+
+############################################################################
 # This function runs m module test
 #   Possible machine states
 #   1 - ModprobeDriver
@@ -693,7 +977,8 @@ function m_module_x_test {
         local TestCaseName=${2}
         local CommandCode=${3}
         local MModuleName=${4}
-        local MModuleBoardNr=${5} 
+        local MModuleBoardNr=${5}
+        local SubtestName=${6}
         local CmdResult=${ERR_UNDEFINED}
         local ErrorLogCnt=1
         local TestError=${ERR_UNDEFINED}
@@ -702,6 +987,7 @@ function m_module_x_test {
         
         local ModprobeDriver=""
         local ModuleSimp=""
+        local ModuleSimpOutput="simp"
         local ModuleResultCmpFunc=""
         local ModuleInstanceName=""
         local LogPrefix="[M_Module_${MModuleName}]"
@@ -721,8 +1007,14 @@ function m_module_x_test {
                 ;;
           m35)
                 ModprobeDriver="men_ll_m34"
-                ModuleSimp="m34_simp"
-                ModuleResultCmpFunc="compare_m35_simp_values"
+                if [ "${SubtestName}" == "blkread" ]; then
+                      ModuleSimp="m34_blkread -r=14 -b=1 -i=3 -d=1"
+                      ModuleSimpOutput="blkread"
+                      ModuleResultCmpFunc="compare_m35_blkread_values"
+                else
+                      ModuleSimp="m34_simp"
+                      ModuleResultCmpFunc="compare_m35_simp_values"
+                fi
                 ModuleInstanceName="${MModuleName}_${MModuleBoardNr} 14" 
                 ;;
           m36)
@@ -778,14 +1070,18 @@ function m_module_x_test {
                         # Run example first time (banana plugs disconnected)
                         # If device cannot be opened there is a log in result  :
                         # *** ERROR (LINUX) #2:  No such file or directory ***
-                        echo ${MenPcPassword} | sudo -S --prompt= ${ModuleSimp} ${ModuleInstanceName} > ${MModuleName}_${MModuleBoardNr}_simp_output_disconnected.txt 2>&1
-                        ErrorLogCnt=$(grep "ERROR" ${MModuleName}_${MModuleBoardNr}_simp_output_disconnected.txt | grep "No such file or directory" | wc -l) 
+                        echo ${MenPcPassword} | sudo -S --prompt= ${ModuleSimp} ${ModuleInstanceName} > ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_disconnected.txt 2>&1
+                        ErrorLogCnt=$(grep "ERROR" ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_disconnected.txt | grep "No such file or directory" | wc -l) 
                         CmdResult=$ErrorLogCnt
                         if [ ${CmdResult} -ne ${ERR_OK} ]; then
                                 echo "${LogPrefix} Error: ${ERR_SIMP_ERROR} :could not run ${ModuleSimp} ${ModuleInstanceName} " | tee -a ${TestCaseLogName} 2>&1
                                 MachineRun=false
                         else
-                                MachineState="EnableInput"
+                                if [ "${MModuleName}" == "m35" ] && [ "${SubtestName}" == "blkread" ]; then
+                                        MachineState="CompareResults"
+                                else
+                                        MachineState="EnableInput"
+                                fi
                         fi
                         ;;
                   EnableInput)
@@ -802,8 +1098,8 @@ function m_module_x_test {
                         # Run example second time (banana plugs connected)
                         # If device cannot be opened there is a log in result  :
                         # *** ERROR (LINUX) #2:  No such file or directory ***
-                        echo ${MenPcPassword} | sudo -S --prompt= ${ModuleSimp} ${ModuleInstanceName} > ${MModuleName}_${MModuleBoardNr}_simp_output_connected.txt 2>&1
-                        ErrorLogCnt=$(grep "ERROR" ${MModuleName}_${MModuleBoardNr}_simp_output_connected.txt | grep "No such file or directory" | wc -l) 
+                        echo ${MenPcPassword} | sudo -S --prompt= ${ModuleSimp} ${ModuleInstanceName} > ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_connected.txt 2>&1
+                        ErrorLogCnt=$(grep "ERROR" ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_connected.txt | grep "No such file or directory" | wc -l) 
                         CmdResult=${ErrorLogCnt}
                         if [ ${CmdResult} -ne ${ERR_OK} ]; then
                                 echo "${LogPrefix} Error: ${ERR_SIMP_ERROR} :could not run ${ModuleSimp} ${ModuleInstanceName} " | tee -a ${TestCaseLogName} 2>&1
@@ -907,24 +1203,27 @@ function compare_m31_simp_values {
         local M31Nr=${3}
         local LogPrefix="[compare_m31]"
 
-        echo "[compare_m31] compare_m31_simp_values"
+        echo "${LogPrefix} compare_m31_simp_values"
         local ValueChannelConnected_0=$(grep "channel  0 : " m31_${M31Nr}_simp_output_connected.txt | awk NR==1'{print $4}')
         local ValueChannelDisconnected_0=$(grep "channel  0 : " m31_${M31Nr}_simp_output_disconnected.txt | awk NR==1'{print $4}')
-        if [ "${ValueChannelConnected_0}" -eq "${ValueChannelDisconnected_0}" ]; then
+        if [ "${ValueChannelConnected_0}" == "" ] || [ "${ValueChannelDisconnected_0}" == "" ] || \
+           [ "${ValueChannelConnected_0}" -eq "${ValueChannelDisconnected_0}" ]; then
                 echo "${LogPrefix} ValueChannelConnected_0 equal with ValueChannelDisconnected_0" | tee -a ${TestCaseLogName} 2>&1
                 return ${ERR_VALUE}
         fi
 
         local ValueChannelConnected_1=$(grep "channel  0 : " m31_${M31Nr}_simp_output_connected.txt | awk NR==1'{print $4}')
         local ValueChannelDisconnected_1=$(grep "channel  0 : " m31_${M31Nr}_simp_output_disconnected.txt | awk NR==1'{print $4}')
-        if [ "${ValueChannelConnected_1}" -eq "${ValueChannelDisconnected_1}" ]; then
+        if [ "${ValueChannelConnected_1}" == "" ] || [ "${ValueChannelDisconnected_1}" == "" ] || \
+           [ "${ValueChannelConnected_1}" -eq "${ValueChannelDisconnected_1}" ]; then
                 echo "${LogPrefix} ValueChannelConnected_1 equal with ValueChannelDisconnected_1" | tee -a ${TestCaseLogName} 2>&1
                 return ${ERR_VALUE}
         fi
 
         local ValueChannelStateConnected=$(grep "state: " m31_${M31Nr}_simp_output_connected.txt | awk NR==1'{print $2 $3}')
         local ValueChannelStateDisconnected=$(grep "state: " m31_${M31Nr}_simp_output_disconnected.txt | awk NR==1'{print $2 $3}')
-        if [ "${ValueChannelStateConnected}" -eq "${ValueChannelStateDisconnected}" ]; then
+        if [ "${ValueChannelStateConnected}" == "" ] || [ "${ValueChannelStateDisconnected}" == "" ] || \
+           [ "${ValueChannelStateConnected}" -eq "${ValueChannelStateDisconnected}" ]; then
                 echo "${LogPrefix} ValueChannelStateConnected equal with ValueChannelStateDisconnected"  | tee -a ${TestCaseLogName} 2>&1
                 return ${ERR_VALUE}
         fi
@@ -962,8 +1261,8 @@ function compare_m35_simp_values {
         echo "${LogPrefix} ValueChannelStateConnected: ${ValueChannelStateConnected}"
         echo "${LogPrefix} ValueChannelStateDisconnected: ${ValueChannelStateDisconnected}"
 
-        if [ "${ValueChannelStateDisconnected}" -ge "100" ]; then
-                echo "${LogPrefix} ValueChannelStateConnected is not ~ 0 "  | tee -a ${TestCaseLogName} 2>&1
+        if [ "${ValueChannelStateDisconnected}" -ge "1500" ]; then
+                echo "${LogPrefix} ValueChannelStateDisconnected is not ~ 0 "  | tee -a ${TestCaseLogName} 2>&1
                 return ${ERR_VALUE}
         fi
 
@@ -976,6 +1275,36 @@ function compare_m35_simp_values {
 }
 
 ############################################################################
+# compare_m35_blkread_values,
+# Value on chanel 0 is checked. 
+# If Chanel is disconnected from power source, value should be 0
+# If Chanel is connected with 12V, value should be greater than 0
+# parameters:
+# $1    Test case log file name
+# $2    Test case name
+# $3    M35 board number
+#
+function compare_m35_blkread_values {
+        local TestCaseLogName=${1}
+        local TestCaseName=${2}
+        local M35Nr=${3}
+        local LogPrefix="[compare_m35]"
+
+        echo "${LogPrefix} compare_m35_blkread_values"
+        local ValueChannelStateDisconnected=$(grep -P "^[0-9a-f]+\+[0-9a-f]+:" m35_${M35Nr}_blkread_output_disconnected.txt | head -n 1 | awk '{print $2}' | grep -oP "^[0-9]+")
+
+        echo "${LogPrefix} ValueChannelStateDisconnected: ${ValueChannelStateDisconnected}"
+
+        if [ "${ValueChannelStateDisconnected}" == "" ] || [ "${ValueChannelStateDisconnected}" -ne "0" ]; then
+                echo "${LogPrefix} ValueChannelStateDisconnected is not 0 "  | tee -a ${TestCaseLogName} 2>&1
+                return ${ERR_VALUE}
+        fi
+
+        return ${ERR_OK}
+}
+
+
+############################################################################
 # compare_m36_simp_values,
 # 
 # parameters:
@@ -985,10 +1314,39 @@ function compare_m35_simp_values {
 function compare_m36_simp_values {
         local TestCaseLogName=${1}
         local TestCaseName=${2}
-        local M35Nr=${3}
+        local M36Nr=${3}
         local LogPrefix="[compare_m36]"
 
-        return ${ERR_VALUE}
+        echo "${LogPrefix} compare_m36_simp_values"
+
+        local ValueChannelStateConnected=$(cat m36_${M36Nr}_simp_output_connected.txt | awk NR==6'{print $4}')
+        local ValueChannelStateDisconnected=$(cat m36_${M36Nr}_simp_output_disconnected.txt | awk NR==6'{print $4}')
+
+        echo "${LogPrefix} ValueChannelStateConnected: ${ValueChannelStateConnected}"
+        echo "${LogPrefix} ValueChannelStateDisconnected: ${ValueChannelStateDisconnected}"        
+
+        # replace '.' with ',' 
+        #ValueChannelStateConnected=$(echo ${ValueChannelStateConnected} | sed 's/\./,/')
+        #ValueChannelStateDisconnected=$(echo ${ValueChannelStateDisconnected} | sed 's/\./,/')
+
+        echo "${LogPrefix} ValueChannelStateConnected: ${ValueChannelStateConnected} V"
+        echo "${LogPrefix} ValueChannelStateDisconnected: ${ValueChannelStateDisconnected} V"
+
+        local ValueLow="0.2"
+        local ValueHigh="9.8"
+
+        if (( $(echo "${ValueChannelStateDisconnected} > ${ValueLow}" |bc -l) )); then
+                 echo "${LogPrefix} ValueChannelStateConnected is not ~ 0 "  | tee -a ${TestCaseLogName} 2>&1
+                return ${ERR_VALUE}
+        fi
+
+        if (( $(echo "${ValueChannelStateConnected} < ${ValueHigh}" |bc -l) )); then
+                echo "${LogPrefix} ValueChannelStateConnected is not ~ 10 Volts "  | tee -a ${TestCaseLogName} 2>&1
+                return ${ERR_VALUE}
+        fi
+
+
+        return ${ERR_OK}
 }
 
 ############################################################################
@@ -1001,7 +1359,7 @@ function compare_m36_simp_values {
 function compare_m82_simp_values {
         local TestCaseLogName=${1}
         local TestCaseName=${2}
-        local M35Nr=${3}
+        local M82Nr=${3}
         local LogPrefix="[compare_m82]"
         return ${ERR_VALUE}
 }
@@ -1148,7 +1506,16 @@ function clean_test_case_files {
 #       None 
 #
 function warning_check {
-echo "warning_check"
+
+        local FileName=${1}
+        cat ${FileName} | grep warning: >/dev/null
+        if [ $? -eq 0 ]
+        then 
+                echo "Warning Check FAILED!"
+                return ${ERR_WARNING}
+        fi
+
+        return ${ERR_OK}
 }
 
 ############################################################################
@@ -1160,5 +1527,4 @@ echo "warning_check"
 function error_check {
 echo "error_check"
 }
-
 
