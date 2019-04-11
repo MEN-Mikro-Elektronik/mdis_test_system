@@ -253,7 +253,7 @@ function automatic_driver_test {
 
         local GCC_VERSION=$(gcc --version | awk NR==1'{print $4}')
         local DATE=$(date '+%Y-%m-%d_%H:%M:%S')
-        local STR_RESULT_DIR="${4}/TestOutput_${1}_GCC_${GCC_VERSION}_${DATE}"
+        local STR_RESULT_DIR="${4}/TestOutput_${1}_GCC_${GCC_VERSION}_${DATE}_${5}"
         local STR_RESULT_FILE="${STR_RESULT_DIR}/TestResults.log"
         local Retval=0
 
@@ -261,7 +261,7 @@ function automatic_driver_test {
         mkdir "${STR_RESULT_DIR}"
 
         # Check if flag for compilation of failed Makefiles is set 
-        if [ ! -z "${5}" ] 
+        if [ ! -z "${6}" ] 
         then
                 # Check if failed Makefiles compilation list exists
                 if [ -f "${1}_${MakefilesCompilationListFailed}" ]
@@ -304,8 +304,12 @@ function automatic_driver_test {
 
 	        cp "Makefiles/${Makefile}" Makefile &>/dev/null
 
+                #change kernel directory path
                 sed -i "/.*MEN_LIN_DIR =.*/c MEN_LIN_DIR = ${2}" Makefile
                 sed -i "/.*LIN_KERNEL_DIR =.*/c LIN_KERNEL_DIR = ${3}" Makefile
+
+                #change dbg/nodbgoptions, based on given parameter
+                sed -i "/.*ALL_DBGS =.*/c ALL_DBGS = ${5}" Makefile
                 
                 Retval=$?
 	        if [ ${Retval} -eq 0 ]
@@ -441,7 +445,8 @@ if [ "${BuildAllKernelGcc}" == "1" ] || [ "${CompileShortList}" == "1" ]; then
                 echo " ==     building MDIS project using kernel ${kern_version}      "
                 echo " ============================================================"
 
-                automatic_driver_test ${kern_version} ${MEN_LIN_DIR} ${TEST_KERNEL_DIR} ${MdisResultsDirectoryPath} ${CompileShortList}
+                automatic_driver_test ${kern_version} ${MEN_LIN_DIR} ${TEST_KERNEL_DIR} ${MdisResultsDirectoryPath} "dbg" ${CompileShortList}
+                automatic_driver_test ${kern_version} ${MEN_LIN_DIR} ${TEST_KERNEL_DIR} ${MdisResultsDirectoryPath} "nodbg" ${CompileShortList} 
                 Retval=$?
                 if [ ${Retval} -ne 0 ]; then
                         echo "ERR: automatic_driver_test"
