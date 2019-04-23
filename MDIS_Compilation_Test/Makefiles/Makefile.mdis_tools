@@ -104,17 +104,17 @@ ALL_BB_DRIVERS =
 ALL_USR_LIBS = \
 	USR_OSS/library.mak \
 	USR_UTL/COM/library.mak \
-	VME4L_API/library.mak\
+	VME4L_API/library.mak \
 	UTI/library.mak
  #- it seems that it is not used
 
 ALL_CORE_LIBS =
 	DBG/library.mak \
 	OSS/library.mak \
-        CHAMELEON/COM/library.mak \
-        OSS/library_usr.mak \
-        BBIS_KERNEL/library.mak \
-        MDIS_KERNEL/library.mak 
+	CHAMELEON/COM/library.mak \
+	OSS/library_usr.mak \
+	BBIS_KERNEL/library.mak \
+	MDIS_KERNEL/library.mak
 
 ALL_LL_TOOLS = 
 
