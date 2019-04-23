@@ -108,7 +108,7 @@ ALL_USR_LIBS = \
 	UTI/library.mak
  #- it seems that it is not used
 
-ALL_CORE_LIBS =
+ALL_CORE_LIBS = \
 	DBG/library.mak \
 	OSS/library.mak \
 	CHAMELEON/COM/library.mak \
