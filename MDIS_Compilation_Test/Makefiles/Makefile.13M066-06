@@ -115,7 +115,11 @@ ALL_CORE_LIBS = \
 ALL_LL_TOOLS = \
 	M066/EXAMPLE/M66_SIMP/COM/program.mak \
 	M066/EXAMPLE/M66_DEMO/COM/program.mak \
-	M066/TEST/M66_PERF/COM/program.mak
+	M066/TEST/M66_PERF/COM/program.mak \
+	M066/TEST/M66_ENDLESS/COM/program.mak \
+	M066/TEST/M66_IRQ/COM/program.mak \
+	M066/TEST/M66_MAIN/COM/program.mak
+
  #M066/EXAMPLE/M66_LL/COM/program.mak - excluded from build. Required or should be deleted ?
 
 ALL_COM_TOOLS = 
