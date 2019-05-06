@@ -114,7 +114,11 @@ ALL_CORE_LIBS = \
 
 ALL_LL_TOOLS = \
 	M075/EXAMPLE/M75_ASYNC/COM/program.mak \
-	M075/EXAMPLE/M75_SIMP/COM/program.mak
+	M075/EXAMPLE/M75_SIMP/COM/program.mak \
+	M075/TEST/M75_ALC/COM/program.mak \
+	M075/TEST/M75_ENDTEST/COM/program.mak \
+	M075/TEST/M75_TEST/COM/program.mak \
+	M075/TEST/M75_TEST_FM/COM/program.mak
 
 ALL_COM_TOOLS = 
 

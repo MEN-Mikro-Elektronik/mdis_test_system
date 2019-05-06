@@ -114,7 +114,8 @@ ALL_CORE_LIBS = \
 ALL_LL_TOOLS = \
 	AD78/EXAMPLE/AD78_SIMP/COM/program.mak \
 	AD78/TOOLS/AD78_CTRL/COM/program.mak \
-	AD78/TOOLS/PU05_CTRL/COM/program.mak
+	AD78/TOOLS/PU05_CTRL/COM/program.mak \
+	AD78/TOOLS/AD78_TEST/COM/program.mak
 # only for win? 
  #AD78/EXAMPLE/AD78_WIN/COM/program.mak 
 

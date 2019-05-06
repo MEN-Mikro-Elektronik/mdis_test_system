@@ -113,7 +113,8 @@ ALL_CORE_LIBS = \
 	CHAMELEON/COM/library.mak
 
 ALL_LL_TOOLS = \
-	M062/EXAMPLE/M62_SIMP/COM/program.mak 
+	M062/EXAMPLE/M62_SIMP/COM/program.mak \
+	M062/TEST/M62_MAIN/COM/program.mak
 
  #M062/EXAMPLE/M62_LL/COM/program.mak - excluded from build. Seems to be never used
 
