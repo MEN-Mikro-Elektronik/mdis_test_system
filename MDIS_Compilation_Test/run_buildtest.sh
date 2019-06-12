@@ -166,7 +166,7 @@ function install_13MD05_90_sources {
                 # install sources of MDIS
                 # echo ${MenPcPassword} | sudo -S --prompt= rm -rf /opt/menlinux
                 cd ${MdisSourcesDirectoryPath}
-                echo ${MenPcPassword} | sudo -S --prompt= ./INSTALL --path=${MdisSourcesDirectoryInstallPath} -f
+                echo ${MenPcPassword} | sudo -S --prompt= ./INSTALL.sh --path=${MdisSourcesDirectoryInstallPath} -f
         else
                 echo "ERR ${ERR_INSTALL} :no sources to install"
                 echo "Make sure that sources are in ${MdisResultsDirectoryPath}" 
