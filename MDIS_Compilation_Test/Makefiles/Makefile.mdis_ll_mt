@@ -118,9 +118,7 @@ ALL_CORE_LIBS = \
 
 ALL_LL_TOOLS = \
         MT/EXAMPLE/MT_SIMP/COM/program.mak \
-        MT/TOOLS/MT_CALLBACK/COM/program.mak \
         MT/TOOLS/MT_BENCH/COM/program.mak \
-        MT/TOOLS/MT_SHMEM/COM/program.mak \
         MT/TOOLS/MT_SPINLTEST/COM/program.mak \
         MT/TOOLS/MT_BUSYLOOP/COM/program.mak \
         MT/TOOLS/MT_OPENCLOSE/COM/program.mak \
