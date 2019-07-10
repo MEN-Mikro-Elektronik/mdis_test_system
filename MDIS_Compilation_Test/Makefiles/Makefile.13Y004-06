@@ -127,10 +127,8 @@ ALL_LL_TOOLS = \
 	SMB2/TOOLS/SMB2_EETEMP/COM/program.mak \
 	SMB2/TOOLS/SMB2_POE/COM/program.mak \
 	SMB2/TOOLS/SMB2_EEPROD2/COM/program.mak \
-	SMB2/TOOLS/SMB2_TEST/COM/program.mak
-
- #SMB2/TOOLS/SMB2_BMC_CTRL/COM/program.mak missing: smb2_bmc_api.h (not available in MDIS repo)
- #It seems that SMB2_BMC_CTRL is not used in MDIS
+	SMB2/TOOLS/SMB2_TEST/COM/program.mak \
+    SMB2/TOOLS/SMB2_BMC_CTRL/COM/program.mak
 
 ALL_COM_TOOLS = 
 
