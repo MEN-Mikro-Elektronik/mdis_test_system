@@ -8,7 +8,7 @@ GitMdisCmd="git clone --recursive -b ${GitMdisBranch} https://github.com/MEN-Mik
 # If Commit sha is not defined, then the most recent commit on branch is used. 
 # Example: 
 # GitMdisCommitSha="15fe1dd75ed20209e5a6165876ac4d6953987f55"
-GitMdisCommitSha="" 
+GitMdisCommitSha=""
 
 # Directory names that are used during tests
 # Directory structure as below:
@@ -26,6 +26,7 @@ MainTestDirectoryName="MDIS_Compilation_Results"
 MdisResultsDirectoryName="Results"
 LinuxKernelsDirectoryName="Linux_Kernels"
 
+MakefilesCompilationListShort="MakefilesListShort.log"
 MakefilesCompilationListFailed="MakefilesListFailed.log"
 
 MdisMainDirectoryPath="${MainTestDirectoryPath}/${MainTestDirectoryName}"
