@@ -106,13 +106,14 @@ ALL_USR_LIBS = \
 	USR_OSS/library.mak \
 	USR_UTL/COM/library.mak \
 	SMB2_API/COM/library.mak \
-	SMB2_SHC/COM/library.mak
+	SMB2_SHC/COM/library.mak \
+	SMB2_BMC_API/COM/library.mak
 
 ALL_CORE_LIBS = \
 	DBG/library.mak \
 	OSS/library.mak \
 	CHAMELEON/COM/library.mak \
-        SMB2/COM/library.mak \
+	SMB2/COM/library.mak \
 	SMB2/COM/library_io.mak
 
 ALL_LL_TOOLS = \
