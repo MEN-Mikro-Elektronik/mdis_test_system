@@ -97,7 +97,9 @@ DESC_INSTALL_DIR = /etc/mdis
 
 DEVNODE_INSTALL_DIR = /dev
 
-ALL_LL_DRIVERS = 
+ALL_LL_DRIVERS = \
+	Z075_SPEED/DRIVER/COM/driver_sw.mak \
+	Z075_SPEED/DRIVER/COM/driver.mak
 
 ALL_BB_DRIVERS = 
 
@@ -108,11 +110,10 @@ ALL_USR_LIBS = \
 ALL_CORE_LIBS = \
 	DBG/library.mak \
 	OSS/library.mak \
-	CHAMELEON/COM/library.mak \
-	SMB2/COM/library.mak \
-	SMB2/COM/library_io.mak
+	CHAMELEON/COM/library.mak
 
-ALL_LL_TOOLS = 
+ALL_LL_TOOLS = \
+	Z075_SPEED/EXAMPLE/Z75_SIMP/COM/program.mak
 
 ALL_COM_TOOLS = 
 

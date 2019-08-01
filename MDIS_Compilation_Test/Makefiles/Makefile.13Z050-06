@@ -97,21 +97,13 @@ DESC_INSTALL_DIR = /etc/mdis
 
 DEVNODE_INSTALL_DIR = /dev
 
-ALL_LL_DRIVERS = 
+ALL_LL_DRIVERS = \
+	Z050/DRIVER/COM/driver_io_sw.mak \
+	Z050/DRIVER/COM/driver_sw.mak \
+	Z050/DRIVER/COM/driver.mak \
+	Z050/DRIVER/COM/driver_io.mak
 
-#BB_DRIVERS: driver_isa_16z001 and driver_isa_16z001_io fails
-ALL_BB_DRIVERS = \
-        SMB2BB/DRIVER/NATIVE/driver.mak \
-	SMBPCI/DRIVER/COM/driver_nat.mak \
-	SMBPCI/DRIVER/COM/driver_fch_asf.mak \
-	SMBPCI/DRIVER/COM/driver_fch.mak \
-	SMBPCI/DRIVER/COM/driver_ich.mak \
-	SMBPCI/DRIVER/COM/driver_sch.mak \
-	SMBPCI/DRIVER/COM/driver_16z001.mak \
-	SMBPCI/DRIVER/COM/driver_16z001_io.mak \
-	SMBPCI/DRIVER/COM/driver_16z001_f208.mak \
-	SMBPCI/DRIVER/COM/driver_isa_16z001.mak \
-	SMBPCI/DRIVER/COM/driver_isa_16z001_io.mak 
+ALL_BB_DRIVERS = 
 
 ALL_USR_LIBS = \
 	USR_OSS/library.mak \
@@ -122,7 +114,9 @@ ALL_CORE_LIBS = \
 	OSS/library.mak \
 	CHAMELEON/COM/library.mak
 
-ALL_LL_TOOLS = 
+ALL_LL_TOOLS = \
+	Z050/EXAMPLE/Z50_SIMP/COM/program.mak \
+	Z050/TOOLS/Z50_DEBOUNCE/COM/program.mak
 
 ALL_COM_TOOLS = 
 

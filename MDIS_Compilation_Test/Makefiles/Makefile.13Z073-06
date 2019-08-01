@@ -3,7 +3,7 @@
 # 2018-09-28
 
 ifndef MEN_LIN_DIR
-MEN_LIN_DIR = /opt/menlinux
+MEN_LIN_DIR = /media/men/Data/Data/Compilation_MDIS_Test/13MD05-90_Install
 
 endif
 
@@ -22,7 +22,7 @@ WIZ_CDK = Selfhosted
 # typically /usr/src/linux. This directory is used when
 # building the kernel modules.
 
-LIN_KERNEL_DIR = /usr/src/linux
+LIN_KERNEL_DIR = /media/men/Data/Data/Compilation_MDIS_Test/Linux_Kernels/linux
 
 # Defines whether to build MDIS to support RTAI. If enabled,
 # MDIS modules support RTAI in addition to the standard Linux
@@ -98,12 +98,10 @@ DESC_INSTALL_DIR = /etc/mdis
 DEVNODE_INSTALL_DIR = /dev
 
 ALL_LL_DRIVERS = \
-        MT/DRIVER/COM/driver_nohw.mak \
-        MT/DRIVER/COM/driver_lm2.mak \
-        MT/DRIVER/COM/driver_lm3.mak \
-        MT/DRIVER/COM/driver.mak \
-        MT/DRIVER/COM/driver_lm1.mak \
-        MT/DRIVER/COM/driver_pci.mak
+	Z073_QDEC/DRIVER/COM/driver_24_sw.mak \
+	Z073_QDEC/DRIVER/COM/driver_sw.mak \
+	Z073_QDEC/DRIVER/COM/driver.mak \
+	Z073_QDEC/DRIVER/COM/driver_24.mak
 
 ALL_BB_DRIVERS = 
 
@@ -117,20 +115,8 @@ ALL_CORE_LIBS = \
 	CHAMELEON/COM/library.mak
 
 ALL_LL_TOOLS = \
-        MT/EXAMPLE/MT_SIMP/COM/program.mak \
-        MT/TOOLS/MT_BENCH/COM/program.mak \
-        MT/TOOLS/MT_SPINLTEST/COM/program.mak \
-        MT/TOOLS/MT_BUSYLOOP/COM/program.mak \
-        MT/TOOLS/MT_OPENCLOSE/COM/program.mak \
-        MT/TOOLS/MT_SLEEP/COM/program.mak \
-        MT/TOOLS/MT_ALARM/COM/program.mak \
-        MT/TOOLS/MT_CALL/COM/program.mak \
-        MT/TOOLS/MT_IRQMAX/COM/program.mak \
-        MT/TOOLS/MT_IRQRATE/COM/program.mak \
-        MT/TOOLS/MT_MDELAY/COM/program.mak \
-        MT/TOOLS/MT_PATHES/COM/program.mak \
-        MT/TOOLS/MT_IOMODE/COM/program.mak \
-        MT/TOOLS/MT_SEMTEST/COM/program.mak
+	Z073_QDEC/EXAMPLE/Z73_SIMP/COM/program_24.mak \
+	Z073_QDEC/EXAMPLE/Z73_SIMP/COM/program.mak
 
 ALL_COM_TOOLS = 
 

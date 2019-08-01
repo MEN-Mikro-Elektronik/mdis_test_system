@@ -166,7 +166,7 @@ function install_13MD05_90_sources {
                 # install sources of MDIS
                 # echo ${MenPcPassword} | sudo -S --prompt= rm -rf /opt/menlinux
                 cd ${MdisSourcesDirectoryPath}
-                echo ${MenPcPassword} | sudo -S --prompt= ./INSTALL.sh --path=${MdisSourcesDirectoryInstallPath} -f
+                echo ${MenPcPassword} | sudo -S --prompt= ./INSTALL.sh --path=${MdisSourcesDirectoryInstallPath} --install-only
         else
                 echo "ERR ${ERR_INSTALL} :no sources to install"
                 echo "Make sure that sources are in ${MdisResultsDirectoryPath}" 
@@ -179,15 +179,32 @@ function install_13MD05_90_sources {
 # usage text
 #
 function usage {
-	echo "usage:"
-	echo "-h|--help         :Print help"
-	echo "--download        :Download MDIS sources"
-	echo "--short           :Compile only short list of modules"
-	echo "--all"
-	echo "--men"
-	echo "--runFailed       :run only failed Makefiles"
-        echo "Before running this script please modify Conf.sh file" 
-        echo "sudo ./run_buildtest.sh"
+    echo "  Usage example:"
+    echo "  1. Please specify all required parameters in Conf.sh (Branch, commit id, paths ... )"
+    echo "  2. Make sure that Linux kernel sources are available in LinuxKernelsDirectoryPath"
+    echo "     specified in Conf.sh file."
+    echo "  3. Specify list of all downloaded kernels in kernel_list_release_02.txt."
+    echo "  4. In order to compile all drivers in MDIS (dbg, nodgb) and download required"
+    echo "     MDIS sources, please run command:"
+    echo "     sudo ./run_buildtest.sh --download --all"
+    echo "  5. FAILED mak files will be copied into <kernel_ver>_MakefilesListFailed.log"
+    echo "     To compile only failed Makefiles with updated sources, please run command:"
+    echo "     sudo ./run_buildtest.sh --run-failed"
+    echo "  6. In order to compile Makefiles specified by user"
+    echo "     please create file MakefilesListShort.log and then please run command:"
+    echo "     (Compile on kernels specified in kernel_list_release_02.txt)"
+    echo "  7. sudo ./run_buildtest.sh --short"
+    echo "  "
+    echo "    !!! Please specify all required parameters in Conf.sh file !!!"
+    echo "    Please remember to add --download flag when MDIS sources are unavailable"
+    echo "  "
+    echo "      Option List:"
+    echo "          -h|--help         :Print help"
+    echo "          --download        :Download MDIS sources"
+    echo "          --short           :Compile only short list of modules"
+    echo "          --all             :Run all available .mak on all kernels"
+    echo "          --run-failed      :Run only failed Makefiles"
+    echo ""
          
 }
 
@@ -261,30 +278,43 @@ function automatic_driver_test {
         mkdir "${STR_RESULT_DIR}"
 
         # Check if flag for compilation of failed Makefiles is set 
-        if [ ! -z "${6}" ] 
-        then
-                # Check if failed Makefiles compilation list exists
-                if [ -f "${1}_${MakefilesCompilationListFailed}" ]
-                then
-                        cp "${1}_${MakefilesCompilationListFailed}" "${1}_${MakefilesCompilationListFailed}.bak"
-                        cp "${1}_${MakefilesCompilationListFailed}" MakefilesList.tmp
-                        sudo rm "${1}_${MakefilesCompilationListFailed}"
+        if [ ! -z "${6}" ]; then
+            if [ "${6}" -eq "1" ]; then
+                # Check if failed Makefiles compilation short list exists
+                if [ -f "${MakefilesCompilationListShort}" ]; then
+                    cp "${MakefilesCompilationListShort}" MakefilesList.tmp
+                    MakefilesNumber=$(cat MakefilesList.tmp | wc -l)
                 else
-                        echo "There is no list of failed Makefiles"
-                        return 1
-                fi 
-        else
-                # Check list of all available Makefiles in Makefiles directory
-                # Save list into temporary file
-                cd Makefiles/
-                ls -l | awk '{ print $9 }' | grep Makefile > ../MakefilesList.tmp
-                MakefilesNumber=$(cat ../MakefilesList.tmp | wc -l)
-                cd ..
-                if [ -f "${1}_${MakefilesCompilationListFailed}" ]
-                then
-                        cp "${1}_${MakefilesCompilationListFailed}" "${MakefilesCompilationListFailed}.bak"
-                        sudo rm "${1}_${MakefilesCompilationListFailed}" 
+                    echo "There is no short list of makefiles: ${MakefilesCompilationListShort}"
+                    return 1
                 fi
+            elif [ "${6}" -eq "2" ]; then
+                # Check if failed Makefiles compilation list exists
+                if [ -f "${1}_${MakefilesCompilationListFailed}" ]; then
+                    cp "${1}_${MakefilesCompilationListFailed}" "${1}_${MakefilesCompilationListFailed}.bak"
+                    cp "${1}_${MakefilesCompilationListFailed}" MakefilesList.tmp
+                    sudo rm "${1}_${MakefilesCompilationListFailed}"
+                    MakefilesNumber=$(cat MakefilesList.tmp | wc -l)
+                else
+                    echo "There is no list of failed Makefiles"
+                    return 1
+                fi
+            else
+                echo "Err"
+                return 1
+            fi
+        else
+            # Check list of all available Makefiles in Makefiles directory
+            # Save list into temporary file
+            cd Makefiles/
+            ls -l | awk '{ print $9 }' | grep Makefile > ../MakefilesList.tmp
+            MakefilesNumber=$(cat ../MakefilesList.tmp | wc -l)
+            cd ..
+            if [ -f "${1}_${MakefilesCompilationListFailed}" ]
+            then
+                cp "${1}_${MakefilesCompilationListFailed}" "${MakefilesCompilationListFailed}.bak"
+                sudo rm "${1}_${MakefilesCompilationListFailed}"
+            fi
         fi
 
         touch "${STR_RESULT_DIR}/TestResults.log"
@@ -367,6 +397,11 @@ while test $# -gt 0 ; do
                 export CompileShortList="1"
                 echo "Compile only Failed modules"
                 ;;
+		--run-failed)
+                shift
+                export CompileShortList="2"
+                echo "Compile Failed modules"
+                ;;
         --gcc)
                 shift
                 if test $# -gt 0; then
@@ -430,7 +465,7 @@ install_13MD05_90_sources
 cd ${CurrentDir}
 
 # Compiling Makefiles ... 
-if [ "${BuildAllKernelGcc}" == "1" ] || [ "${CompileShortList}" == "1" ]; then
+if [ "${BuildAllKernelGcc}" == "1" ] || [ "${CompileShortList}" == "1" ] || [ "${CompileShortList}" == "2" ]; then
         while read kern_version
         do
                 currdir=`pwd`
@@ -444,8 +479,9 @@ if [ "${BuildAllKernelGcc}" == "1" ] || [ "${CompileShortList}" == "1" ]; then
                 echo " ============================================================"
                 echo " ==     building MDIS project using kernel ${kern_version}      "
                 echo " ============================================================"
-
+                echo " ============================dbg============================="
                 automatic_driver_test ${kern_version} ${MEN_LIN_DIR} ${TEST_KERNEL_DIR} ${MdisResultsDirectoryPath} "dbg" ${CompileShortList}
+                echo " ============================nodbg==========================="
                 automatic_driver_test ${kern_version} ${MEN_LIN_DIR} ${TEST_KERNEL_DIR} ${MdisResultsDirectoryPath} "nodbg" ${CompileShortList} 
                 Retval=$?
                 if [ ${Retval} -ne 0 ]; then
