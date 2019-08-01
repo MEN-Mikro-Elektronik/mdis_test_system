@@ -44,7 +44,7 @@ function scan_and_install {
         local CmdResult=${ERR_UNDEFINED}
 
         # scan the hardware
-        echo ${MenPcPassword} | sudo -S --prompt= /opt/menlinux/scan_system.sh /opt/menlinux > scan_system_output.txt 2>&1
+        echo ${MenPcPassword} | sudo -S --prompt= /opt/menlinux/scan_system.sh /opt/menlinux --assume-yes > scan_system_output.txt 2>&1
         CmdResult=$?
 
         if [ ${CmdResult} -ne 0 ]; then
