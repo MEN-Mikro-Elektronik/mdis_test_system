@@ -259,7 +259,7 @@ function obtain_device_list_chameleon_device {
         local DevNr=0   
 
         # Check how many boards are present 
-        BoardsCnt=$(echo ${MenPcPassword} | sudo -S --prompt= /opt/menlinux/BIN/fpga_load_x86-32 -s | grep "${VenID} * ${DevID} * ${SubVenID}" | wc -l)
+        BoardsCnt=$(echo ${MenPcPassword} | sudo -S --prompt= /opt/menlinux/BIN/fpga_load -s | grep "${VenID} * ${DevID} * ${SubVenID}" | wc -l)
 
         echo "There are: ${BoardsCnt} mezzaine ${VenID} ${DevID} ${SubVenID} board(s) in the system" 
 
@@ -274,10 +274,10 @@ function obtain_device_list_chameleon_device {
         echo "Obtain modules name from mezz ${BoardNumber}"
 
         # Obtain BUS number
-        BusNr=$(echo ${MenPcPassword} | sudo -S --prompt= /opt/menlinux/BIN/fpga_load_x86-32 -s | grep "${VenID} * ${DevID} * ${SubVenID}" | awk NR==${BoardNumber}'{print $3}')
+        BusNr=$(echo ${MenPcPassword} | sudo -S --prompt= /opt/menlinux/BIN/fpga_load -s | grep "${VenID} * ${DevID} * ${SubVenID}" | awk NR==${BoardNumber}'{print $3}')
         
         # Obtain DEVICE number
-        DevNr=$(echo ${MenPcPassword} | sudo -S --prompt= /opt/menlinux/BIN/fpga_load_x86-32 -s | grep "${VenID} * ${DevID} * ${SubVenID}" | awk NR==${BoardNumber}'{print $4}')
+        DevNr=$(echo ${MenPcPassword} | sudo -S --prompt= /opt/menlinux/BIN/fpga_load -s | grep "${VenID} * ${DevID} * ${SubVenID}" | awk NR==${BoardNumber}'{print $4}')
         
         echo "Device BUS:${BusNr}, Dev:${DevNr}"  
 
@@ -717,7 +717,7 @@ function obtain_tty_number_list_from_board {
         local BoardMaxSlot=8
 
         for i in $(seq 0 ${BoardMaxSlot}); do
-                echo ${MenPcPassword} | sudo -S --prompt= /opt/menlinux/BIN/fpga_load_x86-32 ${VenID} ${DevID} ${SubVenID} $i -t > /dev/null 2>&1
+                echo ${MenPcPassword} | sudo -S --prompt= /opt/menlinux/BIN/fpga_load ${VenID} ${DevID} ${SubVenID} $i -t > /dev/null 2>&1
                 if [ $? -eq 0 ]; then
                         BoardCnt=$((${BoardCnt}+1))
                 else
@@ -729,7 +729,7 @@ function obtain_tty_number_list_from_board {
 
         # Save chamelon table for board(s)
         for i in $(seq 1 ${BoardCnt}); do
-                echo ${MenPcPassword} | sudo -S --prompt= /opt/menlinux/BIN/fpga_load_x86-32 ${VenID} ${DevID} ${SubVenID} $((${i}-1)) -t >> Board_${VenID}_${DevID}_${SubVenID}_${i}_chameleon_table.txt
+                echo ${MenPcPassword} | sudo -S --prompt= /opt/menlinux/BIN/fpga_load ${VenID} ${DevID} ${SubVenID} $((${i}-1)) -t >> Board_${VenID}_${DevID}_${SubVenID}_${i}_chameleon_table.txt
                 if [ $? -eq 0 ]; then
                         echo "Chameleon for Board_${VenID}_${DevID}_${SubVenID}_${i} board saved (1)" | tee -a ${TestCaseLogName} 2>&1
                 else
