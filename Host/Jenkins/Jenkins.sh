@@ -57,6 +57,26 @@ case ${TestSetup} in
 esac
         echo "GrubOses: ${GrubOses}"
 
+JenkinsBackgroundPID=0
+
+trap cleanOnExit INT SIGTERM
+function cleanOnExit() {
+        echo "** cleanOnExit"
+        # Kill process
+        echo "${LogPrefix} kill process ${JenkinsBackgroundPID}"
+
+        kill  ${JenkinsBackgroundPID}
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix} Could not kill cat backgroung process ${JenkinsBackgroundPID}"
+        else
+                echo "${LogPrefix} process ${JenkinsBackgroundPID} killed"
+        fi
+
+        sleep 1
+        jobs
+        exit 0
+}
+
 # MAIN start here
 for ExpectedOs in "${GrubOses[@]}"; do
         ssh-keygen -R "${MenPcIpAddr}"
@@ -149,22 +169,10 @@ for ExpectedOs in "${GrubOses[@]}"; do
                 echo "${LogPrefix} Error while running St_Test_Configuration script"
         fi
 
-        # Kill process
-        echo "${LogPrefix} kill process ${JenkinsBackgroundPID}"
-
-        kill  ${JenkinsBackgroundPID}
-        if [ $? -ne 0 ]; then
-                echo "${LogPrefix} Could not kill cat backgroung process ${JenkinsBackgroundPID}"
-        else 
-                echo "${LogPrefix} process ${JenkinsBackgroundPID} killed"
-        fi 
-
-        sleep 1
-        jobs
+        cleanOnExit
 
         # Initialize tested device 
         # run_cmd_on_remote_pc "mkdir $TestCaseDirectoryName"
         # Below command must be run from local device, 
         # Test scripts have not been downloaded into remote yet. 
-
 done

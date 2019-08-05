@@ -1,5 +1,11 @@
 #! /bin/bash
 
+trap cleanOnExit INT SIGTERM
+function cleanOnExit() {
+    echo "** cleanOnExit: Jenkins_Background.sh"
+    exit 0
+}
+
 MyDir="$(dirname "$0")"
 source "$MyDir/../../Common/Conf.sh"
 source "$MyDir/Jenkins_Functions.sh"
@@ -31,7 +37,7 @@ while true; do
                 ######################
                 # Change inputs here #
                 ######################
-                if [ ${CommandCode} -ge ${IN_0_ENABLE} ]; then
+                if [ "${CommandCode}" -ge "${IN_0_ENABLE}" ]; then
                         change_input_BL51E ${CommandCode} ${LogPrefix}
                         if [ $? -eq ${ERR_OK} ]; then
                                 #echo "${LogPrefix} Success: ${CommandCode} set on remote switch"
