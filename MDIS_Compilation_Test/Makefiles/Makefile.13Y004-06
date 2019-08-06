@@ -112,9 +112,7 @@ ALL_USR_LIBS = \
 ALL_CORE_LIBS = \
 	DBG/library.mak \
 	OSS/library.mak \
-	CHAMELEON/COM/library.mak \
-	SMB2/COM/library.mak \
-	SMB2/COM/library_io.mak
+	CHAMELEON/COM/library.mak
 
 ALL_LL_TOOLS = \
 	SMB2/EXAMPLE/SMB2_SIMP/COM/program.mak \
