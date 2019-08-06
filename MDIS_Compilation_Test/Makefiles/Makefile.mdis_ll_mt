@@ -130,7 +130,9 @@ ALL_LL_TOOLS = \
         MT/TOOLS/MT_MDELAY/COM/program.mak \
         MT/TOOLS/MT_PATHES/COM/program.mak \
         MT/TOOLS/MT_IOMODE/COM/program.mak \
-        MT/TOOLS/MT_SEMTEST/COM/program.mak
+        MT/TOOLS/MT_SEMTEST/COM/program.mak \
+        MT/TOOLS/MT_CALLBACK/COM/program.mak \
+        MT/TOOLS/MT_SHMEM/COM/program.mak
 
 ALL_COM_TOOLS = 
 
