@@ -1,6 +1,9 @@
 #! /bin/bash
 #
 
+# Credentials for Pc that will be tested - required by sudo cmds
+MenPcPassword=""
+
 # Credentials, address, and command to download Git repository with 13MD05-90 sources
 GitMdisBranch="jpe-dev"
 GitMdisCmd="git clone --recursive -b ${GitMdisBranch} https://github.com/MEN-Mikro-Elektronik/13MD05-90.git"

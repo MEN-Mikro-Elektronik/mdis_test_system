@@ -155,7 +155,7 @@ function download_13MD05_90_repository {
 #
 function install_13MD05_90_sources {
 
-        sudo rm -rf ${MdisSourcesDirectoryInstallPath}
+        echo ${MenPcPassword} | sudo -S --prompt= rm -rf ${MdisSourcesDirectoryInstallPath}
 
         if [ -d "${MdisSourcesDirectoryPath}" ]; then
                 local CurrentKernel
@@ -293,7 +293,7 @@ function automatic_driver_test {
                 if [ -f "${1}_${MakefilesCompilationListFailed}" ]; then
                     cp "${1}_${MakefilesCompilationListFailed}" "${1}_${MakefilesCompilationListFailed}.bak"
                     cp "${1}_${MakefilesCompilationListFailed}" MakefilesList.tmp
-                    sudo rm "${1}_${MakefilesCompilationListFailed}"
+                    echo ${MenPcPassword} | sudo -S --prompt= rm "${1}_${MakefilesCompilationListFailed}"
                     MakefilesNumber=$(cat MakefilesList.tmp | wc -l)
                 else
                     echo "There is no list of failed Makefiles"
@@ -313,7 +313,7 @@ function automatic_driver_test {
             if [ -f "${1}_${MakefilesCompilationListFailed}" ]
             then
                 cp "${1}_${MakefilesCompilationListFailed}" "${MakefilesCompilationListFailed}.bak"
-                sudo rm "${1}_${MakefilesCompilationListFailed}"
+                echo ${MenPcPassword} | sudo -S --prompt= rm "${1}_${MakefilesCompilationListFailed}"
             fi
         fi
 
@@ -368,7 +368,7 @@ function automatic_driver_test {
 	        fi
 
         done < MakefilesList.tmp
-        sudo rm MakefilesList.tmp
+        echo ${MenPcPassword} | sudo -S --prompt= rm MakefilesList.tmp
 
 }
 
@@ -494,8 +494,8 @@ if [ "${BuildAllKernelGcc}" == "1" ] || [ "${CompileShortList}" == "1" ] || [ "$
 fi
 
 make clean
-sudo rm Makefile
-sudo rm -rf /DESC
-sudo rm -rf /LIB
-sudo rm -rf /BIN
-sudo rm -rf /OBJ
+echo ${MenPcPassword} | sudo -S --prompt= rm Makefile
+echo ${MenPcPassword} | sudo -S --prompt= rm -rf /DESC
+echo ${MenPcPassword} | sudo -S --prompt= rm -rf /LIB
+echo ${MenPcPassword} | sudo -S --prompt= rm -rf /BIN
+echo ${MenPcPassword} | sudo -S --prompt= rm -rf /OBJ
