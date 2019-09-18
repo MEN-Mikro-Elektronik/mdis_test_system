@@ -438,7 +438,7 @@ cd ${LinuxKernelsDirectoryPath}
 
 LinuxKernelNameInit=$(head -n 1 ${CurrentDir}/kernel_list_release_02.txt)
 
-ln -s linux-${LinuxKernelNameInit} linux
+ln -sf linux-${LinuxKernelNameInit} linux
 
 cd ${MdisMainDirectoryPath}
 
@@ -472,7 +472,7 @@ if [ "${BuildAllKernelGcc}" == "1" ] || [ "${CompileShortList}" == "1" ] || [ "$
                 cd "${TEST_KERNEL_DIR}"
                 cd ..
                 rm linux
-                ln -s "linux-${kern_version}" linux
+                ln -sf "linux-${kern_version}" linux
                 cd "${currdir}"
 
                 checkout_kernel_version ${kern_version}
