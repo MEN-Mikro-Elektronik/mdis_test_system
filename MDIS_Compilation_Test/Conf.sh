@@ -19,7 +19,7 @@ GitMdisCommitSha=""
 #               |--Commit_xxxx
 #               `--Commit_xxxx
 #
-MainTestDirectoryPath="/media/men/Data"
+MainTestDirectoryPath="/media/tests/MDIS_Test"
 MdisSourcesDirectoryName="13MD05-90" 
 MdisSourcesDirectoryInstall="13MD05-90_Install"
 MainTestDirectoryName="MDIS_Compilation_Results"
@@ -37,7 +37,7 @@ MdisSourcesDirectoryInstallPath="${MainTestDirectoryPath}/${MainTestDirectoryNam
 # PLEASE check below paths before running compilation tests
 # Below paths should be provided by user  
 
-LinuxKernelsDirectoryPath="/media/men/Data/${LinuxKernelsDirectoryName}"
+LinuxKernelsDirectoryPath="/media/tests/${LinuxKernelsDirectoryName}"
 # parent folder in which linux kernel repo is located
 TEST_KERNEL_DIR="${LinuxKernelsDirectoryPath}/linux"
 # folder of MDIS package, by default /opt/menlinux
