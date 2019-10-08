@@ -109,6 +109,8 @@ function create_13MD05-90_directory {
                         else
                                 #Go to most current commit 
                                 git pull origin
+                                git submodule init
+                                git submodule update
                         fi
                         cd .. 
                 fi
@@ -142,6 +144,8 @@ function download_13MD05_90_repository {
         else
                 #Go to most current commit 
                 git pull origin
+                git submodule init
+                git submodule update
         fi
         cd ..
         return ${ERR_OK}
@@ -155,7 +159,7 @@ function download_13MD05_90_repository {
 #
 function install_13MD05_90_sources {
 
-        echo ${MenPcPassword} | sudo -S --prompt= rm -rf ${MdisSourcesDirectoryInstallPath}
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf ${MdisSourcesDirectoryInstallPath}
 
         if [ -d "${MdisSourcesDirectoryPath}" ]; then
                 local CurrentKernel
@@ -164,9 +168,9 @@ function install_13MD05_90_sources {
                 SystemName=$(hostnamectl | grep "Operating System" | awk '{ print $3 }')
 
                 # install sources of MDIS
-                # echo ${MenPcPassword} | sudo -S --prompt= rm -rf /opt/menlinux
+                # echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf /opt/menlinux
                 cd ${MdisSourcesDirectoryPath}
-                echo ${MenPcPassword} | sudo -S --prompt= ./INSTALL.sh --path=${MdisSourcesDirectoryInstallPath} --install-only
+                echo ${MenPcPassword} | sudo -S --prompt=$'\r' ./INSTALL.sh --path=${MdisSourcesDirectoryInstallPath} --install-only
         else
                 echo "ERR ${ERR_INSTALL} :no sources to install"
                 echo "Make sure that sources are in ${MdisResultsDirectoryPath}" 
@@ -273,6 +277,9 @@ function automatic_driver_test {
         local STR_RESULT_DIR="${4}/TestOutput_${1}_GCC_${GCC_VERSION}_${DATE}_${5}"
         local STR_RESULT_FILE="${STR_RESULT_DIR}/TestResults.log"
         local Retval=0
+        local Modules
+        local Module
+        local Version
 
         rm -rf "${STR_RESULT_DIR}"
         mkdir "${STR_RESULT_DIR}"
@@ -293,7 +300,7 @@ function automatic_driver_test {
                 if [ -f "${1}_${MakefilesCompilationListFailed}" ]; then
                     cp "${1}_${MakefilesCompilationListFailed}" "${1}_${MakefilesCompilationListFailed}.bak"
                     cp "${1}_${MakefilesCompilationListFailed}" MakefilesList.tmp
-                    echo ${MenPcPassword} | sudo -S --prompt= rm "${1}_${MakefilesCompilationListFailed}"
+                    echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm "${1}_${MakefilesCompilationListFailed}"
                     MakefilesNumber=$(cat MakefilesList.tmp | wc -l)
                 else
                     echo "There is no list of failed Makefiles"
@@ -313,7 +320,7 @@ function automatic_driver_test {
             if [ -f "${1}_${MakefilesCompilationListFailed}" ]
             then
                 cp "${1}_${MakefilesCompilationListFailed}" "${MakefilesCompilationListFailed}.bak"
-                echo ${MenPcPassword} | sudo -S --prompt= rm "${1}_${MakefilesCompilationListFailed}"
+                echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm "${1}_${MakefilesCompilationListFailed}"
             fi
         fi
 
@@ -330,7 +337,9 @@ function automatic_driver_test {
 	        echo "${Makefile} compiling  ${CurrentMakefileNumber} of ${MakefilesNumber}" 
 	        CurrentMakefileNumber=$((CurrentMakefileNumber+1))
 
-	        make clean >/dev/null
+                if [ -e "Makefile" ]; then
+                        make clean >/dev/null
+                fi
 
 	        cp "Makefiles/${Makefile}" Makefile &>/dev/null
 
@@ -367,8 +376,22 @@ function automatic_driver_test {
 		        fi
 	        fi
 
+                # Checking version of compiled kernel modules
+                mkdir -p "${STR_RESULT_DIR}/ModinfoResults"
+                touch "${STR_RESULT_DIR}/ModinfoResults.log"
+                Modules=$(find "OBJ/" -name '*.ko' -type f)
+                for Module in ${Modules}; do
+                        modinfo "${Module}" > "${STR_RESULT_DIR}/ModinfoResults/${Module##*/}.${Makefile}.log"
+                        Version="$(modinfo "${Module}" | grep -l "^version:")"
+                        if [ "${Version}" != "" ]; then
+                                echo "${Module##*/}.${Makefile} PASSED" >> "${STR_RESULT_DIR}/ModinfoResults.log"
+                        else
+                                echo "${Module##*/}.${Makefile} FAILED" >> "${STR_RESULT_DIR}/ModinfoResults.log"
+                        fi
+                done
+
         done < MakefilesList.tmp
-        echo ${MenPcPassword} | sudo -S --prompt= rm MakefilesList.tmp
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm MakefilesList.tmp
 
 }
 
@@ -493,9 +516,11 @@ if [ "${BuildAllKernelGcc}" == "1" ] || [ "${CompileShortList}" == "1" ] || [ "$
         done < kernel_list_release_02.txt
 fi
 
-make clean
-echo ${MenPcPassword} | sudo -S --prompt= rm Makefile
-echo ${MenPcPassword} | sudo -S --prompt= rm -rf /DESC
-echo ${MenPcPassword} | sudo -S --prompt= rm -rf /LIB
-echo ${MenPcPassword} | sudo -S --prompt= rm -rf /BIN
-echo ${MenPcPassword} | sudo -S --prompt= rm -rf /OBJ
+if [ -e "Makefile" ]; then
+        make clean
+fi
+echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -f Makefile
+echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf /DESC
+echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf /LIB
+echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf /BIN
+echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf /OBJ
