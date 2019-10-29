@@ -44,27 +44,24 @@ IN_3_DISABLE=203        # change input 3 to disable (with BL51 stands for RELAY 
 IN_4_DISABLE=204        # change input 4 to disable
 
 # Address of Target that will be tested
-MenPcIpAddr=""
+MenPcIpAddr="10.1.1.103"
 
 #------------------------------------------------------------------------------
 #-------------------------PLEASE SPECIFY THE TEST SETUP------------------------
 #------------------------------------------------------------------------------
-TestSetup=""
+TestSetup="1"
 
 
 # Credentials for Pc that will be tested - required by ssh connection and sudo cmds
-MenPcLogin=""
-MenPcPassword=""
+MenPcLogin="men"
+MenPcPassword="men"
 
 # Address of device that will be changing status of inputs in tested device 
-MenBoxPcIpAddr=""
+MenBoxPcIpAddr="10.1.1.72"
 InputSwitchTimeout=10 #seconds
 
 # Credentials, address, and command to download Git repository with Test Cases source
-GitTestSourcesMenUser=""
-GitTestSourcesMenPassword=""
-GitTestSourcesAddr=""
-GitTestSourcesCmd=""
+GitTestSourcesCmd="git clone -b master https://github.com/MEN-Mikro-Elektronik/mdis_test_system.git"
 
 # Credentials, address, and command to download Git repository with 13MD05-90 sources
 GitMdisBranch="jpe-dev"
@@ -86,7 +83,7 @@ GitMdisCommitSha=""
 #
 MainTestDirectoryPath="/media/tests"
 MdisSourcesDirectoryName="13MD05-90" 
-TestSourcesDirectoryName="Test_Sources"
+TestSourcesDirectoryName="mdis_test_system"
 MainTestDirectoryName="MDIS_Test"
 MdisResultsDirectoryName="Results"
 
@@ -132,42 +129,23 @@ GrubConfFile=/media/tests/boot.cfg
 
 #F26L
 GrubOsesF26L=("0" \
-          "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda13)" \
-          "Ubuntu, with Linux 4.15.0-20-generic (on /dev/sda4)" \
-          "Ubuntu, with Linux 4.15.0-29-generic (on /dev/sda5)" \
-         )
+        )
 
 #F23P
 GrubOsesF23P=("0" \
-          "Ubuntu, with Linux 3.13.0-32-generic (on /dev/sda10)" \
-          "Ubuntu, with Linux 4.4.0-31-generic (on /dev/sda11)" \
-          "Ubuntu, with Linux 4.4.0-31-generic (on /dev/sda12)" \
-          "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda13)" \
-          "Ubuntu, with Linux 4.15.0-20-generic (on /dev/sda4)" \
-          "Ubuntu, with Linux 4.15.0-29-generic (on /dev/sda5)" \
-          "CentOS Linux 7 (Core) (on /dev/sda6)" \
-          "CentOS Linux 7 (Core) (on /dev/sda9)" \
-         )
+        "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda14)" \
+        "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda15)" \
+        "Ubuntu 18.04.3 LTS (18.04) (on /dev/sda16)" \
+        "Ubuntu, with Linux 5.0.0-23-generic (on /dev/sda17)" \
+        "Debian GNU/Linux, with Linux 4.19.0-5-686-pae (on /dev/sda18)" \
+        "Debian GNU/Linux, with Linux 4.19.0-5-amd64 (on /dev/sda19)" \
+        "CentOS Linux 7 (Core) (on /dev/sda6)" \
+        "CentOS Linux 7 (Core) (on /dev/sda9)" \
+        )
 #G22
 GrubOsesG22=("0" \
-          "Ubuntu, with Linux 3.13.0-32-generic (on /dev/sda10)" \
-          "Ubuntu, with Linux 4.4.0-31-generic (on /dev/sda11)" \
-          "Ubuntu, with Linux 4.4.0-31-generic (on /dev/sda12)" \
-          "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda13)" \
-          "Ubuntu, with Linux 4.15.0-20-generic (on /dev/sda4)" \
-          "Ubuntu, with Linux 4.15.0-29-generic (on /dev/sda5)" \
-          "CentOS Linux 7 (Core) (on /dev/sda6)" \
-          "CentOS Linux 7 (Core) (on /dev/sda9)" \
-         )
+        )
 #G25A
 GrubOsesG25A=("0" \
-          "Ubuntu, with Linux 3.13.0-32-generic (on /dev/sda10)" \
-          "Ubuntu, with Linux 4.4.0-31-generic (on /dev/sda11)" \
-          "Ubuntu, with Linux 4.4.0-31-generic (on /dev/sda12)" \
-          "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda13)" \
-          "Ubuntu, with Linux 4.15.0-20-generic (on /dev/sda4)" \
-          "Ubuntu, with Linux 4.15.0-29-generic (on /dev/sda5)" \
-          "CentOS Linux 7 (Core) (on /dev/sda6)" \
-          "CentOS Linux 7 (Core) (on /dev/sda9)" \
-         )
+        )
 
