@@ -36,6 +36,15 @@ CmdResult=${ERR_UNDEFINED}
 MachineState="Step3"
 MachineRun=true
 
+run_test_case_dir_create ${TestCaseLogName} ${TestCaseName}
+CmdResult=$?
+if [ ${CmdResult} -ne ${ERR_OK} ]; then
+        echo "run_test_case_dir_create: Failed, exit Test Case"
+        exit ${CmdResult}
+else
+        echo "run_test_case_dir_create: Success"
+fi
+
 while ${MachineRun}; do
         case $(echo "${MachineState}") in
           Step1);&
