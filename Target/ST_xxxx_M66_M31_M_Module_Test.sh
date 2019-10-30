@@ -32,61 +32,51 @@ TestCaseStep7=${ERR_UNDEFINED}
 CmdResult=${ERR_UNDEFINED}
 
 # State machine runs all steps described in Test Case
-# Step1 
+# Step1
 # .....
-# Step7
+# Step4
 # Additional Break state is added to handle/finish TestCase properly
-MachineState="Step3" 
-MachineRun=true 
+MachineState="Step1"
+MachineRun=true
+
+run_test_case_dir_create ${TestCaseLogName} ${TestCaseName}
+CmdResult=$?
+if [ ${CmdResult} -ne ${ERR_OK} ]; then
+        echo "run_test_case_dir_create: Failed, exit Test Case"
+        exit ${CmdResult}
+else
+        echo "run_test_case_dir_create: Success"
+fi
 
 while ${MachineRun}; do
         case $(echo "${MachineState}") in
-                
+          Step1);&
+          Step2);&
           Step3)
-                echo "Run steps @3, @4, @5" 
-                echo "Test case ${ScriptName} started" 
-                ;&
-          Step4);&
-          Step5) 
-                run_test_case_common_actions ${TestCaseLogName} ${TestCaseName}
-                CmdResult=$?
-                if [ ${CmdResult} -ne ${ERR_OK} ]; then
-                        echo "run_test_case_common_actions: Failed, force exit Test Case" | tee -a ${TestCaseLogName} 2>&1
-                        MachineState="Break"
-                else
-                        echo "Run steps @3, @4, @5" > ${TestCaseLogName} 2>&1
-                        echo "Test case ${ScriptName} started" > ${TestCaseLogName} 2>&1
-                        TestCaseStep3=0;
-                        TestCaseStep4=0;
-                        TestCaseStep5=0;
-                        MachineState="Step6"
-                fi
-                ;;
-          Step6) 
-                echo "Run step @6" | tee -a ${TestCaseLogName} 2>&1
+                echo "Run step @3" | tee -a ${TestCaseLogName} 2>&1
                 m_module_x_test ${TestCaseLogName} ${TestCaseName} ${IN_0_ENABLE} "m66" "1"
                 CmdResult=$?
                 if [ ${CmdResult} -ne ${ERR_OK} ]; then
-                        TestCaseStep6=${CmdResult}
+                        TestCaseStep3=${CmdResult}
                 else
-                        TestCaseStep6=0
+                        TestCaseStep3=0
                 fi
-                MachineState="Step7"
+                MachineState="Step4"
                 ;;
-          Step7) 
-                echo "Run step @7" | tee -a ${TestCaseLogName} 2>&1
+          Step4)
+                echo "Run step @4" | tee -a ${TestCaseLogName} 2>&1
                 m_module_x_test ${TestCaseLogName} ${TestCaseName} ${IN_0_ENABLE} "m31" "1"
                 CmdResult=$?
                 if [ ${CmdResult} -ne ${ERR_OK} ]; then
-                        TestCaseStep7=${CmdResult}
+                        TestCaseStep4=${CmdResult}
                 else
-                        TestCaseStep7=0
+                        TestCaseStep4=0
                 fi
                 MachineState="Break"
                 ;;
           Break) # Clean after Test Case
                 echo "Break State"  | tee -a ${TestCaseLogName} 2>&1
-                run_test_case_common_end_actions ${TestCaseLogName} ${TestCaseName}                
+                run_test_case_common_end_actions ${TestCaseLogName} ${TestCaseName}
                 MachineRun=false
                 ;;
         *)
@@ -97,18 +87,14 @@ while ${MachineRun}; do
 done
 
 ResultsSummaryTmp="${ResultsFileLogName}.tmp"
-echo "${TestCaseName}    " | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1 
+echo "${TestCaseName}    " | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1
 echo "@1 - ${TestCaseStep1}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1
 echo "@2 - ${TestCaseStep2}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1
 echo "@3 - ${TestCaseStep3}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1
 echo "@4 - ${TestCaseStep4}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1
-echo "@5 - ${TestCaseStep5}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1
-echo "@6 - ${TestCaseStep6}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1
-echo "@7 - ${TestCaseStep7}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1
 
 # move to previous directory
 cd "${CurrDir}"
 
 exit ${CmdResult}
-
 
