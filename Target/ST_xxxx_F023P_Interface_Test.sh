@@ -117,52 +117,38 @@ cd "${1}" || exit "${ERR_DIR_NOT_EXISTS}"
 TestCaseStep1=0 # Cable test
 TestCaseStep2=0 # Cable test
 TestCaseStep3=${ERR_UNDEFINED}
-TestCaseStep4=${ERR_UNDEFINED}
-TestCaseStep5=${ERR_UNDEFINED}
-TestCaseStep6=${ERR_UNDEFINED}
 
 CmdResult=${ERR_UNDEFINED}
 
 # State machine runs all steps described in Test Case
 # Step1
 # .....
-# Step5
+# Step3
 # Additional Break state is added to handle/finish TestCase properly
 MachineState="Step1"
 MachineRun=true
+
+run_test_case_dir_create ${TestCaseLogName} ${TestCaseName}
+CmdResult=$?
+if [ ${CmdResult} -ne ${ERR_OK} ]; then
+        echo "run_test_case_dir_create: Failed, exit Test Case"
+        exit ${CmdResult}
+else
+        echo "run_test_case_dir_create: Success"
+fi
 
 while ${MachineRun}; do
         case ${MachineState} in
         Step1);&
         Step2);&
-        Step3);&
-        Step4);&
-        Step5)
-                echo "Run steps @2, @3, @4, @5"
-                echo "Test case ${ScriptName} started"
-                run_test_case_common_actions "${TestCaseLogName}" "${TestCaseName}"
-                CmdResult=${?}
-                if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-                        echo "run_test_case_common_actions: Failed, force exit Test Case" | tee --append "${TestCaseLogName}"
-                        MachineState="Break"
-                else
-                        echo "Run steps @2, @3, @4, @5" > "${TestCaseLogName}"
-                        echo "Test case ${ScriptName} started" > "${TestCaseLogName}"
-                        TestCaseStep2=0
-                        TestCaseStep3=0
-                        TestCaseStep4=0
-                        TestCaseStep5=0
-                        MachineState="Step6"
-                fi
-                ;;
-        Step6)
-                echo "Run step @6" | tee --append "${TestCaseLogName}"
+        Step3)
+                echo "Run step @3" | tee --append "${TestCaseLogName}"
                 eth_test
                 CmdResult=${?}
                 if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-                        TestCaseStep6=${CmdResult}
+                        TestCaseStep3=${CmdResult}
                 else
-                        TestCaseStep6=0
+                        TestCaseStep3=0
                 fi
                 MachineState="Break"
                 ;;
@@ -183,9 +169,6 @@ echo "${TestCaseName}" | tee --append "${TestCaseLogName}" "${ResultsSummaryTmp}
 echo "@1 - ${TestCaseStep1}" | tee --append "${TestCaseLogName}" "${ResultsSummaryTmp}"
 echo "@2 - ${TestCaseStep2}" | tee --append "${TestCaseLogName}" "${ResultsSummaryTmp}"
 echo "@3 - ${TestCaseStep3}" | tee --append "${TestCaseLogName}" "${ResultsSummaryTmp}"
-echo "@4 - ${TestCaseStep4}" | tee --append "${TestCaseLogName}" "${ResultsSummaryTmp}"
-echo "@5 - ${TestCaseStep5}" | tee --append "${TestCaseLogName}" "${ResultsSummaryTmp}"
-echo "@6 - ${TestCaseStep6}" | tee --append "${TestCaseLogName}" "${ResultsSummaryTmp}"
 
 # move to previous directory
 cd "${CurrDir}" || exit "${ERR_DIR_NOT_EXISTS}"
