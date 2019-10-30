@@ -61,7 +61,7 @@ MenBoxPcIpAddr="10.1.1.72"
 InputSwitchTimeout=10 #seconds
 
 # Credentials, address, and command to download Git repository with Test Cases source
-GitTestSourcesCmd="git clone -b master https://github.com/MEN-Mikro-Elektronik/mdis_test_system.git"
+GitTestSourcesCmd="git clone -b jpe-dev-02_01 https://github.com/MEN-Mikro-Elektronik/mdis_test_system.git"
 
 # Credentials, address, and command to download Git repository with 13MD05-90 sources
 GitMdisBranch="jpe-dev"
