@@ -25,9 +25,6 @@ TestCaseStep1=0 # Cable test
 TestCaseStep2=0 # Cable test
 TestCaseStep3=${ERR_UNDEFINED}
 TestCaseStep4=${ERR_UNDEFINED}
-TestCaseStep5=${ERR_UNDEFINED}
-TestCaseStep6=${ERR_UNDEFINED}
-TestCaseStep7=${ERR_UNDEFINED}
 
 CmdResult=${ERR_UNDEFINED}
 
