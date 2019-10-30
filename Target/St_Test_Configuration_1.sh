@@ -56,7 +56,7 @@ cd "${OsNameKernel}"
 TestSummaryDirectory="${MdisResultsDirectoryPath}/${CommitSha}/${TestConfiguration}/${Today}/${OsNameKernel}"
 cd "${MainTestDirectoryPath}"
 
-mdis_prepare ${MainTestDirectoryPath}
+mdis_prepare ${TestSummaryDirectory}
 CmdResult=$?
 if [ ${CmdResult} -ne ${ERR_OK} ]; then
         echo "run_test_case_common_actions: Failed - exit"
