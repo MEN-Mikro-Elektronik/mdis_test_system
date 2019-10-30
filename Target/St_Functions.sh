@@ -111,8 +111,9 @@ function get_os_name_with_kernel_ver {
         cd "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}"
         local SystemName=`hostnamectl | grep "Operating System" | awk '{ print $3 $4 }'`
         local Kernel=`uname -r`
+        local Arch=`uname -m`
         cd "${CurrDir}"
-        echo "${SystemName}_${Kernel}"
+        echo "${SystemName}_${Kernel}_${Arch}"
 }
 
 ############################################################################
