@@ -26,10 +26,6 @@ TestCaseStep2=0 # Cable test
 TestCaseStep3=0 # Cable test
 TestCaseStep4=${ERR_UNDEFINED}
 TestCaseStep5=${ERR_UNDEFINED}
-TestCaseStep6=${ERR_UNDEFINED}
-TestCaseStep7=${ERR_UNDEFINED}
-TestCaseStep8=${ERR_UNDEFINED}
-TestCaseStep9=${ERR_UNDEFINED}
 
 CmdResult=${ERR_UNDEFINED}
 
@@ -43,39 +39,27 @@ InputToChange=${IN_0_ENABLE}
 # State machine runs all steps described in Test Case
 # Step1 
 # .....
-# Step9
+# Step5
 # Additional Break state is added to handle/finish TestCase properly
 MachineState="Step1" 
 MachineRun=true 
 
-echo "Test case ${ScriptName} started"    
+run_test_case_dir_create ${TestCaseLogName} ${TestCaseName}
+CmdResult=$?
+if [ ${CmdResult} -ne ${ERR_OK} ]; then
+        echo "run_test_case_dir_create: Failed, exit Test Case"
+        exit ${CmdResult}
+else
+        echo "run_test_case_dir_create: Success"
+fi
 
 while ${MachineRun}; do
         case ${MachineState} in
         Step1);&
         Step2);&
-        Step3);&
-        Step4);&
-        Step5);&
-        Step6)  
-                # Run step @4, @5, @6
-                run_test_case_common_actions ${TestCaseLogName} ${TestCaseName}
-                CmdResult=$?
-                if [ ${CmdResult} -ne ${ERR_OK} ]; then
-                        echo "run_test_case_common_actions: Failed, force exit Test Case" | tee -a ${TestCaseLogName} 2>&1
-                        MachineState="Break"
-                else
-                        echo "Run steps @4, @5, @6" > ${TestCaseLogName} 2>&1
-                        echo "Test case ${ScriptName} started" > ${TestCaseLogName} 2>&1
-                        TestCaseStep4=0;
-                        TestCaseStep5=0;
-                        TestCaseStep6=0;
-                        MachineState="Step7"
-                fi
-                ;;
-        Step7)
-                # Check if mcv_pci is already in blacklist, UART loopback test
-                echo "Run step @7" | tee -a ${TestCaseLogName} 2>&1
+        Step3)
+                # Check if mcb_pci is already in blacklist, UART loopback test
+                echo "Run step @3" | tee -a ${TestCaseLogName} 2>&1
                 echo ${MenPcPassword} | sudo -S --prompt= grep "blacklist mcb_pci" /etc/modprobe.d/blacklist.conf > /dev/null
                 if [ $? -ne 0 ]; then
                         # Add mcb_pci into blacklist
@@ -93,12 +77,12 @@ while ${MachineRun}; do
                          echo "uart_test_board success "\
                            | tee -a ${TestCaseLogName} 2>&1
                 fi
-                TestCaseStep7=${CmdResult}
-                MachineState="Step8"
+                TestCaseStep3=${CmdResult}
+                MachineState="Step4"
                 ;;
-        Step8)
+        Step4)
                 # Can test
-                echo "Run step @8" | tee -a ${TestCaseLogName} 2>&1
+                echo "Run step @4" | tee -a ${TestCaseLogName} 2>&1
                 # Run step @8 Test CAN interfaces, there should be 2 cans available
                 MezzChamDevName="MezzChamDevName.txt"
                 obtain_device_list_chameleon_device ${VenID} ${DevID} ${SubVenID} ${MezzChamDevName}
@@ -112,12 +96,12 @@ while ${MachineRun}; do
                          echo "can_test_ll_z15 success "\
                            | tee -a ${TestCaseLogName} 2>&1
                 fi
-                TestCaseStep8=${CmdResult}
-                MachineState="Step9"
+                TestCaseStep4=${CmdResult}
+                MachineState="Step5"
                 ;;
-        Step9)
+        Step5)
                 # Test GPIO / LEDS 
-                echo "Run step @9" | tee -a ${TestCaseLogName} 2>&1
+                echo "Run step @5" | tee -a ${TestCaseLogName} 2>&1
                 echo ${MenPcPassword} | sudo -S --prompt= modprobe men_ll_z17
                 ResultModprobeZ17=$?
                 if [ ${ResultModprobeZ17} -ne ${ERR_OK} ]; then
@@ -150,7 +134,7 @@ while ${MachineRun}; do
                                    | tee -a ${TestCaseLogName} 2>&1
                         fi
                 fi
-                TestCaseStep9=${CmdResult}
+                TestCaseStep5=${CmdResult}
                 MachineState="Break"
                 ;;
         Break) 
@@ -177,10 +161,6 @@ echo "@2 - ${TestCaseStep2}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>
 echo "@3 - ${TestCaseStep3}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1 
 echo "@4 - ${TestCaseStep4}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1 
 echo "@5 - ${TestCaseStep5}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1 
-echo "@6 - ${TestCaseStep6}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1 
-echo "@7 - ${TestCaseStep7}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1 
-echo "@8 - ${TestCaseStep8}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1 
-echo "@9 - ${TestCaseStep9}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1 
 
 # Clean after Test Case
 run_test_case_common_end_actions ${TestCaseLogName} ${TestCaseName}
