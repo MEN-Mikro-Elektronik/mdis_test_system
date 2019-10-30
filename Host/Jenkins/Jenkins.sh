@@ -33,10 +33,10 @@ function Test_Setup_6_Configure {
 echo "Test Setup: ${TestSetup}"
 case ${TestSetup} in
         1)
-          GrubOses=( "${GrubOsesF26L[@]}" )
+          GrubOses=( "${GrubOsesF23P[@]}" )
           ;;
         2)
-          GrubOses=( "${GrubOsesF23P[@]}" )
+          GrubOses=( "${GrubOsesF26L[@]}" )
           ;;
         3)
           GrubOses=( "${GrubOsesF26L[@]}" )
@@ -59,24 +59,45 @@ esac
 
 JenkinsBackgroundPID=0
 
-trap cleanOnExit INT SIGTERM
+trap cleanOnExit SIGINT SIGTERM
 function cleanOnExit() {
         echo "** cleanOnExit"
-        # Kill process
-        echo "${LogPrefix} kill process ${JenkinsBackgroundPID}"
+        echo "JenkinsBackgroundPID: ${JenkinsBackgroundPID}"
+        if [ ${JenkinsBackgroundPID} -ne 0 ]; then
+            # Kill process
+            echo "${LogPrefix} kill process ${JenkinsBackgroundPID}"
 
-        kill  ${JenkinsBackgroundPID}
-        if [ $? -ne 0 ]; then
-                echo "${LogPrefix} Could not kill cat backgroung process ${JenkinsBackgroundPID}"
-        else
-                echo "${LogPrefix} process ${JenkinsBackgroundPID} killed"
+            kill  ${JenkinsBackgroundPID}
+            if [ $? -ne 0 ]; then
+                    echo "${LogPrefix} Could not kill cat backgroung process ${JenkinsBackgroundPID}"
+            else
+                    echo "${LogPrefix} process ${JenkinsBackgroundPID} killed"
+            fi
+            sleep 1
+            jobs
+            grub_set_os "0"
         fi
-
-        sleep 1
-        jobs
-        exit 0
+        exit
 }
 
+function cleanJenkinsBackgroundJob {
+        echo "** cleanOnExit"
+        if [ ${JenkinsBackgroundPID} -ne 0 ]; then
+            # Kill process
+            echo "${LogPrefix} kill process ${JenkinsBackgroundPID}"
+
+            kill  ${JenkinsBackgroundPID}
+            if [ $? -ne 0 ]; then
+                    echo "${LogPrefix} Could not kill cat backgroung process ${JenkinsBackgroundPID}"
+            else
+                    echo "${LogPrefix} process ${JenkinsBackgroundPID} killed"
+            fi
+            sleep 1
+            jobs
+        fi
+}
+
+grub_set_os "0"
 # MAIN start here
 for ExpectedOs in "${GrubOses[@]}"; do
         ssh-keygen -R "${MenPcIpAddr}"
@@ -125,14 +146,14 @@ for ExpectedOs in "${GrubOses[@]}"; do
         St_Test_Setup_Configuration=""
         case ${TestSetup} in
                 1)
-                  Test_Setup_1_Configure
+                  #Test_Setup_1_Configure
                   St_Test_Setup_Configuration="St_Test_Configuration_1.sh"
                   ;;
                 2)
                   St_Test_Setup_Configuration="St_Test_Configuration_2.sh"
                   ;;
                 3)
-                  Test_Setup_3_Configure
+                  #Test_Setup_3_Configure
                   St_Test_Setup_Configuration="St_Test_Configuration_3.sh"
                   ;;
                 4)
@@ -142,7 +163,7 @@ for ExpectedOs in "${GrubOses[@]}"; do
                   St_Test_Setup_Configuration="St_Test_Configuration_5.sh"
                   ;;
                 6)
-                  Test_Setup_6_Configure
+                  #Test_Setup_6_Configure
                   St_Test_Setup_Configuration="St_Test_Configuration_6.sh"
                   ;;
                 *)
@@ -169,10 +190,11 @@ for ExpectedOs in "${GrubOses[@]}"; do
                 echo "${LogPrefix} Error while running St_Test_Configuration script"
         fi
 
-        cleanOnExit
-
+        cleanJenkinsBackgroundJob
         # Initialize tested device 
         # run_cmd_on_remote_pc "mkdir $TestCaseDirectoryName"
         # Below command must be run from local device, 
         # Test scripts have not been downloaded into remote yet. 
 done
+cleanOnExit
+

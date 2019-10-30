@@ -3,7 +3,6 @@
 trap cleanOnExit SIGINT SIGTERM
 function cleanOnExit() {
     echo "** cleanOnExit: Jenkins_Background.sh"
-    grub_set_os "0"
     exit 0
 }
 
