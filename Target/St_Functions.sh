@@ -152,7 +152,8 @@ function run_test_case_dir_create {
 #       - make install
 #
 function mdis_prepare {
-
+        local DirectoryName=$1
+        cd "${DirectoryName}"
         # Scan, make and make install 
         scan_and_install
         CmdResult=$?
