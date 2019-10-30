@@ -119,15 +119,12 @@ function get_os_name_with_kernel_ver {
 # Run_test_case_common_actions - perform: 
 #       - create directory and move into it
 #       - create test case log file
-#       - scan system
-#       - make 
-#       - make install  
 #
 # parameters:
 # $1     Test Case Log name 
 # $2     Test Case name
 
-function run_test_case_common_actions {
+function run_test_case_dir_create {
 
         local TestCaseLogName=${1}
         local TestCaseName=${2}
@@ -146,6 +143,15 @@ function run_test_case_common_actions {
 
         # Create log file
         touch ${TestCaseLogName}
+}
+
+############################################################################
+# mdis_prepare - perform:
+#       - scan system
+#       - make
+#       - make install
+#
+function mdis_prepare {
 
         # Scan, make and make install 
         scan_and_install
