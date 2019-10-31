@@ -1035,9 +1035,10 @@ function m_module_x_test {
                 ModuleInstanceName="${MModuleName}_${MModuleBoardNr}"
                 ;;
           m82)
+                #Software compatible with m31
                 ModprobeDriver="men_ll_m31"
                 ModuleSimp="m31_simp"
-                ModuleResultCmpFunc="compare_m82_simp_values"
+                ModuleResultCmpFunc="compare_m31_simp_values"
                 ModuleInstanceName="${MModuleName}_${MModuleBoardNr}"
                 ;;
           *)
@@ -1057,6 +1058,7 @@ function m_module_x_test {
                 case $(echo "${MachineState}") in
                   ModprobeDriver)
                         # Modprobe driver
+                        echo "${LogPrefix} ModprobeDriver" | tee -a ${TestCaseLogName} 2>&1
                         echo ${MenPcPassword} | sudo -S --prompt= modprobe ${ModprobeDriver}
                         CmdResult=$?
                         if [ ${CmdResult} -ne ${ERR_OK} ]; then
@@ -1068,6 +1070,7 @@ function m_module_x_test {
                         ;;
                   CheckInput)
                         # Check if input is disabled - if not disable input 
+                        echo "${LogPrefix} CheckInput" | tee -a ${TestCaseLogName} 2>&1
                         change_input ${TestCaseLogName} ${TestCaseName} $((${CommandCode}+100)) ${InputSwitchTimeout} ${LogPrefix}
                         CmdResult=$?
                         if [ ${CmdResult} -ne ${ERR_OK} ]; then
@@ -1081,6 +1084,7 @@ function m_module_x_test {
                         # Run example first time (banana plugs disconnected)
                         # If device cannot be opened there is a log in result  :
                         # *** ERROR (LINUX) #2:  No such file or directory ***
+                        echo "${LogPrefix} RunExampleInputDisable" | tee -a ${TestCaseLogName} 2>&1
                         echo ${MenPcPassword} | sudo -S --prompt= ${ModuleSimp} ${ModuleInstanceName} > ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_disconnected.txt 2>&1
                         ErrorLogCnt=$(grep "ERROR" ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_disconnected.txt | grep "No such file or directory" | wc -l) 
                         CmdResult=$ErrorLogCnt
@@ -1096,6 +1100,7 @@ function m_module_x_test {
                         fi
                         ;;
                   EnableInput)
+                        echo "${LogPrefix} EnableInput" | tee -a ${TestCaseLogName} 2>&1
                         change_input ${TestCaseLogName} ${TestCaseName} ${CommandCode} ${InputSwitchTimeout} ${LogPrefix}
                         CmdResult=$?
                         if [ ${CmdResult} -ne ${ERR_OK} ]; then
@@ -1109,6 +1114,7 @@ function m_module_x_test {
                         # Run example second time (banana plugs connected)
                         # If device cannot be opened there is a log in result  :
                         # *** ERROR (LINUX) #2:  No such file or directory ***
+                        echo "${LogPrefix} RunExampleInputEnable" | tee -a ${TestCaseLogName} 2>&1
                         echo ${MenPcPassword} | sudo -S --prompt= ${ModuleSimp} ${ModuleInstanceName} > ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_connected.txt 2>&1
                         ErrorLogCnt=$(grep "ERROR" ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_connected.txt | grep "No such file or directory" | wc -l) 
                         CmdResult=${ErrorLogCnt}
@@ -1120,6 +1126,7 @@ function m_module_x_test {
                         fi
                         ;;
                   CompareResults)
+                        echo "${LogPrefix} CompareResults" | tee -a ${TestCaseLogName} 2>&1
                         ${ModuleResultCmpFunc} ${TestCaseLogName} ${TestCaseName} ${MModuleBoardNr}
                         CmdResult=$?
                         if [ ${CmdResult} -ne ${ERR_OK} ]; then
@@ -1133,6 +1140,7 @@ function m_module_x_test {
                         fi
                         ;;
                   DisableInput)
+                        echo "${LogPrefix} DisableInput" | tee -a ${TestCaseLogName} 2>&1
                         change_input ${TestCaseLogName} ${TestCaseName} $((${CommandCode}+100)) ${InputSwitchTimeout} ${LogPrefix}
                         CmdResult=$?
                         if [ ${CmdResult} -ne ${ERR_OK} ]; then
@@ -1419,11 +1427,11 @@ function write_command_code {
 # $3    Log Prefix - optional 
 #       
 function read_command_code_status {
-
         local TestCaseLogName=${1}
         local TestCaseName=${2}
         local LogPrefix=${3}
         
+        echo "${LogPrefix} read_command_code_status"  | tee -a ${TestCaseLogName} 2>&1
         local LockTestCase=$(cat ${LockFileName} | awk '{print $1}')
         if [ "${LockTestCase}" != "${TestCaseName}" ]; then
                 echo "${LogPrefix} rc: lock_invalid, Test Case mismatch" | tee -a ${TestCaseLogName} 2>&1
@@ -1466,7 +1474,7 @@ function change_input {
         local ReleaseCnt=1
         local Result=${ERR_SWITCH}
         
-        echo "${LogPrefix} Change_input, command code: ${CommandCode}"
+        echo "${LogPrefix} Change_input, command code: ${CommandCode}" | tee -a ${TestCaseLogName} 2>&1
 
         write_command_code ${TestCaseLogName} ${TestCaseName} ${CommandCode} ${LogPrefix}
         Result=$?
