@@ -1038,7 +1038,7 @@ function m_module_x_test {
                 #Software compatible with m31
                 ModprobeDriver="men_ll_m31"
                 ModuleSimp="m31_simp"
-                ModuleResultCmpFunc="compare_m31_simp_values"
+                ModuleResultCmpFunc="compare_m82_simp_values"
                 ModuleInstanceName="${MModuleName}_${MModuleBoardNr}"
                 ;;
           *)
@@ -1130,7 +1130,7 @@ function m_module_x_test {
                         ${ModuleResultCmpFunc} ${TestCaseLogName} ${TestCaseName} ${MModuleBoardNr}
                         CmdResult=$?
                         if [ ${CmdResult} -ne ${ERR_OK} ]; then
-                                echo "${LogPrefix} Error: ${CmdResult} in function change_input" | tee -a ${TestCaseLogName} 2>&1
+                                echo "${LogPrefix} Error: ${CmdResult} in ${ModuleResultCmpFunc} ${TestCaseLogName} ${TestCaseName} ${MModuleBoardNr}" | tee -a ${TestCaseLogName} 2>&1
                                 MachineState="DisableInput"
                                 TestError=${CmdResult}
                         else
@@ -1280,7 +1280,7 @@ function compare_m35_simp_values {
         echo "${LogPrefix} ValueChannelStateConnected: ${ValueChannelStateConnected}"
         echo "${LogPrefix} ValueChannelStateDisconnected: ${ValueChannelStateDisconnected}"
 
-        if [ "${ValueChannelStateDisconnected}" -ge "1500" ]; then
+        if [ "${ValueChannelStateDisconnected}" -ge "15000" ]; then
                 echo "${LogPrefix} ValueChannelStateDisconnected is not ~ 0 "  | tee -a ${TestCaseLogName} 2>&1
                 return ${ERR_VALUE}
         fi
@@ -1380,7 +1380,25 @@ function compare_m82_simp_values {
         local TestCaseName=${2}
         local M82Nr=${3}
         local LogPrefix="[compare_m82]"
-        return ${ERR_VALUE}
+
+        echo "${LogPrefix} compare_m82_simp_values"
+        local ValueChannelConnected_0=$(grep "channel  1 : " m82_${M82Nr}_simp_output_connected.txt | awk NR==1'{print $4}')
+        local ValueChannelDisconnected_0=$(grep "channel  1 : " m82_${M82Nr}_simp_output_disconnected.txt | awk NR==1'{print $4}')
+        if [ "${ValueChannelConnected_0}" == "" ] || [ "${ValueChannelDisconnected_0}" == "" ] || \
+           [ "${ValueChannelConnected_0}" -eq "${ValueChannelDisconnected_0}" ]; then
+                echo "${LogPrefix} ValueChannelConnected_1 equal with ValueChannelDisconnected_1" | tee -a ${TestCaseLogName} 2>&1
+                return ${ERR_VALUE}
+        fi
+
+        local ValueChannelStateConnected=$(grep "state: " m82_${M82Nr}_simp_output_connected.txt | awk NR==1'{print $2 $3}')
+        local ValueChannelStateDisconnected=$(grep "state: " m82_${M82Nr}_simp_output_disconnected.txt | awk NR==1'{print $2 $3}')
+        if [ "${ValueChannelStateConnected}" == "" ] || [ "${ValueChannelStateDisconnected}" == "" ] || \
+           [ "${ValueChannelStateConnected}" -eq "${ValueChannelStateDisconnected}" ]; then
+                echo "${LogPrefix} ValueChannelStateConnected equal with ValueChannelStateDisconnected"  | tee -a ${TestCaseLogName} 2>&1
+                return ${ERR_VALUE}
+        fi
+
+        return ${ERR_OK}
 }
 
 ############################################################################
