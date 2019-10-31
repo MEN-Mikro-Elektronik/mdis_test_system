@@ -1280,7 +1280,7 @@ function compare_m35_simp_values {
         echo "${LogPrefix} ValueChannelStateConnected: ${ValueChannelStateConnected}"
         echo "${LogPrefix} ValueChannelStateDisconnected: ${ValueChannelStateDisconnected}"
 
-        if [ "${ValueChannelStateDisconnected}" -ge "15000" ]; then
+        if [ "${ValueChannelStateDisconnected}" -ge "1500" ]; then
                 echo "${LogPrefix} ValueChannelStateDisconnected is not ~ 0 "  | tee -a ${TestCaseLogName} 2>&1
                 return ${ERR_VALUE}
         fi
