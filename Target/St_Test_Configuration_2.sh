@@ -56,6 +56,15 @@ cd "${OsNameKernel}"
 TestSummaryDirectory="${MdisResultsDirectoryPath}/${CommitSha}/${TestConfiguration}/${Today}/${OsNameKernel}"
 cd "${MainTestDirectoryPath}"
 
+mdis_prepare ${TestSummaryDirectory}
+CmdResult=$?
+if [ ${CmdResult} -ne ${ERR_OK} ]; then
+        echo "run_test_case_common_actions: Failed - exit"
+        exit ${CmdResult}
+else
+        echo "run_test_case_common_actions: Success"
+fi
+
 #echo ${1} | sudo -S --prompt= "${MyDir}/ST_xxxx_F223_Test.sh" ${TestSummaryDirectory}
 echo ${1} | sudo -S --prompt= "${MyDir}/ST_xxxx_G204_M77_M_Module_Test.sh" ${TestSummaryDirectory}
 echo ${1} | sudo -S --prompt= "${MyDir}/ST_xxxx_G204_M82_M_Module_Test.sh" ${TestSummaryDirectory}
