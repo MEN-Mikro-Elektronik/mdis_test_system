@@ -1004,10 +1004,10 @@ function m_module_x_test {
         local LogPrefix="[M_Module_${MModuleName}]"
 
         case $(echo "${MModuleName}") in
-          m66)
-                ModprobeDriver="men_ll_m66"
-                ModuleSimp="m66_simp"
-                ModuleResultCmpFunc="compare_m66_simp_values"
+          m11)
+                ModprobeDriver="men_ll_m11"
+                ModuleSimp="m11_port_veri"
+                ModuleResultCmpFunc="compare_m11_port_veri_values"
                 ModuleInstanceName="${MModuleName}_${MModuleBoardNr}"
                 ;;
           m31)
@@ -1032,6 +1032,18 @@ function m_module_x_test {
                 ModprobeDriver="men_ll_m36"
                 ModuleSimp="m36_simp"
                 ModuleResultCmpFunc="compare_m36_simp_values"
+                ModuleInstanceName="${MModuleName}_${MModuleBoardNr}"
+                ;;
+          m43)
+                ModprobeDriver="men_ll_m43"
+                ModuleSimp="m43_simp"
+                ModuleResultCmpFunc="compare_m43_simp_values"
+                ModuleInstanceName="${MModuleName}_${MModuleBoardNr}"
+                ;;
+          m66)
+                ModprobeDriver="men_ll_m66"
+                ModuleSimp="m66_simp"
+                ModuleResultCmpFunc="compare_m66_simp_values"
                 ModuleInstanceName="${MModuleName}_${MModuleBoardNr}"
                 ;;
           m82)
@@ -1136,7 +1148,6 @@ function m_module_x_test {
                         else
                                 MachineState="DisableInput"
                                 TestError=${ERR_OK}
-                                
                         fi
                         ;;
                   DisableInput)
@@ -1206,6 +1217,53 @@ function compare_m66_simp_values {
         fi
         
         return ${ERR_OK}
+}
+
+############################################################################
+# compare_m11_port_veri_values
+#
+# parameters:
+# $1    Test case log file name
+# $2    Test case name
+# $3    M11 board number
+#
+function compare_m11_port_veri_values {
+    local TestCaseLogName=${1}
+    local TestCaseName=${2}
+    local M11Nr=${3}
+    local LogPrefix="[compare_m11]"
+
+    local ErrorCnt=$(grep -i "error" m11_${M11Nr}_simp_output_connected.txt | wc -l)
+    if [ ${ErrorCnt} -ne 0 ]; then
+        return ${ERR_VALUE}
+    else
+        return ${ERR_OK}
+    fi
+}
+
+############################################################################
+# compare_m43_simp_values
+#
+# parameters:
+# $1    Test case log file name
+# $2    Test case name
+# $3    M43 board number
+#
+function compare_m43_simp_values {
+    local TestCaseLogName=${1}
+    local TestCaseName=${2}
+    local M43Nr=${3}
+    local LogPrefix="[compare_m43]"
+
+    local DeviceOpened=$(grep -i "Device m43_${M43Nr} opened" m43_${M43Nr}_simp_output_connected.txt | wc -l)
+    local DeviceClosed=$(grep -i "Device m43_${M43Nr} closed" m43_${M43Nr}_simp_output_connected.txt | wc -l)
+    local EndLine=$(tail -1 m43_${M43Nr}_simp_output_connected.txt)
+    echo "${LogPrefix} DeviceOpened: ${DeviceOpened}, DeviceClosed: ${DeviceClosed}, EndLine: ${EndLine}"  | tee -a ${TestCaseLogName} 2>&1
+    if [ ${DeviceOpened} -eq 1 ] && [ ${DeviceClosed} -eq 1 ] && [ "${EndLine}" == "=> OK" ]; then
+        return ${ERR_OK}
+    else
+        return ${ERR_VALUE}
+    fi
 }
 
 ############################################################################

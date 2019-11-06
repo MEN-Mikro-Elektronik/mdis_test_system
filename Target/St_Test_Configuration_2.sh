@@ -56,11 +56,11 @@ cd "${OsNameKernel}"
 TestSummaryDirectory="${MdisResultsDirectoryPath}/${CommitSha}/${TestConfiguration}/${Today}/${OsNameKernel}"
 cd "${MainTestDirectoryPath}"
 
+#echo ${1} | sudo -S --prompt= "${MyDir}/ST_xxxx_F223_Test.sh" ${TestSummaryDirectory}
 echo ${1} | sudo -S --prompt= "${MyDir}/ST_xxxx_G204_M77_M_Module_Test.sh" ${TestSummaryDirectory}
-echo ${1} | sudo -S --prompt= "${MyDir}/ST_xxxx_G215_Interface_Test.sh" ${TestSummaryDirectory}
-echo ${1} | sudo -S --prompt= "${MyDir}/ST_xxxx_F023P_Interface_Test.sh" ${TestSummaryDirectory}
-echo ${1} | sudo -S --prompt= "${MyDir}/ST_xxxx_F215_Interface_Test.sh" ${TestSummaryDirectory}
-echo ${1} | sudo -S --prompt= "${MyDir}/ST_xxxx_M66_M31_M_Module_Test.sh" ${TestSummaryDirectory}
+echo ${1} | sudo -S --prompt= "${MyDir}/ST_xxxx_G204_M82_M_Module_Test.sh" ${TestSummaryDirectory}
+echo ${1} | sudo -S --prompt= "${MyDir}/ST_xxxx_G204_M82_M_Module_Test.sh" ${TestSummaryDirectory} "2" #second device instance
+echo ${1} | sudo -S --prompt= "${MyDir}/ST_xxxx_M43_M11_M_Module_Test.sh" ${TestSummaryDirectory}
 
 echo "Create Test Results summary for Test Configuration 2"
 cd "${TestSummaryDirectory}"

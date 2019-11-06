@@ -49,7 +49,7 @@ MenPcIpAddr="10.1.1.195"
 #------------------------------------------------------------------------------
 #-------------------------PLEASE SPECIFY THE TEST SETUP------------------------
 #------------------------------------------------------------------------------
-TestSetup="1"
+TestSetup="2"
 
 
 # Credentials for Pc that will be tested - required by ssh connection and sudo cmds
@@ -129,6 +129,12 @@ GrubConfFile=/media/tests/boot.cfg
 
 #F26L
 GrubOsesF26L=("0" \
+        "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda14)" \
+        "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda15)" \
+        "Ubuntu 18.04.3 LTS (18.04) (on /dev/sda16)" \
+        "Ubuntu, with Linux 5.0.0-23-generic (on /dev/sda17)" \
+        "Debian GNU/Linux, with Linux 4.19.0-5-686-pae (on /dev/sda18)" \
+        "Debian GNU/Linux, with Linux 4.19.0-5-amd64 (on /dev/sda19)" \
         )
 
 #F23P
