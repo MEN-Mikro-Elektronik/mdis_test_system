@@ -209,11 +209,11 @@ function run_test_case_common_end_actions {
         fi
 
         # Remove loaded men_* modules from OS
-        rmmod_all_men_modules
-        CmdResult=$?
-        if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-                echo "could not rmmod_all_men_modules" 
-        fi
+        #rmmod_all_men_modules
+        #CmdResult=$?
+        #if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+        #        echo "could not rmmod_all_men_modules" 
+        #fi
 
         echo "Test case ${TestCaseName} finished"         | tee -a ${TestCaseLogName} 2>&1
 
