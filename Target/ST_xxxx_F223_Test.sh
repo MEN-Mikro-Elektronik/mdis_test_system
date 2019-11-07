@@ -51,6 +51,12 @@ while ${MachineRun}; do
           Step1);&
           Step2)
                 echo "Run step @2" | tee -a ${TestCaseLogName} 2>&1
+
+                echo ${MenPcPassword} | sudo -S --prompt= modprobe men_ll_pi7c9_gpio
+                if [ $? -ne 0 ]; then
+                        echo "ERR_VALUE: could not modprobe men_ll_pi7c9_gpio" | tee -a ${TestCaseLogName} 2>&1
+                        return ${ERR_VALUE}
+                fi
                 echo ${MenPcPassword} | sudo -S --prompt= pi7c9_gpio_simp -g pi7c9_gpio_1 > pi7c9_gpio_simp_output.txt 2>&1
                 CmdResult=$?
                 if [ ${CmdResult} -ne ${ERR_OK} ]; then
