@@ -37,7 +37,7 @@ function create_directory {
 # If error occurs stop and exit with proper error code
 #
 # parameters:
-#       None 
+#       None
 #
 function scan_and_install {
         echo "function scan_and_install"
@@ -52,6 +52,16 @@ function scan_and_install {
                 return ${ERR_SCAN} 
         fi
 
+        make_install
+}
+############################################################################
+# Perform make and make install.
+# If error occurs stop and exit with proper error code
+#
+# parameters:
+#       None
+#
+function make_install {
         echo ${MenPcPassword} | sudo -S --prompt= make > make_output.txt 2>&1
         if [ $? -ne 0 ]; then
                 echo "ERR 3 :make error" 
@@ -64,7 +74,6 @@ function scan_and_install {
                 exit ${ERR_INSTALL}
         fi
 }
-
 
 ############################################################################
 # Get test summary directory name 
@@ -1037,7 +1046,7 @@ function m_module_x_test {
                 ;;
           m43)
                 ModprobeDriver="men_ll_m43"
-                ModuleSimp="m43_simp"
+                ModuleSimp="m43_ex1"
                 ModuleResultCmpFunc="compare_m43_simp_values"
                 ModuleInstanceName="${MModuleName}_${MModuleBoardNr}"
                 ;;
@@ -1218,6 +1227,29 @@ function compare_m66_simp_values {
         fi
         
         return ${ERR_OK}
+}
+
+############################################################################
+# fix for m11 M-Module if plugged into f205 carrier.
+#
+# parameters:
+#
+function m11_f205_fix {
+    local TestCaseLogName=${1}
+    local TestCaseName=${2}
+    local M11Nr=${3}
+    local LogPrefix="[fix_m11]"
+
+    echo "m11_f205_fix"
+    ## Define wether M-Module ID-PROM is checked
+    ## 0 := disable -- ignore IDPROM
+    ## 1 := enable
+    #ID_CHECK = U_INT32 0
+
+    cd ..
+    sed -i '/.*m11_1.*/a ID_CHECK = U_INT32 0' system.dsc
+    make_install
+    cd ${TestCaseName}
 }
 
 ############################################################################

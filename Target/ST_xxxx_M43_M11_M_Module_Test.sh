@@ -62,6 +62,7 @@ while ${MachineRun}; do
                 ;;
           Step4)
                 echo "Run step @4" | tee -a ${TestCaseLogName} 2>&1
+                m11_f205_fix
                 m_module_x_test ${TestCaseLogName} ${TestCaseName} ${IN_0_ENABLE} "m11" "1"
                 CmdResult=$?
                 if [ ${CmdResult} -ne ${ERR_OK} ]; then
