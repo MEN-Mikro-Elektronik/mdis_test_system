@@ -62,6 +62,7 @@ function scan_and_install {
 #       None
 #
 function make_install {
+        echo "make_install"
         echo ${MenPcPassword} | sudo -S --prompt= make > make_output.txt 2>&1
         if [ $? -ne 0 ]; then
                 echo "ERR 3 :make error" 
@@ -1239,17 +1240,20 @@ function m11_f205_fix {
     local TestCaseName=${2}
     local M11Nr=${3}
     local LogPrefix="[fix_m11]"
+    local CurrentPath=$PWD
 
     echo "m11_f205_fix"
     ## Define wether M-Module ID-PROM is checked
     ## 0 := disable -- ignore IDPROM
     ## 1 := enable
     #ID_CHECK = U_INT32 0
+    echo "Current Path:"
+    echo "${CurrentPath}"
 
     cd ..
     sed -i '/.*m11_1.*/a ID_CHECK = U_INT32 0' system.dsc
     make_install
-    cd ${TestCaseName}
+    cd ${CurrentPath}
 }
 
 ############################################################################
