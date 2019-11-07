@@ -14,12 +14,12 @@ TestCaseLogName="${ScriptName%.*}_log.txt"
 # Move to correct Test_Summary directory
 cd "$1"
 
-local DeviceInstance="1"
+DeviceInstance="1"
  
 if [ -z "$2" ]; then
     echo "Use first device as default"
 else
-    DeviceInstance=${2}
+    DeviceInstance="${2}"
     echo "Use m82_${DeviceInstance} device"
 fi
 
@@ -44,7 +44,7 @@ CmdResult=${ERR_UNDEFINED}
 MachineState="Step1" 
 MachineRun=true 
 
-run_test_case_dir_create "${TestCaseLogName}_${DeviceInstance}" ${TestCaseName}
+run_test_case_dir_create "${TestCaseLogName}_${DeviceInstance}" "${TestCaseName}_${DeviceInstance}"
 CmdResult=$?
 if [ ${CmdResult} -ne ${ERR_OK} ]; then
         echo "run_test_case_dir_create: Failed, exit Test Case"

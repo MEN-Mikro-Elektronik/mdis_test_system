@@ -607,7 +607,7 @@ function uart_test_tty {
                   | tee -a ${LogFileName} 2>&1
         fi
         sleep 1
-        # Below command prevent infitite loopback on serial port 
+        # Below command prevent infitite loopback on serial port
         echo ${MenPcPassword} | sudo -S --prompt= stty -F /dev/${tty0} -onlcr
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix} Could not stty -F on ttyS${item}"\
@@ -633,7 +633,7 @@ function uart_test_tty {
                   | tee -a ${LogFileName} 2>&1
         fi
         # Kill process
-        sleep 1 
+        sleep 1
         # Set up previous settings
         echo ${MenPcPassword} | sudo -S --prompt= chmod o-rw /dev/${tty0}
         if [ $? -ne 0 ]; then
@@ -647,7 +647,7 @@ function uart_test_tty {
                   | tee -a ${LogFileName} 2>&1
         fi
         # Compare and check if echo test message was received.
-        sleep 1 
+        sleep 1
         grep -a "${EchoTestMessage}" echo_on_serial_${tty1}.txt
         if [ $? -eq 0 ]; then
                 echo "${LogPrefix} Echo succeed on ${tty1}"\
@@ -795,24 +795,25 @@ function m_module_m77_test {
         local TestCaseLogName=${1}
         local TestCaseName=${2}
         local M77Nr=${3}
+        local M77CarrierName="d203_a24_3" # obtain from system.dsc (only G204)
         local LogPrefix="[m77_test]"
         
         # modprobe men_ sth sth 
         echo ${MenPcPassword} | sudo -S --prompt= modprobe men_mdis_kernel
         if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_mdis_kernel" | tee -a ${LogFileName} 
+                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_mdis_kernel" | tee -a ${LogFileName}
                 return ${ERR_VALUE}
         fi
 
-        echo ${MenPcPassword} | sudo -S --prompt= mdis_createdev -b d203_a24_1
+        echo ${MenPcPassword} | sudo -S --prompt= mdis_createdev -b ${M77CarrierName}
         if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  ERR_VALUE: could not mdis_createdev -b d203_a24_1" | tee -a ${LogFileName} 
+                echo "${LogPrefix}  ERR_VALUE: could not mdis_createdev -b ${M77CarrierName}" | tee -a ${LogFileName}
                 return ${ERR_VALUE}
         fi
 
-        echo ${MenPcPassword} | sudo -S --prompt= modprobe men_lx_m77 devName=m77_${M77Nr} brdName=d203_a24_1 slotNo=0 mode=7,7,7,7
+        echo ${MenPcPassword} | sudo -S --prompt= modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7
         if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_lx_m77 devName=m77_${M77Nr} brdName=d203_a24_1 slotNo=0 mode=7,7,7,7" | tee -a ${LogFileName} 
+                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7" | tee -a ${LogFileName}
                 return ${ERR_VALUE}
         fi
         local tty0="ttyD0"
@@ -822,13 +823,13 @@ function m_module_m77_test {
 
         uart_test_tty ${tty0} ${tty1}
         if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  ERR_VALUE: ${tty0} with ${tty1}" | tee -a ${LogFileName} 
+                echo "${LogPrefix}  ERR_VALUE: ${tty0} with ${tty1}" | tee -a ${LogFileName}
                 return ${ERR_VALUE}
         fi
 
         uart_test_tty ${tty3} ${tty2}
         if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  ERR_VALUE: ${tty3} with ${tty2}" | tee -a ${LogFileName} 
+                echo "${LogPrefix}  ERR_VALUE: ${tty3} with ${tty2}" | tee -a ${LogFileName}
                 return ${ERR_VALUE}
         fi
 
@@ -839,21 +840,21 @@ function m_module_m77_test {
                 return ${ERR_VALUE}
         fi
 
-        echo ${MenPcPassword} | sudo -S --prompt= modprobe men_lx_m77 devName=m77_${M77Nr} brdName=d203_a24_1 slotNo=0 mode=7,7,7,7
+        echo ${MenPcPassword} | sudo -S --prompt= modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7
         if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_lx_m77 devName=m77_${M77Nr} brdName=d203_a24_1 slotNo=0 mode=7,7,7,7" | tee -a ${LogFileName} 
+                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7" | tee -a ${LogFileName}
                 return ${ERR_VALUE}
         fi
 
         uart_test_tty ${tty1} ${tty0}
         if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  ERR_VALUE: ${tty1} with ${tty0}" | tee -a ${LogFileName} 
+                echo "${LogPrefix}  ERR_VALUE: ${tty1} with ${tty0}" | tee -a ${LogFileName}
                 return ${ERR_VALUE}
         fi
 
         uart_test_tty ${tty2} ${tty3}
         if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  ERR_VALUE: ${tty2} with ${tty3}" | tee -a ${LogFileName} 
+                echo "${LogPrefix}  ERR_VALUE: ${tty2} with ${tty3}" | tee -a ${LogFileName}
                 return ${ERR_VALUE}
         fi
 
