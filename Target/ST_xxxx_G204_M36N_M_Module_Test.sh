@@ -2,7 +2,7 @@
 MyDir="$(dirname "$0")"
 source $MyDir/St_Functions.sh
 
-# This script performs tests on G204 with M82 M-Module.
+# This script performs tests on G204 with M36N M-Module.
 # Test is described in details in 13MD05-90_xx_xx-JPE
 CurrDir="$pwd"
 cd "$MainTestDirectoryPath/$MainTestDirectoryName"
@@ -20,7 +20,7 @@ if [ -z "$2" ]; then
     echo "Use first device as default"
 else
     DeviceInstance="${2}"
-    echo "Use m82_${DeviceInstance} device"
+    echo "Use m36_${DeviceInstance} device"
 fi
 
 ###############################################################################
@@ -59,13 +59,14 @@ while ${MachineRun}; do
           Step2);&
           Step3)
                 echo "Run step @3" | tee -a ${TestCaseLogName} 2>&1
-                m_module_x_test ${TestCaseLogName} ${TestCaseName} ${IN_0_ENABLE} "m82" "${DeviceInstance}"
+                m_module_x_test ${TestCaseLogName} ${TestCaseName} ${IN_0_ENABLE} "m36" "${DeviceInstance}"
                 CmdResult=$?
                 if [ ${CmdResult} -ne ${ERR_OK} ]; then
                         TestCaseStep3=${CmdResult}
                 else
                         TestCaseStep3=0
                 fi
+                echo "go into step @4" | tee -a ${TestCaseLogName} 2>&1
                 MachineState="Break"
                 ;;
           Break) # Clean after Test Case
