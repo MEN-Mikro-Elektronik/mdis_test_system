@@ -139,7 +139,6 @@ echo "@2 - ${TestCaseStep2}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>
 echo "@3 - ${TestCaseStep3}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1
 echo "@4 - ${TestCaseStep4}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1
 echo "@5 - ${TestCaseStep5}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1
-echo "@6 - ${TestCaseStep6}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1
 
 # move to previous directory
 cd "${CurrDir}"

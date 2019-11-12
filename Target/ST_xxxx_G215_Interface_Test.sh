@@ -24,8 +24,10 @@ cd "$1"
 TestCaseStep1=0 # Cable test
 TestCaseStep2=0 # Cable test
 TestCaseStep3=0 # Cable test
-TestCaseStep4=${ERR_UNDEFINED}
-TestCaseStep5=${ERR_UNDEFINED}
+TestCaseStep4=0 # 
+TestCaseStep5=${ERR_UNDEFINED} # define
+TestCaseStep6=${ERR_UNDEFINED} # define
+TestCaseStep7=${ERR_UNDEFINED} # define
 
 CmdResult=${ERR_UNDEFINED}
 
@@ -57,9 +59,11 @@ while ${MachineRun}; do
         case ${MachineState} in
         Step1);&
         Step2);&
-        Step3)
+        Step3);&
+        Step4);&
+        Step5)
                 # Check if mcv_pci is already in blacklist, UART loopback test
-                echo "Run step @3" | tee -a ${TestCaseLogName} 2>&1
+                echo "Run step @5" | tee -a ${TestCaseLogName} 2>&1
                 echo ${MenPcPassword} | sudo -S --prompt= grep "blacklist mcb_pci" /etc/modprobe.d/blacklist.conf > /dev/null
                 if [ $? -ne 0 ]; then
                         # Add mcb_pci into blacklist
@@ -77,12 +81,12 @@ while ${MachineRun}; do
                          echo "uart_test_board success "\
                            | tee -a ${TestCaseLogName} 2>&1
                 fi
-                TestCaseStep3=${CmdResult}
-                MachineState="Step4"
+                TestCaseStep5=${CmdResult}
+                MachineState="Step6"
                 ;;
-        Step4)
+        Step6)
                 # Can test
-                echo "Run step @4" | tee -a ${TestCaseLogName} 2>&1
+                echo "Run step @6" | tee -a ${TestCaseLogName} 2>&1
                 # Run step @4 Test CAN interfaces, there should be 2 cans available
                 MezzChamDevName="MezzChamDevName.txt"
                 obtain_device_list_chameleon_device ${VenID} ${DevID} ${SubVenID} ${MezzChamDevName}
@@ -96,12 +100,12 @@ while ${MachineRun}; do
                          echo "can_test_ll_z15 success "\
                            | tee -a ${TestCaseLogName} 2>&1
                 fi
-                TestCaseStep4=${CmdResult}
-                MachineState="Step5"
+                TestCaseStep6=${CmdResult}
+                MachineState="Step7"
                 ;;
-        Step5)
+        Step7)
                 # Test GPIO / LEDS
-                echo "Run step @5" | tee -a ${TestCaseLogName} 2>&1
+                echo "Run step @7" | tee -a ${TestCaseLogName} 2>&1
                 echo ${MenPcPassword} | sudo -S --prompt= modprobe men_ll_z17
                 ResultModprobeZ17=$?
                 if [ ${ResultModprobeZ17} -ne ${ERR_OK} ]; then
@@ -134,7 +138,7 @@ while ${MachineRun}; do
                                    | tee -a ${TestCaseLogName} 2>&1
                         fi
                 fi
-                TestCaseStep5=${CmdResult}
+                TestCaseStep7=${CmdResult}
                 MachineState="Break"
                 ;;
         Break)
@@ -161,6 +165,8 @@ echo "@2 - ${TestCaseStep2}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>
 echo "@3 - ${TestCaseStep3}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1
 echo "@4 - ${TestCaseStep4}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1
 echo "@5 - ${TestCaseStep5}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1
+echo "@6 - ${TestCaseStep6}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1
+echo "@7 - ${TestCaseStep7}" | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1
 
 # Clean after Test Case
 run_test_case_common_end_actions ${TestCaseLogName} ${TestCaseName}
