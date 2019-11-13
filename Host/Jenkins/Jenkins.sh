@@ -17,6 +17,14 @@ function Test_Setup_1_Configure {
         run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt= setpci -s 0a:00.0 COMMAND=0x7"
 }
 
+function Test_Setup_2_Configure {
+        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s  a:00.0 COMMAND=0x7"
+        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 0b:00.0 COMMAND=0x7"
+        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 0c:00.0 COMMAND=0x7"
+        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 0e:0d.0 COMMAND=0x7"
+        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 0e:0f.0 COMMAND=0x7"
+}
+
 function Test_Setup_3_Configure {
         run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt= setpci -s 0e:0d.0 COMMAND=0x7"
         run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt= setpci -s 09:00.0 COMMAND=0x7"
@@ -150,6 +158,7 @@ for ExpectedOs in "${GrubOses[@]}"; do
                   St_Test_Setup_Configuration="St_Test_Configuration_1.sh"
                   ;;
                 2)
+                  Test_Setup_2_Configure
                   St_Test_Setup_Configuration="St_Test_Configuration_2.sh"
                   ;;
                 3)
