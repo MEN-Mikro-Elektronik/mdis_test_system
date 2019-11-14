@@ -70,7 +70,6 @@ echo ${1} | sudo -S --prompt= "${MyDir}/ST_xxxx_G204_M77_M_Module_Test.sh" ${Tes
 echo ${1} | sudo -S --prompt= "${MyDir}/ST_xxxx_G204_M82_M_Module_Test.sh" ${TestSummaryDirectory}
 echo ${1} | sudo -S --prompt= "${MyDir}/ST_xxxx_G204_M82_M_Module_Test.sh" ${TestSummaryDirectory} "2" #second device instance
 echo ${1} | sudo -S --prompt= "${MyDir}/ST_xxxx_M43_M11_M_Module_Test.sh" ${TestSummaryDirectory}
-echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_F213_Test.sh" ${TestSummaryDirectory}
 
 echo "Create Test Results summary for Test Configuration 2"
 cd "${TestSummaryDirectory}"
