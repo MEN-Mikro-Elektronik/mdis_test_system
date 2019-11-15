@@ -28,6 +28,11 @@ TestCaseStep3=${ERR_UNDEFINED}
 
 CmdResult=${ERR_UNDEFINED}
 
+# Board in this Test Case always have
+VenID="0x1a88"
+DevID="0x4d45"
+SubVenID="0x00d1"
+
 # State machine runs all steps described in Test Case
 # Step1
 # .....
