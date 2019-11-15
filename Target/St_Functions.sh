@@ -731,7 +731,7 @@ function can_test_ll_z15_loopback {
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix}  ERR_VALUE :could not modprobe men_ll_z15" | tee -a ${LogFileName} 
                 return ${ERR_VALUE}
-        fi      
+        fi
 
         local CanNumber=$(grep "^can" ${MezzChamDevDescriptionFile} | wc -l)
         if [ "${CanNumber}" -ne "1" ]; then
@@ -740,12 +740,12 @@ function can_test_ll_z15_loopback {
                 local CAN1=$(grep "^can" ${MezzChamDevDescriptionFile} | awk NR==1'{print $1}')
         fi
 
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' mscan_loopback ${CAN1} >> mscan_loopback_${CAN1}.txt 2>&1
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' mscan_loopb ${CAN1} >> mscan_loopb_${CAN1}.txt 2>&1
         if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  mscan_loopback on ${CAN1} error" | tee -a ${LogFileName}
+                echo "${LogPrefix}  mscan_loopb on ${CAN1} error" | tee -a ${LogFileName}
                 return ${ERR_VALUE}
         else
-                local CanResult=$(grep "TEST RESULT:" mscan_loopback_${CAN1}.txt | awk NR==1'{print $3}')
+                local CanResult=$(grep "TEST RESULT:" mscan_loopb_${CAN1}.txt | awk NR==1'{print $3}')
                 if [ "${CanResult}" -ne "${ERR_OK}" ]; then
                          return ${ERR_RUN}
                 fi
