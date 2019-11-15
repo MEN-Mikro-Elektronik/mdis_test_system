@@ -881,17 +881,17 @@ function smb_test_lx_z001 {
                 return ${ERR_VALUE}
         fi
 
-        Pat1Def="$(echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cget -y "${SMBUS_ID}" "${ReadAddress}" 0xfc w)"
-        Pat2Def="$(echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cget -y "${SMBUS_ID}" "${ReadAddress}" 0xfe w)"
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cset -y "${SMBUS_ID}" "${ReadAddress}" 0xfc "${Pat1Write}" w
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cset -y "${SMBUS_ID}" "${ReadAddress}" 0xfe "${Pat2Write}" w
-        Pat1Read="$(echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cget -y "${SMBUS_ID}" "${ReadAddress}" 0xfc w)"
-        Pat2Read="$(echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cget -y "${SMBUS_ID}" "${ReadAddress}" 0xfe w)"
+        Patt1Def="$(echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cget -y "${SMBUS_ID}" "${ReadAddress}" 0xfc w)"
+        Patt2Def="$(echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cget -y "${SMBUS_ID}" "${ReadAddress}" 0xfe w)"
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cset -y "${SMBUS_ID}" "${ReadAddress}" 0xfc "${Patt1Write}" w
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cset -y "${SMBUS_ID}" "${ReadAddress}" 0xfe "${Patt2Write}" w
+        Patt1Read="$(echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cget -y "${SMBUS_ID}" "${ReadAddress}" 0xfc w)"
+        Patt2Read="$(echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cget -y "${SMBUS_ID}" "${ReadAddress}" 0xfe w)"
         echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cdump -y "${SMBUS_ID}" "${ReadAddress}" > "i2c_bus_dump_after.log"
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cset -y "${SMBUS_ID}" "${ReadAddress}" 0xfc "${Pat1Def}" w
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cset -y "${SMBUS_ID}" "${ReadAddress}" 0xfe "${Pat2Def}" w
-        if [[ "${Pat1Read}" != "${Pat1Write}" || \
-              "${Pat2Read}" != "${Pat2Write}" ]]; then
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cset -y "${SMBUS_ID}" "${ReadAddress}" 0xfc "${Patt1Def}" w
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cset -y "${SMBUS_ID}" "${ReadAddress}" 0xfe "${Patt2Def}" w
+        if [[ "${Patt1Read}" != "${Patt1Write}" || \
+              "${Patt2Read}" != "${Patt2Write}" ]]; then
                 echo "ERR_VALUE: read pattern does not match pattern written for ${SMBUS_ID}" | tee -a ${TestCaseLogName} 2>&1
 
                 echo ${MenPcPassword} | sudo -S --prompt=$'\r' rmmod men_lx_z001

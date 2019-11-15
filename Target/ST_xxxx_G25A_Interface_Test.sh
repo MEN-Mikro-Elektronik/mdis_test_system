@@ -22,9 +22,8 @@ cd "${1}" || exit "${ERR_DIR_NOT_EXISTS}"
 ###############################################################################
 
 # 0 means success
-TestCaseStep1=0 # Cable test
+TestCaseStep1=${ERR_UNDEFINED}
 TestCaseStep2=${ERR_UNDEFINED}
-TestCaseStep3=${ERR_UNDEFINED}
 
 CmdResult=${ERR_UNDEFINED}
 
@@ -36,7 +35,7 @@ SubVenID="0x00d1"
 # State machine runs all steps described in Test Case
 # Step1
 # .....
-# Step3
+# Step2
 # Additional Break state is added to handle/finish TestCase properly
 MachineState="Step1"
 MachineRun=true
@@ -52,9 +51,8 @@ fi
 
 while ${MachineRun}; do
         case ${MachineState} in
-        Step1);&
-        Step2)
-                echo "Run step @2" | tee -a ${TestCaseLogName} 2>&1
+        Step1)
+                echo "Run step @1" | tee -a ${TestCaseLogName} 2>&1
                 smb_test_lx_z001 "${TestCaseLogName}" "DBZIB" "0x51"
                 CmdResult=$?
                 if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
@@ -64,12 +62,12 @@ while ${MachineRun}; do
                          echo "smb_test_lx_z001 success "\
                            | tee -a ${TestCaseLogName} 2>&1
                 fi
-                TestCaseStep2=${CmdResult}
-                MachineState="Step3"
+                TestCaseStep1=${CmdResult}
+                MachineState="Step2"
                 ;;
-        Step3)
+        Step2)
                 # Can test
-                echo "Run step @3" | tee -a ${TestCaseLogName} 2>&1
+                echo "Run step @2" | tee -a ${TestCaseLogName} 2>&1
                 # Run step @4 Test CAN interfaces, there should be 2 cans available
                 MezzChamDevName="MezzChamDevName.txt"
                 obtain_device_list_chameleon_device ${VenID} ${DevID} ${SubVenID} ${MezzChamDevName}
@@ -83,7 +81,7 @@ while ${MachineRun}; do
                          echo "can_test_ll_z15_loopback success "\
                            | tee -a ${TestCaseLogName} 2>&1
                 fi
-                TestCaseStep3=${CmdResult}
+                TestCaseStep2=${CmdResult}
                 MachineState="Break"
                 ;;
         Break) # Clean after Test Case
@@ -102,7 +100,6 @@ ResultsSummaryTmp="${ResultsFileLogName}.tmp"
 echo "${TestCaseName}" | tee --append "${TestCaseLogName}" "${ResultsSummaryTmp}"
 echo "@1 - ${TestCaseStep1}" | tee --append "${TestCaseLogName}" "${ResultsSummaryTmp}"
 echo "@2 - ${TestCaseStep2}" | tee --append "${TestCaseLogName}" "${ResultsSummaryTmp}"
-echo "@3 - ${TestCaseStep3}" | tee --append "${TestCaseLogName}" "${ResultsSummaryTmp}"
 
 # move to previous directory
 cd "${CurrDir}" || exit "${ERR_DIR_NOT_EXISTS}"
