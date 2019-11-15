@@ -714,6 +714,46 @@ function can_test_ll_z15 {
 }
 
 ############################################################################
+# Test CAN with men_ll_z15 IpCore (loopback)
+#
+# parameters:
+# $1      name of file with log 
+# $2      mezzaine chameleon device description file
+#        
+#
+function can_test_ll_z15_loopback {
+
+        local LogFileName=$1
+        local MezzChamDevDescriptionFile=$2
+        local LogPrefix="[Can_test]"
+
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_ll_z15
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix}  ERR_VALUE :could not modprobe men_ll_z15" | tee -a ${LogFileName} 
+                return ${ERR_VALUE}
+        fi      
+
+        local CanNumber=$(grep "^can" ${MezzChamDevDescriptionFile} | wc -l)
+        if [ "${CanNumber}" -ne "1" ]; then
+                echo "${LogPrefix}  There are ${CanNumber} CAN interfaces"  | tee -a ${LogFileName}
+        else
+                local CAN1=$(grep "^can" ${MezzChamDevDescriptionFile} | awk NR==1'{print $1}')
+        fi
+
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' mscan_loopback ${CAN1} >> mscan_loopback_${CAN1}.txt 2>&1
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix}  mscan_loopback on ${CAN1} error" | tee -a ${LogFileName}
+                return ${ERR_VALUE}
+        else
+                local CanResult=$(grep "TEST RESULT:" mscan_loopback_${CAN1}.txt | awk NR==1'{print $3}')
+                if [ "${CanResult}" -ne "${ERR_OK}" ]; then
+                         return ${ERR_RUN}
+                fi
+                return ${ERR_OK}
+        fi
+}
+
+############################################################################
 # This function resolves 'connection' beetween UART IpCore and ttyS number
 # in linux system. Addresses for UART and ttyS are compared. 
 #
@@ -792,6 +832,81 @@ function obtain_tty_number_list_from_board {
                 UartNrInBoard=$((${UartNrInBoard} + 1))
         done
 
+}
+
+############################################################################
+# Test Z001_SMB IP core with men_lx_z001
+#
+# parameters:
+# $1      name of file with log
+# $2      board name (e.g. P511)
+# $3      read address (e.g. 0x57)
+#
+function smb_test_lx_z001 {
+        local TestCaseLogName=${1}
+        local BoardName="${2}"
+        local ReadAddress="${3}"
+        local SMBUS_ID
+        local Patt1Def
+        local Patt2Def
+        local Patt1Write="0x4aff"
+        local Patt2Write="0x4550"
+        local Patt1Read
+        local Patt2Read
+
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cdetect -y -l > "i2c_bus_list_before.log" 2>&1
+
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_lx_z001
+        if [ $? -ne 0 ]; then
+                echo "ERR_MODPROBE: could not modprobe men_lx_z001" | tee -a ${TestCaseLogName} 2>&1
+                return ${ERR_MODPROBE}
+        fi
+
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cdetect -y -l > "i2c_bus_list_after.log" 2>&1
+
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' cat "i2c_bus_list_before.log" "i2c_bus_list_after.log" | sort | uniq --unique > "i2c_bus_list_test.log" 2>&1
+        SMBUS_ID="$(echo ${MenPcPassword} | sudo -S --prompt=$'\r' grep --only-matching "16Z001-[0-1]\+ BAR[0-9]\+ offs 0x[0-9]\+" "i2c_bus_list_test.log")"
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cdump -y "${SMBUS_ID}" "${ReadAddress}" > "i2c_bus_dump.log"
+
+        cat "i2c_bus_dump.log" | grep "${BoardName}"
+        CmdResult=$?
+        if [ ${CmdResult} -ne ${ERR_OK} ]; then
+                echo "ERR_VALUE: i2cdump failed for ${SMBUS_ID}" | tee -a ${TestCaseLogName} 2>&1
+
+                echo ${MenPcPassword} | sudo -S --prompt=$'\r' rmmod men_lx_z001
+                if [ $? -ne 0 ]; then
+                        echo "ERR_RMMOD: could not rmmod men_lx_z001" | tee -a ${TestCaseLogName} 2>&1
+                fi
+
+                return ${ERR_VALUE}
+        fi
+
+        Pat1Def="$(echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cget -y "${SMBUS_ID}" "${ReadAddress}" 0xfc w)"
+        Pat2Def="$(echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cget -y "${SMBUS_ID}" "${ReadAddress}" 0xfe w)"
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cset -y "${SMBUS_ID}" "${ReadAddress}" 0xfc "${Pat1Write}" w
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cset -y "${SMBUS_ID}" "${ReadAddress}" 0xfe "${Pat2Write}" w
+        Pat1Read="$(echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cget -y "${SMBUS_ID}" "${ReadAddress}" 0xfc w)"
+        Pat2Read="$(echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cget -y "${SMBUS_ID}" "${ReadAddress}" 0xfe w)"
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cset -y "${SMBUS_ID}" "${ReadAddress}" 0xfc "${Pat1Def}" w
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cset -y "${SMBUS_ID}" "${ReadAddress}" 0xfe "${Pat2Def}" w
+        if [[ "${Pat1Read}" != "${Pat1Write}" || \
+              "${Pat2Read}" != "${Pat2Write}" ]]; then
+                echo "ERR_VALUE: read pattern does not match pattern written for ${SMBUS_ID}" | tee -a ${TestCaseLogName} 2>&1
+
+                echo ${MenPcPassword} | sudo -S --prompt=$'\r' rmmod men_lx_z001
+                if [ $? -ne 0 ]; then
+                        echo "ERR_RMMOD: could not rmmod men_lx_z001" | tee -a ${TestCaseLogName} 2>&1
+                fi
+
+                return ${ERR_VALUE}
+        fi
+
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' rmmod men_lx_z001
+        if [ $? -ne 0 ]; then
+                echo "ERR_RMMOD: could not rmmod men_lx_z001" | tee -a ${TestCaseLogName} 2>&1
+        fi
+
+        return ${ERR_OK}
 }
 
 ############################################################################
