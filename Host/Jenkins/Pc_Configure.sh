@@ -165,8 +165,14 @@ function install_13MD05_90_sources {
         if [ -d "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" ]; then
                 local CurrentKernel="$(uname --kernel-release)"
                 local SystemName="$(hostnamectl | grep "Operating System" | awk '{ print $3 }')"
+                local IsYocto="$(hostnamectl | grep "Operating System" | grep "Yocto" | wc -l)"
+                echo "IsYocto: ${IsYocto}"
                 if [ "${SystemName}" == "CentOS" ]; then
                         echo "${MenPcPassword}" | sudo --stdin --prompt="" ln --symbolic --no-dereference --force "/usr/src/kernels/${CurrentKernel}" "/usr/src/linux"
+                elif [ "${IsYocto}" == "1" ]; then
+                        echo "${MenPcPassword}" | sudo --stdin --prompt="" ln --symbolic --no-dereference --force "/usr/src/kernel" "/usr/src/linux"
+                        # make prepare
+                        # make scripts
                 else
                         echo "${MenPcPassword}" | sudo --stdin --prompt="" ln --symbolic --no-dereference --force "/usr/src/linux-headers-${CurrentKernel}" "/usr/src/linux"
                 fi

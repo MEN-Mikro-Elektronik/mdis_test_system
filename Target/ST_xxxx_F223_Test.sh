@@ -60,7 +60,7 @@ while ${MachineRun}; do
                 echo ${MenPcPassword} | sudo -S --prompt= pi7c9_gpio_simp -g pi7c9_gpio_1 > pi7c9_gpio_simp_output.txt 2>&1
                 CmdResult=$?
                 if [ ${CmdResult} -ne ${ERR_OK} ]; then
-                        echo "ERR pi7c9_gpio_simp -s=1 -p=0x01 pi7c9_gpio_1" | tee -a ${TestCaseLogName} 2>&1
+                        echo "ERR pi7c9_gpio_simp -g pi7c9_gpio_1" | tee -a ${TestCaseLogName} 2>&1
                         MachineState="Break"
                         TestCaseStep2=${ERR_SIMP_ERROR}
                 else
