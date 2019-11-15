@@ -93,8 +93,8 @@ function write_command_code_lock_file_result {
                 return ${ERR_OK}
         fi 
 
-        local WriteSuccessCmd="echo \"${MenPcPassword}\" | sudo -S --prompt= echo -n \" : ${LockFileSuccess}\" >> ${LockFileName}"
-        local WriteFailedCmd="echo \"${MenPcPassword}\" | sudo -S --prompt= echo -n \" : ${LockFileFailed}\" >> ${LockFileName}"
+        local WriteSuccessCmd="echo \"${MenPcPassword}\" | sudo -S --prompt=$'\r' echo -n \" : ${LockFileSuccess}\" >> ${LockFileName}"
+        local WriteFailedCmd="echo \"${MenPcPassword}\" | sudo -S --prompt=$'\r' echo -n \" : ${LockFileFailed}\" >> ${LockFileName}"
 
         if [ "${CommandCodeResult}" = "${LockFileSuccess}" ]; then
                 local res=$(run_cmd_on_remote_pc "${WriteSuccessCmd}")
@@ -174,7 +174,7 @@ function change_input_BL51E {
         if [ "${I801Loaded}" -eq "0" ]; then
                 echo "${LogPrefix} Error: i2c_i801 is not loaded"
                 echo "${LogPrefix} Modprobe i2c_i801 ... "
-                run_cmd_on_remote_input_switch "echo ${MenPcPassword} | sudo -S --prompt= modprobe i2c_i801"
+                run_cmd_on_remote_input_switch "echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe i2c_i801"
                 if [ "${?}" -ne "0" ]; then
                         echo "${LogPrefix} Modprobe i2c_i801 error"
                         return ${ERR_MODPROBE}
@@ -184,8 +184,8 @@ function change_input_BL51E {
         fi
 
         # now find smbus in i2cdetect dump 
-        local I2CNR=$(run_cmd_on_remote_input_switch "echo ${MenPcPassword} | sudo -S --prompt= i2cdetect -y -l | grep smbus | awk '{print \$1}' | sed 's/i2c-//'" )
-        local RegisterData=$(run_cmd_on_remote_input_switch "echo ${MenPcPassword} | sudo -S --prompt= i2cget -y ${I2CNR} 0x22 | sed 's/0x//' ")
+        local I2CNR=$(run_cmd_on_remote_input_switch "echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cdetect -y -l | grep smbus | awk '{print \$1}' | sed 's/i2c-//'" )
+        local RegisterData=$(run_cmd_on_remote_input_switch "echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cget -y ${I2CNR} 0x22 | sed 's/0x//' ")
 
         check_input_state_is_set ${CommandCode} ${RegisterData} ${LogPrefix}
         if [ $? -eq "1" ]; then
@@ -215,10 +215,10 @@ function change_input_BL51E {
         RegisterDataToWrite=$(echo "obase=16; $((16#${RegisterData}^2#${RegisterDataMask}))" | bc )
         echo "${LogPrefix} RegisterDataToWrite : 0x${RegisterDataToWrite}"
 
-        run_cmd_on_remote_input_switch "echo ${MenPcPassword} | sudo -S --prompt= i2cset -y ${I2CNR} 0x22 0x${RegisterDataToWrite}"
+        run_cmd_on_remote_input_switch "echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cset -y ${I2CNR} 0x22 0x${RegisterDataToWrite}"
 
         # Check if value is set
-        RegisterData=$(run_cmd_on_remote_input_switch "echo ${MenPcPassword} | sudo -S --prompt= i2cget -y ${I2CNR} 0x22 | sed 's/0x//' ")
+        RegisterData=$(run_cmd_on_remote_input_switch "echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cget -y ${I2CNR} 0x22 | sed 's/0x//' ")
         check_input_state_is_set ${CommandCode} ${RegisterData} ${LogPrefix}
         if [ $? -eq "1" ]; then
                 return ${ERR_OK}

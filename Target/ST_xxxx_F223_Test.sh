@@ -52,12 +52,12 @@ while ${MachineRun}; do
           Step2)
                 echo "Run step @2" | tee -a ${TestCaseLogName} 2>&1
 
-                echo ${MenPcPassword} | sudo -S --prompt= modprobe men_ll_pi7c9_gpio
+                echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_ll_pi7c9_gpio
                 if [ $? -ne 0 ]; then
                         echo "ERR_VALUE: could not modprobe men_ll_pi7c9_gpio" | tee -a ${TestCaseLogName} 2>&1
                         return ${ERR_VALUE}
                 fi
-                echo ${MenPcPassword} | sudo -S --prompt= pi7c9_gpio_simp -g pi7c9_gpio_1 > pi7c9_gpio_simp_output.txt 2>&1
+                echo ${MenPcPassword} | sudo -S --prompt=$'\r' pi7c9_gpio_simp -g pi7c9_gpio_1 > pi7c9_gpio_simp_output.txt 2>&1
                 CmdResult=$?
                 if [ ${CmdResult} -ne ${ERR_OK} ]; then
                         echo "ERR pi7c9_gpio_simp -g pi7c9_gpio_1" | tee -a ${TestCaseLogName} 2>&1
@@ -72,7 +72,7 @@ while ${MachineRun}; do
                 ;;
           Step3)
                 echo "Run step @3" | tee -a ${TestCaseLogName} 2>&1
-                echo ${MenPcPassword} | sudo -S --prompt= pi7c9_gpio_simp -s=1 -p=0x01 pi7c9_gpio_1
+                echo ${MenPcPassword} | sudo -S --prompt=$'\r' pi7c9_gpio_simp -s=1 -p=0x01 pi7c9_gpio_1
                 CmdResult=$?
                 if [ ${CmdResult} -ne ${ERR_OK} ]; then
                         echo "ERR pi7c9_gpio_simp -s=1 -p=0x01 pi7c9_gpio_1" | tee -a ${TestCaseLogName} 2>&1
@@ -86,7 +86,7 @@ while ${MachineRun}; do
                 ;;
           Step4)
                 echo "Run step @4" | tee -a ${TestCaseLogName} 2>&1
-                echo ${MenPcPassword} | sudo -S --prompt= pi7c9_gpio_simp -s=0 -p=0x01 pi7c9_gpio_1
+                echo ${MenPcPassword} | sudo -S --prompt=$'\r' pi7c9_gpio_simp -s=0 -p=0x01 pi7c9_gpio_1
                 CmdResult=$?
                 if [ ${CmdResult} -ne ${ERR_OK} ]; then
                         echo "ERR pi7c9_gpio_simp -s=0 -p=0x01 pi7c9_gpio_1" | tee -a ${TestCaseLogName} 2>&1
@@ -102,11 +102,11 @@ while ${MachineRun}; do
                 echo "Go to beginning state of F223"            | tee -a ${TestCaseLogName} 2>&1
                 echo "Beginning state: ${BinaryStateBegin}"       | tee -a ${TestCaseLogName} 2>&1
                 echo "Disable all port first"                   | tee -a ${TestCaseLogName} 2>&1
-                echo ${MenPcPassword} | sudo -S --prompt= pi7c9_gpio_simp -s=0 -p=0xFF pi7c9_gpio_1
+                echo ${MenPcPassword} | sudo -S --prompt=$'\r' pi7c9_gpio_simp -s=0 -p=0xFF pi7c9_gpio_1
                 echo "Set previous value"                       | tee -a ${TestCaseLogName} 2>&1
-                echo ${MenPcPassword} | sudo -S --prompt= pi7c9_gpio_simp -s=1 -p=0x$((2#${BinaryStateBegin})) pi7c9_gpio_1
+                echo ${MenPcPassword} | sudo -S --prompt=$'\r' pi7c9_gpio_simp -s=1 -p=0x$((2#${BinaryStateBegin})) pi7c9_gpio_1
 
-                echo ${MenPcPassword} | sudo -S --prompt= pi7c9_gpio_simp -g pi7c9_gpio_1 > pi7c9_gpio_simp_output_end.txt 2>&1
+                echo ${MenPcPassword} | sudo -S --prompt=$'\r' pi7c9_gpio_simp -g pi7c9_gpio_1 > pi7c9_gpio_simp_output_end.txt 2>&1
                 # Check if value at the end of the Test Case is equal to the value from
                 # the beginning
                 BinaryStateEnd="$(cat ./pi7c9_gpio_simp_output_end.txt\

@@ -21,13 +21,13 @@ fi
 
 rm tmp.sh
 
-#run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt= setpci -s 02:00.0 COMMAND=0x7"
-#run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt= setpci -s 08:00.0 COMMAND=0x7"
+#run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 02:00.0 COMMAND=0x7"
+#run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 08:00.0 COMMAND=0x7"
 
 # Make all scripts executable
-run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt= chmod +x ${GitTestCommonDirPath}/*"
-run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt= chmod +x ${GitTestTargetDirPath}/*"
-run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt= chmod +x ${GitTestHostDirPath}/*"
+run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' chmod +x ${GitTestCommonDirPath}/*"
+run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' chmod +x ${GitTestTargetDirPath}/*"
+run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' chmod +x ${GitTestHostDirPath}/*"
 
 
 JenkinsBackgroundPID=0
@@ -58,7 +58,7 @@ echo "${LogPrefix} JenkinsBackgroundPID is ${JenkinsBackgroundPID}"
 
 # Run Test script - now scripts from remote device should be run 
 make_visible_in_log "TEST CASE - SETUP CONFIGURATION 6"
-run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt= ${GitTestTargetDirPath}/St_Test_Configuration_6.sh ${MenPcPassword} ${Today}"
+run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' ${GitTestTargetDirPath}/St_Test_Configuration_6.sh ${MenPcPassword} ${Today}"
 if [ $? -ne 0 ]; then
         echo "${LogPrefix} Error while running St_Test_Configuration script"
 fi

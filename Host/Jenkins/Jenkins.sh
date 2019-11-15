@@ -24,10 +24,10 @@ while test $# -gt 0 ; do
 done
 
 function Test_Setup_1_Configure {
-        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt= setpci -s 0e:0d.0 COMMAND=0x7"
-        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt= setpci -s 0e:0e.0 COMMAND=0x7"
-        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt= setpci -s 09:00.0 COMMAND=0x7"
-        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt= setpci -s 0a:00.0 COMMAND=0x7"
+        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 0e:0d.0 COMMAND=0x7"
+        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 0e:0e.0 COMMAND=0x7"
+        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 09:00.0 COMMAND=0x7"
+        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 0a:00.0 COMMAND=0x7"
 }
 
 function Test_Setup_2_Configure {
@@ -39,16 +39,16 @@ function Test_Setup_2_Configure {
 }
 
 function Test_Setup_3_Configure {
-        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt= setpci -s 0e:0d.0 COMMAND=0x7"
-        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt= setpci -s 09:00.0 COMMAND=0x7"
-        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt= setpci -s 0e:0e.0 COMMAND=0x7"
+        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 0e:0d.0 COMMAND=0x7"
+        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 09:00.0 COMMAND=0x7"
+        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 0e:0e.0 COMMAND=0x7"
 }
 
 function Test_Setup_6_Configure {
-        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt= setpci -s 02:00.0 COMMAND=0x7"
-        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt= setpci -s 0f:00.0 COMMAND=0x7"
-        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt= setpci -s 10:00.0 COMMAND=0x7"
-        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt= setpci -s 08:00.0 COMMAND=0x7"
+        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 02:00.0 COMMAND=0x7"
+        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 0f:00.0 COMMAND=0x7"
+        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 10:00.0 COMMAND=0x7"
+        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 08:00.0 COMMAND=0x7"
 }
 
 echo "Test Setup: ${TestSetup}"
@@ -152,9 +152,9 @@ function runTests {
             esac
 
             # Make all scripts executable
-            run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt= chmod +x ${GitTestCommonDirPath}/*"
-            run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt= chmod +x ${GitTestTargetDirPath}/*"
-            run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt= chmod +x ${GitTestHostDirPath}/*"
+            run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' chmod +x ${GitTestCommonDirPath}/*"
+            run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' chmod +x ${GitTestTargetDirPath}/*"
+            run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' chmod +x ${GitTestHostDirPath}/*"
 
             ./Jenkins_Background.sh &
 
@@ -164,7 +164,7 @@ function runTests {
 
             # Run Test script - now scripts from remote device should be run 
             make_visible_in_log "TEST CASE - ${St_Test_Setup_Configuration}"
-            run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt= ${GitTestTargetDirPath}/${St_Test_Setup_Configuration} ${MenPcPassword} ${Today}"
+            run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' ${GitTestTargetDirPath}/${St_Test_Setup_Configuration} ${MenPcPassword} ${Today}"
             if [ $? -ne 0 ]; then
                     echo "${LogPrefix} Error while running St_Test_Configuration script"
             fi

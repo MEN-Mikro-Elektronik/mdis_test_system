@@ -64,11 +64,11 @@ while ${MachineRun}; do
         Step5)
                 # Check if mcv_pci is already in blacklist, UART loopback test
                 echo "Run step @5" | tee -a ${TestCaseLogName} 2>&1
-                echo ${MenPcPassword} | sudo -S --prompt= grep "blacklist mcb_pci" /etc/modprobe.d/blacklist.conf > /dev/null
+                echo ${MenPcPassword} | sudo -S --prompt=$'\r' grep "blacklist mcb_pci" /etc/modprobe.d/blacklist.conf > /dev/null
                 if [ $? -ne 0 ]; then
                         # Add mcb_pci into blacklist
-                        echo ${MenPcPassword} | sudo -S --prompt= echo "# Add mcb_pci into blacklist" >> /etc/modprobe.d/blacklist.conf
-                        echo ${MenPcPassword} | sudo -S --prompt= echo "blacklist mcb_pci" >> /etc/modprobe.d/blacklist.conf
+                        echo ${MenPcPassword} | sudo -S --prompt=$'\r' echo "# Add mcb_pci into blacklist" >> /etc/modprobe.d/blacklist.conf
+                        echo ${MenPcPassword} | sudo -S --prompt=$'\r' echo "blacklist mcb_pci" >> /etc/modprobe.d/blacklist.conf
                 else
                         echo "blacklist mcb_pci found"
                 fi
@@ -106,7 +106,7 @@ while ${MachineRun}; do
         Step7)
                 # Test GPIO / LEDS
                 echo "Run step @7" | tee -a ${TestCaseLogName} 2>&1
-                echo ${MenPcPassword} | sudo -S --prompt= modprobe men_ll_z17
+                echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_ll_z17
                 ResultModprobeZ17=$?
                 if [ ${ResultModprobeZ17} -ne ${ERR_OK} ]; then
                         echo "ERR_MODPROBE :could not modprobe men_ll_z17" | tee -a ${TestCaseLogName} 2>&1
@@ -122,7 +122,7 @@ while ${MachineRun}; do
                         fi
 
                         # Test LEDS -- This cannot be checked automatically yet ...
-                        echo ${MenPcPassword} | sudo -S --prompt= z17_simp ${GPIO1} >> z17_simp_${GPIO1}.txt 2>&1
+                        echo ${MenPcPassword} | sudo -S --prompt=$'\r' z17_simp ${GPIO1} >> z17_simp_${GPIO1}.txt 2>&1
                         if [ $? -ne 0 ]; then
                                 echo "ERR_RUN :could not run z17_simp ${GPIO1}" | tee -a ${TestCaseLogName} 2>&1
                         fi
@@ -155,8 +155,8 @@ while ${MachineRun}; do
 done
 
 # Remove mcb_pci from blacklist
-#echo ${MenPcPassword} | sudo -S --prompt= sed -i '/# Add mcb_pci into blacklist/d' /etc/modprobe.d/blacklist.conf
-#echo ${MenPcPassword} | sudo -S --prompt= sed -i '/blacklist mcb_pci/d' /etc/modprobe.d/blacklist.conf
+#echo ${MenPcPassword} | sudo -S --prompt=$'\r' sed -i '/# Add mcb_pci into blacklist/d' /etc/modprobe.d/blacklist.conf
+#echo ${MenPcPassword} | sudo -S --prompt=$'\r' sed -i '/blacklist mcb_pci/d' /etc/modprobe.d/blacklist.conf
 
 ResultsSummaryTmp="${ResultsFileLogName}.tmp"
 echo "${TestCaseName}    " | tee -a ${TestCaseLogName} ${ResultsSummaryTmp} 2>&1

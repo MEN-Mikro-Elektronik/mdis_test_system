@@ -65,11 +65,11 @@ else
         echo "run_test_case_common_actions: Success"
 fi
 
-echo ${1} | sudo -S --prompt= "${MyDir}/ST_xxxx_G204_M82_M_Module_Test.sh" ${TestSummaryDirectory}
-echo ${1} | sudo -S --prompt= "${MyDir}/ST_xxxx_G204_M35_M_Module_Test.sh" ${TestSummaryDirectory}
-echo ${1} | sudo -S --prompt= "${MyDir}/ST_xxxx_F215_Interface_Test.sh" ${TestSummaryDirectory}
-echo ${1} | sudo -S --prompt= "${MyDir}/ST_xxxx_M66_M31_M_Module_Test.sh" ${TestSummaryDirectory}
-echo ${1} | sudo -S --prompt= "${MyDir}/ST_xxxx_G215_Interface_Test.sh" ${TestSummaryDirectory}
+echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M82_M_Module_Test.sh" ${TestSummaryDirectory}
+echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M35_M_Module_Test.sh" ${TestSummaryDirectory}
+echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_F215_Interface_Test.sh" ${TestSummaryDirectory}
+echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_M66_M31_M_Module_Test.sh" ${TestSummaryDirectory}
+echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G215_Interface_Test.sh" ${TestSummaryDirectory}
 
 # TEST SETUP 1
 echo "Create Test Results summary for Test Configuration 1"

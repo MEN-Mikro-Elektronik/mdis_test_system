@@ -44,7 +44,7 @@ function scan_and_install {
         local CmdResult=${ERR_UNDEFINED}
 
         # scan the hardware
-        echo ${MenPcPassword} | sudo -S --prompt= /opt/menlinux/scan_system.sh /opt/menlinux --assume-yes --internal-swmodules > scan_system_output.txt 2>&1
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' /opt/menlinux/scan_system.sh /opt/menlinux --assume-yes --internal-swmodules > scan_system_output.txt 2>&1
         CmdResult=$?
 
         if [ ${CmdResult} -ne 0 ]; then
@@ -63,13 +63,13 @@ function scan_and_install {
 #
 function make_install {
         echo "make_install"
-        echo ${MenPcPassword} | sudo -S --prompt= make > make_output.txt 2>&1
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' make > make_output.txt 2>&1
         if [ $? -ne 0 ]; then
                 echo "ERR 3 :make error" 
                 exit ${ERR_MAKE}
         fi
 
-        echo ${MenPcPassword} | sudo -S --prompt= make install > make_install_output.txt 2>&1
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' make install > make_install_output.txt 2>&1
         if [ $? -ne 0 ]; then
                 echo "ERR 4 :make install error"
                 exit ${ERR_INSTALL}
@@ -241,7 +241,7 @@ function rmmod_all_men_modules {
         for i in $(seq 1 ${MenLsmodModuleCnt});
         do
                #echo "$i rmmod $(lsmod | grep men_ | awk NR==1'{print $1}')"
-                echo ${MenPcPassword} | sudo -S --prompt= rmmod $(lsmod | grep ^men_ | awk NR==1'{print $1}')
+                echo ${MenPcPassword} | sudo -S --prompt=$'\r' rmmod $(lsmod | grep ^men_ | awk NR==1'{print $1}')
                 if [ $? -ne 0 ]; then
                         echo "ERR_RMMOD :cannot rmmod module $(lsmod | grep ^men_ | awk NR==1'{print $1}')"
                         return ${ERR_RMMOD}
@@ -277,7 +277,7 @@ function obtain_device_list_chameleon_device {
         local DevNr=0   
 
         # Check how many boards are present 
-        BoardsCnt=$(echo ${MenPcPassword} | sudo -S --prompt= /opt/menlinux/BIN/fpga_load -s | grep "${VenID} * ${DevID} * ${SubVenID}" | wc -l)
+        BoardsCnt=$(echo ${MenPcPassword} | sudo -S --prompt=$'\r' /opt/menlinux/BIN/fpga_load -s | grep "${VenID} * ${DevID} * ${SubVenID}" | wc -l)
 
         echo "There are: ${BoardsCnt} mezzaine ${VenID} ${DevID} ${SubVenID} board(s) in the system" 
 
@@ -292,10 +292,10 @@ function obtain_device_list_chameleon_device {
         echo "Obtain modules name from mezz ${BoardNumber}"
 
         # Obtain BUS number
-        BusNr=$(echo ${MenPcPassword} | sudo -S --prompt= /opt/menlinux/BIN/fpga_load -s | grep "${VenID} * ${DevID} * ${SubVenID}" | awk NR==${BoardNumber}'{print $3}')
+        BusNr=$(echo ${MenPcPassword} | sudo -S --prompt=$'\r' /opt/menlinux/BIN/fpga_load -s | grep "${VenID} * ${DevID} * ${SubVenID}" | awk NR==${BoardNumber}'{print $3}')
         
         # Obtain DEVICE number
-        DevNr=$(echo ${MenPcPassword} | sudo -S --prompt= /opt/menlinux/BIN/fpga_load -s | grep "${VenID} * ${DevID} * ${SubVenID}" | awk NR==${BoardNumber}'{print $4}')
+        DevNr=$(echo ${MenPcPassword} | sudo -S --prompt=$'\r' /opt/menlinux/BIN/fpga_load -s | grep "${VenID} * ${DevID} * ${SubVenID}" | awk NR==${BoardNumber}'{print $4}')
         
         echo "Device BUS:${BusNr}, Dev:${DevNr}"  
         # Check how many chameleon devices are present in configuration
@@ -371,7 +371,7 @@ function gpio_test {
         # Make sure that input is disabled 
         change_input ${TestCaseLogName} ${TestCaseName} $((${CommandCode}+100)) ${InputSwitchTimeout} ${LogPrefix}
         # Test GPIO, banana plugs are not connected to power source
-        echo ${MenPcPassword} | sudo -S --prompt= z17_simp ${GPIO2} >> z17_simp_${GPIO2}_banana_plug_disconnected.txt 2>&1
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' z17_simp ${GPIO2} >> z17_simp_${GPIO2}_banana_plug_disconnected.txt 2>&1
         CmdResult=$?
         if [ ${CmdResult} -ne ${ERR_OK} ]; then
                 echo "${LogPrefix} ERR_RUN :could not run z17_simp ${GPIO2}" | tee -a ${TestCaseLogName} 2>&1     
@@ -387,7 +387,7 @@ function gpio_test {
         fi
 
         # Test GPIO, banana plugs are connected to power source
-        echo ${MenPcPassword} | sudo -S --prompt= z17_simp ${GPIO2} >> z17_simp_${GPIO2}_banana_plug_connected.txt 2>&1
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' z17_simp ${GPIO2} >> z17_simp_${GPIO2}_banana_plug_connected.txt 2>&1
         CmdResult=$?
         if [ ${CmdResult} -ne ${ERR_OK} ]; then
                 echo "${LogPrefix} ERR_RUN :could not run z17_simp ${GPIO1}" | tee -a ${TestCaseLogName} 2>&1
@@ -441,8 +441,8 @@ function uart_loopback_test {
         local CmdResult=${ERR_UNDEFINED}
         local LogPrefix="[Uart_test]"
 
-        echo ${MenPcPassword} | sudo -S --prompt= modprobe men_mdis_kernel
-        echo ${MenPcPassword} | sudo -S --prompt= modprobe men_lx_z25 baud_base=1843200 mode=se,se
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_mdis_kernel
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_lx_z25 baud_base=1843200 mode=se,se
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix} ERR_MODPROBE :could not modprobe men_lx_z25 baud_base=1843200 mode=se,se"\
                   | tee -a ${TestCaseLogName} 2>&1
@@ -509,13 +509,13 @@ function uart_test_lx_z25 {
         fi
         
         sleep 1
-        echo ${MenPcPassword} | sudo -S --prompt= rmmod men_lx_z25 
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' rmmod men_lx_z25 
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix}  ERR_VALUE: could not rmmod m" | tee -a ${LogFileName} 
                 return ${ERR_VALUE}
         fi
 
-        echo ${MenPcPassword} | sudo -S --prompt= modprobe men_lx_z25 baud_base=1843200 mode=se,se
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_lx_z25 baud_base=1843200 mode=se,se
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix}  ERR_VALUE: could not  modprobe men_lx_z25 baud_base=1843200 mode=se,se" | tee -a ${LogFileName} 
                 return ${ERR_VALUE}
@@ -535,21 +535,21 @@ function uart_test_lx_z25 {
         #
         #for item in "${Arr[@]}"; do 
         #        # Conditions must be met: i2c-i801 is loaded, mcb_pci is disabled
-        #        echo ${MenPcPassword} | sudo -S --prompt= chmod o+rw /dev/ttyS${item}
+        #        echo ${MenPcPassword} | sudo -S --prompt=$'\r' chmod o+rw /dev/ttyS${item}
         #        if [ $? -ne 0 ]; then
         #                echo "${LogPrefix} Could not chmod o+rw on ttyS${item}"\
         #                  | tee -a ${LogFileName} 2>&1
         #        fi
         #        sleep 2
         #        # Below command prevent infitite loopback on serial port 
-        #        echo ${MenPcPassword} | sudo -S --prompt= stty -F /dev/ttyS${item} -echo -onlcr
+        #        echo ${MenPcPassword} | sudo -S --prompt=$'\r' stty -F /dev/ttyS${item} -echo -onlcr
         #        if [ $? -ne 0 ]; then
         #                echo "${LogPrefix} Could not stty -F on ttyS${item}"\
         #                  | tee -a ${LogFileName} 2>&1
         #        fi
         #        sleep 2
         #        # Listen on port in background
-        #        echo ${MenPcPassword} | sudo -S --prompt= cat /dev/ttyS${item}\
+        #        echo ${MenPcPassword} | sudo -S --prompt=$'\r' cat /dev/ttyS${item}\
         #          > echo_on_serial_S${item}.txt &
         #        
         #        if [ $? -ne 0 ]; then
@@ -560,14 +560,14 @@ function uart_test_lx_z25 {
         #        # Save background process PID 
         #        CatEchoTestPID=$!
         #        # Send data into port
-        #        echo ${MenPcPassword} | sudo -S --prompt= echo ${EchoTestMessage} > /dev/ttyS${item}
+        #        echo ${MenPcPassword} | sudo -S --prompt=$'\r' echo ${EchoTestMessage} > /dev/ttyS${item}
         #        if [ $? -ne 0 ]; then
         #                echo "${LogPrefix} Could not echo on ttyS${item}"\
         #                  | tee -a ${LogFileName} 2>&1
         #        fi
         #        # Kill process
         #        sleep 2 
-        #        echo ${MenPcPassword} | sudo -S --prompt= kill -9 ${CatEchoTestPID}
+        #        echo ${MenPcPassword} | sudo -S --prompt=$'\r' kill -9 ${CatEchoTestPID}
         #        if [ $? -ne 0 ]; then
         #                echo "${LogPrefix} Could not kill cat backgroung process ${CatEchoTestPID} on ttyS${item}"\
         #                  | tee -a ${LogFileName} 2>&1
@@ -611,21 +611,21 @@ function uart_test_tty {
 
         
         #Conditions must be met: i2c-i801 is loaded, mcb_pci is 
-        echo ${MenPcPassword} | sudo -S --prompt= chmod o+rw /dev/${tty0}
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' chmod o+rw /dev/${tty0}
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix} Could not chmod o+rw on ${tty0}"\
                   | tee -a ${LogFileName} 2>&1
         fi
         sleep 1
         # Below command prevent infitite loopback on serial port
-        echo ${MenPcPassword} | sudo -S --prompt= stty -F /dev/${tty0} -onlcr
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' stty -F /dev/${tty0} -onlcr
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix} Could not stty -F on ttyS${item}"\
                   | tee -a ${LogFileName} 2>&1
         fi
         sleep 1
         # Listen on port in background
-        echo ${MenPcPassword} | sudo -S --prompt= cat /dev/${tty1}\
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' cat /dev/${tty1}\
           > echo_on_serial_${tty1}.txt &
         
         if [ $? -ne 0 ]; then
@@ -637,7 +637,7 @@ function uart_test_tty {
         CatEchoTestPID=$!
 
         # Send data into port
-        echo ${MenPcPassword} | sudo -S --prompt= echo ${EchoTestMessage} > /dev/${tty0}
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' echo ${EchoTestMessage} > /dev/${tty0}
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix} Could not echo on ${tty0}"\
                   | tee -a ${LogFileName} 2>&1
@@ -645,13 +645,13 @@ function uart_test_tty {
         # Kill process
         sleep 1
         # Set up previous settings
-        echo ${MenPcPassword} | sudo -S --prompt= chmod o-rw /dev/${tty0}
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' chmod o-rw /dev/${tty0}
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix} Could not chmod o+rw on ${tty0}"\
                   | tee -a ${LogFileName} 2>&1
         fi
 
-        echo ${MenPcPassword} | sudo -S --prompt= kill ${CatEchoTestPID}
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' kill ${CatEchoTestPID}
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix} Could not kill cat backgroung process ${CatEchoTestPID} on ${tty1}"\
                   | tee -a ${LogFileName} 2>&1
@@ -686,7 +686,7 @@ function can_test_ll_z15 {
         local MezzChamDevDescriptionFile=$2
         local LogPrefix="[Can_test]"
 
-        echo ${MenPcPassword} | sudo -S --prompt= modprobe men_ll_z15
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_ll_z15
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix}  ERR_VALUE :could not modprobe men_ll_z15" | tee -a ${LogFileName} 
                 return ${ERR_VALUE}
@@ -700,7 +700,7 @@ function can_test_ll_z15 {
                 local CAN2=$(grep "^can" ${MezzChamDevDescriptionFile} | awk NR==2'{print $1}')
         fi
 
-        echo ${MenPcPassword} | sudo -S --prompt= mscan_pingpong ${CAN1} ${CAN2} >> mscan_pingpong_${CAN1}_${CAN2}.txt 2>&1
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' mscan_pingpong ${CAN1} ${CAN2} >> mscan_pingpong_${CAN1}_${CAN2}.txt 2>&1
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix}  mscan_pingpong on ${CAN1} ${CAN2} error" | tee -a ${LogFileName}
                 return ${ERR_VALUE}
@@ -778,7 +778,7 @@ function obtain_tty_number_list_from_board {
         local BoardMaxSlot=8
 
         for i in $(seq 0 ${BoardMaxSlot}); do
-                echo ${MenPcPassword} | sudo -S --prompt= /opt/menlinux/BIN/fpga_load ${VenID} ${DevID} ${SubVenID} $i -t > /dev/null 2>&1
+                echo ${MenPcPassword} | sudo -S --prompt=$'\r' /opt/menlinux/BIN/fpga_load ${VenID} ${DevID} ${SubVenID} $i -t > /dev/null 2>&1
                 if [ $? -eq 0 ]; then
                         BoardCnt=$((${BoardCnt}+1))
                 else
@@ -790,7 +790,7 @@ function obtain_tty_number_list_from_board {
 
         # Save chamelon table for board(s)
         for i in $(seq 1 ${BoardCnt}); do
-                echo ${MenPcPassword} | sudo -S --prompt= /opt/menlinux/BIN/fpga_load ${VenID} ${DevID} ${SubVenID} $((${i}-1)) -t >> Board_${VenID}_${DevID}_${SubVenID}_${i}_chameleon_table.txt
+                echo ${MenPcPassword} | sudo -S --prompt=$'\r' /opt/menlinux/BIN/fpga_load ${VenID} ${DevID} ${SubVenID} $((${i}-1)) -t >> Board_${VenID}_${DevID}_${SubVenID}_${i}_chameleon_table.txt
                 if [ $? -eq 0 ]; then
                         echo "Chameleon for Board_${VenID}_${DevID}_${SubVenID}_${i} board saved (1)" | tee -a ${TestCaseLogName} 2>&1
                 else
@@ -799,7 +799,7 @@ function obtain_tty_number_list_from_board {
         done
 
         # Save uart devices into file
-        echo ${MenPcPassword} | sudo -S --prompt= cat /proc/tty/driver/serial >> UART_devices_dump.txt
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' cat /proc/tty/driver/serial >> UART_devices_dump.txt
 
         # Check How many UARTS are on board(s)
         UartCnt=0
@@ -925,19 +925,19 @@ function m_module_m77_test {
         local LogPrefix="[m77_test]"
         
         # modprobe men_ sth sth 
-        echo ${MenPcPassword} | sudo -S --prompt= modprobe men_mdis_kernel
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_mdis_kernel
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix}  ERR_VALUE: could not modprobe men_mdis_kernel" | tee -a ${LogFileName}
                 return ${ERR_VALUE}
         fi
 
-        echo ${MenPcPassword} | sudo -S --prompt= mdis_createdev -b ${M77CarrierName}
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' mdis_createdev -b ${M77CarrierName}
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix}  ERR_VALUE: could not mdis_createdev -b ${M77CarrierName}" | tee -a ${LogFileName}
                 return ${ERR_VALUE}
         fi
 
-        echo ${MenPcPassword} | sudo -S --prompt= modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix}  ERR_VALUE: could not modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7" | tee -a ${LogFileName}
                 return ${ERR_VALUE}
@@ -960,13 +960,13 @@ function m_module_m77_test {
         fi
 
         sleep 2 
-        echo ${MenPcPassword} | sudo -S --prompt= rmmod men_lx_m77 
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' rmmod men_lx_m77 
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix}  ERR_VALUE: could not rmmod m" | tee -a ${LogFileName} 
                 return ${ERR_VALUE}
         fi
 
-        echo ${MenPcPassword} | sudo -S --prompt= modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix}  ERR_VALUE: could not modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7" | tee -a ${LogFileName}
                 return ${ERR_VALUE}
@@ -1000,14 +1000,14 @@ function m_module_m72_test {
         local M72Nr=${3}
         local LogPrefix="[m72_test]"
 
-        echo ${MenPcPassword} | sudo -S --prompt= modprobe men_ll_m72
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_ll_m72
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m72" | tee -a ${LogFileName} 
                 return ${ERR_VALUE}
         fi
 
         # Run m72_out in background. 
-        echo ${MenPcPassword} | sudo -S --prompt= stdbuf -oL m72_out m72_1 0 < /dev/null > m72_out.log & 
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' stdbuf -oL m72_out m72_1 0 < /dev/null > m72_out.log & 
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix} Could not run m72_out "\
                   | tee -a ${LogFileName} 2>&1
@@ -1017,7 +1017,7 @@ function m_module_m72_test {
         M72_Out_PID=$!
 
         # Here output from m72_out should be 0
-        echo ${MenPcPassword} | sudo -S --prompt= stdbuf -oL m72_single m72_1 1 < /dev/null > m72_single_run.log &
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' stdbuf -oL m72_single m72_1 1 < /dev/null > m72_single_run.log &
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix} Could not run m72_out "\
                   | tee -a ${LogFileName} 2>&1
@@ -1032,13 +1032,13 @@ function m_module_m72_test {
         echo "${LogPrefix} M72_Single_PID: ${M72_Single_PID}"
 
         # Kill background processes  sudo stdbuf 
-        echo ${MenPcPassword} | sudo -S --prompt= kill -9 ${M72_Out_PID}
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' kill -9 ${M72_Out_PID}
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix} Could not kill m72_out"\
                   | tee -a ${LogFileName} 2>&1
         fi
 
-        echo ${MenPcPassword} | sudo -S --prompt= kill -9 ${M72_Single_PID}
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' kill -9 ${M72_Single_PID}
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix} Could not kill m72_single"\
                   | tee -a ${LogFileName} 2>&1
@@ -1048,13 +1048,13 @@ function m_module_m72_test {
         M72_Out_PID=$(ps aux | grep m72_single | awk 'NR==1 {print $2}')
         M72_Single_PID=$(ps aux | grep m72_out | awk 'NR==1 {print $2}')
 
-        echo ${MenPcPassword} | sudo -S --prompt= kill -9 ${M72_Out_PID}
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' kill -9 ${M72_Out_PID}
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix} Could not kill m72_out"\
                   | tee -a ${LogFileName} 2>&1
         fi
 
-        echo ${MenPcPassword} | sudo -S --prompt= kill -9 ${M72_Single_PID}
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' kill -9 ${M72_Single_PID}
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix} Could not kill m72_single"\
                   | tee -a ${LogFileName} 2>&1
@@ -1198,7 +1198,7 @@ function m_module_x_test {
                   ModprobeDriver)
                         # Modprobe driver
                         echo "${LogPrefix} ModprobeDriver" | tee -a ${TestCaseLogName} 2>&1
-                        echo ${MenPcPassword} | sudo -S --prompt= modprobe ${ModprobeDriver}
+                        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe ${ModprobeDriver}
                         CmdResult=$?
                         if [ ${CmdResult} -ne ${ERR_OK} ]; then
                                 echo "${LogPrefix} Error: ${ERR_MODPROBE} :could not modprobe ${ModprobeDriver}" | tee -a ${TestCaseLogName} 2>&1
@@ -1224,7 +1224,7 @@ function m_module_x_test {
                         # If device cannot be opened there is a log in result  :
                         # *** ERROR (LINUX) #2:  No such file or directory ***
                         echo "${LogPrefix} RunExampleInputDisable" | tee -a ${TestCaseLogName} 2>&1
-                        echo ${MenPcPassword} | sudo -S --prompt= ${ModuleSimp} ${ModuleInstanceName} > ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_disconnected.txt 2>&1
+                        echo ${MenPcPassword} | sudo -S --prompt=$'\r' ${ModuleSimp} ${ModuleInstanceName} > ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_disconnected.txt 2>&1
                         ErrorLogCnt=$(grep "ERROR" ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_disconnected.txt | grep "No such file or directory" | wc -l) 
                         CmdResult=$ErrorLogCnt
                         if [ ${CmdResult} -ne ${ERR_OK} ]; then
@@ -1254,7 +1254,7 @@ function m_module_x_test {
                         # If device cannot be opened there is a log in result  :
                         # *** ERROR (LINUX) #2:  No such file or directory ***
                         echo "${LogPrefix} RunExampleInputEnable" | tee -a ${TestCaseLogName} 2>&1
-                        echo ${MenPcPassword} | sudo -S --prompt= ${ModuleSimp} ${ModuleInstanceName} > ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_connected.txt 2>&1
+                        echo ${MenPcPassword} | sudo -S --prompt=$'\r' ${ModuleSimp} ${ModuleInstanceName} > ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_connected.txt 2>&1
                         ErrorLogCnt=$(grep "ERROR" ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_connected.txt | grep "No such file or directory" | wc -l) 
                         CmdResult=${ErrorLogCnt}
                         if [ ${CmdResult} -ne ${ERR_OK} ]; then
@@ -1638,8 +1638,8 @@ function write_command_code {
         fi
 
         touch "${LockFileName}"
-        echo ${MenPcPassword} | sudo -S --prompt= chown ${MenPcLogin}:${MenPcLogin} ${LockFileName}
-        echo ${MenPcPassword} | sudo -S --prompt= chmod a+w ${LockFileName}
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' chown ${MenPcLogin}:${MenPcLogin} ${LockFileName}
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' chmod a+w ${LockFileName}
 
         echo -n "${TestCaseName} : ${CommandCode}" > ${LockFileName}
         echo "${LogPrefix} ${TestCaseName} : ${CommandCode}" | tee -a ${TestCaseLogName} 2>&1
@@ -1737,13 +1737,13 @@ function change_input {
 #       None 
 #
 function clean_test_case_files {
-        echo ${MenPcPassword} | sudo -S --prompt= rm -rf BIN/
-        echo ${MenPcPassword} | sudo -S --prompt= rm -rf DESC/
-        echo ${MenPcPassword} | sudo -S --prompt= rm -rf LIB/
-        echo ${MenPcPassword} | sudo -S --prompt= rm -rf OBJ/
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf BIN/
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf DESC/
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf LIB/
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf OBJ/
 
-        #echo ${MenPcPassword} | sudo -S --prompt= rm -rf /etc/mdis/*
-        #echo ${MenPcPassword} | sudo -S --prompt= rm -rf /lib/modules/linux_src ../misc/*
+        #echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf /etc/mdis/*
+        #echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf /lib/modules/linux_src ../misc/*
         
 }
 
