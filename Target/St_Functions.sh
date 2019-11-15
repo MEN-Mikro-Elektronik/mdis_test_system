@@ -868,7 +868,7 @@ function smb_test_lx_z001 {
         SMBUS_ID="$(echo ${MenPcPassword} | sudo -S --prompt=$'\r' grep --only-matching "16Z001-[0-1]\+ BAR[0-9]\+ offs 0x[0-9]\+" "i2c_bus_list_test.log")"
         echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cdump -y "${SMBUS_ID}" "${ReadAddress}" > "i2c_bus_dump_before.log"
 
-        cat "i2c_bus_dump.log" | grep "${BoardName}"
+        cat "i2c_bus_dump_before.log" | grep "${BoardName}"
         CmdResult=$?
         if [ ${CmdResult} -ne ${ERR_OK} ]; then
                 echo "ERR_VALUE: i2cdump failed for ${SMBUS_ID}" | tee -a ${TestCaseLogName} 2>&1
