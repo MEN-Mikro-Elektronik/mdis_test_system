@@ -65,7 +65,7 @@ else
         echo "run_test_case_common_actions: Success"
 fi
 
-echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G25A_Interface_Test.sh" ${TestSummaryDirectory}
+echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G229_Test.sh" ${TestSummaryDirectory}
 echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M77_M_Module_Test.sh" ${TestSummaryDirectory} "1" "1"
 echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M82_M_Module_Test.sh" ${TestSummaryDirectory}
 echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M72_M_Module_Test.sh" ${TestSummaryDirectory}
