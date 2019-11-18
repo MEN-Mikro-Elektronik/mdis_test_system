@@ -70,7 +70,7 @@ while ${MachineRun}; do
         Step3)
                 # Can test
                 echo "Run step @3" | tee -a ${TestCaseLogName} 2>&1
-                # Run step @4 Test CAN interfaces, there should be 2 cans available
+                # Run step @4 Test CAN interface, there should be 1 CAN available
                 MezzChamDevName="MezzChamDevName.txt"
                 obtain_device_list_chameleon_device ${VenID} ${DevID} ${SubVenID} ${MezzChamDevName}
 
