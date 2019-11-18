@@ -917,11 +917,12 @@ function smb_test_lx_z001 {
 # $1    Test case log file name
 # $2    Test case name
 # $3    M77 board number
+# $4    Carrier board number
 function m_module_m77_test {
         local TestCaseLogName=${1}
         local TestCaseName=${2}
         local M77Nr=${3}
-        local M77CarrierName="d203_a24_3" # obtain from system.dsc (only G204)
+        local M77CarrierName="d203_a24_${4}" # obtain from system.dsc (only G204)
         local LogPrefix="[m77_test]"
         
         # modprobe men_ sth sth 

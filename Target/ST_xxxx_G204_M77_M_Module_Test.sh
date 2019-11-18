@@ -50,7 +50,7 @@ while ${MachineRun}; do
           Step2);&
           Step3)
                 echo "Run step @3" | tee -a ${TestCaseLogName} 2>&1
-                m_module_m77_test ${TestCaseLogName} ${TestCaseName} "1"
+                m_module_m77_test ${TestCaseLogName} ${TestCaseName} "${2}" "${3}"
                 CmdResult=$?
                 if [ ${CmdResult} -ne ${ERR_OK} ]; then
                         TestCaseStep3=${CmdResult}
