@@ -56,10 +56,10 @@ while ${MachineRun}; do
                 if [ $? -ne 0 ]; then
                         echo "${LogPrefix}  ERR_MODPROBE: could not modprobe men_mdis_kernel" | tee -a ${LogFileName}
                         TestCaseStep1=${ERR_MODPROBE}
-                        MachineStep="Break"
+                        MachineState="Break"
                 else
                         TestCaseStep1=${ERR_OK}
-                        MachineStep="Step2"
+                        MachineState="Step2"
                 fi
                 ;;
         Step2)
@@ -68,10 +68,10 @@ while ${MachineRun}; do
                 if [ $? -ne 0 ]; then
                         echo "${LogPrefix}  ERR_MODPROBE: could not modprobe i2c_i801" | tee -a ${LogFileName}
                         TestCaseStep2=${ERR_MODPROBE}
-                        MachineStep="Break"
+                        MachineState="Break"
                 else
                         TestCaseStep2=${ERR_OK}
-                        MachineStep="Step3"
+                        MachineState="Step3"
                 fi
                 ;;
         Step3)
