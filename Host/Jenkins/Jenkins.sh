@@ -23,34 +23,6 @@ while test $# -gt 0 ; do
         esac
 done
 
-function Test_Setup_1_Configure {
-        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 0e:0d.0 COMMAND=0x7"
-        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 0e:0e.0 COMMAND=0x7"
-        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 09:00.0 COMMAND=0x7"
-        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 0a:00.0 COMMAND=0x7"
-}
-
-function Test_Setup_2_Configure {
-        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s  a:00.0 COMMAND=0x7"
-        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 0b:00.0 COMMAND=0x7"
-        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 0c:00.0 COMMAND=0x7"
-        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 0e:0d.0 COMMAND=0x7"
-        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 0e:0f.0 COMMAND=0x7"
-}
-
-function Test_Setup_3_Configure {
-        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 0e:0d.0 COMMAND=0x7"
-        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 09:00.0 COMMAND=0x7"
-        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 0e:0e.0 COMMAND=0x7"
-}
-
-function Test_Setup_6_Configure {
-        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 02:00.0 COMMAND=0x7"
-        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 0f:00.0 COMMAND=0x7"
-        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 10:00.0 COMMAND=0x7"
-        run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' setpci -s 08:00.0 COMMAND=0x7"
-}
-
 echo "Test Setup: ${TestSetup}"
 case ${TestSetup} in
         1)
@@ -124,15 +96,12 @@ function runTests {
             St_Test_Setup_Configuration=""
             case ${TestSetup} in
                     1)
-                      #Test_Setup_1_Configure
                       St_Test_Setup_Configuration="St_Test_Configuration_1.sh"
                       ;;
                     2)
-                      Test_Setup_2_Configure
                       St_Test_Setup_Configuration="St_Test_Configuration_2.sh"
                       ;;
                     3)
-                      #Test_Setup_3_Configure
                       St_Test_Setup_Configuration="St_Test_Configuration_3.sh"
                       ;;
                     4)
@@ -142,7 +111,6 @@ function runTests {
                       St_Test_Setup_Configuration="St_Test_Configuration_5.sh"
                       ;;
                     6)
-                      #Test_Setup_6_Configure
                       St_Test_Setup_Configuration="St_Test_Configuration_6.sh"
                       ;;
                     *)
