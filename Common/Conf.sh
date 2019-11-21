@@ -135,6 +135,8 @@ GrubOsesF26L=("0" \
         "Ubuntu, with Linux 5.0.0-23-generic (on /dev/sda17)" \
         "Debian GNU/Linux, with Linux 4.19.0-5-686-pae (on /dev/sda18)" \
         "Debian GNU/Linux, with Linux 4.19.0-5-amd64 (on /dev/sda19)" \
+        "Poky (Yocto Project Reference Distro) 2.5 (sumo) (on /dev/sda21)" \
+        "Poky (Yocto Project Reference Distro) 2.7.1 (warrior) (on /dev/sda22)"
         )
 
 #F23P
@@ -146,12 +148,31 @@ GrubOsesF23P=("0" \
         "Debian GNU/Linux, with Linux 4.19.0-5-686-pae (on /dev/sda18)" \
         "Debian GNU/Linux, with Linux 4.19.0-5-amd64 (on /dev/sda19)" \
         "CentOS Linux 7 (Core) (on /dev/sda6)" \
-        "CentOS Linux 7 (Core) (on /dev/sda9)" \
+        "CentOS Linux 7 (Core) (on /dev/sda9)"
         )
 #G22
 GrubOsesG22=("0" \
         )
+#G23
+GrubOsesG23=("0" \
+        "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda14)" \
+        "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda15)" \
+        "Ubuntu 18.04.3 LTS (18.04) (on /dev/sda16)" \
+        "Ubuntu, with Linux 5.0.0-23-generic (on /dev/sda17)" \
+        "Debian GNU/Linux, with Linux 4.19.0-5-686-pae (on /dev/sda18)" \
+        "Debian GNU/Linux, with Linux 4.19.0-5-amd64 (on /dev/sda19)" \
+        "CentOS Linux 7 (Core) (on /dev/sda6)" \
+        "CentOS Linux 7 (Core) (on /dev/sda9)"
+        )
 #G25A
 GrubOsesG25A=("0" \
+        "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda14)" \
+        "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda15)" \
+        "Ubuntu 18.04.3 LTS (18.04) (on /dev/sda16)" \
+        "Ubuntu, with Linux 5.0.0-23-generic (on /dev/sda17)" \
+        "Debian GNU/Linux, with Linux 4.19.0-5-686-pae (on /dev/sda18)" \
+        "Debian GNU/Linux, with Linux 4.19.0-5-amd64 (on /dev/sda19)" \
+        "Poky (Yocto Project Reference Distro) 2.5 (sumo) (on /dev/sda21)" \
+        "Poky (Yocto Project Reference Distro) 2.7.1 (warrior) (on /dev/sda22)"
         )
 
