@@ -134,10 +134,8 @@ ALL_COM_TOOLS = \
 	VME4L_API/VME4L_SPCYCLE/program.mak \
 	VME4L_API/VME4L_CTRL/program.mak \
 	VME4L_API/VME4L_IRQGEN/program.mak \
-	HWBUG/program.mak
- #FPGA_LOAD/program.local.mak \
- #FPGA_LOAD/program.mak \
- #FPGA_LOAD/program_sw.mak \
+	HWBUG/program.mak \
+    mm_ident/program.mak
 
 ALL_NATIVE_DRIVERS =
 
