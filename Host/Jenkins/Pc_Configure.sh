@@ -148,6 +148,7 @@ function download_13MD05_90_repository {
         else
                 #Go to most current commit 
                 git pull origin
+                git submodule init
                 git submodule update
         fi
         cd ..
@@ -178,6 +179,7 @@ function install_13MD05_90_sources {
                 fi
                 # install sources of MDIS
                 echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf /opt/menlinux
+                echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -f /lib/modules/$(uname -r)/misc/men_*
                 cd ${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName} 
                 echo ${MenPcPassword} | sudo -S --prompt=$'\r' ./INSTALL.sh --install-only
         else
