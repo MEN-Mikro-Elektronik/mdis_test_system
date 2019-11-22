@@ -179,7 +179,8 @@ function install_13MD05_90_sources {
                 fi
                 # install sources of MDIS
                 echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf /opt/menlinux
-                echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -f /lib/modules/$(uname -r)/misc/men_*
+                echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -f /lib/modules/$(uname -r)/misc/men_*.ko
+                echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -f /etc/mdis/*.bin
                 cd ${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName} 
                 echo ${MenPcPassword} | sudo -S --prompt=$'\r' ./INSTALL.sh --install-only
         else
