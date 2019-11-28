@@ -64,7 +64,7 @@ function create_result_directory {
 function create_test_case_sources_directory {
         # remove if exists 
         if [ -d "${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}" ]; then
-                rm -rf "${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}"
+                echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf "${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}"
         fi
 
         ${GitTestSourcesCmd}
@@ -103,7 +103,7 @@ function create_13MD05-90_directory {
                 echo "Comparision GitBranch: ${GitBranch} with ${GitMdisBranch} "
                 if [ "${GitBranch}" != "${GitMdisBranch}" ]; then
                         cd .. 
-                        rm -rf ${MdisSourcesDirectoryName}
+                        echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf ${MdisSourcesDirectoryName}
                         download_13MD05_90_repository
                         if [ $? -ne 0 ]; then
                                 echo "ERR: ${ERR_DOWNLOAD} - cannot download Mdis"
