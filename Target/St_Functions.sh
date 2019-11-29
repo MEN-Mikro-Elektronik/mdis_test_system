@@ -123,6 +123,7 @@ function get_os_name_with_kernel_ver {
         local Kernel=`uname -r`
         local Arch=`uname -m`
         cd "${CurrDir}"
+        SystemName="${SystemName//\//_}"
         echo "${SystemName}_${Kernel}_${Arch}"
 }
 
@@ -1156,7 +1157,7 @@ function m_module_x_test {
                 fi
                 ModuleInstanceName="${MModuleName}_${MModuleBoardNr} 14" 
                 ;;
-          m36)
+          m36n)
                 ModprobeDriver="men_ll_m36"
                 ModuleSimp="m36_simp"
                 ModuleResultCmpFunc="compare_m36_simp_values"
@@ -1550,8 +1551,8 @@ function compare_m36_simp_values {
 
         echo "${LogPrefix} compare_m36_simp_values"
 
-        local ValueChannelStateConnected=$(cat m36_${M36Nr}_simp_output_connected.txt | awk NR==6'{print $4}')
-        local ValueChannelStateDisconnected=$(cat m36_${M36Nr}_simp_output_disconnected.txt | awk NR==6'{print $4}')
+        local ValueChannelStateConnected=$(cat m36n_${M36Nr}_simp_output_connected.txt | awk NR==6'{print $4}')
+        local ValueChannelStateDisconnected=$(cat m36n_${M36Nr}_simp_output_disconnected.txt | awk NR==6'{print $4}')
 
         echo "${LogPrefix} ValueChannelStateConnected: ${ValueChannelStateConnected}"
         echo "${LogPrefix} ValueChannelStateDisconnected: ${ValueChannelStateDisconnected}"        

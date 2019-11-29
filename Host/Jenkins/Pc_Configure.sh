@@ -64,7 +64,7 @@ function create_result_directory {
 function create_test_case_sources_directory {
         # remove if exists 
         if [ -d "${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}" ]; then
-                rm -rf "${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}"
+                echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf "${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}"
         fi
 
         ${GitTestSourcesCmd}
@@ -103,7 +103,7 @@ function create_13MD05-90_directory {
                 echo "Comparision GitBranch: ${GitBranch} with ${GitMdisBranch} "
                 if [ "${GitBranch}" != "${GitMdisBranch}" ]; then
                         cd .. 
-                        rm -rf ${MdisSourcesDirectoryName}
+                        echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf ${MdisSourcesDirectoryName}
                         download_13MD05_90_repository
                         if [ $? -ne 0 ]; then
                                 echo "ERR: ${ERR_DOWNLOAD} - cannot download Mdis"
@@ -148,6 +148,7 @@ function download_13MD05_90_repository {
         else
                 #Go to most current commit 
                 git pull origin
+                git submodule init
                 git submodule update
         fi
         cd ..
@@ -178,6 +179,8 @@ function install_13MD05_90_sources {
                 fi
                 # install sources of MDIS
                 echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf /opt/menlinux
+                echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -f /lib/modules/$(uname -r)/misc/men_*.ko
+                echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -f /etc/mdis/*.bin
                 cd ${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName} 
                 echo ${MenPcPassword} | sudo -S --prompt=$'\r' ./INSTALL.sh --install-only
         else

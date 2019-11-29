@@ -32,10 +32,10 @@ case ${TestSetup} in
           GrubOses=( "${GrubOsesF26L[@]}" )
           ;;
         3)
-          GrubOses=( "${GrubOsesF26L[@]}" )
+          GrubOses=( "${GrubOsesG23[@]}" )
           ;;
         4)
-          GrubOses=( "${GrubOsesF23P[@]}" )
+          GrubOses=( "${GrubOsesG25A[@]}" )
           ;;
         5)
           GrubOses=( "${GrubOsesG22[@]}" )
