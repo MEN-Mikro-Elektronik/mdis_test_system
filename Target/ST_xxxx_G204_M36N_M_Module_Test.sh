@@ -20,7 +20,7 @@ if [ -z "$2" ]; then
     echo "Use first device as default"
 else
     DeviceInstance="${2}"
-    echo "Use m36_${DeviceInstance} device"
+    echo "Use m36n_${DeviceInstance} device"
 fi
 
 ###############################################################################
@@ -59,7 +59,7 @@ while ${MachineRun}; do
           Step2);&
           Step3)
                 echo "Run step @3" | tee -a ${TestCaseLogName} 2>&1
-                m_module_x_test ${TestCaseLogName} ${TestCaseName} ${IN_0_ENABLE} "m36" "${DeviceInstance}"
+                m_module_x_test ${TestCaseLogName} ${TestCaseName} ${IN_0_ENABLE} "m36n" "${DeviceInstance}"
                 CmdResult=$?
                 if [ ${CmdResult} -ne ${ERR_OK} ]; then
                         TestCaseStep3=${CmdResult}
