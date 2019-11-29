@@ -1158,8 +1158,8 @@ function m_module_x_test {
                 ModuleInstanceName="${MModuleName}_${MModuleBoardNr} 14" 
                 ;;
           m36)
-                ModprobeDriver="men_ll_m36"
-                ModuleSimp="m36_simp"
+                ModprobeDriver="men_ll_m34"
+                ModuleSimp="m34_simp"
                 ModuleResultCmpFunc="compare_m36_simp_values"
                 ModuleInstanceName="${MModuleName}_${MModuleBoardNr}"
                 ;;
