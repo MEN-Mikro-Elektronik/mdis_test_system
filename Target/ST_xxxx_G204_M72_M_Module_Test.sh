@@ -62,9 +62,9 @@ while ${MachineRun}; do
                 m_module_m72_test ${TestCaseLogName} ${TestCaseName} "${DeviceInstance}"
                 CmdResult=$?
                 if [ ${CmdResult} -ne ${ERR_OK} ]; then
-                        TestCaseStep4=${CmdResult}
+                        TestCaseStep3=${CmdResult}
                 else
-                        TestCaseStep4=0
+                        TestCaseStep3=0
                 fi
                 MachineState="Break"
                 ;;
