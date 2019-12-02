@@ -757,6 +757,39 @@ function can_test_ll_z15_loopback {
 }
 
 ############################################################################
+# Test CAN with men_ll_z15 IpCore (loopback) version 2
+#
+# parameters:
+# $1      name of file with log 
+# $2      CAN device name
+#        
+#
+function can_test_ll_z15_loopback2 {
+
+        local LogFileName=$1
+        local CANDevice=$2
+        local LogPrefix="[Can_test]"
+
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_ll_z15
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix}  ERR_VALUE :could not modprobe men_ll_z15" | tee -a ${LogFileName} 
+                return ${ERR_VALUE}
+        fi
+
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' mscan_loopb ${CANDevice} >> mscan_loopb_${CANDevice}.txt 2>&1
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix}  mscan_loopb on ${CANDevice} error" | tee -a ${LogFileName}
+                return ${ERR_VALUE}
+        else
+                local CanResult=$(grep "TEST RESULT:" mscan_loopb_${CANDevice}.txt | awk NR==1'{print $3}')
+                if [ "${CanResult}" -ne "${ERR_OK}" ]; then
+                         return ${ERR_RUN}
+                fi
+                return ${ERR_OK}
+        fi
+}
+
+############################################################################
 # This function resolves 'connection' beetween UART IpCore and ttyS number
 # in linux system. Addresses for UART and ttyS are compared. 
 #

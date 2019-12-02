@@ -44,12 +44,12 @@ IN_3_DISABLE=203        # change input 3 to disable (with BL51 stands for RELAY 
 IN_4_DISABLE=204        # change input 4 to disable
 
 # Address of Target that will be tested
-MenPcIpAddr="10.1.1.78"
+MenPcIpAddr="10.1.1.72"
 
 #------------------------------------------------------------------------------
 #-------------------------PLEASE SPECIFY THE TEST SETUP------------------------
 #------------------------------------------------------------------------------
-TestSetup="4"
+TestSetup="5"
 
 
 # Credentials for Pc that will be tested - required by ssh connection and sudo cmds
@@ -175,4 +175,14 @@ GrubOsesG25A=("0" \
         "Poky (Yocto Project Reference Distro) 2.5 (sumo) (on /dev/sda21)" \
         "Poky (Yocto Project Reference Distro) 2.7.1 (warrior) (on /dev/sda22)"
         )
-
+#BL51E
+GrubOsesBL51E=("0" \
+        "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda14)" \
+        "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda15)" \
+        "Ubuntu 18.04.3 LTS (18.04) (on /dev/sda16)" \
+        "Ubuntu, with Linux 5.0.0-23-generic (on /dev/sda17)" \
+        "Debian GNU/Linux, with Linux 4.19.0-6-686-pae (on /dev/sda18)" \
+        "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)" \
+        "Poky (Yocto Project Reference Distro) 2.5 (sumo) (on /dev/sda21)" \
+        "Poky (Yocto Project Reference Distro) 2.7.1 (warrior) (on /dev/sda22)"
+        )
