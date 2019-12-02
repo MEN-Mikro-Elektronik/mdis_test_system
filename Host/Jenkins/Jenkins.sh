@@ -155,7 +155,7 @@ if [ "${RunInstantly}" == "1" ]; then
             fi
 
             cat "${MyDir}/../../Common/Conf.sh" > tmp.sh
-            echo "RunInsantly=1" >> tmp.sh
+            echo "RunInstantly=\"1\"" >> tmp.sh
             cat ${MyDir}/Pc_Configure.sh >> tmp.sh
             run_script_on_remote_pc ${MyDir}/tmp.sh
             if [ $? -ne 0 ]; then
