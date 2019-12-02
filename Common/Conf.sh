@@ -183,6 +183,4 @@ GrubOsesBL51E=("0" \
         "Ubuntu, with Linux 5.0.0-23-generic (on /dev/sda17)" \
         "Debian GNU/Linux, with Linux 4.19.0-6-686-pae (on /dev/sda18)" \
         "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)" \
-        "Poky (Yocto Project Reference Distro) 2.5 (sumo) (on /dev/sda21)" \
-        "Poky (Yocto Project Reference Distro) 2.7.1 (warrior) (on /dev/sda22)"
         )
