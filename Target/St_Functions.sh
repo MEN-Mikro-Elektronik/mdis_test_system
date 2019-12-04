@@ -446,6 +446,16 @@ function uart_loopback_test {
 
         echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_mdis_kernel
         echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_lx_z25 baud_base=1843200 mode=se,se
+
+        ## DEBIAN workaround -- on DEBIAN chameleon table disapears when module men_lx_z25 is loaded
+        ## rmmod men_lx_z25 for a while. (it must be loaded to set proper uart mmmio address)
+        local IsDebian="$(hostnamectl | grep "Operating System" | grep "Debian" | wc -l)"
+        echo "IsDebian: ${IsDebian}" | tee -a ${TestCaseLogName} 2>&1
+        if [ "${IsDebian}" == "1" ]; then
+            echo ${MenPcPassword} | sudo -S --prompt=$'\r' rmmod men_lx_z25
+        fi
+        ###
+
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix} ERR_MODPROBE :could not modprobe men_lx_z25 baud_base=1843200 mode=se,se"\
                   | tee -a ${TestCaseLogName} 2>&1
@@ -459,7 +469,13 @@ function uart_loopback_test {
                    | tee -a ${TestCaseLogName} 2>&1
                  return ${CmdResult}
         fi
-        
+
+        ## DEBIAN workaround
+        if [ "${IsDebian}" == "1" ]; then
+            echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_lx_z25 baud_base=1843200 mode=se,se
+        fi
+        ###
+
         uart_test_lx_z25 "${TestCaseLogName}" ${LogPrefix}
         CmdResult=$?
         if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
@@ -467,7 +483,6 @@ function uart_loopback_test {
                    | tee -a ${TestCaseLogName} 2>&1
                  return ${CmdResult}
         fi
-        
         return ${CmdResult}
 }
 
