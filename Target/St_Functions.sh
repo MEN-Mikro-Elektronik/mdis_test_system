@@ -819,7 +819,7 @@ function obtain_tty_number_list_from_board {
                         BoardCnt=$((${BoardCnt}+1))
                 else
                         break
-                fi      
+                fi
         done
 
         echo "Found ${BoardCnt}:  ${VenID} ${DevID} ${SubVenID} board(s)" | tee -a ${TestCaseLogName} 2>&1
@@ -831,7 +831,7 @@ function obtain_tty_number_list_from_board {
                         echo "Chameleon for Board_${VenID}_${DevID}_${SubVenID}_${i} board saved (1)" | tee -a ${TestCaseLogName} 2>&1
                 else
                         break
-                fi      
+                fi
         done
 
         # Save uart devices into file
@@ -854,7 +854,10 @@ function obtain_tty_number_list_from_board {
                 done 
         done
         
-        echo "There are ${UartCnt} UART(s) on ${VenID} ${DevID} ${SubVenID} board(s)"
+        echo "There are ${UartCnt} UART(s) on ${VenID} ${DevID} ${SubVenID} board(s)" | tee -a ${TestCaseLogName} 2>&1
+        if [ ${UartCnt} -eq 0 ]; then
+            return ${ERR_NOT_DEFINED}
+        fi
         # List all UARTs that are on board(s)
         touch "UART_board_tty_numbers.txt"
         
@@ -867,7 +870,6 @@ function obtain_tty_number_list_from_board {
                 echo "${UartNr[${UartNrInBoard}]}" >> UART_board_tty_numbers.txt
                 UartNrInBoard=$((${UartNrInBoard} + 1))
         done
-
 }
 
 ############################################################################
