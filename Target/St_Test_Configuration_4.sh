@@ -65,11 +65,13 @@ else
         echo "run_test_case_common_actions: Success"
 fi
 
+echo ${1} | sudo -S --prompt=$'\r' dmesg --clear
 echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G229_Test.sh" ${TestSummaryDirectory}
 echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M77_M_Module_Test.sh" ${TestSummaryDirectory} "1" "1"
 #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M82_M_Module_Test.sh" ${TestSummaryDirectory}
 echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M72_M_Module_Test.sh" ${TestSummaryDirectory}
 echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_SMB2_Test.sh" ${TestSummaryDirectory} "smb2_1" "G025A03"
+echo ${1} | sudo -S --prompt=$'\r' bash -c "dmesg > dmesg_log.txt"
 
 echo "Create Test Results summary for Test Configuration 4"
 cd "${TestSummaryDirectory}"
