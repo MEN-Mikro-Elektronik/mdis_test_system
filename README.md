@@ -1,5 +1,15 @@
 # Test OS configuration
 
+## Disk partitioning
+Disk should be partitioned like below
+- GPT partition table
+  - 10 GB partition for data files (ext4)
+  - 10 GB swap partition
+  - 512 GB EFI partition
+  - 512 GB BIOS partition
+  - 10 GB main OS partition (ext4)
+  - ... other OS partitions (ext4)
+
 ## Preparing GRUB
 To boot a particular OS with GRUB we need to make GRUB read configuration from file at run time. Follow below steps in order to do that.
 
@@ -121,8 +131,25 @@ Check if addresses of devices are correct in inventory file
 ```ansible-playbook -i inventory playbook.yml```
 To add new packages to install edit roles/defaults/main.yml
 
+### Poky
+1. Yocto (sumo) generated with Core Sumo 2.5, Linux kernel 4.15 Linux Yocto BSP (MEN) 
+2. Yocto (warrior) generated with use of Core Warrior, Linux kernel 4.19 Linux generic x86-64, (core-image-base) 
+For both Yocto OS additional tools have been added: 
+EXTRA_IMAGE_FEATURES += “tools-sdk”
+EXTRA_IMAGE_FEATURES += “package-management”
+CORE_IMAGE_EXTRA_INSTALL += “bash”
+CORE_IMAGE_EXTRA_INSTALL += “git”
+CORE_IMAGE_EXTRA_INSTALL += “openssh”
+CORE_IMAGE_EXTRA_INSTALL += “i2c-tools”
+CORE_IMAGE_EXTRA_INSTALL += “pciutils”
+CORE_IMAGE_EXTRA_INSTALL += “kernel-devsrc”
+CORE_IMAGE_EXTRA_INSTALL += “rsync”
+CORE_IMAGE_EXTRA_INSTALL += “minicom”
+CORE_IMAGE_EXTRA_INSTALL += “git-perltools”
+Linux kernel I2C support with I2C device interface shall be enabled.
+
 # Test script configuration
-Most important variables that have to be set in configuration file "Common/Conf.sh"
+Most important variables that have to be set in configuration file ```Common/Conf.sh```
 
 - MenPcIpAddr
   IP address of test computer
@@ -199,8 +226,39 @@ Most important variables that have to be set in configuration file "Common/Conf.
   e.g.:
   ```GrubOsesBL51E=("0" "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda14)")```
 
-# Running tests
+# Running functional tests
 When everything is set up just run the script:
 ```
 # Host/Jenkins/Jenkins.sh
+```
+
+# Compilation tests
+
+## Test script configuration
+Most important variables that have to be set in configuration file ```MDIS_Compilation_Test/Conf.sh```
+
+- GitMdisBranch
+  Name of the MDIS branch used for testing
+  e.g.:
+  ```GitMdisBranch="master"``
+
+- MenPcPassword
+  Password of test user account on test computer
+  e.g.:
+  ```MenPcPassword="men"``
+
+- MainTestDirectoryPath
+  Path to directory where all test data is kept
+  e.g.:
+  ```MainTestDirectoryPath="/media/tests"```
+
+- LinuxKernelsDirectoryPath
+  Path to directory with kernel sources. All Linux kernels should be placed in this direcotry.
+  e.g.:
+  ```LinuxKernelsDirectoryPath="/media/tests/LinuxKernels"```
+
+## Running compilation tests
+When everything is set up just run the script:
+```
+# MDIS_Compilation_Tests/run_buildtest.sh --download --all
 ```
