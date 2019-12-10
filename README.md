@@ -5,8 +5,8 @@ Disk should be partitioned like below
 - GPT partition table
   - 10 GB partition for data files (ext4)
   - 10 GB swap partition
-  - 512 GB EFI partition
-  - 512 GB BIOS partition
+  - 512 MB EFI partition
+  - 512 MB BIOS partition
   - 10 GB main OS partition (ext4)
   - ... other OS partitions (ext4)
 
