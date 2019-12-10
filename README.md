@@ -57,13 +57,14 @@ Update GRUB configuration:
 ```# update-grub```
 
 ## OS configuration
-The system should be configured as it is described below.
+The system should be configured as it is described below. It applies to all OSes (Ubuntu, CentOS etc.), however for some specifed a special action is required to take.
 
 1. Disable automatic update,
-CentOS:
-To check if updates are turned on:
-```# systemctl status packagekit```
-To disable updates:
+- CentOS:
+  To check if updates are turned on:
+  ```# systemctl status packagekit```
+  To disable updates:
+
 ```
 # systemctl stop packagekit
 # systemctl mask packagekit
@@ -78,8 +79,8 @@ Defaults secure_path=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin
 ```
 
 4. Check time,
-CentOS:
-Install and use ntp:
+- CentOS:
+  Install and use ntp:
 ```
 # yum install ntp
 # chkconfig ntpd on
@@ -88,7 +89,7 @@ Install and use ntp:
 ```
 
 5. Set to ask sudo password every time,
-Ubuntu, CentOS:
+- Ubuntu, CentOS:
 ```
 # visudo
 Defaults env_reset
@@ -96,9 +97,9 @@ Defaults env_reset, timestamp_timeout=0
 ```
 
 6. Allow to log in as root via ssh,
-CentOS:
+- CentOS:
 Make sure that password for root is "men". During install CentOS require password to be at least 8 characters.
-Ubuntu:
+- Ubuntu:
 Open: /etc/ssh/sshd_config 
 Add just below line: 
 ```
@@ -119,17 +120,19 @@ Restart SSH service
     - flex
     - libssl-dev
 
-8. Run ansible playbook on Jenkins/Remote PC that will run tests:
-Installing ansible:
+8. Install ansible:
+- Ubuntu
 ```
 # apt-get update
 # apt-get install software-properties-common
 # apt-add-repository --yes --update ppa:ansible/ansible
 # apt-get install ansible
 ```
+
+9. Run ansible playbook on Jenkins/Remote PC that will run tests
 Check if addresses of devices are correct in inventory file
 ```ansible-playbook -i inventory playbook.yml```
-To add new packages to install edit roles/defaults/main.yml
+To add new packages to install edit ```roles/defaults/main.yml```
 
 ### Poky
 1. Yocto (sumo) generated with Core Sumo 2.5, Linux kernel 4.15 Linux Yocto BSP (MEN) 
