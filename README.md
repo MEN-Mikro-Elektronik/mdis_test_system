@@ -1,6 +1,15 @@
-# Test OS configuration
+# MDIS test system
+This is description of the test system for MDIS.
 
-## Disk partitioning
+# Functional tests
+Functional tests consit of directories:
+- Common - common part
+- Host - host test part
+- Target - target test part
+
+## Test OS configuration
+
+### Disk partitioning
 Disk should be partitioned like below
 - GPT partition table
   - 10 GB partition for data files (ext4)
@@ -10,7 +19,7 @@ Disk should be partitioned like below
   - 10 GB main OS partition (ext4)
   - ... other OS partitions (ext4)
 
-## Preparing GRUB
+### Preparing GRUB
 To boot a particular OS with GRUB we need to make GRUB read configuration from file at run time. Follow below steps in order to do that.
 
 1. GRUB script
@@ -56,7 +65,23 @@ The default variable is the name of the OS to boot. It is the name of a menu ent
 Update GRUB configuration:
 ```# update-grub```
 
-## OS configuration
+### OS configuration
+Following OSes are supported:
+- Ubuntu
+  - 16.04.6 32-bit
+  - 16.04.6 64-bit
+  - 18.04.3 32-bit
+  - 18.04.3 64-bit
+- Debian
+  - 10 32-bit
+  - 10 64-bit
+- Centos
+  - 7.5 64-bit
+  - 7.6 64-bit
+- Poky
+  - Yocto Sumo
+  - Yocto Warrior
+
 The system should be configured as it is described below. It applies to all OSes (Ubuntu, CentOS etc.), however for some specifed a special action is required to take.
 
 1. Disable automatic update,
@@ -134,7 +159,7 @@ Check if addresses of devices are correct in inventory file
 ```ansible-playbook -i inventory playbook.yml```
 To add new packages to install edit ```roles/defaults/main.yml```
 
-### Poky
+#### Poky
 1. Yocto (sumo) generated with Core Sumo 2.5, Linux kernel 4.15 Linux Yocto BSP (MEN) 
 2. Yocto (warrior) generated with use of Core Warrior, Linux kernel 4.19 Linux generic x86-64, (core-image-base) 
 For both Yocto OS additional tools have been added: 
@@ -151,7 +176,7 @@ CORE_IMAGE_EXTRA_INSTALL += “minicom”
 CORE_IMAGE_EXTRA_INSTALL += “git-perltools”
 Linux kernel I2C support with I2C device interface shall be enabled.
 
-# Test script configuration
+## Test script configuration
 Most important variables that have to be set in configuration file ```Common/Conf.sh```
 
 - MenPcIpAddr
@@ -229,13 +254,14 @@ Most important variables that have to be set in configuration file ```Common/Con
   e.g.:
   ```GrubOsesBL51E=("0" "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda14)")```
 
-# Running functional tests
+## Running functional tests
 When everything is set up just run the script:
 ```
 # Host/Jenkins/Jenkins.sh
 ```
 
 # Compilation tests
+Compilation tests part is located in ```MDIS_Compilation_Test``` directory.
 
 ## Test script configuration
 Most important variables that have to be set in configuration file ```MDIS_Compilation_Test/Conf.sh```
@@ -259,6 +285,18 @@ Most important variables that have to be set in configuration file ```MDIS_Compi
   Path to directory with kernel sources. All Linux kernels should be placed in this direcotry.
   e.g.:
   ```LinuxKernelsDirectoryPath="/media/tests/LinuxKernels"```
+
+## Kernel list for testing
+The list of kernels used for testing should be placed in ``` MDIS_Compilation_Tests/kernel_list_release_02.txt```
+e.g.:
+```
+3.16.73
+4.4.193
+4.9.193
+4.14.144
+4.19.73
+5.2.15
+```
 
 ## Running compilation tests
 When everything is set up just run the script:
