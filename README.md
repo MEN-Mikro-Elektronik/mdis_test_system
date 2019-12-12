@@ -11,8 +11,8 @@ Shortened functional test usage description:
 
 Shortened compilation test usage:
 1. Download and unzip kernel sources you would like to use (https://www.kernel.org/),
-2. Download mdis repository,
-3. Run compilation tests to check mdis compatibility.
+2. Download MDIS repository,
+3. Run compilation tests to check MDIS compatibility.
 
 Please find detailed ussage description in proper sections.
 
@@ -202,7 +202,9 @@ Linux kernel I2C support with I2C device interface shall be enabled.
 Most important variables that have to be set in configuration file ```Common/Conf.sh```
 
 - MenPcIpAddr
+
   IP address of test computer
+  
   e.g.:
   ```MenPcIpAddr="192.168.1.100"```
 
