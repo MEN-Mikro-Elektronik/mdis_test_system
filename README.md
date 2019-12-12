@@ -209,72 +209,98 @@ Most important variables that have to be set in configuration file ```Common/Con
   ```MenPcIpAddr="192.168.1.100"```
 
 - TestSetup
+
   Test configuration number
+  
   e.g.:
   ```TestSetup="1"```
 
 - MenPcLogin
+
   Username of test user account on test computer
+  
   e.g.:
   ```MenPcLogin="men"```
 
 - MenPcPassword
+
   Password of test user account on test computer
+  
   e.g.:
   ```MenPcPassword="men"```
 
 - MenBoxPcIpAddr
+
   IP address of auxiliary Box PC computer
+  
   e.g.:
   ```MenBoxPcIpAddr="192.168.1.200"```
 
 - GitTestSourcesBranch
+
   Name of the test sources branch used for testing
+  
   e.g.:
   ```GitTestSourcesBranch="master"```
 
 - GitMdisBranch
+
   Name of the MDIS branch used for testing
+  
   e.g.:
   ```GitMdisBranch="master"```
 
 - MainTestDirectoryPath
+
   Path to directory where all test data is kept. It should be accessible on all test OSes
+  
   e.g.:
   ```MainTestDirectoryPath="/media/tests"```
 
 - GrubConfFile
+
   Path to GRUB configuration file
+  
   e.g.:
   ```GrubConfFile="/media/tests/boot.cfg"```
 
 - GrubOsesF26L
+
   List of names of operating systems used for testing on F26L.
   "0" is default OS and is not used for testing but should be present anyhow.
+  
   e.g.:
   ```GrubOsesF26L=("0" "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda14)")```
 
 - GrubOsesF23P
+
   List of names of operating systems used for testing on F23P.
   "0" is default OS and is not used for testing but should be present anyhow.
+  
   e.g.:
   ```GrubOsesF23P=("0" "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda14)")```
 
 - GrubOsesG23
+
   List of names of operating systems used for testing on G23.
   "0" is default OS and is not used for testing but should be present anyhow.
+  
   e.g.:
   ```GrubOsesG23=("0" "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda14)")```
 
 - GrubOsesG25A
+
   List of names of operating systems used for testing on G25A.
   "0" is default OS and is not used for testing but should be present anyhow.
+  
   e.g.:
   ```GrubOsesG25A=("0" "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda14)")```
 
 - GrubOsesBL51E
+
   List of names of operating systems used for testing on BL51E.
   "0" is default OS and is not used for testing but should be present anyhow.
+  
   e.g.:
   ```GrubOsesBL51E=("0" "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda14)")```
 
@@ -291,22 +317,30 @@ Compilation test part is located in ```MDIS_Compilation_Test``` directory.
 Most important variables that have to be set in configuration file ```MDIS_Compilation_Test/Conf.sh```
 
 - GitMdisBranch
+
   Name of the MDIS branch used for testing
+  
   e.g.:
   ```GitMdisBranch="master"``
 
 - MenPcPassword
+
   Password of test user account on test computer
+  
   e.g.:
   ```MenPcPassword="men"``
 
 - MainTestDirectoryPath
+
   Path to directory where all test data is kept
+  
   e.g.:
   ```MainTestDirectoryPath="/media/tests"```
 
 - LinuxKernelsDirectoryPath
+
   Path to directory with kernel sources. All Linux kernels should be placed in this direcotry.
+  
   e.g.:
   ```LinuxKernelsDirectoryPath="/media/tests/LinuxKernels"```
 
