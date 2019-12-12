@@ -334,14 +334,14 @@ function automatic_driver_test {
         while read -r Makefile
         do
                 # loop through the Makefiles
-	        echo "${Makefile} compiling  ${CurrentMakefileNumber} of ${MakefilesNumber}" 
-	        CurrentMakefileNumber=$((CurrentMakefileNumber+1))
+                echo "${Makefile} compiling  ${CurrentMakefileNumber} of ${MakefilesNumber}" 
+                CurrentMakefileNumber=$((CurrentMakefileNumber+1))
 
                 if [ -e "Makefile" ]; then
                         make clean >/dev/null
                 fi
 
-	        cp "Makefiles/${Makefile}" Makefile &>/dev/null
+                cp "Makefiles/${Makefile}" Makefile &>/dev/null
 
                 #change kernel directory path
                 sed -i "/.*MEN_LIN_DIR =.*/c MEN_LIN_DIR = ${2}" Makefile
@@ -351,30 +351,30 @@ function automatic_driver_test {
                 sed -i "/.*ALL_DBGS =.*/c ALL_DBGS = ${5}" Makefile
                 
                 Retval=$?
-	        if [ ${Retval} -eq 0 ]
-	        then 
-		        touch "${STR_RESULT_DIR}/${Makefile}.log"
-		        make >"${STR_RESULT_DIR}/${Makefile}.log" 2>&1
+                if [ ${Retval} -eq 0 ]
+                then 
+                        touch "${STR_RESULT_DIR}/${Makefile}.log"
+                        make >"${STR_RESULT_DIR}/${Makefile}.log" 2>&1
                         Retval=$?
-		        if [ ${Retval} -eq 0 ]
-		        then 
-			        cat "${STR_RESULT_DIR}/${Makefile}.log" | grep warning: >/dev/null
+                        if [ ${Retval} -eq 0 ]
+                        then 
+                                cat "${STR_RESULT_DIR}/${Makefile}.log" | grep warning: >/dev/null
                                 Retval=$?
-			        if [ ${Retval} -eq 0 ]
-			        then 
-				        echo "${Makefile} PASSED_CONDITIONALY" >> "${STR_RESULT_FILE}"
-				        echo "${Makefile} PASSED_CONDITIONALY" 
+                                if [ ${Retval} -eq 0 ]
+                                then 
+                                        echo "${Makefile} PASSED_CONDITIONALY" >> "${STR_RESULT_FILE}"
+                                        echo "${Makefile} PASSED_CONDITIONALY" 
                                         echo "${Makefile}" >> "${1}_${MakefilesCompilationListFailed}"
-			        else
-				        echo "${Makefile} PASSED" >> "${STR_RESULT_FILE}"
-				        echo "${Makefile} PASSED"
-			        fi
-		        else
-			        echo "${Makefile} FAILED" >> "${STR_RESULT_FILE}"
-			        echo "${Makefile} FAILED"
+                                else
+                                        echo "${Makefile} PASSED" >> "${STR_RESULT_FILE}"
+                                        echo "${Makefile} PASSED"
+                                fi
+                        else
+                                echo "${Makefile} FAILED" >> "${STR_RESULT_FILE}"
+                                echo "${Makefile} FAILED"
                                 echo "${Makefile}" >> "${1}_${MakefilesCompilationListFailed}"
-		        fi
-	        fi
+                        fi
+                fi
 
                 # Checking version of compiled kernel modules
                 mkdir -p "${STR_RESULT_DIR}/ModinfoResults"
@@ -405,8 +405,8 @@ function automatic_driver_test {
 while test $# -gt 0 ; do
    case "$1" in 
         -h|--help)
-	        usage
-	        exit 1
+                usage
+                exit 1
                 ;;
         --download)
                 shift
@@ -420,7 +420,7 @@ while test $# -gt 0 ; do
                 export CompileShortList="1"
                 echo "Compile only Failed modules"
                 ;;
-		--run-failed)
+                --run-failed)
                 shift
                 export CompileShortList="2"
                 echo "Compile Failed modules"
