@@ -1,13 +1,33 @@
 # MDIS test system
-This is description of the test system for MDIS.
+This is description of the automated test system for MDIS.
+
+mdis_test_system repository provides scripts to easily test behaviour of MEN hardware/software on different operating systems and kernels for tests setups specified for mdis release 13MD05-90_02_01. 
+
+Shortened functional test usage description:
+1. Prepare and configure OS-es on external drive, that can be connected to MEN CPU boards
+2. Prepare MEN hardware
+3. Configure test system (please follow "Test script configuration" section)
+4. Run main test script and wait for the results
+
+Shortened compilation test usage:
+1. Download and unzip kernel sources you would like to use (https://www.kernel.org/),
+2. Download mdis repository,
+3. Run compilation tests to check mdis compatibility.
+
+Please find detailed ussage description in proper sections.
 
 # Functional tests
-Functional tests consit of directories:
-- Common - common part
-- Host - host test part
-- Target - target test part
+To run automated functional tests please prepare below equipment:
+- Target - MEN hardware with proper configuration (Test setup 1-6)
+- Host - Computer with Linux OS that will run tests on Target
+- Relay - to enable/disable modules inputs (currently MEN Box PC BL51 is used).
 
-## Test OS configuration
+Functional tests sources consist of directories:
+- Common - common part used by Target, Host (Configuration file)
+- Host - part used by Host (Scripts to communicate with Target and Relay that controls the test process)
+- Target - part used by Target (Description of test cases and hardware configuration)
+
+## Preparing disk and OS configuration
 
 ### Disk partitioning
 Disk should be partitioned like below
@@ -19,7 +39,7 @@ Disk should be partitioned like below
   - 10 GB main OS partition (ext4)
   - ... other OS partitions (ext4)
 
-### Preparing GRUB
+### Preparing GRUB on main OS parition
 To boot a particular OS with GRUB we need to make GRUB read configuration from file at run time. Follow below steps in order to do that.
 
 1. GRUB script
@@ -65,7 +85,7 @@ The default variable is the name of the OS to boot. It is the name of a menu ent
 Update GRUB configuration:
 ```# update-grub```
 
-### OS configuration
+### OSes support and configuration
 Following OSes are supported:
 - Ubuntu
   - 16.04.6 32-bit
@@ -82,7 +102,7 @@ Following OSes are supported:
   - Yocto Sumo
   - Yocto Warrior
 
-The system should be configured as it is described below. It applies to all OSes (Ubuntu, CentOS etc.), however for some specifed a special action is required to take.
+The system should be configured as it is described below. It applies to all OSes (Ubuntu, CentOS etc.). For some of them special action is required.
 
 1. Disable automatic update,
 - CentOS:
@@ -154,26 +174,28 @@ Restart SSH service
 # apt-get install ansible
 ```
 
-9. Run ansible playbook on Jenkins/Remote PC that will run tests
+9. Run ansible playbook on Host PC that will run tests
 Check if addresses of devices are correct in inventory file
 ```ansible-playbook -i inventory playbook.yml```
 To add new packages to install edit ```roles/defaults/main.yml```
 
-#### Poky
-1. Yocto (sumo) generated with Core Sumo 2.5, Linux kernel 4.15 Linux Yocto BSP (MEN) 
-2. Yocto (warrior) generated with use of Core Warrior, Linux kernel 4.19 Linux generic x86-64, (core-image-base) 
-For both Yocto OS additional tools have been added: 
-EXTRA_IMAGE_FEATURES += “tools-sdk”
-EXTRA_IMAGE_FEATURES += “package-management”
-CORE_IMAGE_EXTRA_INSTALL += “bash”
-CORE_IMAGE_EXTRA_INSTALL += “git”
-CORE_IMAGE_EXTRA_INSTALL += “openssh”
-CORE_IMAGE_EXTRA_INSTALL += “i2c-tools”
-CORE_IMAGE_EXTRA_INSTALL += “pciutils”
-CORE_IMAGE_EXTRA_INSTALL += “kernel-devsrc”
-CORE_IMAGE_EXTRA_INSTALL += “rsync”
-CORE_IMAGE_EXTRA_INSTALL += “minicom”
-CORE_IMAGE_EXTRA_INSTALL += “git-perltools”
+#### Poky genearation
+1. Yocto (sumo) generated with Core Sumo 2.5, Linux kernel 4.15 Linux Yocto BSP (MEN)
+Please check: https://www.men.de/software/10f026l90/
+2. Yocto (warrior) generated with use of Core Warrior, Linux kernel 4.19 Linux generic x86-64, (core-image-base)  
+
+For both Yocto OS additional tools have been added:  
+EXTRA_IMAGE_FEATURES += “tools-sdk”  
+EXTRA_IMAGE_FEATURES += “package-management”  
+CORE_IMAGE_EXTRA_INSTALL += “bash”   
+CORE_IMAGE_EXTRA_INSTALL += “git”  
+CORE_IMAGE_EXTRA_INSTALL += “openssh”  
+CORE_IMAGE_EXTRA_INSTALL += “i2c-tools”  
+CORE_IMAGE_EXTRA_INSTALL += “pciutils”  
+CORE_IMAGE_EXTRA_INSTALL += “kernel-devsrc”  
+CORE_IMAGE_EXTRA_INSTALL += “rsync”  
+CORE_IMAGE_EXTRA_INSTALL += “minicom”  
+CORE_IMAGE_EXTRA_INSTALL += “git-perltools”  
 Linux kernel I2C support with I2C device interface shall be enabled.
 
 ## Test script configuration
@@ -255,13 +277,13 @@ Most important variables that have to be set in configuration file ```Common/Con
   ```GrubOsesBL51E=("0" "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda14)")```
 
 ## Running functional tests
-When everything is set up just run the script:
+When everything is set up just run the script on he Host machine:
 ```
 # Host/Jenkins/Jenkins.sh
 ```
 
 # Compilation tests
-Compilation tests part is located in ```MDIS_Compilation_Test``` directory.
+Compilation test part is located in ```MDIS_Compilation_Test``` directory.
 
 ## Test script configuration
 Most important variables that have to be set in configuration file ```MDIS_Compilation_Test/Conf.sh```
