@@ -321,14 +321,14 @@ Most important variables that have to be set in configuration file ```MDIS_Compi
   Name of the MDIS branch used for testing
   
   e.g.:
-  ```GitMdisBranch="master"``
+  ```GitMdisBranch="master"```
 
 - MenPcPassword
 
   Password of test user account on test computer
   
   e.g.:
-  ```MenPcPassword="men"``
+  ```MenPcPassword="men"```
 
 - MainTestDirectoryPath
 
