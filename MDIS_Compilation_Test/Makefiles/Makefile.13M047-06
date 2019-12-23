@@ -114,7 +114,8 @@ ALL_CORE_LIBS = \
 
 ALL_LL_TOOLS = \
     M047/EXAMPLE/M47_SIMP/COM/program.mak \
-    M047/TOOLS/M47_TOOL/COM/program.mak 
+    M047/TOOLS/M47_TOOL/COM/program.mak \
+    M047/TOOLS/M47_TEST/COM/program.mak
 
 ALL_COM_TOOLS = 
 
