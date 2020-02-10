@@ -1139,6 +1139,54 @@ function m_module_m72_test {
 }
 
 ############################################################################
+# run m57 test 
+# 
+# parameters:
+# $1    Test case log file name
+# $2    Test case name
+# $3    M57 board number
+function m_module_m57_test {
+        local TestCaseLogName=${1}
+        local TestCaseName=${2}
+        local M57No=${3}
+        local LogPrefix="[m57_test]"
+
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_ll_profidp
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_profidp" | tee -a ${LogFileName} 
+                return ${ERR_VALUE}
+        fi
+
+        # Run profidp_simp
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' profidp_simp m57_${M57No} < <(sleep 2; echo -ne '\n') > profidp_simp.log
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix} Could not run profidp_simp "\
+                  | tee -a ${LogFileName} 2>&1
+        fi
+
+        grep "^M_open" profidp_simp.log && \
+        grep "^Start Profibus protocol stack" profidp_simp.log && \
+        grep "^Get FMB_FM2_EVENT reason" profidp_simp.log && \
+        grep "^FMB_FM2_EVENT reason" profidp_simp.log && \
+        grep "^Get Slave Diag" profidp_simp.log && \
+        grep "station_status_1 = 01" profidp_simp.log && \
+        grep "station_status_2 = 00" profidp_simp.log && \
+        grep "station_status_3 = 00" profidp_simp.log && \
+        grep "master_add = ff" profidp_simp.log && \
+        grep "ident_number = 0000" profidp_simp.log && \
+        grep "Stop Profibus protocol stack" profidp_simp.log && \
+        grep "^M_close" profidp_simp.log
+        if [ $? -ne 0 ]; then 
+                echo "${LogPrefix} Invalid log output, ERROR"\
+                  | tee -a ${LogFileName} 2>&1
+                return ${ERR_VALUE}
+        fi 
+
+        return ${ERR_OK}
+}
+
+
+############################################################################
 # This function runs m module test
 #   Possible machine states
 #   1 - ModprobeDriver
