@@ -49,7 +49,7 @@ MenPcIpAddr="10.1.1.100"
 #------------------------------------------------------------------------------
 #-------------------------PLEASE SPECIFY THE TEST SETUP------------------------
 #------------------------------------------------------------------------------
-TestSetup="5"
+TestSetup="1"
 
 
 # Credentials for Pc that will be tested - required by ssh connection and sudo cmds
