@@ -44,7 +44,7 @@ IN_3_DISABLE=203        # change input 3 to disable (with BL51 stands for RELAY 
 IN_4_DISABLE=204        # change input 4 to disable
 
 # Address of Target that will be tested
-MenPcIpAddr="10.1.1.72"
+MenPcIpAddr="10.1.1.100"
 
 #------------------------------------------------------------------------------
 #-------------------------PLEASE SPECIFY THE TEST SETUP------------------------
@@ -61,7 +61,7 @@ MenBoxPcIpAddr="10.1.1.72"
 InputSwitchTimeout=10 #seconds
 
 # Credentials, address, and command to download Git repository with Test Cases source
-GitTestSourcesBranch="jpe-dev-02_01"
+GitTestSourcesBranch="jpe-dev-02_02"
 GitTestSourcesCmd="git clone -b ${GitTestSourcesBranch} https://github.com/MEN-Mikro-Elektronik/mdis_test_system.git"
 
 # Credentials, address, and command to download Git repository with 13MD05-90 sources
