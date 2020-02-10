@@ -320,7 +320,7 @@ function reboot_and_wait {
         local TryCount=0
         local Return=1
 
-        run_cmd_on_remote_pc "echo \"${MenPcPassword}\" | sudo --stdin --prompt=\"\" shutdown -r +1"
+        run_cmd_on_remote_pc "echo \"${MenPcPassword}\" | sudo --stdin --prompt=$'\r' shutdown -r +1"
         echo "Waiting for ${MenPcIpAddr}..."
         sleep 120
         while true; do

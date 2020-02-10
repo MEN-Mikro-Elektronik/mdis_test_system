@@ -38,7 +38,7 @@ eth_test() {
         EthListBefore="$(ifconfig -a | grep --perl-regexp --only-matching "^[\w\d]+")"
         echo -e "ETH interfaces before driver was loaded:\n${EthListBefore}" | tee --append "${TestCaseLogName}"
 
-        if ! echo "${MenPcPassword}" | sudo --stdin --prompt="" modprobe men_lx_z77 phyadr=1,0
+        if ! echo "${MenPcPassword}" | sudo --stdin --prompt=$'\r' modprobe men_lx_z77 phyadr=1,0
         then
                 echo "ERR ${ERR_MODPROBE}:could not modprobe men_lx_z77" | tee --append "${TestCaseLogName}"
                 return "${ERR_MODPROBE}"
@@ -63,7 +63,7 @@ eth_test() {
         for Index in $(seq 1 ${GwCount}); do
                 GwSet="$(ip route list | grep "^default" | head --lines=1)"
                 if [ "${GwSet}" != "" ]; then
-                        echo "${MenPcPassword}" | sudo --stdin --prompt="" ip route delete ${GwSet}
+                        echo "${MenPcPassword}" | sudo --stdin --prompt=$'\r' ip route delete ${GwSet}
                 fi
         done
 
@@ -71,11 +71,11 @@ eth_test() {
                 GwSet="$(ip route list | grep "^default" | head --lines=1)"
                 if [ "${GwIp}" != "" ]; then
                         if [ "${GwSet}" != "" ]; then
-                                echo "${MenPcPassword}" | sudo --stdin --prompt="" ip route delete ${GwSet}
+                                echo "${MenPcPassword}" | sudo --stdin --prompt=$'\r' ip route delete ${GwSet}
                         fi
                         GwCurrent="default via ${GwIp} dev ${Eth}"
                         echo "Changing default gateway to: ${GwCurrent}" | tee --append "${TestCaseLogName}"
-                        echo "${MenPcPassword}" | sudo --stdin --prompt="" ip route add ${GwCurrent}
+                        echo "${MenPcPassword}" | sudo --stdin --prompt=$'\r' ip route add ${GwCurrent}
                         GwSet="$(ip route list | grep "^default" | head --lines=1)"
                         echo "Default gateway is now: ${GwSet}" | tee --append "${TestCaseLogName}"
                 fi
@@ -92,9 +92,9 @@ eth_test() {
 
         GwSet="$(ip route list | grep "^default" | head --lines=1)"
         if [ "${GwSet}" != "" ] && [ "${GwDefault}" != "" ] && [ "${GwSet}" != "${GwDefault}" ]; then
-                echo "${MenPcPassword}" | sudo --stdin --prompt="" ip route delete ${GwSet}
+                echo "${MenPcPassword}" | sudo --stdin --prompt=$'\r' ip route delete ${GwSet}
                 echo "Changing default gateway to: ${GwDefault}" | tee --append "${TestCaseLogName}"
-                echo "${MenPcPassword}" | sudo --stdin --prompt="" ip route add ${GwDefault}
+                echo "${MenPcPassword}" | sudo --stdin --prompt=$'\r' ip route add ${GwDefault}
                 GwSet="$(ip route list | grep "^default" | head --lines=1)"
                 echo "Default gateway is now: ${GwSet}" | tee --append "${TestCaseLogName}"
         fi

@@ -169,13 +169,13 @@ function install_13MD05_90_sources {
                 local IsYocto="$(hostnamectl | grep "Operating System" | grep "Yocto" | wc -l)"
                 echo "IsYocto: ${IsYocto}"
                 if [ "${SystemName}" == "CentOS" ]; then
-                        echo "${MenPcPassword}" | sudo --stdin --prompt="" ln --symbolic --no-dereference --force "/usr/src/kernels/${CurrentKernel}" "/usr/src/linux"
+                        echo "${MenPcPassword}" | sudo --stdin --prompt=$'\r' ln --symbolic --no-dereference --force "/usr/src/kernels/${CurrentKernel}" "/usr/src/linux"
                 elif [ "${IsYocto}" == "1" ]; then
-                        echo "${MenPcPassword}" | sudo --stdin --prompt="" ln --symbolic --no-dereference --force "/usr/src/kernel" "/usr/src/linux"
+                        echo "${MenPcPassword}" | sudo --stdin --prompt=$'\r' ln --symbolic --no-dereference --force "/usr/src/kernel" "/usr/src/linux"
                         # make prepare
                         # make scripts
                 else
-                        echo "${MenPcPassword}" | sudo --stdin --prompt="" ln --symbolic --no-dereference --force "/usr/src/linux-headers-${CurrentKernel}" "/usr/src/linux"
+                        echo "${MenPcPassword}" | sudo --stdin --prompt=$'\r' ln --symbolic --no-dereference --force "/usr/src/linux-headers-${CurrentKernel}" "/usr/src/linux"
                 fi
                 # install sources of MDIS
                 if [ "${RunInstantly}" != "1" ]; then
