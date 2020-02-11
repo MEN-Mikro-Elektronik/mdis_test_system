@@ -1271,7 +1271,7 @@ function m_module_m58_test {
         grep "^channel 2: write 0x22 = 0010 0010" m58_simp.log && \
         grep "^channel 3: write 0x44 = 0100 0100" m58_simp.log && \
         grep "^success." m58_simp.log && \
-        grep "^close device"
+        grep "^close device" m58_simp.log
         if [ $? -ne 0 ]; then 
                 echo "${LogPrefix} Invalid log output, ERROR"\
                   | tee -a ${LogFileName} 2>&1
