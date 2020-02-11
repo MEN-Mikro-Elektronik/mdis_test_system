@@ -1185,6 +1185,102 @@ function m_module_m57_test {
         return ${ERR_OK}
 }
 
+############################################################################
+# run m32 test 
+# 
+# parameters:
+# $1    Test case log file name
+# $2    Test case name
+# $3    M32 board number
+function m_module_m32_test {
+        local TestCaseLogName=${1}
+        local TestCaseName=${2}
+        local M32No=${3}
+        local LogPrefix="[m32_test]"
+
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_ll_m31
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m31" | tee -a ${LogFileName} 
+                return ${ERR_VALUE}
+        fi
+
+        # Run profidp_simp
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' m31_simp m32_${M32No} > m31_simp.log
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix} Could not run m31_simp "\
+                  | tee -a ${LogFileName} 2>&1
+        fi
+
+        grep "^ device m32_${M32No} opened" m31_simp.log && \
+        grep "^ number of channels:      16" m31_simp.log && \
+        grep "^ channel  0 : 1" m31_simp.log && \
+        grep "^ channel  1 : 1" m31_simp.log && \
+        grep "^ channel  2 : 1" m31_simp.log && \
+        grep "^ channel  3 : 1" m31_simp.log && \
+        grep "^ channel  4 : 1" m31_simp.log && \
+        grep "^ channel  5 : 1" m31_simp.log && \
+        grep "^ channel  6 : 1" m31_simp.log && \
+        grep "^ channel  7 : 1" m31_simp.log && \
+        grep "^ channel  8 : 1" m31_simp.log && \
+        grep "^ channel  9 : 1" m31_simp.log && \
+        grep "^ channel 10 : 1" m31_simp.log && \
+        grep "^ channel 11 : 1" m31_simp.log && \
+        grep "^ channel 12 : 1" m31_simp.log && \
+        grep "^ channel 13 : 1" m31_simp.log && \
+        grep "^ channel 14 : 1" m31_simp.log && \
+        grep "^ channel 15 : 1" m31_simp.log && \
+        grep "^ channel:   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15" m31_simp.log && \
+        grep "^ state:     1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1" m31_simp.log && \
+        grep "^ device m32_${M32No} closed" m31_simp.log
+        if [ $? -ne 0 ]; then 
+                echo "${LogPrefix} Invalid log output, ERROR"\
+                  | tee -a ${LogFileName} 2>&1
+                return ${ERR_VALUE}
+        fi 
+
+        return ${ERR_OK}
+}
+
+############################################################################
+# run m58 test 
+# 
+# parameters:
+# $1    Test case log file name
+# $2    Test case name
+# $3    M58 board number
+function m_module_m58_test {
+        local TestCaseLogName=${1}
+        local TestCaseName=${2}
+        local M58No=${3}
+        local LogPrefix="[m58_test]"
+
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_ll_m58
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m58" | tee -a ${LogFileName} 
+                return ${ERR_VALUE}
+        fi
+
+        # Run profidp_simp
+	echo ${MenPcPassword} | sudo -S --prompt=$'\r' m58_simp m58_${M58No} < <(echo -ne '\n') > m58_simp.log
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix} Could not run m58_simp "\
+                  | tee -a ${LogFileName} 2>&1
+        fi
+
+        grep "^open m58_${M58No}" m58_simp.log && \
+        grep "^channel 2: write 0x22 = 0010 0010" m58_simp.log && \
+        grep "^channel 3: write 0x44 = 0100 0100" m58_simp.log && \
+        grep "^success." m58_simp.log && \
+        grep "^close device"
+        if [ $? -ne 0 ]; then 
+                echo "${LogPrefix} Invalid log output, ERROR"\
+                  | tee -a ${LogFileName} 2>&1
+                return ${ERR_VALUE}
+        fi 
+
+        return ${ERR_OK}
+}
+
 
 ############################################################################
 # This function runs m module test
