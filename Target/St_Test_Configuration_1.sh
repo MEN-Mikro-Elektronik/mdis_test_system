@@ -72,7 +72,7 @@ echo ${1} | sudo -S --prompt=$'\r' dmesg --clear
 #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_M66_M31_M_Module_Test.sh" ${TestSummaryDirectory}
 #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G215_Interface_Test.sh" ${TestSummaryDirectory}
 echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_F205_M57_M_Module_Test.sh" ${TestSummaryDirectory} "1"
-echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_F205_M32_M58_M_Module_Test.sh" ${TestSummaryDirectory} "1"
+echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_M32_M58_M_Module_Test.sh" ${TestSummaryDirectory} "1"
 echo ${1} | sudo -S --prompt=$'\r' bash -c "dmesg > dmesg_log.txt"
 
 # TEST SETUP 1
