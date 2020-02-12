@@ -1204,7 +1204,7 @@ function m_module_m32_test {
                 return ${ERR_VALUE}
         fi
 
-        # Run profidp_simp
+        # Run m31_simp
         echo ${MenPcPassword} | sudo -S --prompt=$'\r' m31_simp m32_${M32No} > m31_simp.log
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix} Could not run m31_simp "\
@@ -1260,8 +1260,8 @@ function m_module_m58_test {
                 return ${ERR_VALUE}
         fi
 
-        # Run profidp_simp
-	echo ${MenPcPassword} | sudo -S --prompt=$'\r' m58_simp m58_${M58No} < <(echo -ne '\n') > m58_simp.log
+        # Run m58_simp
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' m58_simp m58_${M58No} < <(echo -ne '\n') > m58_simp.log
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix} Could not run m58_simp "\
                   | tee -a ${LogFileName} 2>&1
@@ -1316,6 +1316,85 @@ function m_module_m65_test {
 
         return ${ERR_OK}
 }
+
+############################################################################
+# run m37 test 
+# 
+# parameters:
+# $1    Test case log file name
+# $2    Test case name
+# $3    M37 board number
+function m_module_m37_test {
+        local TestCaseLogName=${1}
+        local TestCaseName=${2}
+        local M37No=${3}
+        local LogPrefix="[m37_test]"
+
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_ll_m37
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m37" | tee -a ${LogFileName} 
+                return ${ERR_VALUE}
+        fi
+
+        # Run m37_simp
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' m37_simp m37_${M37No} 0 > m37_simp.log
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix} Could not run m37_simp "\
+                  | tee -a ${LogFileName} 2>&1
+        fi
+
+        grep "^M_open(\" m37_${M37No} \")" m37_simp.log && \
+        grep "^channel number      : 0" m37_simp.log && \
+        grep "^number of channels  : 4" m37_simp.log && \
+        grep "^set channel 0 to -10.0V" m37_simp.log && \
+        grep "^set channel 0 to +9.99..V" m37_simp.log && \
+        grep "^M_close" m37_simp.log
+        if [ $? -ne 0 ]; then 
+                echo "${LogPrefix} Invalid log output, ERROR"\
+                  | tee -a ${LogFileName} 2>&1
+                return ${ERR_VALUE}
+        fi 
+
+        return ${ERR_OK}
+}
+
+############################################################################
+# run m62 test 
+# 
+# parameters:
+# $1    Test case log file name
+# $2    Test case name
+# $3    M62 board number
+function m_module_m62_test {
+        local TestCaseLogName=${1}
+        local TestCaseName=${2}
+        local M62No=${3}
+        local LogPrefix="[m62_test]"
+
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_ll_m62
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m62" | tee -a ${LogFileName} 
+                return ${ERR_VALUE}
+        fi
+
+        # Run m62_simp
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' m62_simp m62n_${M62No} > m62_simp.log
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix} Could not run m62_simp "\
+                  | tee -a ${LogFileName} 2>&1
+        fi
+
+        grep "^channel 0: produce lowest to highest ramp..." m62_simp.log && \
+        grep "^all channels: output range 0..10V.." m62_simp.log
+        if [ $? -ne 0 ]; then 
+                echo "${LogPrefix} Invalid log output, ERROR"\
+                  | tee -a ${LogFileName} 2>&1
+                return ${ERR_VALUE}
+        fi 
+
+        return ${ERR_OK}
+}
+
 ############################################################################
 # This function runs m module test
 #   Possible machine states
