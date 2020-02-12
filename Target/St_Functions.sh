@@ -1396,6 +1396,46 @@ function m_module_m62_test {
 }
 
 ############################################################################
+# run m47 test 
+# 
+# parameters:
+# $1    Test case log file name
+# $2    Test case name
+# $3    M47 board number
+function m_module_m47_test {
+        local TestCaseLogName=${1}
+        local TestCaseName=${2}
+        local M47No=${3}
+        local LogPrefix="[m47_test]"
+
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_ll_m47
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m47" | tee -a ${LogFileName} 
+                return ${ERR_VALUE}
+        fi
+
+        # Run m47_simp
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' m47_simp m47_${M47No} > m47_simp.log
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix} Could not run m47_simp "\
+                  | tee -a ${LogFileName} 2>&1
+        fi
+
+        grep "^ Device name: m47_${M47No}" m47_simp.log && \
+        grep "^ Channel: 0" m47_simp.log && \
+        grep "^M_open" m47_simp.log && \
+        grep "^Read value = 00000000" m47_simp.log && \
+        grep "^M_close" m47_simp.log
+        if [ $? -ne 0 ]; then 
+                echo "${LogPrefix} Invalid log output, ERROR"\
+                  | tee -a ${LogFileName} 2>&1
+                return ${ERR_VALUE}
+        fi 
+
+        return ${ERR_OK}
+}
+
+############################################################################
 # This function runs m module test
 #   Possible machine states
 #   1 - ModprobeDriver
