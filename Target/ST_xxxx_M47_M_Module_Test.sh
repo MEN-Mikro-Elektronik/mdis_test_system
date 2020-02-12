@@ -44,7 +44,7 @@ while ${MachineRun}; do
         case $(echo "${MachineState}") in
           Step1)
                 echo "Run step @1" | tee -a ${TestCaseLogName} 2>&1
-                m_module_m47_test ${TestCaseLogName} ${TestCaseName} "${2}"
+                m_module_m47_test ${TestCaseLogName} ${TestCaseName} "1"
                 CmdResult=$?
                 if [ ${CmdResult} -ne ${ERR_OK} ]; then
                         TestCaseStep1=${CmdResult}
