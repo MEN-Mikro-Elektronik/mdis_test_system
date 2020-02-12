@@ -46,6 +46,7 @@ if [ ${CmdResult} -ne ${ERR_OK} ] && [ ${CmdResult} -ne ${ERR_DIR_EXISTS} ]; the
 fi
 cd "${Today}"
 
+OsNameKernel=$(echo "${OsNameKernel}" | tr -dc '[:alnum:]')
 create_directory "${OsNameKernel}"
 CmdResult=$?
 if [ ${CmdResult} -ne ${ERR_OK} ] && [ ${CmdResult} -ne ${ERR_DIR_EXISTS} ]; then
