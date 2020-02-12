@@ -92,32 +92,9 @@ function cleanJenkinsBackgroundJob {
 
 function runTests {
             # run
-            echo "runTests"
-            St_Test_Setup_Configuration=""
-            case ${TestSetup} in
-                    1)
-                      St_Test_Setup_Configuration="St_Test_Configuration_1.sh"
-                      ;;
-                    2)
-                      St_Test_Setup_Configuration="St_Test_Configuration_2.sh"
-                      ;;
-                    3)
-                      St_Test_Setup_Configuration="St_Test_Configuration_3.sh"
-                      ;;
-                    4)
-                      St_Test_Setup_Configuration="St_Test_Configuration_4.sh"
-                      ;;
-                    5)
-                      St_Test_Setup_Configuration="St_Test_Configuration_5.sh"
-                      ;;
-                    6)
-                      St_Test_Setup_Configuration="St_Test_Configuration_6.sh"
-                      ;;
-                    *)
-                      echo "TEST SETUP IS NOT SET"
-                      exit 99
-                      ;;
-            esac
+            St_Test_Setup_Configuration="St_Test_Configuration_x.sh"
+            echo "run:"
+            echo "${St_Test_Setup_Configuration} ${TestSetup}"
 
             # Make all scripts executable
             run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' chmod +x ${GitTestCommonDirPath}/*"
@@ -131,8 +108,8 @@ function runTests {
             echo "${LogPrefix} JenkinsBackgroundPID is ${JenkinsBackgroundPID}"
 
             # Run Test script - now scripts from remote device should be run 
-            make_visible_in_log "TEST CASE - ${St_Test_Setup_Configuration}"
-            run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' ${GitTestTargetDirPath}/${St_Test_Setup_Configuration} ${MenPcPassword} ${Today}"
+            make_visible_in_log "TEST CASE - ${St_Test_Setup_Configuration} ${TestSetup}"
+            run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' ${GitTestTargetDirPath}/${St_Test_Setup_Configuration} ${TestSetup} ${MenPcPassword} ${Today}"
             if [ $? -ne 0 ]; then
                     echo "${LogPrefix} Error while running St_Test_Configuration script"
             fi
