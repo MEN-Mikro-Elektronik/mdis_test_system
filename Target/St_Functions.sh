@@ -1436,6 +1436,47 @@ function m_module_m47_test {
 }
 
 ############################################################################
+# run m33 test 
+# 
+# parameters:
+# $1    Test case log file name
+# $2    Test case name
+# $3    M33 board number
+function m_module_m33_test {
+        local TestCaseLogName=${1}
+        local TestCaseName=${2}
+        local M33No=${3}
+        local LogPrefix="[m33_test]"
+
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_ll_m33
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m33" | tee -a ${LogFileName} 
+                return ${ERR_VALUE}
+        fi
+
+        # Run m33_demo
+        echo ${MenPcPassword} | sudo -S --prompt=$'\r' m33_demo m33_${M33No} > m33_demo.log
+        if [ $? -ne 0 ]; then
+                echo "${LogPrefix} Could not run m33_demo " \
+                  | tee -a ${LogFileName} 2>&1
+        fi
+
+        grep "^Device m33_${M33No}" m33_demo.log && \
+        grep "^channel 0: produce ramps" m33_demo.log && \
+        grep "^ lowest..highest ramp" m33_demo.log && \
+        grep "^ highest..lowest ramp" m33_demo.log && \
+        grep "^channel 0: toggle lowest/highest" m33_demo.log && \
+        grep "^Device m33_1 closed" m33_demo.log
+        if [ $? -ne 0 ]; then 
+                echo "${LogPrefix} Invalid log output, ERROR" \
+                  | tee -a ${LogFileName} 2>&1
+                return ${ERR_VALUE}
+        fi 
+
+        return ${ERR_OK}
+}
+
+############################################################################
 # This function runs m module test
 #   Possible machine states
 #   1 - ModprobeDriver
