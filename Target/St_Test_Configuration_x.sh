@@ -74,15 +74,14 @@ case ${TestSetup} in
           #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M82_M_Module_Test.sh" ${TestSummaryDirectory}
           #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M35_M_Module_Test.sh" ${TestSummaryDirectory}
           #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_F215_Interface_Test.sh" ${TestSummaryDirectory}
-          #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_M66_M31_M_Module_Test.sh" ${TestSummaryDirectory}
           #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G215_Interface_Test.sh" ${TestSummaryDirectory}
-          echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_M37_M62_M_Module_Test.sh" ${TestSummaryDirectory}
           ;;
         2)
+          echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_F205_M57_M_Module_Test.sh" ${TestSummaryDirectory}
+          echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_M32_M58_M_Module_Test.sh" ${TestSummaryDirectory}
+          echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_M37_M62_M_Module_Test.sh" ${TestSummaryDirectory}
           echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_F223_Test.sh" ${TestSummaryDirectory}
-          echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M77_M_Module_Test.sh" ${TestSummaryDirectory} "1" "1" #M77Nr, G204Nr
-          echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M82_M_Module_Test.sh" ${TestSummaryDirectory}
-          echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M82_M_Module_Test.sh" ${TestSummaryDirectory} "2" #second device instance
+          echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_M66_M31_M_Module_Test.sh" ${TestSummaryDirectory}
           echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_M43_M11_M_Module_Test.sh" ${TestSummaryDirectory}
           echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_SMB2_Test.sh" ${TestSummaryDirectory} "smb2_1" "F026L00"
           ;;
@@ -90,6 +89,10 @@ case ${TestSetup} in
           echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M77_M_Module_Test.sh" ${TestSummaryDirectory} "1" "3"
           echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M82_M_Module_Test.sh" ${TestSummaryDirectory}
           echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M36N_M_Module_Test.sh" ${TestSummaryDirectory}
+          #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M77_M_Module_Test.sh" ${TestSummaryDirectory} "1" "1" #M77Nr, G204Nr
+          #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M82_M_Module_Test.sh" ${TestSummaryDirectory}
+          #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M82_M_Module_Test.sh" ${TestSummaryDirectory} "2" #second device instance
+
           ;;
         4)
           echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G229_Test.sh" ${TestSummaryDirectory}
