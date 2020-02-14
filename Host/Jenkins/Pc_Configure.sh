@@ -20,13 +20,13 @@ function create_main_test_directory {
                 mkdir "${MainTestDirectoryPath}/${MainTestDirectoryName}"
                 if [ $? -ne 0 ]; then
                         echo "ERR: ${ERR_CREATE} - cannot create directory"
-                        return ${ERR_CREATE}
+                        return "${ERR_CREATE}"
                 fi
         else
                 echo "${MainTestDirectoryPath}/${MainTestDirectoryName} directory exists"
         fi
 
-        return ${ERR_OK}
+        return "${ERR_OK}"
 }
 
 ############################################################################
@@ -43,13 +43,13 @@ function create_result_directory {
                 mkdir "${MdisResultsDirectoryPath}"
                 if [ $? -ne 0 ]; then
                         echo "ERR: ${ERR_CREATE} - cannot create directory"
-                        return ${ERR_CREATE}
+                        return "${ERR_CREATE}"
                 fi
         else
                 echo "${MdisResultsDirectoryName} directory exists"
         fi
 
-        return ${ERR_OK}
+        return "${ERR_OK}"
 }
 ############################################################################
 # create directory with Test_case sources
@@ -64,15 +64,15 @@ function create_result_directory {
 function create_test_case_sources_directory {
         # remove if exists 
         if [ -d "${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}" ]; then
-                echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf "${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}"
+                echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -rf "${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}"
         fi
 
         ${GitTestSourcesCmd}
         if [ $? -ne 0 ]; then
                 echo "ERR: ${ERR_CREATE} - cannot download Test Sources"
-                return ${ERR_CREATE}
+                return "${ERR_CREATE}"
         fi
-        return ${ERR_OK}
+        return "${ERR_OK}"
 }
 
 ############################################################################
@@ -92,7 +92,7 @@ function create_13MD05-90_directory {
                 download_13MD05_90_repository
                 if [ $? -ne 0 ]; then
                         echo "ERR: ${ERR_DOWNLOAD} - cannot download Mdis"
-                        return ${ERR_DOWNLOAD}
+                        return "${ERR_DOWNLOAD}"
                 fi
         else
                 cd "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}"
@@ -103,18 +103,18 @@ function create_13MD05-90_directory {
                 echo "Comparision GitBranch: ${GitBranch} with ${GitMdisBranch} "
                 if [ "${GitBranch}" != "${GitMdisBranch}" ]; then
                         cd ..
-                        echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf ${MdisSourcesDirectoryName}
+                        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -rf ${MdisSourcesDirectoryName}
                         download_13MD05_90_repository
                         if [ $? -ne 0 ]; then
                                 echo "ERR: ${ERR_DOWNLOAD} - cannot download Mdis"
-                                return ${ERR_DOWNLOAD}
+                                return "${ERR_DOWNLOAD}"
                         fi
                 else
                         if [ ! -z "${GitMdisCommitSha}" ]; then 
                                 git reset --hard ${GitMdisCommitSha}
                                 if [ $? -ne 0 ]; then
                                         echo "Wrong SHA detected"
-                                        return ${ERR_CONF}
+                                        return "${ERR_CONF}"
                                 fi
                         else
                                 #Go to most current commit 
@@ -123,7 +123,7 @@ function create_13MD05-90_directory {
                         cd ..
                 fi
         fi
-        return ${ERR_OK}
+        return "${ERR_OK}"
 }
 
 ############################################################################
@@ -136,7 +136,7 @@ function copy_external_sources {
         if [ -d "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" ]; then
                 # check if external sources directory exists
                 if [ -d "${MdisExternalDirectoryPath}" ]; then
-                        cp -r "${MdisExternalDirectoryPath}/*" "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}/"
+                        cp -r "${MdisExternalDirectoryPath}"/* "${MainTestDirectoryPath}"/"${MainTestDirectoryName}"/"${MdisSourcesDirectoryName}"/
                 fi
         fi
 }
@@ -149,7 +149,7 @@ function download_13MD05_90_repository {
         ${GitMdisCmd}
         if [ $? -ne 0 ]; then
                 echo "ERR: ${ERR_CREATE} - cannot download MDIS"
-                return ${ERR_CREATE}
+                return "${ERR_CREATE}"
         fi
         cd "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}"
         local CommitId="$(git log --pretty=format:'%H' -n 1)"
@@ -158,7 +158,7 @@ function download_13MD05_90_repository {
                 git reset --hard ${GitMdisCommitSha}
                 if [ $? -ne 0 ]; then
                         echo "Wrong SHA detected"
-                        return ${ERR_CONF}
+                        return "${ERR_CONF}"
                 fi
         else
                 #Go to most current commit 
@@ -167,7 +167,7 @@ function download_13MD05_90_repository {
                 git submodule update
         fi
         cd ..
-        return ${ERR_OK}
+        return "${ERR_OK}"
 }
 
 ############################################################################
@@ -193,15 +193,15 @@ function install_13MD05_90_sources {
                 fi
                 # install sources of MDIS
                 if [ "${RunInstantly}" != "1" ]; then
-                        echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf /opt/menlinux
-                        echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -f /lib/modules/$(uname -r)/misc/men_*.ko
-                        echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -f /etc/mdis/*.bin
-                        cd ${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName} 
-                        echo ${MenPcPassword} | sudo -S --prompt=$'\r' ./INSTALL.sh --install-only
+                        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -rf /opt/menlinux
+                        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -f /lib/modules/$(uname -r)/misc/men_*.ko
+                        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -f /etc/mdis/*.bin
+                        cd "${MainTestDirectoryPath}"/"${MainTestDirectoryName}"/"${MdisSourcesDirectoryName}" || exit "${ERR_INSTALL}"
+                        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' ./INSTALL.sh --install-only
                 fi
         else
                 echo "ERR ${ERR_INSTALL} :no sources to install" 
-                return ${ERR_INSTALL}
+                return "${ERR_INSTALL}"
         fi
 }
 
@@ -216,23 +216,23 @@ echo "Start of Pc_Configure"
 create_main_test_directory
 if [ $? -ne 0 ]; then
         echo "ERR: create_main_test_directory"
-        exit ${ERR_CONF}
+        exit "${ERR_CONF}"
 fi
 
-cd "${MainTestDirectoryPath}/${MainTestDirectoryName}"
+cd "${MainTestDirectoryPath}/${MainTestDirectoryName}" || exit "${ERR_CONF}"
 
 create_result_directory
 CmdResult=$?
 echo "${CmdResult}"
-if [ ${CmdResult} -ne ${ERR_OK} ]; then
+if [ ${CmdResult} -ne "${ERR_OK}" ]; then
         echo "ERR: create_result_directory"
-        exit ${ERR_CONF}
+        exit "${ERR_CONF}"
 fi
 
 create_13MD05-90_directory
 if [ $? -ne 0 ]; then
         echo "ERR: create_13MD05-90_directory"
-        exit ${ERR_CONF}
+        exit "${ERR_CONF}"
 fi
 
 copy_external_sources
@@ -240,14 +240,14 @@ copy_external_sources
 create_test_case_sources_directory
 if [ $? -ne 0 ]; then
         echo "ERR: create_test_case_sources_directory"
-        exit ${ERR_CONF}
+        exit "${ERR_CONF}"
 fi
 
 install_13MD05_90_sources
 if [ $? -ne 0 ]; then
         echo "ERR: install_13MD05_90_sources"
-        exit ${ERR_CONF}
+        exit "${ERR_CONF}"
 fi
 
-exit ${ERR_OK}
+exit "${ERR_OK}"
 
