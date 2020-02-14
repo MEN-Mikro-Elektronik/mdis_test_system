@@ -19,17 +19,17 @@ function create_directory {
         local DirectoryName="$1"
         if [ ! -d "${DirectoryName}" ]; then
                 # create and move to Test Case directory 
-                mkdir "${DirectoryName}"
-                if [ $? -ne 0 ]; then
+                if ! mkdir "${DirectoryName}"
+                then
                         echo "ERR_CREATE :$1 - cannot create directory"
-                        return ${ERR_CREATE} 
+                        return "${ERR_CREATE}" 
                 fi
         else
                 echo "Directory: ${DirectoryName} exists ..." 
-                return ${ERR_DIR_EXISTS}
+                return "${ERR_DIR_EXISTS}"
         fi
 
-        return ${ERR_OK}
+        return "${ERR_OK}"
 }
 
 ############################################################################
@@ -41,15 +41,14 @@ function create_directory {
 #
 function scan_and_install {
         echo "function scan_and_install"
-        local CmdResult=${ERR_UNDEFINED}
+        local CmdResult="${ERR_UNDEFINED}"
 
         # scan the hardware
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' /opt/menlinux/scan_system.sh /opt/menlinux --assume-yes --internal-swmodules > scan_system_output.txt 2>&1
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' /opt/menlinux/scan_system.sh /opt/menlinux --assume-yes --internal-swmodules > scan_system_output.txt 2>&1
         CmdResult=$?
-
         if [ ${CmdResult} -ne 0 ]; then
                 echo "ERR_SCAN :scan_system script error"
-                return ${ERR_SCAN} 
+                return "${ERR_SCAN}" 
         fi
 
         make_install
@@ -66,13 +65,13 @@ function make_install {
         echo ${MenPcPassword} | sudo -S --prompt=$'\r' make > make_output.txt 2>&1
         if [ $? -ne 0 ]; then
                 echo "ERR 3 :make error" 
-                exit ${ERR_MAKE}
+                exit "${ERR_MAKE}"
         fi
 
         echo ${MenPcPassword} | sudo -S --prompt=$'\r' make install > make_install_output.txt 2>&1
         if [ $? -ne 0 ]; then
                 echo "ERR 4 :make install error"
-                exit ${ERR_INSTALL}
+                exit "${ERR_INSTALL}"
         fi
 }
 
@@ -84,13 +83,14 @@ function make_install {
 #
 function get_test_summary_directory_name {
         local CurrDir="$pwd" 
-
-        cd "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}"
         local CommitIdShortened
+        local SystemName
+        local TestResultsDirectoryName
+        cd "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" || exit "${ERR_NOEXIST}"
         CommitIdShortened=$(git log --pretty=format:'%h' -n 1)
-        local SystemName=`hostnamectl | grep "Operating System" | awk '{ print $3 $4 }'`
-        local TestResultsDirectoryName="Results_${SystemName}_commit_${CommitIdShortened}"
-        cd "${CurrDir}"
+        SystemName=$(hostnamectl | grep "Operating System" | awk '{ print $3 $4 }')
+        TestResultsDirectoryName="Results_${SystemName}_commit_${CommitIdShortened}"
+        cd "${CurrDir}" || exit "${ERR_NOEXIST}"
 
         echo "${TestResultsDirectoryName}"
 }
@@ -102,11 +102,11 @@ function get_test_summary_directory_name {
 #       None 
 #
 function get_mdis_sources_commit_sha {
-        cd "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}"
+        cd "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" || exit "${ERR_NOEXIST}"
         local CommitIdShortened
         CommitIdShortened=$(git log --pretty=format:'%h' -n 1)
         local SystemName=`hostnamectl | grep "Operating System" | awk '{ print $3"_"$4 }'`
-        cd "${CurrDir}"
+        cd "${CurrDir}" || exit "${ERR_NOEXIST}"
 
         echo "${CommitIdShortened}"
 }
@@ -118,11 +118,11 @@ function get_mdis_sources_commit_sha {
 #       None 
 #
 function get_os_name_with_kernel_ver {
-        cd "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}"
+        cd "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" || exit "${ERR_NOEXIST}"
         local SystemName=`hostnamectl | grep "Operating System" | awk '{ print $3 $4 }'`
         local Kernel=`uname -r`
         local Arch=`uname -m`
-        cd "${CurrDir}"
+        cd "${CurrDir}" || exit "${ERR_NOEXIST}"
         SystemName="${SystemName//\//_}"
         SystemName="${SystemName//(/_}"
         SystemName="${SystemName//)/_}"
@@ -143,20 +143,19 @@ function run_test_case_dir_create {
         local TestCaseLogName=${1}
         local TestCaseName=${2}
 
-        local CmdResult=${ERR_UNDEFINED}
+        local CmdResult="${ERR_UNDEFINED}"
 
         # Create directory with bash script name 
-        create_directory ${TestCaseName}
-        CmdResult=$?
-        if [ ${CmdResult} -ne 0 ]; then
-                return ${CmdResult}
+        if ! create_directory "${TestCaseName}"
+        then
+                return "${CmdResult}"
         fi
 
         # Move into test case directory
-        cd "${TestCaseName}"
+        cd "${TestCaseName}" || exit "${ERR_NOEXIST}"
 
         # Create log file
-        touch ${TestCaseLogName}
+        touch "${TestCaseLogName}"
 }
 
 ############################################################################
@@ -166,19 +165,18 @@ function run_test_case_dir_create {
 #       - make install
 #
 function mdis_prepare {
-        local DirectoryName=$1
-        cd "${DirectoryName}"
+        local DirectoryName="$1"
+        cd "${DirectoryName}" || exit "${ERR_NOEXIST}"
+
         # Scan, make and make install 
-        scan_and_install
-        CmdResult=$?
-        if [ ${CmdResult} -ne 0 ]; then
+        if ! scan_and_install
+        then
                 return ${CmdResult}
         fi
 
         # Check if any errors exists in output files
-        error_check
-        CmdResult=$?
-        if [ ${CmdResult} -ne 0 ]; then
+        if ! error_check
+        then
                 return ${CmdResult}
         fi
 
@@ -187,15 +185,13 @@ function mdis_prepare {
         # make_install_output.txt 2>&1
 
         # Check if any errors exists in output files
-        warning_check "make_output.txt"
-        CmdResult=$?
-        if [ ${CmdResult} -ne 0 ]; then
+        if ! warning_check "make_output.txt"
+        then
                 return ${CmdResult}
         fi
 
-        warning_check "make_install_output.txt"
-        CmdResult=$?
-        if [ ${CmdResult} -ne 0 ]; then
+        if ! warning_check "make_install_output.txt"
+        then
                 return ${CmdResult}
         fi
 }
@@ -215,9 +211,8 @@ function run_test_case_common_end_actions {
         local TestCaseName=${2}
 
         # remove unnecessary files
-        clean_test_case_files
-        CmdResult=$?
-        if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+        if ! clean_test_case_files
+        then
                echo "clean_test_case_files error"
         fi
 
@@ -240,7 +235,8 @@ function run_test_case_common_end_actions {
 #       None 
 #
 function rmmod_all_men_modules {
-        local MenLsmodModuleCnt=$(lsmod | grep ^men_ | awk '{print $1}' | wc -l)
+        local MenLsmodModuleCnt
+        MenLsmodModuleCnt=$(lsmod | grep ^men_ | awk '{print $1}' | wc -l)
         for i in $(seq 1 ${MenLsmodModuleCnt});
         do
                #echo "$i rmmod $(lsmod | grep men_ | awk NR==1'{print $1}')"
@@ -977,7 +973,7 @@ function m_module_m77_test {
         local M77Nr=${3}
         local M77CarrierName="d203_a24_${4}" # obtain from system.dsc (only G204)
         local LogPrefix="[m77_test]"
-        
+
         # modprobe men_ sth sth 
         echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_mdis_kernel
         if [ $? -ne 0 ]; then
@@ -988,57 +984,57 @@ function m_module_m77_test {
         echo ${MenPcPassword} | sudo -S --prompt=$'\r' mdis_createdev -b ${M77CarrierName}
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix}  ERR_VALUE: could not mdis_createdev -b ${M77CarrierName}" | tee -a ${LogFileName}
-                return ${ERR_VALUE}
+                return "${ERR_VALUE}"
         fi
 
         echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix}  ERR_VALUE: could not modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7" | tee -a ${LogFileName}
-                return ${ERR_VALUE}
+                return "${ERR_VALUE}"
         fi
         local tty0="ttyD0"
         local tty1="ttyD1"
         local tty2="ttyD2"
         local tty3="ttyD3"
 
-        uart_test_tty ${tty0} ${tty1}
-        if [ $? -ne 0 ]; then
+        if ! uart_test_tty "${tty0}" "${tty1}"
+        then
                 echo "${LogPrefix}  ERR_VALUE: ${tty0} with ${tty1}" | tee -a ${LogFileName}
-                return ${ERR_VALUE}
+                return "${ERR_VALUE}"
         fi
 
-        uart_test_tty ${tty3} ${tty2}
-        if [ $? -ne 0 ]; then
+        if ! uart_test_tty "${tty3}" "${tty2}"
+        then
                 echo "${LogPrefix}  ERR_VALUE: ${tty3} with ${tty2}" | tee -a ${LogFileName}
-                return ${ERR_VALUE}
+                return "${ERR_VALUE}"
         fi
 
         sleep 2 
         echo ${MenPcPassword} | sudo -S --prompt=$'\r' rmmod men_lx_m77 
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix}  ERR_VALUE: could not rmmod m" | tee -a ${LogFileName} 
-                return ${ERR_VALUE}
+                return "${ERR_VALUE}"
         fi
 
         echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix}  ERR_VALUE: could not modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7" | tee -a ${LogFileName}
-                return ${ERR_VALUE}
+                return "${ERR_VALUE}"
         fi
 
-        uart_test_tty ${tty1} ${tty0}
-        if [ $? -ne 0 ]; then
+        if ! uart_test_tty "${tty1}" "${tty0}"
+        then
                 echo "${LogPrefix}  ERR_VALUE: ${tty1} with ${tty0}" | tee -a ${LogFileName}
-                return ${ERR_VALUE}
+                return "${ERR_VALUE}"
         fi
 
-        uart_test_tty ${tty2} ${tty3}
-        if [ $? -ne 0 ]; then
+        if ! uart_test_tty "${tty2}" "${tty3}"
+        then
                 echo "${LogPrefix}  ERR_VALUE: ${tty2} with ${tty3}" | tee -a ${LogFileName}
-                return ${ERR_VALUE}
+                return "${ERR_VALUE}"
         fi
 
-        return ${ERR_OK}
+        return "${ERR_OK}"
 }
 
 ############################################################################
@@ -1522,7 +1518,7 @@ function m_module_x_test {
         local ModuleInstanceName=""
         local LogPrefix="[M_Module_${MModuleName}]"
 
-        case $(echo "${MModuleName}") in
+        case "${MModuleName}" in
           m11)
                 ModprobeDriver="men_ll_m11"
                 ModuleSimp="m11_port_veri"
@@ -1709,11 +1705,13 @@ function compare_m66_simp_values {
 
         # Compare results
         # Write and Read values should be the same when connected,
-        local IndexCnt=$(grep "M_write" m66_${M66Nr}_simp_output_connected.txt | wc -l)
-        local IndexOffset=$(grep -n "M_write" m66_${M66Nr}_simp_output_connected.txt | cut -f1 -d: | awk NR==1)
+        local IndexCnt
+        local IndexOffset
+        IndexCnt=$(grep "M_write" m66_${M66Nr}_simp_output_connected.txt | wc -l)
+        IndexOffset=$(grep -n "M_write" m66_${M66Nr}_simp_output_connected.txt | cut -f1 -d: | awk NR==1)
 
         if [ ${IndexCnt} -ne 0 ]; then
-                for i in `seq $((${IndexOffset})) $((${IndexCnt}+${IndexOffset}-1))`
+                for i in $(seq $((${IndexOffset})) $((${IndexCnt}+${IndexOffset}-1)))
                 do
                         CheckValueConnectedWrite=$(cat m66_${M66Nr}_simp_output_connected.txt | awk NR==${i}'{print $4}') 
                         CheckValueConnectedRead=$(cat m66_${M66Nr}_simp_output_connected.txt | awk NR==${i}'{print $9}')
@@ -1725,7 +1723,7 @@ function compare_m66_simp_values {
         fi
         # Write and Read values should be different when disconnected
         if [ ${IndexCnt} -ne 0 ]; then
-                for i in `seq $((${IndexOffset})) $((${IndexCnt}+${IndexOffset}-1))`
+                for i in $(seq $((${IndexOffset})) $((${IndexCnt}+${IndexOffset}-1)))
                 do
                         CheckValueConnectedRead=$(cat m66_${M66Nr}_simp_output_disconnected.txt | awk NR==${i}'{print $9}')
                         if [ "${CheckValueConnectedRead}" != "1" ]; then
@@ -1780,9 +1778,9 @@ function compare_m11_port_veri_values {
 
     local ErrorCnt=$(grep -i "error" m11_${M11Nr}_simp_output_connected.txt | wc -l)
     if [ ${ErrorCnt} -ne 0 ]; then
-        return ${ERR_VALUE}
+        return "${ERR_VALUE}"
     else
-        return ${ERR_OK}
+        return "${ERR_OK}"
     fi
 }
 
@@ -1800,14 +1798,17 @@ function compare_m43_simp_values {
     local M43Nr=${3}
     local LogPrefix="[compare_m43]"
 
-    local DeviceOpened=$(grep -i "Device m43_${M43Nr} opened" m43_${M43Nr}_simp_output_connected.txt | wc -l)
-    local DeviceClosed=$(grep -i "Device m43_${M43Nr} closed" m43_${M43Nr}_simp_output_connected.txt | wc -l)
-    local EndLine=$(tail -1 m43_${M43Nr}_simp_output_connected.txt)
+    local DeviceOpened
+    local DeviceClosed
+    local EndLine
+    DeviceOpened=$(grep -i "Device m43_${M43Nr} opened" m43_${M43Nr}_simp_output_connected.txt | wc -l)
+    DeviceClosed=$(grep -i "Device m43_${M43Nr} closed" m43_${M43Nr}_simp_output_connected.txt | wc -l)
+    EndLine=$(tail -1 m43_${M43Nr}_simp_output_connected.txt)
     echo "${LogPrefix} DeviceOpened: ${DeviceOpened}, DeviceClosed: ${DeviceClosed}, EndLine: ${EndLine}"  | tee -a ${TestCaseLogName} 2>&1
     if [ ${DeviceOpened} -eq 1 ] && [ ${DeviceClosed} -eq 1 ] && [ "${EndLine}" == "=> OK" ]; then
-        return ${ERR_OK}
+        return "${ERR_OK}"
     else
-        return ${ERR_VALUE}
+        return "${ERR_VALUE}"
     fi
 }
 
@@ -1826,31 +1827,37 @@ function compare_m31_simp_values {
         local LogPrefix="[compare_m31]"
 
         echo "${LogPrefix} compare_m31_simp_values"
-        local ValueChannelConnected_0=$(grep "channel  0 : " m31_${M31Nr}_simp_output_connected.txt | awk NR==1'{print $4}')
-        local ValueChannelDisconnected_0=$(grep "channel  0 : " m31_${M31Nr}_simp_output_disconnected.txt | awk NR==1'{print $4}')
+        local ValueChannelConnected_0
+        local ValueChannelDisconnected_0
+        ValueChannelConnected_0=$(grep "channel  0 : " m31_${M31Nr}_simp_output_connected.txt | awk NR==1'{print $4}')
+        ValueChannelDisconnected_0=$(grep "channel  0 : " m31_${M31Nr}_simp_output_disconnected.txt | awk NR==1'{print $4}')
         if [ "${ValueChannelConnected_0}" == "" ] || [ "${ValueChannelDisconnected_0}" == "" ] || \
            [ "${ValueChannelConnected_0}" -eq "${ValueChannelDisconnected_0}" ]; then
                 echo "${LogPrefix} ValueChannelConnected_0 equal with ValueChannelDisconnected_0" | tee -a ${TestCaseLogName} 2>&1
-                return ${ERR_VALUE}
+                return "${ERR_VALUE}"
         fi
 
-        local ValueChannelConnected_1=$(grep "channel  0 : " m31_${M31Nr}_simp_output_connected.txt | awk NR==1'{print $4}')
-        local ValueChannelDisconnected_1=$(grep "channel  0 : " m31_${M31Nr}_simp_output_disconnected.txt | awk NR==1'{print $4}')
+        local ValueChannelConnected_1
+        local ValueChannelDisconnected_1
+        ValueChannelConnected_1=$(grep "channel  0 : " m31_${M31Nr}_simp_output_connected.txt | awk NR==1'{print $4}')
+        ValueChannelDisconnected_1=$(grep "channel  0 : " m31_${M31Nr}_simp_output_disconnected.txt | awk NR==1'{print $4}')
         if [ "${ValueChannelConnected_1}" == "" ] || [ "${ValueChannelDisconnected_1}" == "" ] || \
            [ "${ValueChannelConnected_1}" -eq "${ValueChannelDisconnected_1}" ]; then
                 echo "${LogPrefix} ValueChannelConnected_1 equal with ValueChannelDisconnected_1" | tee -a ${TestCaseLogName} 2>&1
-                return ${ERR_VALUE}
+                return "${ERR_VALUE}"
         fi
 
-        local ValueChannelStateConnected=$(grep "state: " m31_${M31Nr}_simp_output_connected.txt | awk NR==1'{print $2 $3}')
-        local ValueChannelStateDisconnected=$(grep "state: " m31_${M31Nr}_simp_output_disconnected.txt | awk NR==1'{print $2 $3}')
+        local ValueChannelStateConnected
+        local ValueChannelStateDisconnected
+        ValueChannelStateConnected=$(grep "state: " m31_${M31Nr}_simp_output_connected.txt | awk NR==1'{print $2 $3}')
+        ValueChannelStateDisconnected=$(grep "state: " m31_${M31Nr}_simp_output_disconnected.txt | awk NR==1'{print $2 $3}')
         if [ "${ValueChannelStateConnected}" == "" ] || [ "${ValueChannelStateDisconnected}" == "" ] || \
            [ "${ValueChannelStateConnected}" -eq "${ValueChannelStateDisconnected}" ]; then
                 echo "${LogPrefix} ValueChannelStateConnected equal with ValueChannelStateDisconnected"  | tee -a ${TestCaseLogName} 2>&1
-                return ${ERR_VALUE}
+                return "${ERR_VALUE}"
         fi
 
-        return ${ERR_OK}
+        return "${ERR_OK}"
 }
 
 ############################################################################
@@ -1871,8 +1878,10 @@ function compare_m35_simp_values {
         
 
         echo "${LogPrefix} compare_m35_simp_values"
-        local ValueChannelStateConnected=$(grep "ch0 = " m35_${M35Nr}_simp_output_connected.txt | awk NR==1'{print $3}')
-        local ValueChannelStateDisconnected=$(grep  "ch0 = "  m35_${M35Nr}_simp_output_disconnected.txt | awk NR==1'{print $3}')
+        local ValueChannelStateConnected
+        local ValueChannelStateDisconnected
+        ValueChannelStateConnected=$(grep "ch0 = " m35_${M35Nr}_simp_output_connected.txt | awk NR==1'{print $3}')
+        ValueChannelStateDisconnected=$(grep  "ch0 = "  m35_${M35Nr}_simp_output_disconnected.txt | awk NR==1'{print $3}')
 
         ValueChannelStateConnected=$(echo "${ValueChannelStateConnected}" | sed 's/0x//')
         ValueChannelStateDisconnected=$(echo "${ValueChannelStateDisconnected}" | sed 's/0x//')
@@ -1913,7 +1922,8 @@ function compare_m35_blkread_values {
         local LogPrefix="[compare_m35]"
 
         echo "${LogPrefix} compare_m35_blkread_values"
-        local ValueChannelStateDisconnected=$(grep -P "^[0-9a-f]+\+[0-9a-f]+:" m35_${M35Nr}_blkread_output_disconnected.txt | head -n 1 | awk '{print $2}' | grep -oP "^[0-9]+")
+        local ValueChannelStateDisconnected
+        ValueChannelStateDisconnected=$(grep -P "^[0-9a-f]+\+[0-9a-f]+:" m35_${M35Nr}_blkread_output_disconnected.txt | head -n 1 | awk '{print $2}' | grep -oP "^[0-9]+")
 
         echo "${LogPrefix} ValueChannelStateDisconnected: ${ValueChannelStateDisconnected}"
 
@@ -1941,11 +1951,13 @@ function compare_m36_simp_values {
 
         echo "${LogPrefix} compare_m36_simp_values"
 
-        local ValueChannelStateConnected=$(cat m36n_${M36Nr}_simp_output_connected.txt | awk NR==6'{print $4}')
-        local ValueChannelStateDisconnected=$(cat m36n_${M36Nr}_simp_output_disconnected.txt | awk NR==6'{print $4}')
+        local ValueChannelStateConnected
+        local ValueChannelStateDisconnected
+        ValueChannelStateConnected=$(cat m36n_${M36Nr}_simp_output_connected.txt | awk NR==6'{print $4}')
+        ValueChannelStateDisconnected=$(cat m36n_${M36Nr}_simp_output_disconnected.txt | awk NR==6'{print $4}')
 
         echo "${LogPrefix} ValueChannelStateConnected: ${ValueChannelStateConnected}"
-        echo "${LogPrefix} ValueChannelStateDisconnected: ${ValueChannelStateDisconnected}"        
+        echo "${LogPrefix} ValueChannelStateDisconnected: ${ValueChannelStateDisconnected}"
 
         # replace '.' with ',' 
         #ValueChannelStateConnected=$(echo ${ValueChannelStateConnected} | sed 's/\./,/')
@@ -1985,23 +1997,27 @@ function compare_m82_simp_values {
         local LogPrefix="[compare_m82]"
 
         echo "${LogPrefix} compare_m82_simp_values"
-        local ValueChannelConnected_0=$(grep "channel  1 : " m82_${M82Nr}_simp_output_connected.txt | awk NR==1'{print $4}')
-        local ValueChannelDisconnected_0=$(grep "channel  1 : " m82_${M82Nr}_simp_output_disconnected.txt | awk NR==1'{print $4}')
+        local ValueChannelConnected_0
+        local ValueChannelDisconnected_0
+        ValueChannelConnected_0=$(grep "channel  1 : " m82_${M82Nr}_simp_output_connected.txt | awk NR==1'{print $4}')
+        ValueChannelDisconnected_0=$(grep "channel  1 : " m82_${M82Nr}_simp_output_disconnected.txt | awk NR==1'{print $4}')
         if [ "${ValueChannelConnected_0}" == "" ] || [ "${ValueChannelDisconnected_0}" == "" ] || \
            [ "${ValueChannelConnected_0}" -eq "${ValueChannelDisconnected_0}" ]; then
                 echo "${LogPrefix} ValueChannelConnected_1 equal with ValueChannelDisconnected_1" | tee -a ${TestCaseLogName} 2>&1
-                return ${ERR_VALUE}
+                return "${ERR_VALUE}"
         fi
 
-        local ValueChannelStateConnected=$(grep "state: " m82_${M82Nr}_simp_output_connected.txt | awk NR==1'{print $2 $3}')
-        local ValueChannelStateDisconnected=$(grep "state: " m82_${M82Nr}_simp_output_disconnected.txt | awk NR==1'{print $2 $3}')
+        local ValueChannelStateConnected
+        local ValueChannelStateDisconnected
+        ValueChannelStateConnected=$(grep "state: " m82_${M82Nr}_simp_output_connected.txt | awk NR==1'{print $2 $3}')
+        ValueChannelStateDisconnected=$(grep "state: " m82_${M82Nr}_simp_output_disconnected.txt | awk NR==1'{print $2 $3}')
         if [ "${ValueChannelStateConnected}" == "" ] || [ "${ValueChannelStateDisconnected}" == "" ] || \
            [ "${ValueChannelStateConnected}" -eq "${ValueChannelStateDisconnected}" ]; then
                 echo "${LogPrefix} ValueChannelStateConnected equal with ValueChannelStateDisconnected"  | tee -a ${TestCaseLogName} 2>&1
-                return ${ERR_VALUE}
+                return "${ERR_VALUE}"
         fi
 
-        return ${ERR_OK}
+        return "${ERR_OK}"
 }
 
 ############################################################################
@@ -2026,7 +2042,7 @@ function write_command_code {
 
         if [ "${FileExist}" = "true" ]; then
                 echo "${LogPrefix} Lock file exists: error ${ERR_LOCK_EXISTS}" | tee -a ${TestCaseLogName} 2>&1
-                return ${ERR_LOCK_EXISTS}
+                return "${ERR_LOCK_EXISTS}"
         fi
 
         touch "${LockFileName}"
@@ -2035,7 +2051,7 @@ function write_command_code {
 
         echo -n "${TestCaseName} : ${CommandCode}" > ${LockFileName}
         echo "${LogPrefix} ${TestCaseName} : ${CommandCode}" | tee -a ${TestCaseLogName} 2>&1
-        return ${ERR_OK}
+        return "${ERR_OK}"
 }
 
 ############################################################################
@@ -2051,25 +2067,26 @@ function read_command_code_status {
         local TestCaseLogName=${1}
         local TestCaseName=${2}
         local LogPrefix=${3}
-        
+
         echo "${LogPrefix} read_command_code_status"  | tee -a ${TestCaseLogName} 2>&1
         local LockTestCase=$(cat ${LockFileName} | awk '{print $1}')
         if [ "${LockTestCase}" != "${TestCaseName}" ]; then
                 echo "${LogPrefix} rc: lock_invalid, Test Case mismatch" | tee -a ${TestCaseLogName} 2>&1
-                return ${ERR_LOCK_INVALID}
+                return "${ERR_LOCK_INVALID}"
         fi
 
-        local LockResult=$(cat ${LockFileName} | awk '{print $5}')
+        local LockResult
+        LockResult=$(cat ${LockFileName} | awk '{print $5}')
         
         if [ "${LockResult}" = "${LockFileSuccess}" ]; then
                 echo "${LogPrefix} ${LockResult}" | tee -a ${TestCaseLogName} 2>&1
-                return ${ERR_OK}
+                return "${ERR_OK}"
         elif [ "${LockResult}" = "${LockFileFailed}" ]; then
                 echo "${LogPrefix} ${LockResult}" | tee -a ${TestCaseLogName} 2>&1
-                return ${ERR_SWITCH}
+                return "${ERR_SWITCH}"
         else
                #echo "${LogPrefix} ${LockResult} rc: no input change result yet"| tee -a ${TestCaseLogName} 2>&1
-                return ${ERR_LOCK_INVALID}
+                return "${ERR_LOCK_INVALID}"
         fi 
 }
 
@@ -2097,7 +2114,7 @@ function change_input {
         
         echo "${LogPrefix} Change_input, command code: ${CommandCode}" | tee -a ${TestCaseLogName} 2>&1
 
-        write_command_code ${TestCaseLogName} ${TestCaseName} ${CommandCode} ${LogPrefix}
+        write_command_code "${TestCaseLogName}" "${TestCaseName}" "${CommandCode}" "${LogPrefix}"
         Result=$?
         if [ ${Result} -ne ${ERR_OK} ]; then
                 echo "${LogPrefix} Could not write_command_code - some error" | tee -a ${TestCaseLogName} 2>&1
@@ -2105,7 +2122,7 @@ function change_input {
                 while true ; do
                         sleep 2 
                         # Check if inputs have been changed
-                        read_command_code_status ${TestCaseLogName} ${TestCaseName} ${LogPrefix}
+                        read_command_code_status "${TestCaseLogName}" "${TestCaseName}" "${LogPrefix}"
                         Result=$? 
                         if [ ${Result} -eq ${ERR_OK} ]; then
                                 rm ${LockFileName}
@@ -2115,11 +2132,11 @@ function change_input {
                                 echo "${LogPrefix} Timeout, no response - force break " | tee -a ${TestCaseLogName} 2>&1   
                                 break
                         fi
-                        ReleaseCnt=$((${ReleaseCnt} + 1)) 
+                        ReleaseCnt=$((ReleaseCnt + 1)) 
                 done
         fi
 
-        return ${Result}
+        return "${Result}"
 }
 
 ############################################################################
@@ -2129,10 +2146,10 @@ function change_input {
 #       None 
 #
 function clean_test_case_files {
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf BIN/
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf DESC/
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf LIB/
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf OBJ/
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -rf BIN/
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -rf DESC/
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -rf LIB/
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -rf OBJ/
 
         #echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf /etc/mdis/*
         #echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf /lib/modules/linux_src ../misc/*
@@ -2148,14 +2165,14 @@ function clean_test_case_files {
 function warning_check {
 
         local FileName=${1}
-        cat ${FileName} | grep warning: >/dev/null
+        cat "${FileName}" | grep warning: >/dev/null
         if [ $? -eq 0 ]
         then 
                 echo "Warning Check FAILED!"
-                return ${ERR_WARNING}
+                return "${ERR_WARNING}"
         fi
 
-        return ${ERR_OK}
+        return "${ERR_OK}"
 }
 
 ############################################################################
