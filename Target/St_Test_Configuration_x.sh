@@ -77,7 +77,7 @@ case ${TestSetup} in
           #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G215_Interface_Test.sh" ${TestSummaryDirectory}
           ;;
         2)
-          echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_F205_M57_M_Module_Test.sh" ${TestSummaryDirectory}
+          echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_F205_M57_M_Module_Test.sh" ${TestSummaryDirectory} "1"
           echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_M32_M58_M_Module_Test.sh" ${TestSummaryDirectory}
           echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_M37_M62_M_Module_Test.sh" ${TestSummaryDirectory}
           echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_F223_Test.sh" ${TestSummaryDirectory}
