@@ -60,8 +60,8 @@ function cleanOnExit() {
             # Kill process
             echo "${LogPrefix} kill process ${JenkinsBackgroundPID}"
 
-            kill  ${JenkinsBackgroundPID}
-            if [ $? -ne 0 ]; then
+            if ! kill ${JenkinsBackgroundPID}
+            then
                     echo "${LogPrefix} Could not kill cat backgroung process ${JenkinsBackgroundPID}"
             else
                     echo "${LogPrefix} process ${JenkinsBackgroundPID} killed"
@@ -79,8 +79,8 @@ function cleanJenkinsBackgroundJob {
             # Kill process
             echo "${LogPrefix} kill process ${JenkinsBackgroundPID}"
 
-            kill  ${JenkinsBackgroundPID}
-            if [ $? -ne 0 ]; then
+            if ! kill  ${JenkinsBackgroundPID}
+            then
                     echo "${LogPrefix} Could not kill cat backgroung process ${JenkinsBackgroundPID}"
             else
                     echo "${LogPrefix} process ${JenkinsBackgroundPID} killed"
@@ -109,8 +109,8 @@ function runTests {
 
             # Run Test script - now scripts from remote device should be run 
             make_visible_in_log "TEST CASE - ${St_Test_Setup_Configuration} ${TestSetup}"
-            run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' ${GitTestTargetDirPath}/${St_Test_Setup_Configuration} ${TestSetup} ${MenPcPassword} ${Today}"
-            if [ $? -ne 0 ]; then
+            if ! run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' ${GitTestTargetDirPath}/${St_Test_Setup_Configuration} ${TestSetup} ${MenPcPassword} ${Today}"
+            then
                     echo "${LogPrefix} Error while running St_Test_Configuration script"
             fi
 
@@ -128,14 +128,15 @@ if [ "${RunInstantly}" == "1" ]; then
             if ! ping -c 2 "${MenPcIpAddr}"
             then
                     echo "${MenPcIpAddr} is not responding"
-                    break
+                    r
             fi
 
             cat "${MyDir}/../../Common/Conf.sh" > tmp.sh
             echo "RunInstantly=\"1\"" >> tmp.sh
-            cat ${MyDir}/Pc_Configure.sh >> tmp.sh
-            run_script_on_remote_pc ${MyDir}/tmp.sh
-            if [ $? -ne 0 ]; then
+            cat "${MyDir}"/Pc_Configure.sh >> tmp.sh
+
+            if ! run_script_on_remote_pc "${MyDir}"/tmp.sh
+            then
                     echo "${LogPrefix} Pc_Configure script failed"
                     exit 
             fi
@@ -177,9 +178,9 @@ else
             fi
             ssh-keygen -R "${MenPcIpAddr}"
 
-            cat "${MyDir}/../../Common/Conf.sh" ${MyDir}/Pc_Configure.sh > tmp.sh
-            run_script_on_remote_pc ${MyDir}/tmp.sh
-            if [ $? -ne 0 ]; then
+            cat "${MyDir}/../../Common/Conf.sh" "${MyDir}"/Pc_Configure.sh > tmp.sh
+            if ! run_script_on_remote_pc "${MyDir}"/tmp.sh
+            then
                     echo "${LogPrefix} Pc_Configure script failed"
                     exit 
             fi

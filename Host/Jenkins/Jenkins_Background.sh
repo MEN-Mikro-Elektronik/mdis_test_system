@@ -38,13 +38,13 @@ while true; do
                 # Change inputs here #
                 ######################
                 if [ "${CommandCode}" -ge "${IN_0_ENABLE}" ]; then
-                        change_input_BL51E ${CommandCode} ${LogPrefix}
+                        change_input_BL51E "${CommandCode}" "${LogPrefix}"
                         if [ $? -eq ${ERR_OK} ]; then
                                 #echo "${LogPrefix} Success: ${CommandCode} set on remote switch"
-                                write_command_code_lock_file_result ${LockFileSuccess} ${LogPrefix}
+                                write_command_code_lock_file_result "${LockFileSuccess}" "${LogPrefix}"
                         else
                                 #echo "${LogPrefix} Failed: ${CommandCode} set on remote switch"
-                                write_command_code_lock_file_result ${LockFileFailed} ${LogPrefix}
+                                write_command_code_lock_file_result "${LockFileFailed}" "${LogPrefix}"
                         fi
                 fi
         fi
