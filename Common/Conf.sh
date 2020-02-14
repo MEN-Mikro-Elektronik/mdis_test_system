@@ -57,7 +57,7 @@ MenPcLogin="men"
 MenPcPassword="men"
 
 # Address of device that will be changing status of inputs in tested device 
-MenBoxPcIpAddr="10.1.1.72"
+MenBoxPcIpAddr="10.1.1.78"
 InputSwitchTimeout=10 #seconds
 
 # Credentials, address, and command to download Git repository with Test Cases source
