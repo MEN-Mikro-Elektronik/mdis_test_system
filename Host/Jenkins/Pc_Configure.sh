@@ -133,9 +133,9 @@ function create_13MD05-90_directory {
 #       None
 #
 function copy_external_sources {
-        if [ ! -d "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" ]; then
+        if [ -d "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" ]; then
                 # check if external sources directory exists
-                if [ ! -d "${MdisExternalDirectoryPath}" ]; then
+                if [ -d "${MdisExternalDirectoryPath}" ]; then
                         cp -r "${MdisExternalDirectoryPath}/*" "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}/"
                 fi
         fi
