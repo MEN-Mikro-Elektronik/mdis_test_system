@@ -44,12 +44,12 @@ IN_3_DISABLE=203        # change input 3 to disable (with BL51 stands for RELAY 
 IN_4_DISABLE=204        # change input 4 to disable
 
 # Address of Target that will be tested
-MenPcIpAddr="10.1.1.100"
+MenPcIpAddr="10.1.1.153"
 
 #------------------------------------------------------------------------------
 #-------------------------PLEASE SPECIFY THE TEST SETUP------------------------
 #------------------------------------------------------------------------------
-TestSetup="1"
+TestSetup="2"
 
 
 # Credentials for Pc that will be tested - required by ssh connection and sudo cmds
@@ -65,13 +65,13 @@ GitTestSourcesBranch="jpe-dev-02_02"
 GitTestSourcesCmd="git clone -b ${GitTestSourcesBranch} https://github.com/MEN-Mikro-Elektronik/mdis_test_system.git"
 
 # Credentials, address, and command to download Git repository with 13MD05-90 sources
-GitMdisBranch="release-13MD05-90_02_01"
+GitMdisBranch="jpe-dev"
 GitMdisCmd="git clone --recursive -b ${GitMdisBranch} https://github.com/MEN-Mikro-Elektronik/13MD05-90.git"
 # This is optional if specific commit have to be tested !
 # If Commit sha is not defined, then the most recent commit on branch is used. 
 # Example: 
 # GitMdisCommitSha="15fe1dd75ed20209e5a6165876ac4d6953987f55"
-GitMdisCommitSha="" 
+GitMdisCommitSha=""
 
 # Directory names that are used during tests
 # Directory structure as below:
@@ -87,6 +87,8 @@ MdisSourcesDirectoryName="13MD05-90"
 TestSourcesDirectoryName="mdis_test_system"
 MainTestDirectoryName="MDIS_Test"
 MdisResultsDirectoryName="Results"
+# optional - used for proprietary drivers
+MdisExternalDirectoryPath="/media/tests/MDIS_External_Sources"
 
 MdisResultsDirectoryPath="${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisResultsDirectoryName}"
 GitTestCommonDirPath="${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}/Common"

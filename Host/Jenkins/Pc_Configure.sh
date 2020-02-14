@@ -102,7 +102,7 @@ function create_13MD05-90_directory {
                 echo "CommitId: ${CommitId}"
                 echo "Comparision GitBranch: ${GitBranch} with ${GitMdisBranch} "
                 if [ "${GitBranch}" != "${GitMdisBranch}" ]; then
-                        cd .. 
+                        cd ..
                         echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf ${MdisSourcesDirectoryName}
                         download_13MD05_90_repository
                         if [ $? -ne 0 ]; then
@@ -120,10 +120,25 @@ function create_13MD05-90_directory {
                                 #Go to most current commit 
                                 git pull origin
                         fi
-                        cd .. 
+                        cd ..
                 fi
         fi
         return ${ERR_OK}
+}
+
+############################################################################
+# copy external MDIS sources into MDIS installation directory
+#
+# parameters:
+#       None
+#
+function copy_external_sources {
+        if [ ! -d "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" ]; then
+                # check if external sources directory exists
+                if [ ! -d "${MdisExternalDirectoryPath}" ]; then
+                        cp -r "${MdisExternalDirectoryPath}/*" "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}/"
+                fi
+        fi
 }
 
 ############################################################################
@@ -162,7 +177,6 @@ function download_13MD05_90_repository {
 #       None 
 #
 function install_13MD05_90_sources {
-
         if [ -d "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" ]; then
                 local CurrentKernel="$(uname --kernel-release)"
                 local SystemName="$(hostnamectl | grep "Operating System" | awk '{ print $3 }')"
@@ -220,6 +234,8 @@ if [ $? -ne 0 ]; then
         echo "ERR: create_13MD05-90_directory"
         exit ${ERR_CONF}
 fi
+
+copy_external_sources
 
 create_test_case_sources_directory
 if [ $? -ne 0 ]; then
