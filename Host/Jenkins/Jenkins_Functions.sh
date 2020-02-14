@@ -10,10 +10,9 @@
 function make_visible_in_log {
         echo -e "\n############################################################################"
         echo "############################################################################"
-        echo "$1"  
+        echo "$1"
         echo "############################################################################"
         echo "############################################################################"
-
 }
 
 ############################################################################
@@ -23,8 +22,7 @@ function make_visible_in_log {
 # $1    command
 #
 function run_cmd_on_remote_pc {
-
-        sshpass -p ${MenPcPassword} ssh -o StrictHostKeyChecking=no ${MenPcLogin}@${MenPcIpAddr} "${1}"
+        sshpass -p "${MenPcPassword}" ssh -o StrictHostKeyChecking=no "${MenPcLogin}"@"${MenPcIpAddr}" "${1}"
 }
 
 ############################################################################
@@ -34,8 +32,7 @@ function run_cmd_on_remote_pc {
 # $1    command
 #
 function run_cmd_on_remote_input_switch {
-
-        sshpass -p ${MenPcPassword} ssh -o StrictHostKeyChecking=no ${MenPcLogin}@${MenBoxPcIpAddr} "${1}"
+        sshpass -p "${MenPcPassword}" ssh -o StrictHostKeyChecking=no "${MenPcLogin}"@"${MenBoxPcIpAddr}" "${1}"
 }
 
 ############################################################################
@@ -45,7 +42,7 @@ function run_cmd_on_remote_input_switch {
 # $1    script
 #
 function run_script_on_remote_pc {
-        sshpass -p ${MenPcPassword} ssh -o StrictHostKeyChecking=no ${MenPcLogin}@${MenPcIpAddr} \
+        sshpass -p "${MenPcPassword}" ssh -o StrictHostKeyChecking=no "${MenPcLogin}"@"${MenPcIpAddr}" \
         bash -s < "${1}"
 }
 
@@ -56,12 +53,12 @@ function run_script_on_remote_pc {
 # $1    file name with full path
 #
 function check_file_exists_on_UAT {
-
         local FilePath=${1}
-        local CheckFileExistsCmd="[ -f ${FilePath} ] && echo \"true\" || echo \"false\""
-        local FileExist=$(run_cmd_on_remote_pc "${CheckFileExistsCmd}")
-        echo ${FileExist}
-
+        local CheckFileExistsCmd
+        local FileExist
+        CheckFileExistsCmd="[ -f ${FilePath} ] && echo \"true\" || echo \"false\""
+        FileExist=$(run_cmd_on_remote_pc "${CheckFileExistsCmd}")
+        echo "${FileExist}"
 }
 
 ############################################################################
@@ -74,44 +71,45 @@ function check_file_exists_on_UAT {
 function write_command_code_lock_file_result {
         local CommandCodeResult=${1}
         local LogPrefix=${2}
-
-        local FileExist=$(check_file_exists_on_UAT "${LockFileName}")
+        local FileExist
+        FileExist=$(check_file_exists_on_UAT "${LockFileName}")
 
         if [ "${FileExist}" = "false" ]; then
                 echo "${LogPrefix} ERR_LOCK_NO_EXISTS"
-                return ${ERR_LOCK_NO_EXISTS}
+                return "${ERR_LOCK_NO_EXISTS}"
         fi
 
         # Check if there is no result written yet
-        local ResultExists=$(check_command_code_result_exist)
-        echo ${ResultExists}
+        local ResultExists
+        ResultExists=$(check_command_code_result_exist)
+        echo "${ResultExists}"
 
         if [ -z "${ResultExists}" ]; then
                 echo "${LogPrefix} No result in lock file" 
         else
                 echo "${LogPrefix} Result is written into lock file" 
-                return ${ERR_OK}
-        fi 
+                return "${ERR_OK}"
+        fi
 
         local WriteSuccessCmd="echo \"${MenPcPassword}\" | sudo -S --prompt=$'\r' echo -n \" : ${LockFileSuccess}\" >> ${LockFileName}"
         local WriteFailedCmd="echo \"${MenPcPassword}\" | sudo -S --prompt=$'\r' echo -n \" : ${LockFileFailed}\" >> ${LockFileName}"
 
         if [ "${CommandCodeResult}" = "${LockFileSuccess}" ]; then
-                local res=$(run_cmd_on_remote_pc "${WriteSuccessCmd}")
-                if [ $? -ne 0 ]; then
+                if ! run_cmd_on_remote_pc "${WriteSuccessCmd}"
+                then
                         echo "${LogPrefix} Error while write_command_code_lock_file_result success"
                 fi
                 echo "${LogPrefix} write_command_code_lock_file_result: success" 
         elif [ "${CommandCodeResult}" = "${LockFileFailed}" ];then 
-                local res=$(run_cmd_on_remote_pc "${WriteFailedCmd}")
-                if [ $? -ne 0 ]; then
+                if ! run_cmd_on_remote_pc "${WriteFailedCmd}"
+                then
                         echo "${LogPrefix} Error while write_command_code_lock_file_result failed"
                 fi
                 echo "${LogPrefix} write_command_code_lock_file_result: failed" 
         else
                 echo "${LogPrefix} Write_command_code_status: Unknown status code"
-                return ${ERR_LOCK_INVALID}
-        fi     
+                return "${ERR_LOCK_INVALID}"
+        fi
 }
 
 ############################################################################
@@ -121,16 +119,19 @@ function write_command_code_lock_file_result {
 # $1      Command code 
 #
 function read_command_code_lock_file {
+        local FileExist
+        local ReadCommandCodeCmd
+        local CommandCode
 
-        local FileExist=$(check_file_exists_on_UAT "${LockFileName}")
+        FileExist=$(check_file_exists_on_UAT "${LockFileName}")
 
         if [ "${FileExist}" = "false" ]; then
                 echo "ERR_LOCK_NO_EXISTS"
-                return ${ERR_LOCK_NO_EXISTS}
+                return "${ERR_LOCK_NO_EXISTS}"
         fi
-        
-        local ReadCommandCodeCmd="cat ${LockFileName} | awk '{print \$3}'"
-        local CommandCode=$(run_cmd_on_remote_pc "${ReadCommandCodeCmd}")
+
+        ReadCommandCodeCmd="cat ${LockFileName} | awk '{print \$3}'"
+        CommandCode=$(run_cmd_on_remote_pc "${ReadCommandCodeCmd}")
         echo "${CommandCode}"
 }
 
@@ -141,16 +142,20 @@ function read_command_code_lock_file {
 # $1      Command code 
 #
 function check_command_code_result_exist {
+        local FileExist
+        local ReadCommandCodeCmd
+        local CommandCode
 
-        local FileExist=$(check_file_exists_on_UAT "${LockFileName}")
+        FileExist=$(check_file_exists_on_UAT "${LockFileName}")
 
         if [ "${FileExist}" = "false" ]; then
                 echo "ERR_LOCK_NO_EXISTS"
-                return ${ERR_LOCK_NO_EXISTS}
+                return "${ERR_LOCK_NO_EXISTS}"
         fi
-        
-        local ReadCommandCodeCmd="cat ${LockFileName} | awk '{print \$5}'"
-        local CommandCode=$(run_cmd_on_remote_pc "${ReadCommandCodeCmd}")
+
+
+        ReadCommandCodeCmd="cat ${LockFileName} | awk '{print \$5}'"
+        CommandCode=$(run_cmd_on_remote_pc "${ReadCommandCodeCmd}")
         echo "${CommandCode}"
 }
 
@@ -163,49 +168,52 @@ function check_command_code_result_exist {
 # $2      Log Prefix - optional 
 #
 function change_input_BL51E {
-
         local CommandCode=${1}
         local LogPrefix=${2}
 
         echo "${LogPrefix} Function change_input_BL51E: ${CommandCode}"
-        
-        local I801Loaded=$(run_cmd_on_remote_input_switch "lsmod | grep i2c_i801 | wc -l")
+
+        local I801Loaded
+        I801Loaded=$(run_cmd_on_remote_input_switch "lsmod | grep i2c_i801 | wc -l")
 
         if [ "${I801Loaded}" -eq "0" ]; then
                 echo "${LogPrefix} Error: i2c_i801 is not loaded"
                 echo "${LogPrefix} Modprobe i2c_i801 ... "
-                run_cmd_on_remote_input_switch "echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe i2c_i801"
-                if [ "${?}" -ne "0" ]; then
+
+                if ! run_cmd_on_remote_input_switch "echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe i2c_i801"
+                then
                         echo "${LogPrefix} Modprobe i2c_i801 error"
-                        return ${ERR_MODPROBE}
+                        return "${ERR_MODPROBE}"
                 else
                         echo "${LogPrefix} Modprobe i2c_i801 success"
                 fi
         fi
 
         # now find smbus in i2cdetect dump 
-        local I2CNR=$(run_cmd_on_remote_input_switch "echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cdetect -y -l | grep smbus | awk '{print \$1}' | sed 's/i2c-//'" )
-        local RegisterData=$(run_cmd_on_remote_input_switch "echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cget -y ${I2CNR} 0x22 | sed 's/0x//' ")
+        local I2CNR
+        local RegisterData
+        I2CNR=$(run_cmd_on_remote_input_switch "echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cdetect -y -l | grep smbus | awk '{print \$1}' | sed 's/i2c-//'" )
+        RegisterData=$(run_cmd_on_remote_input_switch "echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cget -y ${I2CNR} 0x22 | sed 's/0x//' ")
 
         check_input_state_is_set ${CommandCode} ${RegisterData} ${LogPrefix}
         if [ $? -eq "1" ]; then
                 #echo "${LogPrefix} Nothing to do, Input: ${CommandCode} is set"
-                return ${ERR_OK}
+                return "${ERR_OK}"
         fi
 
         local RegisterDataMask="00000000"
         local FillWith=1
 
-        case $(echo "${CommandCode}") in
+        case "${CommandCode}" in
                 ${IN_0_ENABLE});&
                 ${IN_0_DISABLE})
                         local Index=6
-                        RegisterDataMask=$(echo ${RegisterDataMask:0:Index-1}${FillWith}${RegisterDataMask:Index})
+                        RegisterDataMask="${RegisterDataMask:0:Index-1}${FillWith}${RegisterDataMask:Index}"
                         ;;
                 ${IN_1_ENABLE});&
                 ${IN_1_DISABLE})
                         local Index=5
-                        RegisterDataMask=$(echo ${RegisterDataMask:0:Index-1}${FillWith}${RegisterDataMask:Index})
+                        RegisterDataMask="${RegisterDataMask:0:Index-1}${FillWith}${RegisterDataMask:Index}"
                         ;;
                 *)
                 echo "${LogPrefix} invalid input switch value ${CommandCode}"
@@ -221,10 +229,10 @@ function change_input_BL51E {
         RegisterData=$(run_cmd_on_remote_input_switch "echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cget -y ${I2CNR} 0x22 | sed 's/0x//' ")
         check_input_state_is_set ${CommandCode} ${RegisterData} ${LogPrefix}
         if [ $? -eq "1" ]; then
-                return ${ERR_OK}
+                return "${ERR_OK}"
         else
                 echo "${LogPrefix}  ERR_SWITCH: ${CommandCode} is set"
-                return ${ERR_SWITCH}
+                return "${ERR_SWITCH}"
         fi 
 }
 
@@ -240,15 +248,17 @@ function change_input_BL51E {
 function add_byte_padding {
         # padding to 8 characters, add 0-s at the beginning 
         local ByteToPad=${1}
-        local Lenght=$(echo ${#ByteToPad})
-        local PaddWithCharacters=$((8-${Lenght}))
+        local Lenght
+        local PaddWithCharacters
+        Lenght="${#ByteToPad}"
+        PaddWithCharacters=$((8-Lenght))
         if [ ${PaddWithCharacters} -ne "0" ]; then
-                for i in `seq 0 $((${PaddWithCharacters}-1))`
+                for i in $(seq 0 $((PaddWithCharacters-1)))
                 do
-                       ByteToPad=$(echo ${ByteToPad} | sed 's/^/0/')
+                       ByteToPad=$(echo "${ByteToPad}" | sed 's/^/0/')
                 done
         fi
-        echo ${ByteToPad}
+        echo "${ByteToPad}"
 }
 
 ############################################################################
@@ -269,10 +279,11 @@ function check_input_state_is_set {
 
         #echo "${LogPrefix} function check_input_state"
         # To enable input - value bit should be set to 0, 1 otherwise
-        case $(echo "${CommandCode}") in
+        case "${CommandCode}" in
                 ${IN_0_ENABLE})
                         local Index="6"
-                        local BitValue=$(echo "obase=2; $((16#${RegValue}))" | bc | head -c ${Index} | tail -c 1)
+                        local BitValue
+                        BitValue=$(echo "obase=2; $((16#${RegValue}))" | bc | head -c ${Index} | tail -c 1)
                         #echo "${LogPrefix} BitValue: ${BitValue}"
                         if [ "${BitValue}" = "0" ]; then
                                 ReturnValue="1"
@@ -280,21 +291,24 @@ function check_input_state_is_set {
                         ;;
                 ${IN_1_ENABLE})
                         local Index="5"
-                        local BitValue=$(echo "obase=2; $((16#${RegValue}))" | bc | head -c ${Index} | tail -c 1)
+                        local BitValue
+                        BitValue=$(echo "obase=2; $((16#${RegValue}))" | bc | head -c ${Index} | tail -c 1)
                         if [ "${BitValue}" = "0" ]; then
                                 ReturnValue="1"
                         fi
                         ;;
                 ${IN_0_DISABLE})
                         local Index="6"
-                        local BitValue=$(echo "obase=2; $((16#${RegValue}))" | bc | head -c ${Index} | tail -c 1)
+                        local BitValue
+                        BitValue=$(echo "obase=2; $((16#${RegValue}))" | bc | head -c ${Index} | tail -c 1)
                         if [ "${BitValue}" = "1" ]; then
                                 ReturnValue="1"
                         fi
                         ;;
                 ${IN_1_DISABLE})
                         local Index="5"
-                        local BitValue=$(echo "obase=2; $((16#${RegValue}))" | bc | head -c ${Index} | tail -c 1)
+                        local BitValue
+                        BitValue=$(echo "obase=2; $((16#${RegValue}))" | bc | head -c ${Index} | tail -c 1)
                         if [ "${BitValue}" = "1" ]; then
                                 ReturnValue="1"
                         fi
@@ -304,7 +318,7 @@ function check_input_state_is_set {
                 ;;
         esac
 
-        return ${ReturnValue}
+        return "${ReturnValue}"
 }
 
 function grub_get_os {
@@ -312,7 +326,8 @@ function grub_get_os {
 }
 
 function grub_set_os {
-        local ExpOs="$(echo "${1}" | sed "s/\//\\\\\\\\\//g")"
+        local ExpOs
+        ExpOs="$(echo "${1}" | sed "s/\//\\\\\\\\\//g")"
         run_cmd_on_remote_pc "GrubCfg=\"\$(cat ${GrubConfFile})\" && echo \"\$GrubCfg\" | sed \"s/\\s*set default=.*/set default=\\\"${ExpOs}\\\"/g\" > ${GrubConfFile}"
 }
 
