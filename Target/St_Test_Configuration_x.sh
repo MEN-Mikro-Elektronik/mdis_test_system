@@ -27,29 +27,29 @@ CommitSha="Commit_${CommitSha}"
 
 create_directory "${CommitSha}"
 CmdResult=$?
-if [ ${CmdResult} -ne "${ERR_OK}" ] && [ ${CmdResult} -ne "${ERR_DIR_EXISTS}" ]; then
-        exit ${CmdResult}
+if [ "${CmdResult}" -ne "${ERR_OK}" ] && [ "${CmdResult}" -ne "${ERR_DIR_EXISTS}" ]; then
+        exit "${CmdResult}"
 fi
 cd "${CommitSha}" || exit "${ERR_NOEXIST}"
 
 create_directory "${TestConfiguration}"
 CmdResult=$?
-if [ ${CmdResult} -ne "${ERR_OK}" ] && [ ${CmdResult} -ne "${ERR_DIR_EXISTS}" ]; then
-        exit ${CmdResult}
+if [ "${CmdResult}" -ne "${ERR_OK}" ] && [ "${CmdResult}" -ne "${ERR_DIR_EXISTS}" ]; then
+        exit "${CmdResult}"
 fi
 cd "${TestConfiguration}" || exit "${ERR_NOEXIST}"
 
 create_directory "${Today}" || exit "${ERR_NOEXIST}"
 CmdResult=$?
-if [ ${CmdResult} -ne "${ERR_OK}" ] && [ ${CmdResult} -ne "${ERR_DIR_EXISTS}" ]; then
-        exit ${CmdResult}
+if [ "${CmdResult}" -ne "${ERR_OK}" ] && [ "${CmdResult}" -ne "${ERR_DIR_EXISTS}" ]; then
+        exit "${CmdResult}"
 fi
 cd "${Today}" || exit "${ERR_NOEXIST}"
 
 OsNameKernel=$(echo "${OsNameKernel}" | tr -dc '[:alnum:]')
 create_directory "${OsNameKernel}"
 CmdResult=$?
-if [ ${CmdResult} -ne "${ERR_OK}" ] && [ ${CmdResult} -ne "${ERR_DIR_EXISTS}" ]; then
+if [ "${CmdResult}" -ne "${ERR_OK}" ] && [ "${CmdResult}" -ne "${ERR_DIR_EXISTS}" ]; then
         exit ${CmdResult}
 fi
 cd "${OsNameKernel}" || exit "${ERR_NOEXIST}"
@@ -59,9 +59,9 @@ cd "${MainTestDirectoryPath}" || exit "${ERR_NOEXIST}"
 
 mdis_prepare "${TestSummaryDirectory}"
 CmdResult=$?
-if [ ${CmdResult} -ne "${ERR_OK}" ]; then
+if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
         echo "run_test_case_common_actions: Failed - exit"
-        exit ${CmdResult}
+        exit "${CmdResult}"
 else
         echo "run_test_case_common_actions: Success"
 fi
@@ -69,7 +69,7 @@ fi
 echo "${1}" | sudo -S --prompt=$'\r' dmesg --clear
 
 echo "Test Setup: ${TestSetup}"
-case ${TestSetup} in
+case "${TestSetup}" in
         1)
           #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M82_M_Module_Test.sh" ${TestSummaryDirectory}
           #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M35_M_Module_Test.sh" ${TestSummaryDirectory}

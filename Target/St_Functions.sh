@@ -1290,27 +1290,27 @@ function m_module_m65_test {
         local M65No=${3}
         local LogPrefix="[m65_test]"
 
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_ll_icanl2
-        if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_icanl2" | tee -a ${LogFileName}
-                return ${ERR_VALUE}
+        if ! echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_ll_icanl2
+        then
+                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_icanl2" | tee -a "${LogFileName}"
+                return "${ERR_VALUE}"
         fi
 
         # Run icanl2_veri tests twice
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' icanl2_veri m65_${M65No}a m65_${M65No}b -n=2 > icanl2_veri.log
-        if [ $? -ne 0 ]; then
+        if ! echo "${MenPcPassword}" | sudo -S --prompt=$'\r' icanl2_veri m65_${M65No}a m65_${M65No}b -n=2 > icanl2_veri.log
+        then
                 echo "${LogPrefix} Could not run icanl2_veri "\
-                  | tee -a ${LogFileName} 2>&1
+                  | tee -a "${LogFileName}" 2>&1
         fi
 
-        grep "TEST RESULT: 0 errors" icanl2_veri.log
-        if [ $? -ne 0 ]; then
+        if ! grep "TEST RESULT: 0 errors" icanl2_veri.log
+        then
                 echo "${LogPrefix} Invalid log output, ERROR"\
-                  | tee -a ${LogFileName} 2>&1
-                return ${ERR_VALUE}
+                  | tee -a "${LogFileName}" 2>&1
+                return "${ERR_VALUE}"
         fi
 
-        return ${ERR_OK}
+        return "${ERR_OK}"
 }
 
 ############################################################################
