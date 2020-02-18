@@ -134,7 +134,7 @@ function copy_external_sources {
         if [ -d "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" ]; then
                 # check if external sources directory exists
                 if [ -d "${MdisExternalDirectoryPath}" ]; then
-                        cp -r "${MdisExternalDirectoryPath}"/* "${MainTestDirectoryPath}"/"${MainTestDirectoryName}"/"${MdisSourcesDirectoryName}"/
+                        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' cp -r "${MdisExternalDirectoryPath}"/* "${MainTestDirectoryPath}"/"${MainTestDirectoryName}"/"${MdisSourcesDirectoryName}"/
                 fi
         fi
         return "${ERR_OK}"

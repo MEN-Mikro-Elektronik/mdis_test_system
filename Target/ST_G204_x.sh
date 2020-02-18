@@ -47,7 +47,7 @@ fi
 
 while ${MachineRun}; do
     case "${MachineState}" in
-        Step1);&
+        Step1)
             echo "${LogPrefix} Test Case started..." | tee -a "${TestCaseLogName}" 2>&1
             "${TestFunc}" "${TestCaseLogName}" "${LogPrefix}" "${TestCaseName}" "${ModuleNr}"
             CmdResult=$?
