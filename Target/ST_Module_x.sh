@@ -48,7 +48,7 @@ fi
 
 cd "${MainTestDirectoryPath}/${MainTestDirectoryName}" || exit "${ERR_NOEXIST}"
 ScriptName=${0##*/}
-TestCaseName="${ScriptName%.*}_Test_Case"
+TestCaseName="${ScriptName%.*}_${TestCaseId}_Test_Case"
 TestCaseLogName="${ScriptName%.*}_log.txt"
 ResultsSummaryTmp="${TestCaseId}.tmp"
 
