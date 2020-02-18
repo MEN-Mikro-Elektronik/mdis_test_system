@@ -26,7 +26,7 @@ ModuleNr="${5}"
 TestDescription="${ModuleName}_description"
 TestFunc="${ModuleName}_test"
 
-if [ -z "${TestCaseMainDir}" ] || [ -z "${TestCaseId}" ] || [ -z "${LogPrefix}" ]
+if [ -z "${TestCaseMainDir}" ] || [ -z "${TestCaseId}" ] || [ -z "${LogPrefix}" ] || [ -z "${TestOs}" ] || [ -z "${ModuleName}" ] || [ -z "${ModuleNr}" ] 
 then
     echo "Lack of params - exit"
     exit "${ERR_NOEXIST}"
@@ -60,6 +60,7 @@ cd "${TestCaseMainDir}" || exit "${ERR_NOEXIST}"
 ######################## Start of Test Case ###################################
 ###############################################################################
 ###############################################################################
+
 TestCaseResult=${ERR_UNDEFINED}
 CmdResult=${ERR_UNDEFINED}
 
@@ -71,7 +72,6 @@ else
     echo "${LogPrefix} run_test_case_dir_create: Success"
 fi
 
-echo "${LogPrefix} Test Case started..." | tee -a "${TestCaseLogName}" 2>&1
 echo "${LogPrefix} Run function:" | tee -a "${TestCaseLogName}" 2>&1
 echo "${LogPrefix} \"${TestFunc} ${TestCaseLogName} ${LogPrefix} ${ModuleNr}\""  | tee -a "${TestCaseLogName}" 2>&1
 "${TestFunc}" "${TestCaseLogName}" "${LogPrefix}" "${ModuleNr}"

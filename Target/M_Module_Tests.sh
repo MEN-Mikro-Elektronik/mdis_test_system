@@ -41,23 +41,21 @@ function m33_test {
     local ModuleNr=${3}
 
     echo "${LogPrefix} Step1: modprobe men_ll_m33" | tee -a "${TestCaseLogName}" 2>&1
-
     if ! echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_ll_m33
     then
         echo "${LogPrefix} ERR_VALUE: could not modprobe men_ll_m33" | tee -a "${TestCaseLogName}"
         return "${ERR_VALUE}"
     fi
 
-    echo "${LogPrefix} Step2: run m33_demo m33_${M33No}" | tee -a "${TestCaseLogName}" 2>&1
-
-    if ! echo "${MenPcPassword}" | sudo -S --prompt=$'\r' m33_demo m33_"${M33No}" > m33_demo.log
+    echo "${LogPrefix} Step2: run m33_demo m33_${ModuleNr}" | tee -a "${TestCaseLogName}" 2>&1
+    if ! echo "${MenPcPassword}" | sudo -S --prompt=$'\r' m33_demo m33_"${ModuleNr}" > m33_demo.log
     then
         echo "${LogPrefix} Could not run m33_demo " \
           | tee -a "${TestCaseLogName}" 2>&1
     fi
 
     echo "${LogPrefix} Step3: check for errors" | tee -a "${TestCaseLogName}" 2>&1
-    grep "^Device m33_${M33No}" m33_demo.log && \
+    grep "^Device m33_${ModuleNr}" m33_demo.log && \
     grep "^channel 0: produce ramps" m33_demo.log && \
     grep "^ lowest..highest ramp" m33_demo.log && \
     grep "^ highest..lowest ramp" m33_demo.log && \
@@ -65,6 +63,72 @@ function m33_test {
     grep "^Device m33_1 closed" m33_demo.log
     if [ $? -ne 0 ]; then
             echo "${LogPrefix} Invalid log output, ERROR" \
+              | tee -a "${TestCaseLogName}" 2>&1
+            return "${ERR_VALUE}"
+    fi
+
+    return "${ERR_OK}"
+}
+############################################################################
+# m47 test description
+#
+# parameters:
+# $1    TestCaseLogName
+function m47_description {
+    echo "-----------------------M47 Test Case-------------------------------"
+    echo "Prerequisites:"
+    echo " - It is assumed that at this point all necessary drivers have been"
+    echo "   build and are available in the system"
+    echo "Steps:"
+    echo " 1. Load m-module drivers: modprobe men_ll_m47"
+    echo " 2. Run example/verification program:"
+    echo "     m47_simp m47_{nr} and save the command output"
+    echo " 3. Verify if m47_simp command output is valid - does not contain"
+    echo "    errors, and was opened, and closed succesfully"
+    echo "Results:"
+    echo " - SUCCESS / FAIL"
+    echo " - in case of \"FAIL\", please check test case log file:"
+    echo "   ${1}"
+    echo "   For more detailed information please see corresponding log files"
+    echo "   In test case repository"
+    echo " - to see definition of all error codes please check Conf.sh"
+}
+
+############################################################################
+# run m47 test
+#
+# parameters:
+# $1    TestCaseLogName
+# $2    LogPrefix
+# $3    M-Module number
+function m47_test {
+    local TestCaseLogName=${1}
+    local LogPrefix=${2}
+    local ModuleNr=${3}
+
+    echo "${LogPrefix} Step1: modprobe men_ll_m47" | tee -a "${TestCaseLogName}" 2>&1
+    if ! echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_ll_m47
+    then
+        echo "${LogPrefix} ERR_VALUE: could not modprobe men_ll_m47" | tee -a "${TestCaseLogName}"
+        return "${ERR_VALUE}"
+    fi
+
+    # Run m47_simp
+    echo "${LogPrefix} Step2: run m47_simp m47_${ModuleNr}" | tee -a "${TestCaseLogName}" 2>&1
+    if ! echo "${MenPcPassword}" | sudo -S --prompt=$'\r' m47_simp m47_"${ModuleNr}" > m47_simp.log
+    then
+        echo "${LogPrefix} Could not run m47_simp "\
+          | tee -a "${TestCaseLogName}" 2>&1
+    fi
+
+    echo "${LogPrefix} Step3: check for errors" | tee -a "${TestCaseLogName}" 2>&1
+    grep "^ Device name: m47_${ModuleNr}" m47_simp.log && \
+    grep "^ Channel: 0" m47_simp.log && \
+    grep "^M_open" m47_simp.log && \
+    grep "^Read value = 00000000" m47_simp.log && \
+    grep "^M_close" m47_simp.log
+    if [ $? -ne 0 ]; then
+            echo "${LogPrefix} Invalid log output, ERROR"\
               | tee -a "${TestCaseLogName}" 2>&1
             return "${ERR_VALUE}"
     fi
