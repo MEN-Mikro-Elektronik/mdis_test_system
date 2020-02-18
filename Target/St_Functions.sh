@@ -1293,7 +1293,7 @@ function m_module_m65_test {
         echo "${LogPrefix} modprobe men_ll_icanl2.." | tee -a "${TestCaseLogName}" 2>&1
         if ! echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_ll_icanl2
         then
-                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_icanl2" | tee -a "${LogFileName}"
+                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_icanl2" | tee -a "${TestCaseLogName}"
                 return "${ERR_VALUE}"
         fi
 
@@ -1309,7 +1309,7 @@ function m_module_m65_test {
         if ! grep "TEST RESULT: 0 errors" icanl2_veri.log
         then
                 echo "${LogPrefix} Invalid log output, ERROR"\
-                  | tee -a "${LogFileName}" 2>&1
+                  | tee -a "${TestCaseLogName}" 2>&1
                 return "${ERR_VALUE}"
         fi
 

@@ -16,10 +16,11 @@ Today=${3}
 TestConfiguration="St_Test_Configuration_${TestSetup}"
 CommitSha="$(get_mdis_sources_commit_sha)"
 OsNameKernel="$(get_os_name_with_kernel_ver)"
+LogPrefix="[Test_Prepare]"
 
-echo "Testing:  ${TestConfiguration}"
-echo "Commit SHA: ${CommitSha}"
-echo "Os Name:  ${OsNameKernel}"
+echo "${LogPrefix} Testing:  ${TestConfiguration}"
+echo "${LogPrefix}  Commit SHA: ${CommitSha}"
+echo "${LogPrefix}  Os Name:  ${OsNameKernel}"
 
 cd "${MdisResultsDirectoryPath}" || exit "${ERR_NOEXIST}"
 
@@ -60,10 +61,10 @@ cd "${MainTestDirectoryPath}" || exit "${ERR_NOEXIST}"
 mdis_prepare "${TestSummaryDirectory}"
 CmdResult=$?
 if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-        echo "run_test_case_common_actions: Failed - exit"
+        echo "${LogPrefix}  run_test_case_common_actions: Failed - exit"
         exit "${CmdResult}"
 else
-        echo "run_test_case_common_actions: Success"
+        echo "${LogPrefix}  run_test_case_common_actions: Success"
 fi
 
 echo "${1}" | sudo -S --prompt=$'\r' dmesg --clear
