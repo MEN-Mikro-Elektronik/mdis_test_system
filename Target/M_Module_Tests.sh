@@ -125,7 +125,7 @@ function m47_test {
     grep "^ Device name: m47_${ModuleNr}" m47_simp.log > /dev/null && \
     grep "^ Channel: 0" m47_simp.log > /dev/null && \
     grep "^M_open" m47_simp.log > /dev/null && \
-    grep "^Read value = 00000000" m47_simp.log && > /dev/null \
+    grep "^Read value = 00000000" m47_simp.log > /dev/null && \
     grep "^M_close" m47_simp.log > /dev/null
     if [ $? -ne 0 ]; then
             echo "${LogPrefix} Invalid log output, ERROR"\
