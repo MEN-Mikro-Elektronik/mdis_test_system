@@ -38,6 +38,7 @@ cd "${MainTestDirectoryPath}/${MainTestDirectoryName}" || exit "${ERR_NOEXIST}"
 ScriptName=${0##*/}
 TestCaseName="${ScriptName%.*}_Test_Case"
 TestCaseLogName="${ScriptName%.*}_log.txt"
+TestCaseLogPrefix="[m65_test]"
 ResultsSummaryTmp="${ResultsFileLogName}.tmp"
 TestCaseId="3000" #How to generate?
 TestSetup="get test setup nr.."
@@ -60,7 +61,7 @@ MachineRun=true
 
 if ! run_test_case_dir_create "${TestCaseLogName}" "${TestCaseName}"
 then
-    echo "run_test_case_dir_create: Failed, exit Test Case ${TestCaseId}"
+    echo "${TestCaseLogPrefix} run_test_case_dir_create: Failed, exit Test Case ${TestCaseId}"
     exit "${CmdResult}"
 else
     echo "run_test_case_dir_create: Success"
@@ -71,9 +72,9 @@ while ${MachineRun}; do
         Step1);&
         Step2);&
         Step3)
-            echo "Test Case started..." | tee -a "${TestCaseLogName}" 2>&1
-            echo "Run step @1, @2, @3" | tee -a "${TestCaseLogName}" 2>&1
-            m_module_m65_test "${TestCaseLogName}" "${TestCaseName}" "${M65NNr}"
+            echo "${TestCaseLogPrefix} Test Case started..." | tee -a "${TestCaseLogName}" 2>&1
+            echo "${TestCaseLogPrefix} Run step @1, @2, @3" | tee -a "${TestCaseLogName}" 2>&1
+            m_module_m65_test "${TestCaseLogName}" "${TestCaseLogPrefix}" "${TestCaseName}" "${M65NNr}"
             CmdResult=$?
             if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
                 TestCaseResult="${CmdResult}"
@@ -83,12 +84,12 @@ while ${MachineRun}; do
             MachineState="Break"
             ;;
         Break) # Clean after Test Case
-            echo "Break State" | tee -a "${TestCaseLogName}" 2>&1
+            echo "${TestCaseLogPrefix} Break State" | tee -a "${TestCaseLogName}" 2>&1
             run_test_case_common_end_actions "${TestCaseLogName}" "${TestCaseName}"
             MachineRun=false
             ;;
         *)
-            echo "State is not set, start with Step1" | tee -a "${TestCaseLogName}" 2>&1
+            echo "${TestCaseLogPrefix} State is not set, start with Step1" | tee -a "${TestCaseLogName}" 2>&1
             MachineState="Step1"
             ;;
     esac
@@ -102,10 +103,10 @@ fi
 
 m65n_test_description >> "${ResultsSummaryTmp}"
 echo "" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
-echo "Test_Result:${TestCaseResult}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
-echo "Test_ID: ${TestCaseId}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
-echo "Test_Setup: ${TestSetup}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
-echo "Test_Os: ${TestOs}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
+echo "${TestCaseLogPrefix} Test_Result:${TestCaseResult}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
+echo "${TestCaseLogPrefix} Test_ID: ${TestCaseId}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
+echo "${TestCaseLogPrefix} Test_Setup: ${TestSetup}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
+echo "${TestCaseLogPrefix} Test_Os: ${TestOs}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
 
 # move to previous directory
 cd "${CurrDir}" || exit "${ERR_NOEXIST}"
