@@ -19,8 +19,8 @@ OsNameKernel="$(get_os_name_with_kernel_ver)"
 LogPrefix="[Test_Prepare]"
 
 echo "${LogPrefix} Testing:  ${TestConfiguration}"
-echo "${LogPrefix}  Commit SHA: ${CommitSha}"
-echo "${LogPrefix}  Os Name:  ${OsNameKernel}"
+echo "${LogPrefix} Commit SHA: ${CommitSha}"
+echo "${LogPrefix} Os Name:  ${OsNameKernel}"
 
 cd "${MdisResultsDirectoryPath}" || exit "${ERR_NOEXIST}"
 
@@ -72,7 +72,8 @@ echo "${1}" | sudo -S --prompt=$'\r' dmesg --clear
 echo "Test Setup: ${TestSetup}"
 case "${TestSetup}" in
         1)
-          echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M65_M_Module_Test.sh" "${TestSummaryDirectory}" "1"
+          #echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M65_M_Module_Test.sh" "${TestSummaryDirectory}" "1"
+          echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_G204_x.sh" "${TestSummaryDirectory}" "ID_3000" "${TestSetup}" "${OsNameKernel}" "m65n_description" "m65_test" "1"
           #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M82_M_Module_Test.sh" ${TestSummaryDirectory}
           #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M35_M_Module_Test.sh" ${TestSummaryDirectory}
           #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_F215_Interface_Test.sh" ${TestSummaryDirectory}

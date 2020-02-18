@@ -2,6 +2,28 @@
 MyDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${MyDir}/../Common/Conf.sh"
 
+# Test description:
+function m65n_description{
+    echo "-----------------------M65N Test Case-------------------------------"
+    echo "Prerequisites:"
+    echo " - It is assumed that at this point all necessary drivers have been"
+    echo "   build and are available in the system"
+    echo " - M65N adapter is plugged into M65N m-module"
+    echo "Steps:"
+    echo " 1. Load m-module drivers: modprobe men_ll_icanl2"
+    echo " 2. Run example/verification program:"
+    echo "    icanl2_veri m65_1a m65_1b -n=2 and save the command output"
+    echo " 3. Verify if icanl2_veri command output is valid - does not contain"
+    echo "    errors (find line 'TEST RESULT: 0 errors)"
+    echo "Results:"
+    echo " - SUCCESS / FAIL"
+    echo " - in case of \"FAIL\", please check test case log file:"
+    echo "   ${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestCaseLogName}"
+    echo "   For more detailed information please see corresponding log files"
+    echo "   In test case repository"
+    echo " - to see definition of all error codes please check Conf.sh"
+}
+
 # This script contains all common functions that are used by St_xxxx testcases.
 #
 
@@ -17,15 +39,16 @@ source "${MyDir}/../Common/Conf.sh"
 #
 function create_directory {
         local DirectoryName="$1"
+        local LogPrefix="$2 "
         if [ ! -d "${DirectoryName}" ]; then
                 # create and move to Test Case directory 
                 if ! mkdir "${DirectoryName}"
                 then
-                        echo "ERR_CREATE :$1 - cannot create directory"
+                        echo "${LogPrefix}ERR_CREATE :$1 - cannot create directory"
                         return "${ERR_CREATE}" 
                 fi
         else
-                echo "Directory: ${DirectoryName} exists ..." 
+                echo "${LogPrefix}Directory: ${DirectoryName} exists ..." 
                 return "${ERR_DIR_EXISTS}"
         fi
 
@@ -40,14 +63,15 @@ function create_directory {
 #       None
 #
 function scan_and_install {
-        echo "function scan_and_install"
+        local LogPrefix="$1 "
+        echo "${LogPrefix}function scan_and_install"
         local CmdResult="${ERR_UNDEFINED}"
 
         # scan the hardware
         echo "${MenPcPassword}" | sudo -S --prompt=$'\r' /opt/menlinux/scan_system.sh /opt/menlinux --assume-yes --internal-swmodules > scan_system_output.txt 2>&1
         CmdResult=$?
         if [ ${CmdResult} -ne 0 ]; then
-                echo "ERR_SCAN :scan_system script error"
+                echo "${LogPrefix}ERR_SCAN :scan_system script error"
                 return "${ERR_SCAN}" 
         fi
 
@@ -61,7 +85,8 @@ function scan_and_install {
 #       None
 #
 function make_install {
-        echo "make_install"
+        local LogPrefix="$1 "
+        echo "${LogPrefix}make_install"
         echo ${MenPcPassword} | sudo -S --prompt=$'\r' make > make_output.txt 2>&1
         if [ $? -ne 0 ]; then
                 echo "ERR 3 :make error" 
@@ -70,7 +95,7 @@ function make_install {
 
         echo ${MenPcPassword} | sudo -S --prompt=$'\r' make install > make_install_output.txt 2>&1
         if [ $? -ne 0 ]; then
-                echo "ERR 4 :make install error"
+                echo "${LogPrefix}ERR 4 :make install error"
                 exit "${ERR_INSTALL}"
         fi
 }
@@ -206,14 +231,14 @@ function mdis_prepare {
 # $2     Test Case name
 
 function run_test_case_common_end_actions {
-
         local TestCaseLogName=${1}
         local TestCaseName=${2}
+        local LogPrefix="${3} "
 
         # remove unnecessary files
         if ! clean_test_case_files
         then
-               echo "clean_test_case_files error"
+               echo "${LogPrefix}clean_test_case_files error"
         fi
 
         # Remove loaded men_* modules from OS
@@ -222,8 +247,7 @@ function run_test_case_common_end_actions {
         #if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
         #        echo "could not rmmod_all_men_modules" 
         #fi
-
-        echo "Test case ${TestCaseName} finished"         | tee -a ${TestCaseLogName} 2>&1
+        echo "${LogPrefixTest} case ${TestCaseName} finished"         | tee -a ${TestCaseLogName} 2>&1
 
         return ${CmdResult}
 }
@@ -1285,6 +1309,45 @@ function m_module_m58_test {
 # $2    Test case name
 # $3    M65 board number
 function m_module_m65_test {
+        local TestCaseLogName=${1}
+        local LogPrefix=${2}
+        local TestCaseName=${3}
+        local M65No=${4}
+
+        echo "${LogPrefix} modprobe men_ll_icanl2.." | tee -a "${TestCaseLogName}" 2>&1
+        if ! echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_ll_icanl2
+        then
+                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_icanl2" | tee -a "${TestCaseLogName}"
+                return "${ERR_VALUE}"
+        fi
+
+        # Run icanl2_veri tests twice
+        echo "${LogPrefix} run icanl2_veri m65_${M65No}a m65_${M65No}b -n=2" | tee -a "${TestCaseLogName}" 2>&1
+        if ! echo "${MenPcPassword}" | sudo -S --prompt=$'\r' icanl2_veri m65_${M65No}a m65_${M65No}b -n=2 > icanl2_veri.log
+        then
+                echo "${LogPrefix} Could not run icanl2_veri "\
+                  | tee -a "${LogFileName}" 2>&1
+        fi
+
+        echo "${LogPrefix} check for errors" | tee -a "${TestCaseLogName}" 2>&1
+        if ! grep "TEST RESULT: 0 errors" icanl2_veri.log
+        then
+                echo "${LogPrefix} Invalid log output, ERROR"\
+                  | tee -a "${TestCaseLogName}" 2>&1
+                return "${ERR_VALUE}"
+        fi
+
+        return "${ERR_OK}"
+}
+
+############################################################################
+# m65n_test
+# 
+# parameters:
+# $1    Test case log file name
+# $2    Test case name
+# $3    M65 board number
+function m65n_test {
         local TestCaseLogName=${1}
         local LogPrefix=${2}
         local TestCaseName=${3}

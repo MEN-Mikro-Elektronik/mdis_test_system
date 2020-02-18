@@ -8,40 +8,19 @@ CurrDir=$(pwd)
 #            $2 M65 m-module number
 #
 TestCaseMainDir="${1}"
-ModuleNr="${2}"
-TestCaseId="${3}"
-LogPrefix="[${3}]"
-TestSetup="${4}"
-TestOs="${5}"
-
+TestCaseId="${2}"
+LogPrefix="[${2}]"
+TestSetup="${3}"
+TestOs="${4}"
+TestDescription="${5}"
+TestFunc="${6}"
+ModuleNr="${7}"
 
 cd "${MainTestDirectoryPath}/${MainTestDirectoryName}" || exit "${ERR_NOEXIST}"
 ScriptName=${0##*/}
 TestCaseName="${ScriptName%.*}_Test_Case"
 TestCaseLogName="${ScriptName%.*}_log.txt"
 ResultsSummaryTmp="${TestCaseId}.tmp"
-
-# Test description:
-m65n_test_description(){
-    echo "-----------------------M65N Test Case-------------------------------"
-    echo "Prerequisites:"
-    echo " - It is assumed that at this point all necessary drivers have been"
-    echo "   build and are available in the system"
-    echo " - M65N adapter is plugged into M65N m-module"
-    echo "Steps:"
-    echo " 1. Load m-module drivers: modprobe men_ll_icanl2"
-    echo " 2. Run example/verification program:"
-    echo "    icanl2_veri m65_1a m65_1b -n=2 and save the command output"
-    echo " 3. Verify if icanl2_veri command output is valid - does not contain"
-    echo "    errors (find line 'TEST RESULT: 0 errors)"
-    echo "Results:"
-    echo " - SUCCESS / FAIL"
-    echo " - in case of \"FAIL\", please check test case log file:"
-    echo "   ${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestCaseLogName}"
-    echo "   For more detailed information please see corresponding log files"
-    echo "   In test case repository"
-    echo " - to see definition of all error codes please check Conf.sh"
-}
 
 # Move to correct Test_Summary directory
 cd "${TestCaseMainDir}" || exit "${ERR_NOEXIST}"
@@ -54,7 +33,7 @@ cd "${TestCaseMainDir}" || exit "${ERR_NOEXIST}"
 TestCaseResult=${ERR_UNDEFINED}
 CmdResult=${ERR_UNDEFINED}
 
-# All steps are performed by function m_module_m65_test
+# All steps are performed by function m65n_test
 MachineState="Step1"
 MachineRun=true
 
@@ -69,11 +48,8 @@ fi
 while ${MachineRun}; do
     case "${MachineState}" in
         Step1);&
-        Step2);&
-        Step3)
             echo "${LogPrefix} Test Case started..." | tee -a "${TestCaseLogName}" 2>&1
-            echo "${LogPrefix} Run step @1, @2, @3" | tee -a "${TestCaseLogName}" 2>&1
-            m_module_m65_test "${TestCaseLogName}" "${LogPrefix}" "${TestCaseName}" "${ModuleNr}"
+            "${TestFunc}" "${TestCaseLogName}" "${LogPrefix}" "${TestCaseName}" "${ModuleNr}"
             CmdResult=$?
             if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
                 TestCaseResult="${CmdResult}"
@@ -100,7 +76,7 @@ else
     TestCaseResult="FAIL"
 fi
 
-m65n_test_description >> "${ResultsSummaryTmp}"
+"${TestDescription}" >> "${ResultsSummaryTmp}"
 echo "${LogPrefix} Test_Result:${TestCaseResult}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
 echo "${LogPrefix} Test_ID: ${TestCaseId}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
 echo "${LogPrefix} Test_Setup: ${TestSetup}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
