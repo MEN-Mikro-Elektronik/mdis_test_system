@@ -73,8 +73,8 @@ fi
 
 echo "${LogPrefix} Test Case started..." | tee -a "${TestCaseLogName}" 2>&1
 echo "${LogPrefix} Run function:" | tee -a "${TestCaseLogName}" 2>&1
-echo "${LogPrefix} \"${TestFunc} ${TestCaseLogName} ${LogPrefix} ${TestCaseName} ${ModuleNr}\""  | tee -a "${TestCaseLogName}" 2>&1
-"${TestFunc}" "${TestCaseLogName}" "${LogPrefix}" "${TestCaseName}" "${ModuleNr}"
+echo "${LogPrefix} \"${TestFunc} ${TestCaseLogName} ${LogPrefix} ${ModuleNr}\""  | tee -a "${TestCaseLogName}" 2>&1
+"${TestFunc}" "${TestCaseLogName}" "${LogPrefix}" "${ModuleNr}"
 CmdResult=$?
 if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
     TestCaseResult="${CmdResult}"

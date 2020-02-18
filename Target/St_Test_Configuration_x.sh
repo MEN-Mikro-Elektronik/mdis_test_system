@@ -16,7 +16,7 @@ Today=${3}
 TestConfiguration="St_Test_Configuration_${TestSetup}"
 CommitSha="$(get_mdis_sources_commit_sha)"
 OsNameKernel="$(get_os_name_with_kernel_ver)"
-LogPrefix="[Test_Prepare]"
+LogPrefix="[St_Test_Conf]"
 
 echo "${LogPrefix} Testing:  ${TestConfiguration}"
 echo "${LogPrefix} Commit SHA: ${CommitSha}"
@@ -61,19 +61,20 @@ cd "${MainTestDirectoryPath}" || exit "${ERR_NOEXIST}"
 mdis_prepare "${TestSummaryDirectory}" "${LogPrefix}"
 CmdResult=$?
 if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-        echo "${LogPrefix}  run_test_case_common_actions: Failed - exit"
+        echo "${LogPrefix} run_test_case_common_actions: Failed - exit"
         exit "${CmdResult}"
 else
-        echo "${LogPrefix}  run_test_case_common_actions: Success"
+        echo "${LogPrefix} run_test_case_common_actions: Success"
 fi
 
 echo "${1}" | sudo -S --prompt=$'\r' dmesg --clear
 
-echo "Test Setup: ${TestSetup}"
+echo "${LogPrefix} Test Setup: ${TestSetup}"
 case "${TestSetup}" in
         1)
           #echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M65_M_Module_Test.sh" "${TestSummaryDirectory}" "1"
           echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_G204_x.sh" "${TestSummaryDirectory}" "ID_3000"  "${OsNameKernel}" "m65n" "1"
+          echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_G204_x.sh" "${TestSummaryDirectory}" "ID_3010"  "${OsNameKernel}" "m33" "1"
           #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M82_M_Module_Test.sh" ${TestSummaryDirectory}
           #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M35_M_Module_Test.sh" ${TestSummaryDirectory}
           #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_F215_Interface_Test.sh" ${TestSummaryDirectory}
