@@ -55,12 +55,12 @@ function m33_test {
     fi
 
     echo "${LogPrefix} Step3: check for errors" | tee -a "${TestCaseLogName}" 2>&1
-    grep "^Device m33_${ModuleNr}" m33_demo.log && \
-    grep "^channel 0: produce ramps" m33_demo.log && \
-    grep "^ lowest..highest ramp" m33_demo.log && \
-    grep "^ highest..lowest ramp" m33_demo.log && \
-    grep "^channel 0: toggle lowest/highest" m33_demo.log && \
-    grep "^Device m33_1 closed" m33_demo.log
+    grep "^Device m33_${ModuleNr}" m33_demo.log > /dev/null && \
+    grep "^channel 0: produce ramps" m33_demo.log > /dev/null && \
+    grep "^ lowest..highest ramp" m33_demo.log > /dev/null && \
+    grep "^ highest..lowest ramp" m33_demo.log > /dev/null && \
+    grep "^channel 0: toggle lowest/highest" m33_demo.log > /dev/null && \
+    grep "^Device m33_1 closed" m33_demo.log > /dev/null
     if [ $? -ne 0 ]; then
             echo "${LogPrefix} Invalid log output, ERROR" \
               | tee -a "${TestCaseLogName}" 2>&1
@@ -122,11 +122,11 @@ function m47_test {
     fi
 
     echo "${LogPrefix} Step3: check for errors" | tee -a "${TestCaseLogName}" 2>&1
-    grep "^ Device name: m47_${ModuleNr}" m47_simp.log && \
-    grep "^ Channel: 0" m47_simp.log && \
-    grep "^M_open" m47_simp.log && \
-    grep "^Read value = 00000000" m47_simp.log && \
-    grep "^M_close" m47_simp.log
+    grep "^ Device name: m47_${ModuleNr}" m47_simp.log > /dev/null && \
+    grep "^ Channel: 0" m47_simp.log > /dev/null && \
+    grep "^M_open" m47_simp.log > /dev/null && \
+    grep "^Read value = 00000000" m47_simp.log && > /dev/null \
+    grep "^M_close" m47_simp.log > /dev/null
     if [ $? -ne 0 ]; then
             echo "${LogPrefix} Invalid log output, ERROR"\
               | tee -a "${TestCaseLogName}" 2>&1
@@ -190,7 +190,7 @@ function m65n_test {
     fi
 
     echo "${LogPrefix} Step3: check for errors" | tee -a "${TestCaseLogName}" 2>&1
-    if ! grep "TEST RESULT: 0 errors" icanl2_veri.log
+    if ! grep "TEST RESULT: 0 errors" icanl2_veri.log > /dev/null
     then
         echo "${LogPrefix} Invalid log output, ERROR"\
           | tee -a "${TestCaseLogName}" 2>&1
