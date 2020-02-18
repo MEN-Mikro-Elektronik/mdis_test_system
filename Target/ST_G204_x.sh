@@ -10,11 +10,32 @@ CurrDir=$(pwd)
 TestCaseMainDir="${1}"
 TestCaseId="${2}"
 LogPrefix="[${2}]"
-TestSetup="${3}"
-TestOs="${4}"
-TestDescription="${5}"
-TestFunc="${6}"
-ModuleNr="${7}"
+TestOs="${3}"
+ModuleName="${4}"
+ModuleNr="${5}"
+
+TestDescription="${ModuleName}_description"
+TestFunc="${ModuleName}_test"
+
+if [ -z "${TestCaseMainDir}" ] || [ -z "${TestCaseId}" ] || [ -z "${LogPrefix}" ]
+then
+    echo "Lack of params - exit"
+    exit "${ERR_NOEXIST}"
+fi
+
+FunctionExists=$(type -t "${TestDescription}")
+if [ "${FunctionExists}" != "function" ] 
+then
+    echo "${LogPrefix} Function ${TestDescription} does not exists - exit"
+    exit "${ERR_NOEXIST}"
+fi
+
+FunctionExists=$(type -t "${TestFunc}")
+if [ "${FunctionExists}" != "function" ] 
+then
+    echo "${LogPrefix} Function ${TestDescription} does not exists - exit"
+    exit "${ERR_NOEXIST}"
+fi
 
 cd "${MainTestDirectoryPath}/${MainTestDirectoryName}" || exit "${ERR_NOEXIST}"
 ScriptName=${0##*/}
@@ -33,42 +54,27 @@ cd "${TestCaseMainDir}" || exit "${ERR_NOEXIST}"
 TestCaseResult=${ERR_UNDEFINED}
 CmdResult=${ERR_UNDEFINED}
 
-# All steps are performed by function m65n_test
-MachineState="Step1"
-MachineRun=true
-
 if ! run_test_case_dir_create "${TestCaseLogName}" "${TestCaseName}"
 then
-    echo "${TestCaseLogPrefix} run_test_case_dir_create: Failed, exit Test Case ${TestCaseId}"
+    echo "${LogPrefix} run_test_case_dir_create: Failed, exit Test Case ${TestCaseId}"
     exit "${CmdResult}"
 else
-    echo "run_test_case_dir_create: Success"
+    echo "${LogPrefix} run_test_case_dir_create: Success"
 fi
 
-while ${MachineRun}; do
-    case "${MachineState}" in
-        Step1)
-            echo "${LogPrefix} Test Case started..." | tee -a "${TestCaseLogName}" 2>&1
-            "${TestFunc}" "${TestCaseLogName}" "${LogPrefix}" "${TestCaseName}" "${ModuleNr}"
-            CmdResult=$?
-            if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-                TestCaseResult="${CmdResult}"
-            else
-                TestCaseResult=0
-            fi
-            MachineState="Break"
-            ;;
-        Break) # Clean after Test Case
-            echo "${LogPrefix} Break State" | tee -a "${TestCaseLogName}" 2>&1
-            run_test_case_common_end_actions "${TestCaseLogName}" "${TestCaseName}"
-            MachineRun=false
-            ;;
-        *)
-            echo "${LogPrefix} State is not set, start with Step1" | tee -a "${TestCaseLogName}" 2>&1
-            MachineState="Step1"
-            ;;
-    esac
-done
+echo "${LogPrefix} Test Case started..." | tee -a "${TestCaseLogName}" 2>&1
+echo "${LogPrefix} Run function:" | tee -a "${TestCaseLogName}" 2>&1
+echo "${LogPrefix} ${TestFunc} ${TestCaseLogName} ${LogPrefix} ${TestCaseName} ${ModuleNr}"  | tee -a "${TestCaseLogName}" 2>&1
+"${TestFunc}" "${TestCaseLogName}" "${LogPrefix}" "${TestCaseName}" "${ModuleNr}"
+CmdResult=$?
+if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+    TestCaseResult="${CmdResult}"
+else
+    TestCaseResult=0
+fi
+
+echo "${LogPrefix} run test case end actions" | tee -a "${TestCaseLogName}" 2>&1
+run_test_case_common_end_actions "${TestCaseLogName}" "${TestCaseName}"
 
 if [ "${TestCaseResult}" -eq "${ERR_OK}" ]; then
     TestCaseResult="SUCCESS"

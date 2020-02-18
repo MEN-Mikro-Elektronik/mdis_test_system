@@ -72,10 +72,10 @@ function scan_and_install {
         CmdResult=$?
         if [ ${CmdResult} -ne 0 ]; then
                 echo "${LogPrefix}ERR_SCAN :scan_system script error"
-                return "${ERR_SCAN}" 
+                return "${ERR_SCAN}"
         fi
 
-        make_install
+        make_install "${LogPrefix}"
 }
 ############################################################################
 # Perform make and make install.
@@ -191,10 +191,11 @@ function run_test_case_dir_create {
 #
 function mdis_prepare {
         local DirectoryName="$1"
+        local LogPrefix="$2"
         cd "${DirectoryName}" || exit "${ERR_NOEXIST}"
 
         # Scan, make and make install 
-        if ! scan_and_install
+        if ! scan_and_install "${LogPrefix}"
         then
                 return ${CmdResult}
         fi
@@ -1824,7 +1825,7 @@ function m11_f205_fix {
 
     cd ..
     sed -i '/.*m11_1.*/a ID_CHECK = U_INT32 0' system.dsc
-    make_install
+    make_install "${LogPrefix}"
     cd ${CurrentPath}
 }
 
