@@ -3,7 +3,7 @@ MyDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${MyDir}/../Common/Conf.sh"
 
 # Test description:
-function m65n_description{
+function m65n_description {
     echo "-----------------------M65N Test Case-------------------------------"
     echo "Prerequisites:"
     echo " - It is assumed that at this point all necessary drivers have been"
