@@ -58,7 +58,7 @@ cd "${OsNameKernel}" || exit "${ERR_NOEXIST}"
 TestSummaryDirectory="${MdisResultsDirectoryPath}/${CommitSha}/${TestConfiguration}/${Today}/${OsNameKernel}"
 cd "${MainTestDirectoryPath}" || exit "${ERR_NOEXIST}"
 
-mdis_prepare "${TestSummaryDirectory}"
+mdis_prepare "${TestSummaryDirectory}" "${LogPrefix}"
 CmdResult=$?
 if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
         echo "${LogPrefix}  run_test_case_common_actions: Failed - exit"

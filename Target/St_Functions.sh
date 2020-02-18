@@ -2,28 +2,6 @@
 MyDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${MyDir}/../Common/Conf.sh"
 
-# Test description:
-function m65n_description {
-    echo "-----------------------M65N Test Case-------------------------------"
-    echo "Prerequisites:"
-    echo " - It is assumed that at this point all necessary drivers have been"
-    echo "   build and are available in the system"
-    echo " - M65N adapter is plugged into M65N m-module"
-    echo "Steps:"
-    echo " 1. Load m-module drivers: modprobe men_ll_icanl2"
-    echo " 2. Run example/verification program:"
-    echo "    icanl2_veri m65_1a m65_1b -n=2 and save the command output"
-    echo " 3. Verify if icanl2_veri command output is valid - does not contain"
-    echo "    errors (find line 'TEST RESULT: 0 errors)"
-    echo "Results:"
-    echo " - SUCCESS / FAIL"
-    echo " - in case of \"FAIL\", please check test case log file:"
-    echo "   ${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestCaseLogName}"
-    echo "   For more detailed information please see corresponding log files"
-    echo "   In test case repository"
-    echo " - to see definition of all error codes please check Conf.sh"
-}
-
 # This script contains all common functions that are used by St_xxxx testcases.
 #
 
@@ -248,7 +226,7 @@ function run_test_case_common_end_actions {
         #if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
         #        echo "could not rmmod_all_men_modules" 
         #fi
-        echo "${LogPrefixTest} case ${TestCaseName} finished"         | tee -a ${TestCaseLogName} 2>&1
+        echo "${LogPrefix}case ${TestCaseName} finished"         | tee -a ${TestCaseLogName} 2>&1
 
         return ${CmdResult}
 }
@@ -1310,45 +1288,6 @@ function m_module_m58_test {
 # $2    Test case name
 # $3    M65 board number
 function m_module_m65_test {
-        local TestCaseLogName=${1}
-        local LogPrefix=${2}
-        local TestCaseName=${3}
-        local M65No=${4}
-
-        echo "${LogPrefix} modprobe men_ll_icanl2.." | tee -a "${TestCaseLogName}" 2>&1
-        if ! echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_ll_icanl2
-        then
-                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_icanl2" | tee -a "${TestCaseLogName}"
-                return "${ERR_VALUE}"
-        fi
-
-        # Run icanl2_veri tests twice
-        echo "${LogPrefix} run icanl2_veri m65_${M65No}a m65_${M65No}b -n=2" | tee -a "${TestCaseLogName}" 2>&1
-        if ! echo "${MenPcPassword}" | sudo -S --prompt=$'\r' icanl2_veri m65_${M65No}a m65_${M65No}b -n=2 > icanl2_veri.log
-        then
-                echo "${LogPrefix} Could not run icanl2_veri "\
-                  | tee -a "${LogFileName}" 2>&1
-        fi
-
-        echo "${LogPrefix} check for errors" | tee -a "${TestCaseLogName}" 2>&1
-        if ! grep "TEST RESULT: 0 errors" icanl2_veri.log
-        then
-                echo "${LogPrefix} Invalid log output, ERROR"\
-                  | tee -a "${TestCaseLogName}" 2>&1
-                return "${ERR_VALUE}"
-        fi
-
-        return "${ERR_OK}"
-}
-
-############################################################################
-# m65n_test
-# 
-# parameters:
-# $1    Test case log file name
-# $2    Test case name
-# $3    M65 board number
-function m65n_test {
         local TestCaseLogName=${1}
         local LogPrefix=${2}
         local TestCaseName=${3}
