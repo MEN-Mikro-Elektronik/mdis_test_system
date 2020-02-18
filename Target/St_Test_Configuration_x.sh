@@ -71,6 +71,7 @@ echo "${1}" | sudo -S --prompt=$'\r' dmesg --clear
 echo "Test Setup: ${TestSetup}"
 case "${TestSetup}" in
         1)
+          echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M65_M_Module_Test.sh" "${TestSummaryDirectory}" "1"
           #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M82_M_Module_Test.sh" ${TestSummaryDirectory}
           #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M35_M_Module_Test.sh" ${TestSummaryDirectory}
           #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_F215_Interface_Test.sh" ${TestSummaryDirectory}
@@ -92,7 +93,6 @@ case "${TestSetup}" in
           #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M77_M_Module_Test.sh" ${TestSummaryDirectory} "1" "1" #M77Nr, G204Nr
           #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M82_M_Module_Test.sh" ${TestSummaryDirectory}
           #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M82_M_Module_Test.sh" ${TestSummaryDirectory} "2" #second device instance
-
           ;;
         4)
           echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G229_Test.sh" "${TestSummaryDirectory}"
