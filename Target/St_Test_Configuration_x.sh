@@ -26,21 +26,21 @@ cd "${MdisResultsDirectoryPath}" || exit "${ERR_NOEXIST}"
 
 CommitSha="Commit_${CommitSha}"
 
-create_directory "${CommitSha}"
+create_directory "${CommitSha}" "${LogPrefix}"
 CmdResult=$?
 if [ "${CmdResult}" -ne "${ERR_OK}" ] && [ "${CmdResult}" -ne "${ERR_DIR_EXISTS}" ]; then
         exit "${CmdResult}"
 fi
 cd "${CommitSha}" || exit "${ERR_NOEXIST}"
 
-create_directory "${TestConfiguration}"
+create_directory "${TestConfiguration}" "${LogPrefix}"
 CmdResult=$?
 if [ "${CmdResult}" -ne "${ERR_OK}" ] && [ "${CmdResult}" -ne "${ERR_DIR_EXISTS}" ]; then
         exit "${CmdResult}"
 fi
 cd "${TestConfiguration}" || exit "${ERR_NOEXIST}"
 
-create_directory "${Today}" || exit "${ERR_NOEXIST}"
+create_directory "${Today}" "${LogPrefix}" || exit "${ERR_NOEXIST}"
 CmdResult=$?
 if [ "${CmdResult}" -ne "${ERR_OK}" ] && [ "${CmdResult}" -ne "${ERR_DIR_EXISTS}" ]; then
         exit "${CmdResult}"
@@ -48,7 +48,7 @@ fi
 cd "${Today}" || exit "${ERR_NOEXIST}"
 
 OsNameKernel=$(echo "${OsNameKernel}" | tr -dc '[:alnum:]')
-create_directory "${OsNameKernel}"
+create_directory "${OsNameKernel}" "${LogPrefix}"
 CmdResult=$?
 if [ "${CmdResult}" -ne "${ERR_OK}" ] && [ "${CmdResult}" -ne "${ERR_DIR_EXISTS}" ]; then
         exit ${CmdResult}
