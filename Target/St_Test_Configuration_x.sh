@@ -75,8 +75,9 @@ case "${TestSetup}" in
           # M-Modules plugged on G204
           echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_Module_x.sh" "${TestSummaryDirectory}" "ID_3000"  "${OsNameKernel}" "m65n" "1"
           echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_Module_x.sh" "${TestSummaryDirectory}" "ID_3010"  "${OsNameKernel}" "m33" "1"
+          echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_Module_x.sh" "${TestSummaryDirectory}" "ID_3020"  "${OsNameKernel}" "m35n" "1"
           # M-Modules plugged on F205
-          echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_Module_x.sh" "${TestSummaryDirectory}" "ID_3020"  "${OsNameKernel}" "m47" "1"
+          echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_Module_x.sh" "${TestSummaryDirectory}" "ID_3030"  "${OsNameKernel}" "m47" "1"
           #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M82_M_Module_Test.sh" ${TestSummaryDirectory}
           #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M35_M_Module_Test.sh" ${TestSummaryDirectory}
           #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_F215_Interface_Test.sh" ${TestSummaryDirectory}

@@ -1281,45 +1281,6 @@ function m_module_m58_test {
 }
 
 ############################################################################
-# run m65 test
-# 
-# parameters:
-# $1    Test case log file name
-# $2    Test case name
-# $3    M65 board number
-function m_module_m65_test {
-        local TestCaseLogName=${1}
-        local LogPrefix=${2}
-        local TestCaseName=${3}
-        local M65No=${4}
-
-        echo "${LogPrefix} modprobe men_ll_icanl2.." | tee -a "${TestCaseLogName}" 2>&1
-        if ! echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_ll_icanl2
-        then
-                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_icanl2" | tee -a "${TestCaseLogName}"
-                return "${ERR_VALUE}"
-        fi
-
-        # Run icanl2_veri tests twice
-        echo "${LogPrefix} run icanl2_veri m65_${M65No}a m65_${M65No}b -n=2" | tee -a "${TestCaseLogName}" 2>&1
-        if ! echo "${MenPcPassword}" | sudo -S --prompt=$'\r' icanl2_veri m65_${M65No}a m65_${M65No}b -n=2 > icanl2_veri.log
-        then
-                echo "${LogPrefix} Could not run icanl2_veri "\
-                  | tee -a "${LogFileName}" 2>&1
-        fi
-
-        echo "${LogPrefix} check for errors" | tee -a "${TestCaseLogName}" 2>&1
-        if ! grep "TEST RESULT: 0 errors" icanl2_veri.log
-        then
-                echo "${LogPrefix} Invalid log output, ERROR"\
-                  | tee -a "${TestCaseLogName}" 2>&1
-                return "${ERR_VALUE}"
-        fi
-
-        return "${ERR_OK}"
-}
-
-############################################################################
 # run m37 test 
 # 
 # parameters:
