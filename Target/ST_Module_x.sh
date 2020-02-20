@@ -88,7 +88,7 @@ else
     TestCaseResult="FAIL"
 fi
 
-"${TestDescription}" >> "${ResultsSummaryTmp}"
+"${TestDescription}" "${ModuleNr}" "${TestCaseLogName}">> "${ResultsSummaryTmp}"
 echo "${LogPrefix} Test_Result:${TestCaseResult}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
 echo "${LogPrefix} Test_ID: ${TestCaseId}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
 echo "${LogPrefix} Test_Setup: ${TestSetup}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1

@@ -1384,25 +1384,25 @@ function m_module_m62_test {
 # $1    
 #
 function m_module_x_test {
-        
         local TestCaseLogName=${1}
         local TestCaseName=${2}
         local CommandCode=${3}
         local MModuleName=${4}
         local MModuleBoardNr=${5}
         local SubtestName=${6}
+        local LogPrefix="${7}"
+
         local CmdResult=${ERR_UNDEFINED}
         local ErrorLogCnt=1
         local TestError=${ERR_UNDEFINED}
         local MachineState="ModprobeDriver"
         local MachineRun=true 
-        
+
         local ModprobeDriver=""
         local ModuleSimp=""
         local ModuleSimpOutput="simp"
         local ModuleResultCmpFunc=""
         local ModuleInstanceName=""
-        local LogPrefix="[M_Module_${MModuleName}]"
 
         case "${MModuleName}" in
           m11)
@@ -1461,11 +1461,11 @@ function m_module_x_test {
           TestError=${ERR_NOT_DEFINED}
           ;;
         esac
-        
-        echo "${LogPrefix} M-Module to test: ${MModuleName}" | tee -a ${TestCaseLogName} 2>&1        
-        echo "${LogPrefix} M-Module modprobeDriver: ${ModprobeDriver}" | tee -a ${TestCaseLogName} 2>&1        
-        echo "${LogPrefix} M-Module simp: ${ModuleSimp}" | tee -a ${TestCaseLogName} 2>&1        
-        echo "${LogPrefix} M-Module cmp function: ${ModuleResultCmpFunc}" | tee -a ${TestCaseLogName} 2>&1          
+
+        echo "${LogPrefix} M-Module to test: ${MModuleName}" | tee -a ${TestCaseLogName} 2>&1
+        echo "${LogPrefix} M-Module modprobeDriver: ${ModprobeDriver}" | tee -a ${TestCaseLogName} 2>&1
+        echo "${LogPrefix} M-Module simp: ${ModuleSimp}" | tee -a ${TestCaseLogName} 2>&1
+        echo "${LogPrefix} M-Module cmp function: ${ModuleResultCmpFunc}" | tee -a ${TestCaseLogName} 2>&1
 
         while ${MachineRun}; do
                 case $(echo "${MachineState}") in
