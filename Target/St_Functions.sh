@@ -1462,20 +1462,20 @@ function m_module_x_test {
           ;;
         esac
 
-        echo "${LogPrefix} M-Module to test: ${MModuleName}" | tee -a ${TestCaseLogName} 2>&1
-        echo "${LogPrefix} M-Module modprobeDriver: ${ModprobeDriver}" | tee -a ${TestCaseLogName} 2>&1
-        echo "${LogPrefix} M-Module simp: ${ModuleSimp}" | tee -a ${TestCaseLogName} 2>&1
-        echo "${LogPrefix} M-Module cmp function: ${ModuleResultCmpFunc}" | tee -a ${TestCaseLogName} 2>&1
+        echo "${LogPrefix} M-Module to test: ${MModuleName}" | tee -a "${TestCaseLogName}" 2>&1
+        echo "${LogPrefix} M-Module modprobeDriver: ${ModprobeDriver}" | tee -a "${TestCaseLogName}" 2>&1
+        echo "${LogPrefix} M-Module simp: ${ModuleSimp}" | tee -a "${TestCaseLogName}" 2>&1
+        echo "${LogPrefix} M-Module cmp function: ${ModuleResultCmpFunc}" | tee -a "${TestCaseLogName}" 2>&1
 
         while ${MachineRun}; do
-                case $(echo "${MachineState}") in
+                case "${MachineState}" in
                   ModprobeDriver)
                         # Modprobe driver
-                        echo "${LogPrefix} ModprobeDriver" | tee -a ${TestCaseLogName} 2>&1
-                        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe ${ModprobeDriver}
+                        echo "${LogPrefix} ModprobeDriver" | tee -a "${TestCaseLogName}" 2>&1
+                        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe "${ModprobeDriver}"
                         CmdResult=$?
-                        if [ ${CmdResult} -ne ${ERR_OK} ]; then
-                                echo "${LogPrefix} Error: ${ERR_MODPROBE} :could not modprobe ${ModprobeDriver}" | tee -a ${TestCaseLogName} 2>&1
+                        if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+                                echo "${LogPrefix} Error: ${ERR_MODPROBE} :could not modprobe ${ModprobeDriver}" | tee -a "${TestCaseLogName}" 2>&1
                                 MachineRun=false
                         else
                                 MachineState="CheckInput"
@@ -1483,11 +1483,11 @@ function m_module_x_test {
                         ;;
                   CheckInput)
                         # Check if input is disabled - if not disable input 
-                        echo "${LogPrefix} CheckInput" | tee -a ${TestCaseLogName} 2>&1
-                        change_input ${TestCaseLogName} ${TestCaseName} $((${CommandCode}+100)) ${InputSwitchTimeout} ${LogPrefix}
+                        echo "${LogPrefix} CheckInput" | tee -a "${TestCaseLogName}" 2>&1
+                        change_input "${TestCaseLogName}" "${TestCaseName}" $((CommandCode+100)) "${InputSwitchTimeout}" "${LogPrefix}"
                         CmdResult=$?
-                        if [ ${CmdResult} -ne ${ERR_OK} ]; then
-                                echo "${LogPrefix} Error: ${CmdResult} in function change_input" | tee -a ${TestCaseLogName} 2>&1
+                        if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+                                echo "${LogPrefix} Error: ${CmdResult} in function change_input" | tee -a "${TestCaseLogName}" 2>&1
                                 MachineRun=false
                         else
                                 MachineState="RunExampleInputDisable"
@@ -1497,12 +1497,12 @@ function m_module_x_test {
                         # Run example first time (banana plugs disconnected)
                         # If device cannot be opened there is a log in result  :
                         # *** ERROR (LINUX) #2:  No such file or directory ***
-                        echo "${LogPrefix} RunExampleInputDisable" | tee -a ${TestCaseLogName} 2>&1
-                        echo ${MenPcPassword} | sudo -S --prompt=$'\r' ${ModuleSimp} ${ModuleInstanceName} > ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_disconnected.txt 2>&1
+                        echo "${LogPrefix} RunExampleInputDisable" | tee -a "${TestCaseLogName}" 2>&1
+                        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' "${ModuleSimp}" "${ModuleInstanceName}" > ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_disconnected.txt 2>&1
                         ErrorLogCnt=$(grep "ERROR" ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_disconnected.txt | grep "No such file or directory" | wc -l) 
-                        CmdResult=$ErrorLogCnt
-                        if [ ${CmdResult} -ne ${ERR_OK} ]; then
-                                echo "${LogPrefix} Error: ${ERR_SIMP_ERROR} :could not run ${ModuleSimp} ${ModuleInstanceName} " | tee -a ${TestCaseLogName} 2>&1
+                        CmdResult="${ErrorLogCnt}"
+                        if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+                                echo "${LogPrefix} Error: ${ERR_SIMP_ERROR} :could not run ${ModuleSimp} ${ModuleInstanceName} " | tee -a "${TestCaseLogName}" 2>&1
                                 MachineRun=false
                         else
                                 if [ "${MModuleName}" == "m35" ] && [ "${SubtestName}" == "blkread" ]; then
@@ -1513,11 +1513,11 @@ function m_module_x_test {
                         fi
                         ;;
                   EnableInput)
-                        echo "${LogPrefix} EnableInput" | tee -a ${TestCaseLogName} 2>&1
-                        change_input ${TestCaseLogName} ${TestCaseName} ${CommandCode} ${InputSwitchTimeout} ${LogPrefix}
+                        echo "${LogPrefix} EnableInput" | tee -a "${TestCaseLogName}" 2>&1
+                        change_input "${TestCaseLogName}" "${TestCaseName}" "${CommandCode}" "${InputSwitchTimeout}" "${LogPrefix}"
                         CmdResult=$?
-                        if [ ${CmdResult} -ne ${ERR_OK} ]; then
-                                echo "${LogPrefix} Error: ${CmdResult} in function change_input" | tee -a ${TestCaseLogName} 2>&1
+                        if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+                                echo "${LogPrefix} Error: ${CmdResult} in function change_input" | tee -a "${TestCaseLogName}" 2>&1
                                 MachineState=false
                         else
                                 MachineState="RunExampleInputEnable"
@@ -1527,11 +1527,11 @@ function m_module_x_test {
                         # Run example second time (banana plugs connected)
                         # If device cannot be opened there is a log in result  :
                         # *** ERROR (LINUX) #2:  No such file or directory ***
-                        echo "${LogPrefix} RunExampleInputEnable" | tee -a ${TestCaseLogName} 2>&1
-                        echo ${MenPcPassword} | sudo -S --prompt=$'\r' ${ModuleSimp} ${ModuleInstanceName} > ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_connected.txt 2>&1
+                        echo "${LogPrefix} RunExampleInputEnable" | tee -a "${TestCaseLogName}" 2>&1
+                        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' "${ModuleSimp}" "${ModuleInstanceName}" > ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_connected.txt 2>&1
                         ErrorLogCnt=$(grep "ERROR" ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_connected.txt | grep "No such file or directory" | wc -l) 
-                        CmdResult=${ErrorLogCnt}
-                        if [ ${CmdResult} -ne ${ERR_OK} ]; then
+                        CmdResult="${ErrorLogCnt}"
+                        if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
                                 echo "${LogPrefix} Error: ${ERR_SIMP_ERROR} :could not run ${ModuleSimp} ${ModuleInstanceName} " | tee -a ${TestCaseLogName} 2>&1
                                 MachineState="DisableInput"
                         else
@@ -1539,10 +1539,10 @@ function m_module_x_test {
                         fi
                         ;;
                   CompareResults)
-                        echo "${LogPrefix} CompareResults" | tee -a ${TestCaseLogName} 2>&1
-                        ${ModuleResultCmpFunc} ${TestCaseLogName} ${TestCaseName} ${MModuleBoardNr}
+                        echo "${LogPrefix} CompareResults" | tee -a "${TestCaseLogName}" 2>&1
+                        "${ModuleResultCmpFunc}" "${TestCaseLogName}" "${LogPrefix}" "${MModuleBoardNr}"
                         CmdResult=$?
-                        if [ ${CmdResult} -ne ${ERR_OK} ]; then
+                        if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
                                 echo "${LogPrefix} Error: ${CmdResult} in ${ModuleResultCmpFunc} ${TestCaseLogName} ${TestCaseName} ${MModuleBoardNr}" | tee -a ${TestCaseLogName} 2>&1
                                 MachineState="DisableInput"
                                 TestError=${CmdResult}
@@ -1552,11 +1552,11 @@ function m_module_x_test {
                         fi
                         ;;
                   DisableInput)
-                        echo "${LogPrefix} DisableInput" | tee -a ${TestCaseLogName} 2>&1
-                        change_input ${TestCaseLogName} ${TestCaseName} $((${CommandCode}+100)) ${InputSwitchTimeout} ${LogPrefix}
+                        echo "${LogPrefix} DisableInput" | tee -a "${TestCaseLogName}" 2>&1
+                        change_input "${TestCaseLogName}" "${TestCaseName}" $((CommandCode+100)) "${InputSwitchTimeout}" "${LogPrefix}"
                         CmdResult=$?
-                        if [ ${CmdResult} -ne ${ERR_OK} ]; then
-                                echo "${LogPrefix} Error: ${CmdResult} in function change_input" | tee -a ${TestCaseLogName} 2>&1
+                        if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+                                echo "${LogPrefix} Error: ${CmdResult} in function change_input" | tee -a "${TestCaseLogName}" 2>&1
                         fi
                         MachineRun=false
                         ;;
@@ -1567,10 +1567,10 @@ function m_module_x_test {
                 esac
         done
 
-        if [ ${TestError} -eq ${ERR_UNDEFINED} ]; then
-                return ${CmdResult}
+        if [ "${TestError}" -eq "${ERR_UNDEFINED}" ]; then
+                return "${CmdResult}"
         else
-                return ${TestError}
+                return "${TestError}"
         fi
 }
 
@@ -1758,16 +1758,14 @@ function compare_m31_simp_values {
 #
 function compare_m35_simp_values {
         local TestCaseLogName=${1}
-        local TestCaseName=${2}
-        local M35Nr=${3}
-        local LogPrefix="[compare_m35]"
-        
+        local LogPrefix=${2}
+        local ModuleNo=${3}
 
         echo "${LogPrefix} compare_m35_simp_values"
         local ValueChannelStateConnected
         local ValueChannelStateDisconnected
-        ValueChannelStateConnected=$(grep "ch0 = " m35_${M35Nr}_simp_output_connected.txt | awk NR==1'{print $3}')
-        ValueChannelStateDisconnected=$(grep  "ch0 = "  m35_${M35Nr}_simp_output_disconnected.txt | awk NR==1'{print $3}')
+        ValueChannelStateConnected=$(grep "ch0 = " m35_"${ModuleNo}"_simp_output_connected.txt | awk NR==1'{print $3}')
+        ValueChannelStateDisconnected=$(grep  "ch0 = "  m35_"${ModuleNo}"_simp_output_disconnected.txt | awk NR==1'{print $3}')
 
         ValueChannelStateConnected=$(echo "${ValueChannelStateConnected}" | sed 's/0x//')
         ValueChannelStateDisconnected=$(echo "${ValueChannelStateDisconnected}" | sed 's/0x//')
@@ -1779,16 +1777,16 @@ function compare_m35_simp_values {
         echo "${LogPrefix} ValueChannelStateDisconnected: ${ValueChannelStateDisconnected}"
 
         if [ "${ValueChannelStateDisconnected}" -ge "1500" ]; then
-                echo "${LogPrefix} ValueChannelStateDisconnected is not ~ 0 "  | tee -a ${TestCaseLogName} 2>&1
-                return ${ERR_VALUE}
+                echo "${LogPrefix} ValueChannelStateDisconnected is not ~ 0 "  | tee -a "${TestCaseLogName}" 2>&1
+                return "${ERR_VALUE}"
         fi
 
         if [ "${ValueChannelStateConnected}" -lt "65000" ]; then
-                echo "${LogPrefix} ValueChannelStateConnected is not ~ 0xffff "  | tee -a ${TestCaseLogName} 2>&1
-                return ${ERR_VALUE}
+                echo "${LogPrefix} ValueChannelStateConnected is not ~ 0xffff "  | tee -a "${TestCaseLogName}" 2>&1
+                return "${ERR_VALUE}"
         fi
 
-        return ${ERR_OK}
+        return "${ERR_OK}"
 }
 
 ############################################################################
@@ -1803,22 +1801,21 @@ function compare_m35_simp_values {
 #
 function compare_m35_blkread_values {
         local TestCaseLogName=${1}
-        local TestCaseName=${2}
-        local M35Nr=${3}
-        local LogPrefix="[compare_m35]"
+        local LogPrefix=${2}
+        local ModuleNo=${3}
 
         echo "${LogPrefix} compare_m35_blkread_values"
         local ValueChannelStateDisconnected
-        ValueChannelStateDisconnected=$(grep -P "^[0-9a-f]+\+[0-9a-f]+:" m35_${M35Nr}_blkread_output_disconnected.txt | head -n 1 | awk '{print $2}' | grep -oP "^[0-9]+")
+        ValueChannelStateDisconnected=$(grep -P "^[0-9a-f]+\+[0-9a-f]+:" m35_"${M35Nr}"_blkread_output_disconnected.txt | head -n 1 | awk '{print $2}' | grep -oP "^[0-9]+")
 
         echo "${LogPrefix} ValueChannelStateDisconnected: ${ValueChannelStateDisconnected}"
 
         if [ "${ValueChannelStateDisconnected}" == "" ] || [ "${ValueChannelStateDisconnected}" -ne "0" ]; then
-                echo "${LogPrefix} ValueChannelStateDisconnected is not 0 "  | tee -a ${TestCaseLogName} 2>&1
-                return ${ERR_VALUE}
+                echo "${LogPrefix} ValueChannelStateDisconnected is not 0 "  | tee -a "${TestCaseLogName}" 2>&1
+                return "${ERR_VALUE}"
         fi
 
-        return ${ERR_OK}
+        return "${ERR_OK}"
 }
 
 

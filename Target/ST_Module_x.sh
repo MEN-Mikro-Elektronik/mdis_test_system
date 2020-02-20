@@ -21,12 +21,12 @@ TestCaseId="${2}"
 LogPrefix="[${2}]"
 TestOs="${3}"
 ModuleName="${4}"
-ModuleNr="${5}"
+ModuleNo="${5}"
 
 TestDescription="${ModuleName}_description"
 TestFunc="${ModuleName}_test"
 
-if [ -z "${TestCaseMainDir}" ] || [ -z "${TestCaseId}" ] || [ -z "${LogPrefix}" ] || [ -z "${TestOs}" ] || [ -z "${ModuleName}" ] || [ -z "${ModuleNr}" ] 
+if [ -z "${TestCaseMainDir}" ] || [ -z "${TestCaseId}" ] || [ -z "${LogPrefix}" ] || [ -z "${TestOs}" ] || [ -z "${ModuleName}" ] || [ -z "${ModuleNo}" ]
 then
     echo "Lack of params - exit"
     exit "${ERR_NOEXIST}"
@@ -73,8 +73,8 @@ else
 fi
 
 echo "${LogPrefix} Run function:" | tee -a "${TestCaseLogName}" 2>&1
-echo "${LogPrefix} \"${TestFunc} ${TestCaseLogName} ${LogPrefix} ${ModuleNr} ${TestCaseName}\""  | tee -a "${TestCaseLogName}" 2>&1
-"${TestFunc}" "${TestCaseLogName}" "${LogPrefix}" "${ModuleNr}" "${TestCaseName}"
+echo "${LogPrefix} \"${TestFunc} ${TestCaseLogName} ${LogPrefix} ${ModuleNo} ${TestCaseName}\"" | tee -a "${TestCaseLogName}" 2>&1
+"${TestFunc}" "${TestCaseLogName}" "${LogPrefix}" "${ModuleNo}" "${TestCaseName}"
 CmdResult=$?
 if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
     TestCaseResult="${CmdResult}"
@@ -88,7 +88,7 @@ else
     TestCaseResult="FAIL"
 fi
 
-"${TestDescription}" "${ModuleNr}" "${TestCaseLogName}">> "${ResultsSummaryTmp}"
+"${TestDescription}" "${ModuleNo}" "${TestCaseLogName}">> "${ResultsSummaryTmp}"
 echo "${LogPrefix} Test_Result:${TestCaseResult}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
 echo "${LogPrefix} Test_ID: ${TestCaseId}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
 echo "${LogPrefix} Test_Setup: ${TestSetup}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
