@@ -1,7 +1,7 @@
 #! /bin/bash
 MyDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-source "${MyDir}/../Common/Conf.sh"
-source "${MyDir}/St_Functions.sh"
+source "${MyDir}/../../Common/Conf.sh"
+source "${MyDir}/../St_Functions.sh"
 
 ############################################################################
 # m35N test description
