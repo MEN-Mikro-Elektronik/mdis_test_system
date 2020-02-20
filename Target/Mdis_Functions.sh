@@ -56,7 +56,7 @@ function get_mdis_sources_commit_sha {
     cd "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" || exit "${ERR_NOEXIST}"
     local CommitIdShortened
     CommitIdShortened=$(git log --pretty=format:'%h' -n 1)
-    local SystemName=`hostnamectl | grep "Operating System" | awk '{ print $3"_"$4 }'`
+    local SystemName=$(hostnamectl | grep "Operating System" | awk '{ print $3"_"$4 }')
     cd "${CurrDir}" || exit "${ERR_NOEXIST}"
 
     echo "${CommitIdShortened}"
@@ -79,13 +79,13 @@ function mdis_prepare {
     # Scan, make and make install 
     if ! scan_and_install "${LogPrefix}"
     then
-            return "${CmdResult}"
+        return "${CmdResult}"
     fi
 
     # Check if any errors exists in output files
     if ! error_check "${LogPrefix}"
     then
-    
+        return ${CmdResult}
     fi
 
     # Check this files:
@@ -190,7 +190,7 @@ function warning_check {
 # parameters:
 # $1    File name
 function error_check {
-    local LogPrefix="$1 "
-    echo "${LogPrefix}TODO !! error_check"
+  local LogPrefix="$1 "
+  echo "${LogPrefix}TODO !! error_check"
 }
 
