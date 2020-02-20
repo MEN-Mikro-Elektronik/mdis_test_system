@@ -2,6 +2,7 @@
 
 MyDir="$(dirname "${0}")"
 source "${MyDir}/St_Functions.sh"
+source "${MyDir}"/Ip_Core_Tests/z001.sh
 
 # This script performs tests on G229 side board
 # Test is described in details in 13MD05-90_xx_xx-JPE
