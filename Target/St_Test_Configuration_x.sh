@@ -1,7 +1,9 @@
 #! /bin/bash
 
 MyDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-source "${MyDir}/St_Functions.sh"
+source "${MyDir}"/St_Functions.sh
+source "${MyDir}"/Mdis_Functions.sh
+source "${MyDir}"/Relay_Functions.sh
 
 # This script runs all available test cases for given systen configuration.
 # Test cases are described in document: 13MD05-90_xx_xx-JPE-TestReport
