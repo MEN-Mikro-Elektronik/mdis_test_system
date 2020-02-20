@@ -2,6 +2,7 @@
 MyDir="$(dirname "$0")"
 source "${MyDir}"/St_Functions.sh
 source "${MyDir}"/M_Module_Tests.sh
+source "${MyDir}"/M_Modules_Tests/m35n.sh
 CurrDir=$(pwd)
 
 ############################################################################
