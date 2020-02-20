@@ -1,11 +1,11 @@
 #! /bin/bash
 MyDir="$(dirname "$0")"
 source "${MyDir}"/St_Functions.sh
-source "${MyDir}"/M_Module_Tests.sh
 source "${MyDir}"/M_Modules_Tests/m33.sh
 source "${MyDir}"/M_Modules_Tests/m35n.sh
 source "${MyDir}"/M_Modules_Tests/m47.sh
 source "${MyDir}"/M_Modules_Tests/m65n.sh
+source "${MyDir}"/M_Modules_Tests/m72.sh
 
 CurrDir=$(pwd)
 

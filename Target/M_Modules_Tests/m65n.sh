@@ -7,7 +7,8 @@ source "${MyDir}/../St_Functions.sh"
 # m65n test description
 #
 # parameters:
-# $1    TestCaseLogName
+# $1    Module number
+# $2    Module log path 
 function m65n_description {
     local moduleNo=${1}
     local moduleLogPath=${2}
