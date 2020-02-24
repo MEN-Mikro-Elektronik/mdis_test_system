@@ -38,7 +38,7 @@ eth_test() {
         EthListBefore="$(ifconfig -a | grep --perl-regexp --only-matching "^[\w\d]+")"
         echo -e "ETH interfaces before driver was loaded:\n${EthListBefore}" | tee --append "${TestCaseLogName}"
 
-        if ! echo "${MenPcPassword}" | sudo --stdin --prompt=$'\r' modprobe men_lx_z77 phyadr=1,0
+        if ! echo "${MenPcPassword}" | sudo --stdin --prompt=$'\r' modprobe men_lx_z77 phyadr=1,2
         then
                 echo "ERR ${ERR_MODPROBE}:could not modprobe men_lx_z77" | tee --append "${TestCaseLogName}"
                 return "${ERR_MODPROBE}"
