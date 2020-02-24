@@ -4,26 +4,24 @@ source "${MyDir}/../../Common/Conf.sh"
 source "${MyDir}/../St_Functions.sh"
 
 ############################################################################
-# m65n test description
+# m62 test description
 #
 # parameters:
 # $1    Module number
 # $2    Module log path 
-function m65n_description {
+function m62_description {
     local moduleNo=${1}
     local moduleLogPath=${2}
-    echo "--------------------------------M65N Test Case--------------------------------"
+    echo "------------------------------M62 Test Case-----------------------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
-    echo "    M65N adapter is plugged into M65N m-module"
     echo "DESCRIPTION:"
-    echo "    1.Load m-module drivers: modprobe men_ll_icanl2"
+    echo "    1.Load m-module drivers: modprobe men_ll_m62"
     echo "    2.Run example/verification program:"
-    echo "      icanl2_veri m65_${moduleNo}a m65_${moduleNo}b -n=2 and save the command"
-    echo "      output"
-    echo "    3.Verify if icanl2_veri command output is valid - does not contain"
-    echo "      errors (find line 'TEST RESULT: 0 errors)"
+    echo "      m62_simp m62_${moduleNo} and save the command output"
+    echo "    3.Verify if profidp_simp command output is valid - does not contain errors"
+    echo "      Device was opened and closed succesfully"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"
@@ -34,39 +32,40 @@ function m65n_description {
 }
 
 ############################################################################
-# m65n_test
+# run 62 test
 #
 # parameters:
 # $1    TestCaseLogName
 # $2    LogPrefix
 # $3    M-Module number
-function m65n_test {
+function m62_test {
     local TestCaseLogName=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
 
-    echo "${LogPrefix} Step1: modprobe men_ll_icanl2" | tee -a "${TestCaseLogName}" 2>&1
-    if ! echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_ll_icanl2
+    echo "${LogPrefix} Step1: modprobe men_ll_m62" | tee -a "${TestCaseLogName}" 2>&1
+    if ! echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_ll_m62
     then
-        echo "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_icanl2" | tee -a "${TestCaseLogName}"
+        echo "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m62"\
+          | tee -a "${TestCaseLogName}" 
         return "${ERR_VALUE}"
     fi
 
-    # Run icanl2_veri tests twice
-    echo "${LogPrefix} Step2: run icanl2_veri m65_${ModuleNo}a m65_${ModuleNo}b -n=2" | tee -a "${TestCaseLogName}" 2>&1
-    if ! echo "${MenPcPassword}" | sudo -S --prompt=$'\r' icanl2_veri m65_"${ModuleNo}"a m65_"${ModuleNo}"b -n=2 > icanl2_veri.log
-    then
-        echo "${LogPrefix} Could not run icanl2_veri "\
+    echo "${LogPrefix} Step2: run m62_simp m62n_${ModuleNo}" | tee -a "${TestCaseLogName}" 2>&1
+    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' m62_simp m62n_"${ModuleNo}" > m62_simp.log
+    if [ $? -ne 0 ]; then
+        echo "${LogPrefix} Could not run m62_simp "\
           | tee -a "${TestCaseLogName}" 2>&1
     fi
 
     echo "${LogPrefix} Step3: check for errors" | tee -a "${TestCaseLogName}" 2>&1
-    if ! grep "TEST RESULT: 0 errors" icanl2_veri.log > /dev/null
-    then
+    grep "^channel 0: produce lowest to highest ramp..." m62_simp.log && \
+    grep "^all channels: output range 0..10V.." m62_simp.log
+    if [ $? -ne 0 ]; then 
         echo "${LogPrefix} Invalid log output, ERROR"\
           | tee -a "${TestCaseLogName}" 2>&1
         return "${ERR_VALUE}"
-    fi
+    fi 
 
     return "${ERR_OK}"
 }
