@@ -7,6 +7,14 @@ source "${MyDir}"/Relay_Functions.sh
 # This script contains all common functions that are used by St_xxxx testcases.
 #
 
+### @brief Run command as root
+### @param $@ Command to run, command arguments
+function run_as_root {
+    if [ "${#}" -gt "0" ]; then
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' -- "${@}"
+    fi
+}
+
 ############################################################################
 # Create directory for St_xxxx Test Case. 
 # Create test_case_system_result.txt file with informations:
