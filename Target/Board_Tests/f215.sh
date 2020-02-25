@@ -2,8 +2,8 @@
 MyDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${MyDir}/../../Common/Conf.sh"
 source "${MyDir}/../St_Functions.sh"
-source "${MyDir}"/../Ip_Core_Tests/z029_can.sh
-source "${MyDir}"/../Ip_Core_Tests/z034_z037_gpio.sh
+source "${MyDir}/../Ip_Core_Tests/z029_can.sh"
+source "${MyDir}/../Ip_Core_Tests/z034_z037_gpio.sh"
 
 ############################################################################
 # board f215 test
@@ -100,40 +100,39 @@ function f215_test {
         Step7)
             # Test GPIO / LEDS 
             echo "${LogPrefix} Run step @7" | tee -a "${TestCaseLogName}" 2>&1
-#            echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_ll_z17
-#            ResultModprobeZ17=$?
-#            if [ ${ResultModprobeZ17} -ne ${ERR_OK} ]; then
-#                    echo "ERR_MODPROBE :could not modprobe men_ll_z17" | tee -a ${TestCaseLogName} 2>&1
-#                    CmdResult=${ResultModprobeZ17}
-#            else
-#                    GpioNumber=$(grep "^gpio" ${MezzChamDevName} | wc -l)
-#                    if [ "${GpioNumber}" -ne "2" ]; then
-#                            echo "There are ${GpioNumber} GPIO interfaces" \
-#                              | tee error_log.txt 2>&1
-#                    else
-#                            GPIO1=$(grep "^gpio" ${MezzChamDevName} | awk NR==1'{print $1}')
-#                            GPIO2=$(grep "^gpio" ${MezzChamDevName} | awk NR==2'{print $1}')
-#                    fi
+            echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_ll_z17
+            ResultModprobeZ17=$?
+            if [ ${ResultModprobeZ17} -ne ${ERR_OK} ]; then
+                    echo "ERR_MODPROBE :could not modprobe men_ll_z17" | tee -a "${TestCaseLogName}" 2>&1
+                    CmdResult="${ResultModprobeZ17}"
+            else
+                    GpioNumber=$(grep "^gpio" ${MezzChamDevName} | wc -l)
+                    if [ "${GpioNumber}" -ne "2" ]; then
+                            echo "There are ${GpioNumber} GPIO interfaces" \
+                              | tee error_log.txt 2>&1
+                    else
+                            GPIO1=$(grep "^gpio" ${MezzChamDevName} | awk NR==1'{print $1}')
+                            GPIO2=$(grep "^gpio" ${MezzChamDevName} | awk NR==2'{print $1}')
+                    fi
 
-                    # Test LEDS -- This cannot be checked automatically yet ... 
-#                    echo ${MenPcPassword} | sudo -S --prompt=$'\r' z17_simp ${GPIO1} >> z17_simp_${GPIO1}.txt 2>&1
-#                    if [ $? -ne 0 ]; then
-#                            echo "ERR_RUN :could not run z17_simp ${GPIO1}" | tee -a ${TestCaseLogName} 2>&1     
-#                    fi
-
+                    # Test LEDS -- This cannot be checked automatically yet
+                    echo ${MenPcPassword} | sudo -S --prompt=$'\r' z17_simp ${GPIO1} >> z17_simp_${GPIO1}.txt 2>&1
+                    if [ $? -ne 0 ]; then
+                            echo "ERR_RUN :could not run z17_simp ${GPIO1}" | tee -a "${TestCaseLogName}" 2>&1
+                    fi
                     # Test GPIO
-#                    gpio_test ${TestCaseLogName} ${TestCaseName} ${GPIO2} ${InputToChange}
-#                    CmdResult=$?
-#                    if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-#                             echo "gpio_test on ${GPIO2} err: ${CmdResult} "\
-#                               | tee -a ${TestCaseLogName} 2>&1
-#                    else
-#                             echo "gpio_test on ${GPIO2} success "\
-#                               | tee -a ${TestCaseLogName} 2>&1
-#                    fi
-#            fi
-#            TestCaseStep7=${CmdResult}
-            TestCaseStep7="${ERR_OK}"
+                    gpio_test "${TestCaseLogName}" "${TestCaseName}" "${GPIO2}" "${InputToChange}"
+                    CmdResult=$?
+                    if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+                             echo "gpio_test on ${GPIO2} err: ${CmdResult} "\
+                               | tee -a ${TestCaseLogName} 2>&1
+                    else
+                             echo "gpio_test on ${GPIO2} success "\
+                               | tee -a ${TestCaseLogName} 2>&1
+                    fi
+            fi
+            TestCaseStep7=${CmdResult}
+#            TestCaseStep7="${ERR_OK}"
             MachineState="Break"
             ;;
         Break) 

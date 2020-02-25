@@ -9,12 +9,18 @@ LogPrefix="[Jenkins]"
 # Jenkins run result identification
 Today=$(date +%Y_%m_%d_%H_%M_%S)
 
+BuildMdis="1"
+
 # read parameters
 while test $# -gt 0 ; do
     case "$1" in
         --run-instantly)
                 shift
                 RunInstantly="1"
+                ;;
+        --no-build)
+                shift
+                BuildMdis="0"
                 ;;
         *)
                 echo "No valid parameters"

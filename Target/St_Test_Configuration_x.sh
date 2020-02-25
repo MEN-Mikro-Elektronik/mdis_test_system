@@ -15,6 +15,7 @@ source "${MyDir}"/Relay_Functions.sh
 # $1     Men password
 # $2     Unique test ID - date
 TestSetup=${1}
+BuildMdis=${2}
 Today=${3}
 TestConfiguration="St_Test_Configuration_${TestSetup}"
 CommitSha="$(get_mdis_sources_commit_sha)"
@@ -61,13 +62,15 @@ cd "${OsNameKernel}" || exit "${ERR_NOEXIST}"
 TestSummaryDirectory="${MdisResultsDirectoryPath}/${CommitSha}/${TestConfiguration}/${Today}/${OsNameKernel}"
 cd "${MainTestDirectoryPath}" || exit "${ERR_NOEXIST}"
 
-mdis_prepare "${TestSummaryDirectory}" "${LogPrefix}"
-CmdResult=$?
-if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+if [ "${BuildMdis}" -eq "1" ]; then
+    mdis_prepare "${TestSummaryDirectory}" "${LogPrefix}"
+    CmdResult=$?
+    if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
         echo "${LogPrefix} run_test_case_common_actions: Failed - exit"
         exit "${CmdResult}"
-else
+    else
         echo "${LogPrefix} run_test_case_common_actions: Success"
+    fi
 fi
 
 echo "${1}" | sudo -S --prompt=$'\r' dmesg --clear
