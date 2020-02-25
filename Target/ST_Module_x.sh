@@ -6,6 +6,8 @@ source "${MyDir}"/M_Modules_Tests/m35n.sh
 source "${MyDir}"/M_Modules_Tests/m47.sh
 source "${MyDir}"/M_Modules_Tests/m65n.sh
 source "${MyDir}"/M_Modules_Tests/m72.sh
+source "${MyDir}"/Board_Tests/f215.sh
+source "${MyDir}"/Board_Tests/f223.sh
 
 CurrDir=$(pwd)
 
@@ -20,18 +22,101 @@ CurrDir=$(pwd)
 #            $3 OS name
 #            $4 Module name
 #            $5 Module num
-#
-TestCaseMainDir="${1}"
-TestCaseId="${2}"
-LogPrefix="[${2}]"
-TestOs="${3}"
-ModuleName="${4}"
-ModuleNo="${5}"
 
-TestDescription="${ModuleName}_description"
-TestFunc="${ModuleName}_test"
+#TestCaseMainDir="${1}"
+#TestCaseId="${2}"
+#LogPrefix="[${2}]"
+#TestOs="${3}"
+#DeviceName="${4}"
+#DeviceNo="${5}"
+#TestType=""
+#DevicesFile=""
 
-if [ -z "${TestCaseMainDir}" ] || [ -z "${TestCaseId}" ] || [ -z "${LogPrefix}" ] || [ -z "${TestOs}" ] || [ -z "${ModuleName}" ] || [ -z "${ModuleNo}" ]
+# read parameters
+while test $# -gt 0 ; do
+    case "$1" in
+        -dir)
+            shift
+            if test $# -gt 0; then
+                TestCaseMainDir="$1"
+            else
+                echo "No main dir specified"
+                exit 1
+            fi
+            ;;
+        -id)
+            shift
+            if test $# -gt 0; then
+                TestCaseId="$1"
+            else
+                echo "No test id specified"
+                exit 1
+            fi
+            ;;
+        -lprefix)
+            shift
+            if test $# -gt 0; then
+                LogPrefix="$1"
+            else
+                echo "No Log Prefix specified"
+                exit 1
+            fi
+            ;;
+        -os)
+            shift
+            if test $# -gt 0; then
+                TestOs="$1"
+            else
+                echo "No test OS specified"
+                exit 1
+            fi
+            ;;
+        -dname)
+            shift
+            if test $# -gt 0; then
+                DeviceName="$1"
+            else
+                echo "No device name specified"
+                exit 1
+            fi
+            ;;
+        -dno)
+            shift
+            if test $# -gt 0; then
+                DevicesFile="$1"
+            else
+                echo "No mezz cham dev file specified"
+                exit 1
+            fi
+            ;;
+        -dfile)
+            shift
+            if test $# -gt 0; then
+                DeviceNo="$1"
+            else
+                echo "No device number specified"
+                exit 1
+            fi
+            ;;
+        -ttype)
+            shift
+            if test $# -gt 0; then
+                InternalTestName="$1"
+            else
+                echo "No device number specified"
+                exit 1
+            fi
+            ;;
+        *)
+            break
+            ;;
+        esac
+done
+
+TestDescription="${DeviceName}_description"
+TestFunc="${DeviceName}_test"
+
+if [ -z "${TestCaseMainDir}" ] || [ -z "${TestCaseId}" ] || [ -z "${LogPrefix}" ] || [ -z "${TestOs}" ] || [ -z "${DeviceName}" ] || [ -z "${DeviceNo}" ]
 then
     echo "Lack of params - exit"
     exit "${ERR_NOEXIST}"
@@ -78,14 +163,42 @@ else
 fi
 
 echo "${LogPrefix} Run function:" | tee -a "${TestCaseLogName}" 2>&1
-echo "${LogPrefix} \"${TestFunc} ${TestCaseLogName} ${LogPrefix} ${ModuleNo} ${TestCaseName}\"" | tee -a "${TestCaseLogName}" 2>&1
-"${TestFunc}" "${TestCaseLogName}" "${LogPrefix}" "${ModuleNo}" "${TestCaseName}"
-CmdResult=$?
-if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-    TestCaseResult="${CmdResult}"
-else
-    TestCaseResult=0
-fi
+
+local TestType=$(echo ${DeviceName} | head -c1)
+    case "${TestType}" in
+        m)
+            echo "${LogPrefix} M-Module test" | tee -a "${TestCaseLogName}" 2>&1
+            echo "${LogPrefix} \"${TestFunc} ${TestCaseLogName} ${LogPrefix} ${DeviceNo} ${TestCaseName}\""\
+                | tee -a "${TestCaseLogName}" 2>&1
+            "${TestFunc}" "${TestCaseLogName}" "${LogPrefix}" "${DeviceNo}" "${TestCaseName}"
+            CmdResult=$?
+            if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+                TestCaseResult="${CmdResult}"
+            else
+                TestCaseResult=0
+            fi
+            ;;
+        z)
+            echo "${LogPrefix} Ip core test" | tee -a "${TestCaseLogName}" 2>&1
+            echo "${LogPrefix} \"${TestFunc} ${TestCaseLogName} ${LogPrefix} ${DevicesFile} ${DeviceNo}\""\
+                | tee -a "${TestCaseLogName}" 2>&1
+            "${TestFunc}" "${TestCaseLogName}" "${LogPrefix}" "${DevicesFile}" "${DeviceNo}"
+            CmdResult=$?
+            if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+                TestCaseResult="${CmdResult}"
+            else
+                TestCaseResult=0
+            fi
+            ;;
+        b)
+            echo "${LogPrefix} Board test" | tee -a "${TestCaseLogName}" 2>&1
+            ;;
+        *)
+            echo "${LogPrefix} No valid device name"| tee -a "${TestCaseLogName}" 2>&1
+        ;;
+    esac
+
+
 
 if [ "${TestCaseResult}" -eq "${ERR_OK}" ]; then
     TestCaseResult="SUCCESS"
@@ -93,7 +206,7 @@ else
     TestCaseResult="FAIL"
 fi
 
-"${TestDescription}" "${ModuleNo}" "${TestCaseLogName}">> "${ResultsSummaryTmp}"
+"${TestDescription}" "${DeviceNo}" "${TestCaseLogName}">> "${ResultsSummaryTmp}"
 echo "${LogPrefix} Test_Result:${TestCaseResult}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
 echo "${LogPrefix} Test_ID: ${TestCaseId}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
 echo "${LogPrefix} Test_Setup: ${TestSetup}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1

@@ -75,12 +75,13 @@ echo "${1}" | sudo -S --prompt=$'\r' dmesg --clear
 echo "${LogPrefix} Test Setup: ${TestSetup}"
 case "${TestSetup}" in
         1)
-          # M-Modules plugged on G204
-          echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_Module_x.sh" "${TestSummaryDirectory}" "ID_3000"  "${OsNameKernel}" "m65n" "1"
-          echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_Module_x.sh" "${TestSummaryDirectory}" "ID_3010"  "${OsNameKernel}" "m33" "1"
-          echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_Module_x.sh" "${TestSummaryDirectory}" "ID_3020"  "${OsNameKernel}" "m35n" "1"
+          run_test_case "203" "${TestSummaryDirectory}" "${OsNameKernel}" #M33 test
+          run_test_case "100" "${TestSummaryDirectory}" "${OsNameKernel}" #F215 board test
+          #echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_Module_x.sh" "${TestSummaryDirectory}" "ID_3000"  "${OsNameKernel}" "m65n" "1"
+          #echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_Module_x.sh" "${TestSummaryDirectory}" "ID_3010"  "${OsNameKernel}" "m33" "1"
+          #echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_Module_x.sh" "${TestSummaryDirectory}" "ID_3020"  "${OsNameKernel}" "m35n" "1"
           # M-Modules plugged on F205
-          echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_Module_x.sh" "${TestSummaryDirectory}" "ID_3030"  "${OsNameKernel}" "m47" "1"
+          #echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_Module_x.sh" "${TestSummaryDirectory}" "ID_3030"  "${OsNameKernel}" "m47" "1"
           #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M82_M_Module_Test.sh" ${TestSummaryDirectory}
           #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M35_M_Module_Test.sh" ${TestSummaryDirectory}
           #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_F215_Interface_Test.sh" ${TestSummaryDirectory}

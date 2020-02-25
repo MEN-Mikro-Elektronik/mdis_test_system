@@ -116,6 +116,8 @@ function f223_test {
                 ;;
             Break)
                 # Clean after Test Case
+                echo "Break State"  | tee --a "${TestCaseLogName}"
+                MachineRun=false
                 ;;
             *)
                 echo "State is not set, start with Step1"

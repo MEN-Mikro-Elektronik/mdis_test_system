@@ -6,15 +6,6 @@ source "${MyDir}"/Relay_Functions.sh
 
 # This script contains all common functions that are used by St_xxxx testcases.
 #
-
-### @brief Run command as root
-### @param $@ Command to run, command arguments
-function run_as_root {
-    if [ "${#}" -gt "0" ]; then
-        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' -- "${@}"
-    fi
-}
-
 ############################################################################
 # Create directory for St_xxxx Test Case. 
 # Create test_case_system_result.txt file with informations:
@@ -92,9 +83,7 @@ function get_os_name_with_kernel_ver {
 # parameters:
 # $1     Test Case Log name 
 # $2     Test Case name
-
 function run_test_case_dir_create {
-
         local TestCaseLogName=${1}
         local TestCaseName=${2}
 
@@ -138,13 +127,13 @@ function obtain_device_list_chameleon_device {
 
         local BoardNumber=1
         local BoardsCnt=0
-        local BusNr=0        
-        local DevNr=0   
+        local BusNr=0
+        local DevNr=0
 
-        # Check how many boards are present 
+        # Check how many boards are present
         BoardsCnt=$(echo ${MenPcPassword} | sudo -S --prompt=$'\r' /opt/menlinux/BIN/fpga_load -s | grep "${VenID} * ${DevID} * ${SubVenID}" | wc -l)
 
-        echo "There are: ${BoardsCnt} mezzaine ${VenID} ${DevID} ${SubVenID} board(s) in the system" 
+        echo "There are: ${BoardsCnt} mezzaine ${VenID} ${DevID} ${SubVenID} board(s) in the system"
 
         if (( "${BoardsCnt}" >= "2" )) ; then
                 if [ "${BoardNumberParam}" -eq "0" ] || [ "${BoardNumberParam}" -ge "${BoardsCnt}" ]; then
@@ -162,7 +151,7 @@ function obtain_device_list_chameleon_device {
         # Obtain DEVICE number
         DevNr=$(echo ${MenPcPassword} | sudo -S --prompt=$'\r' /opt/menlinux/BIN/fpga_load -s | grep "${VenID} * ${DevID} * ${SubVenID}" | awk NR==${BoardNumber}'{print $4}')
         
-        echo "Device BUS:${BusNr}, Dev:${DevNr}"  
+        echo "Device BUS:${BusNr}, Dev:${DevNr}"
         # Check how many chameleon devices are present in configuration
         echo "Current Path:"
         echo $PWD
@@ -171,7 +160,7 @@ function obtain_device_list_chameleon_device {
         echo "Number of Chameleon boards: ${ChamBoardsNr}"
 
         local ChamBusNr=0
-        local ChamDevNr=0 
+        local ChamDevNr=0
         local ChamValidId=0;
 
         # Check if device is present in system.dsc file
@@ -187,7 +176,7 @@ function obtain_device_list_chameleon_device {
                 ChamBusNr=$(( 16#$(echo ${ChamBusNr} | awk -F'x' '{print $2}')))
                 ChamDevNr=$(( 16#$(echo ${ChamDevNr} | awk -F'x' '{print $2}') ))
 
-                if [ ${ChamBusNr} -eq ${BusNr} ] && [ ${ChamDevNr} -eq ${DevNr} ]; then 
+                if [ ${ChamBusNr} -eq ${BusNr} ] && [ ${ChamDevNr} -eq ${DevNr} ]; then
                         echo "mezz_cham_${i} board is valid"
                         ChamValidId=${i}
                 fi
@@ -197,7 +186,7 @@ function obtain_device_list_chameleon_device {
         local DeviceNr=$(grep "{" ../system.dsc | wc -l )
         
         # Create file with devices description on mezzaine chameleon board
-        touch ${FileWithResults} 
+        touch "${FileWithResults}"
 
         for i in $(seq 1 ${DeviceNr}); do
                 #Check if device belongs to choosen chameleon board
@@ -210,75 +199,9 @@ function obtain_device_list_chameleon_device {
                                 echo "Device: ${DevToCheck} belongs to mezz_cham_${ChamValidId}"
                                 echo "${DevToCheck}" >> ${FileWithResults} 
                         fi
-                fi 
+                fi
      done
 }
-
-
-############################################################################
-# Function checks if GPIO is working correctly
-#
-# parameters:
-# $1    Test case log file name
-# $2    Test case name
-# $3    GPIO number
-# $4    Command Code
-#
-function gpio_test {
-        
-        local TestCaseLogName=${1}
-        local TestCaseName=${2}
-        local GpioNr=${3}
-        local CommandCode=${4}
-        local LogPrefix="[Gpio_Test]"
-        echo "${LogPrefix} function gpio_test"
-
-        # Make sure that input is disabled 
-        change_input ${TestCaseLogName} ${TestCaseName} $((${CommandCode}+100)) ${InputSwitchTimeout} ${LogPrefix}
-        # Test GPIO, banana plugs are not connected to power source
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' z17_simp ${GPIO2} >> z17_simp_${GPIO2}_banana_plug_disconnected.txt 2>&1
-        CmdResult=$?
-        if [ ${CmdResult} -ne ${ERR_OK} ]; then
-                echo "${LogPrefix} ERR_RUN :could not run z17_simp ${GPIO2}" | tee -a ${TestCaseLogName} 2>&1     
-                return ${CmdResult}
-        fi
-        
-        # Enable input
-        change_input ${TestCaseLogName} ${TestCaseName} ${CommandCode} ${InputSwitchTimeout} ${LogPrefix}
-        CmdResult=$?
-        if [ ${CmdResult} -ne ${ERR_OK} ]; then
-                echo "${LogPrefix} Error: ${CmdResult} in function change_input" | tee -a ${TestCaseLogName} 2>&1
-                return ${CmdResult}
-        fi
-
-        # Test GPIO, banana plugs are connected to power source
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' z17_simp ${GPIO2} >> z17_simp_${GPIO2}_banana_plug_connected.txt 2>&1
-        CmdResult=$?
-        if [ ${CmdResult} -ne ${ERR_OK} ]; then
-                echo "${LogPrefix} ERR_RUN :could not run z17_simp ${GPIO1}" | tee -a ${TestCaseLogName} 2>&1
-                return ${CmdResult}  
-        fi
-        
-        # Disable input
-        change_input ${TestCaseLogName} ${TestCaseName} $((${CommandCode}+100)) ${InputSwitchTimeout} ${LogPrefix}
-
-        # Compare bit settings for read(s), shall be different
-        local Index=4 #to 35
-        local CheckValueDisconnected=$(cat z17_simp_${GPIO2}_banana_plug_disconnected.txt | awk NR==${Index}'{print $18}') 
-        local CheckValueConnected=$(cat z17_simp_${GPIO2}_banana_plug_connected.txt | awk NR==${Index}'{print $18}')
-        for i in $(seq ${Index} 35)
-        do
-                if [ "${CheckValueDisconnected}" == "${CheckValueConnected}" ]; then
-                        echo "${LogPrefix} ERR GPIO - read values are the same"
-                        return ${ERR_VALUE}
-                fi
-                CheckValueDisconnected=$(cat z17_simp_${GPIO2}_banana_plug_disconnected.txt | awk NR==${Index}'{print $18}') 
-                CheckValueConnected=$(cat z17_simp_${GPIO2}_banana_plug_connected.txt | awk NR==${Index}'{print $18}')
-        done
-        
-        return ${ERR_OK}
-}
-
 
 ############################################################################
 # Function that performs all needed steps to check if uart modules are working on
@@ -549,121 +472,6 @@ function uart_test_tty {
         fi
         
         return ${ERR_VALUE}
-}
-
-
-############################################################################
-# Test CAN with men_ll_z15 IpCore 
-#
-# parameters:
-# $1      name of file with log 
-# $2      mezzaine chameleon device description file
-#        
-#
-function can_test_ll_z15 {
-
-        local LogFileName=$1
-        local MezzChamDevDescriptionFile=$2
-        local LogPrefix="[Can_test]"
-
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_ll_z15
-        if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  ERR_VALUE :could not modprobe men_ll_z15" | tee -a ${LogFileName} 
-                return ${ERR_VALUE}
-        fi      
-
-        local CanNumber=$(grep "^can" ${MezzChamDevDescriptionFile} | wc -l)
-        if [ "${CanNumber}" -ne "2" ]; then
-                echo "${LogPrefix}  There are ${CanNumber} CAN interfaces"  | tee -a ${LogFileName}
-        else
-                local CAN1=$(grep "^can" ${MezzChamDevDescriptionFile} | awk NR==1'{print $1}')
-                local CAN2=$(grep "^can" ${MezzChamDevDescriptionFile} | awk NR==2'{print $1}')
-        fi
-
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' mscan_pingpong ${CAN1} ${CAN2} >> mscan_pingpong_${CAN1}_${CAN2}.txt 2>&1
-        if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  mscan_pingpong on ${CAN1} ${CAN2} error" | tee -a ${LogFileName}
-                return ${ERR_VALUE}
-        else
-                local CanResult=$(grep "TEST RESULT:" mscan_pingpong_${CAN1}_${CAN2}.txt | awk NR==1'{print $3}')
-                if [ "${CanResult}" -ne "${ERR_OK}" ]; then
-                         return ${ERR_RUN}
-                fi
-                return ${ERR_OK}
-        fi
-}
-
-############################################################################
-# Test CAN with men_ll_z15 IpCore (loopback)
-#
-# parameters:
-# $1      name of file with log 
-# $2      mezzaine chameleon device description file
-#        
-#
-function can_test_ll_z15_loopback {
-
-        local LogFileName=$1
-        local MezzChamDevDescriptionFile=$2
-        local LogPrefix="[Can_test]"
-
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_ll_z15
-        if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  ERR_VALUE :could not modprobe men_ll_z15" | tee -a ${LogFileName} 
-                return ${ERR_VALUE}
-        fi
-
-        local CanNumber=$(grep "^can" ${MezzChamDevDescriptionFile} | wc -l)
-        if [ "${CanNumber}" -ne "1" ]; then
-                echo "${LogPrefix}  There are ${CanNumber} CAN interfaces"  | tee -a ${LogFileName}
-        else
-                local CAN1=$(grep "^can" ${MezzChamDevDescriptionFile} | awk NR==1'{print $1}')
-        fi
-
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' mscan_loopb ${CAN1} >> mscan_loopb_${CAN1}.txt 2>&1
-        if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  mscan_loopb on ${CAN1} error" | tee -a ${LogFileName}
-                return ${ERR_VALUE}
-        else
-                local CanResult=$(grep "TEST RESULT:" mscan_loopb_${CAN1}.txt | awk NR==1'{print $3}')
-                if [ "${CanResult}" -ne "${ERR_OK}" ]; then
-                         return ${ERR_RUN}
-                fi
-                return ${ERR_OK}
-        fi
-}
-
-############################################################################
-# Test CAN with men_ll_z15 IpCore (loopback) version 2
-#
-# parameters:
-# $1      name of file with log 
-# $2      CAN device name
-#        
-#
-function can_test_ll_z15_loopback2 {
-
-        local LogFileName=$1
-        local CANDevice=$2
-        local LogPrefix="[Can_test]"
-
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_ll_z15
-        if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  ERR_VALUE :could not modprobe men_ll_z15" | tee -a ${LogFileName} 
-                return ${ERR_VALUE}
-        fi
-
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' mscan_loopb ${CANDevice} >> mscan_loopb_${CANDevice}.txt 2>&1
-        if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  mscan_loopb on ${CANDevice} error" | tee -a ${LogFileName}
-                return ${ERR_VALUE}
-        else
-                local CanResult=$(grep "TEST RESULT:" mscan_loopb_${CANDevice}.txt | awk NR==1'{print $3}')
-                if [ "${CanResult}" -ne "${ERR_OK}" ]; then
-                         return ${ERR_RUN}
-                fi
-                return ${ERR_OK}
-        fi
 }
 
 ############################################################################
