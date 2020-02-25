@@ -10,8 +10,8 @@ source "${MyDir}/../St_Functions.sh"
 # $1    Module number
 # $2    Module log path 
 function m35n_description {
-    local moduleNo=${1}
-    local moduleLogPath=${2}
+    local ModuleNo=${1}
+    local ModuleLogPath=${2}
     echo "--------------------------------M35n Test Case--------------------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that at this point all necessary drivers have been build and"
@@ -21,19 +21,19 @@ function m35n_description {
     echo "DESCRIPTION:"
     echo "    1.Check values read from m35n"
     echo "      Load m-module drivers: 'modprobe men_ll_m34'"
-    echo "      Run command: 'm34_simp m35_${moduleNo} 14' and save command output"
+    echo "      Run command: 'm34_simp m35_${ModuleNo} 14' and save command output"
     echo "      Change relay output"
-    echo "      Run command: 'm34_simp m35_${moduleNo} 14' and save command output"
+    echo "      Run command: 'm34_simp m35_${ModuleNo} 14' and save command output"
     echo "      Output values of m34_simp commands should differ, for +12V should"
     echo "      be greated than 0xFD00"
     echo "    2.Check m35n interrupts"
-    echo "      Run command: 'm34_blkread m35_${moduleNo} -r=14 -b=1 -i=3 -d=1'"
+    echo "      Run command: 'm34_blkread m35_${ModuleNo} -r=14 -b=1 -i=3 -d=1'"
     echo "      and save command output"
     echo "      Verify if m34_blkread command output is valid - does not contain errors"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"
-    echo "    ${moduleLogPath}"
+    echo "    ${ModuleLogPath}"
     echo "    For more detailed information please see corresponding log files in test"
     echo "    case repository"
     echo "    To see error codes definition please check Conf.sh"
@@ -46,7 +46,7 @@ function m35n_description {
 # $1    TestCaseLogName
 # $2    LogPrefix
 # $3    M-Module number
-# $4    TestCaseName
+# $4    Test case came
 function m35n_test {
     local TestCaseLogName=${1}
     local LogPrefix=${2}
@@ -80,11 +80,11 @@ function m35n_test {
 # Value on chanel 0 is checked. 
 # If Chanel is disconnected from power source, value should be 0x0000 
 # If Chanel is connected with 12V, value should be 0xffff
-# parameters:
-# $1    Test case log file name
-# $2    Test case name
-# $3    M35 board number
 #
+# parameters:
+# $1    TestCaseLogName
+# $2    LogPrefix
+# $3    M-Module number
 function compare_m35_simp_values {
     local TestCaseLogName=${1}
     local LogPrefix=${2}
@@ -123,11 +123,11 @@ function compare_m35_simp_values {
 # Value on chanel 0 is checked. 
 # If Chanel is disconnected from power source, value should be 0
 # If Chanel is connected with 12V, value should be greater than 0
-# parameters:
-# $1    Test case log file name
-# $2    Test case name
-# $3    M35 board number
 #
+# parameters:
+# $1    TestCaseLogName
+# $2    LogPrefix
+# $3    M-Module number
 function compare_m35_blkread_values {
     local TestCaseLogName=${1}
     local LogPrefix=${2}

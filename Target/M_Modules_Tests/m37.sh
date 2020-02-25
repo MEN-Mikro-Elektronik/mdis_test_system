@@ -10,8 +10,8 @@ source "${MyDir}/../St_Functions.sh"
 # $1    Module number
 # $2    Module log path 
 function m37_description {
-    local moduleNo=${1}
-    local moduleLogPath=${2}
+    local ModuleNo=${1}
+    local ModuleLogPath=${2}
     echo "--------------------------------M37 Test Case---------------------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that at this point all necessary drivers have been build and"
@@ -19,20 +19,20 @@ function m37_description {
     echo "DESCRIPTION:"
     echo "    1.Load m-module drivers: modprobe men_ll_m37"
     echo "    2.Run example/verification program:"
-    echo "      m37_simp m37_${moduleNo} and save the command output"
+    echo "      m37_simp m37_${ModuleNo} and save the command output"
     echo "    3.Verify if profidp_simp command output is valid - does not contain errors"
     echo "      Device was opened and closed succesfully"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"
-    echo "    ${moduleLogPath}"
+    echo "    ${ModuleLogPath}"
     echo "    For more detailed information please see corresponding log files in test"
     echo "    case repository"
     echo "    To see error codes definition please check Conf.sh"
 }
 
 ############################################################################
-# run m32 test
+# run m37 test
 #
 # parameters:
 # $1    TestCaseLogName

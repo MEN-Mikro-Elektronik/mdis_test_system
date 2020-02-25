@@ -10,8 +10,8 @@ source "${MyDir}/../St_Functions.sh"
 # $1    Module number
 # $2    Module log path 
 function m33_description {
-    local moduleNo=${1}
-    local moduleLogPath=${2}
+    local ModuleNo=${1}
+    local ModuleLogPath=${2}
     echo "--------------------------------M33 Test Case---------------------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that at this point all necessary drivers have been build and"
@@ -20,13 +20,13 @@ function m33_description {
     echo "DESCRIPTION:"
     echo "    1.Load m-module drivers: modprobe men_ll_m33"
     echo "    2.Run example/verification program:"
-    echo "      m33_demo m33_${moduleNo} and save the command output"
+    echo "      m33_demo m33_${ModuleNo} and save the command output"
     echo "    3.Verify if m33_demo command output is valid - does not contain errors"
     echo "      Device was opened and closed succesfully"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"
-    echo "    ${moduleLogPath}"
+    echo "    ${ModuleLogPath}"
     echo "    For more detailed information please see corresponding log files in test"
     echo "    case repository"
     echo "    To see error codes definition please check Conf.sh"

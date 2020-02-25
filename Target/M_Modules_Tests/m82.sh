@@ -10,18 +10,18 @@ source "${MyDir}/../St_Functions.sh"
 # $1    Module number
 # $2    Module log path 
 function m82_description {
-    local moduleNo=${1}
-    local moduleLogPath=${2}
+    local ModuleNo=${1}
+    local ModuleLogPath=${2}
     echo "------------------------------M82 Test Case-----------------------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
     echo "DESCRIPTION:"
-    echo "    "
+    echo "    m82_${ModuleNo}"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"
-    echo "    ${moduleLogPath}"
+    echo "    ${ModuleLogPath}"
     echo "    For more detailed information please see corresponding log files in test"
     echo "    case repository"
     echo "    To see error codes definition please check Conf.sh"
@@ -34,6 +34,7 @@ function m82_description {
 # $1    TestCaseLogName
 # $2    LogPrefix
 # $3    M-Module number
+# $4    Test Case name
 function m82_test {
     local TestCaseLogName=${1}
     local LogPrefix=${2}
@@ -59,20 +60,19 @@ function m82_test {
 # compare_m82_simp_values,
 # 
 # parameters:
-# $1    Test case log file name
-# $2    Test case name
-# $3    M82 board number
+# $1    TestCaseLogName
+# $2    LogPrefix
+# $3    M-Module number
 function compare_m82_simp_values {
     local TestCaseLogName=${1}
-    local TestCaseName=${2}
+    local LogPrefix=${2}
     local ModuleNo=${3}
-    local LogPrefix="[compare_m82]"
 
     echo "${LogPrefix} compare_m82_simp_values"
     local ValueChannelConnected_0
     local ValueChannelDisconnected_0
-    ValueChannelConnected_0=$(grep "channel  1 : " m82_${ModuleNo}_simp_output_connected.txt | awk NR==1'{print $4}')
-    ValueChannelDisconnected_0=$(grep "channel  1 : " m82_${ModuleNo}_simp_output_disconnected.txt | awk NR==1'{print $4}')
+    ValueChannelConnected_0=$(grep "channel  1 : " m82_"${ModuleNo}"_simp_output_connected.txt | awk NR==1'{print $4}')
+    ValueChannelDisconnected_0=$(grep "channel  1 : " m82_"${ModuleNo}"_simp_output_disconnected.txt | awk NR==1'{print $4}')
     if [ "${ValueChannelConnected_0}" == "" ] || [ "${ValueChannelDisconnected_0}" == "" ] || \
        [ "${ValueChannelConnected_0}" -eq "${ValueChannelDisconnected_0}" ]; then
         echo "${LogPrefix} ValueChannelConnected_1 equal with ValueChannelDisconnected_1"\
@@ -82,8 +82,8 @@ function compare_m82_simp_values {
 
     local ValueChannelStateConnected
     local ValueChannelStateDisconnected
-    ValueChannelStateConnected=$(grep "state: " m82_${ModuleNo}_simp_output_connected.txt | awk NR==1'{print $2 $3}')
-    ValueChannelStateDisconnected=$(grep "state: " m82_${ModuleNo}_simp_output_disconnected.txt | awk NR==1'{print $2 $3}')
+    ValueChannelStateConnected=$(grep "state: " m82_"${ModuleNo}"_simp_output_connected.txt | awk NR==1'{print $2 $3}')
+    ValueChannelStateDisconnected=$(grep "state: " m82_"${ModuleNo}"_simp_output_disconnected.txt | awk NR==1'{print $2 $3}')
     if [ "${ValueChannelStateConnected}" == "" ] || [ "${ValueChannelStateDisconnected}" == "" ] || \
        [ "${ValueChannelStateConnected}" -eq "${ValueChannelStateDisconnected}" ]; then
         echo "${LogPrefix} ValueChannelStateConnected equal with ValueChannelStateDisconnected"\

@@ -10,30 +10,31 @@ source "${MyDir}/../St_Functions.sh"
 # $1    Module number
 # $2    Module log path 
 function m11_description {
-    local moduleNo=${1}
-    local moduleLogPath=${2}
+    local ModuleNo=${1}
+    local ModuleLogPath=${2}
     echo "------------------------------M11 Test Case-----------------------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
     echo "DESCRIPTION:"
-    echo "    "
+    echo "    m11_${ModuleNo}"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"
-    echo "    ${moduleLogPath}"
+    echo "    ${ModuleLogPath}"
     echo "    For more detailed information please see corresponding log files in test"
     echo "    case repository"
     echo "    To see error codes definition please check Conf.sh"
 }
 
 ############################################################################
-# run 11 test
+# run m11 test
 #
 # parameters:
 # $1    TestCaseLogName
 # $2    LogPrefix
 # $3    M-Module number
+# $4    Test Case Name
 function m11_test {
     local TestCaseLogName=${1}
     local LogPrefix=${2}
@@ -60,12 +61,11 @@ function m11_test {
 # fix for m11 M-Module if plugged into f205 carrier.
 #
 # parameters:
-#
+# $1    TestCaseLogName
+# $2    LogPrefix
 function m11_f205_fix {
     local TestCaseLogName=${1}
-    local TestCaseName=${2}
-    local M11Nr=${3}
-    local LogPrefix="[fix_m11]"
+    local LogPrefix=${2}
     local CurrentPath=$PWD
 
     echo "${LogPrefix} m11_f205_fix" | tee -a "${TestCaseLogName}" 2>&1
@@ -79,25 +79,23 @@ function m11_f205_fix {
     cd ..
     sed -i '/.*m11_1.*/a ID_CHECK = U_INT32 0' system.dsc
     make_install "${LogPrefix}"
-    cd "${CurrentPath}"
+    cd "${CurrentPath}" || exit "${ERR_NOEXIST}"
 }
 
 ############################################################################
 # compare_m11_port_veri_values
 #
 # parameters:
-# $1    Test case log file name
-# $2    Test case name
-# $3    M11 board number
-#
+# $1    TestCaseLogName
+# $2    LogPrefix
+# $3    M-Module number
 function compare_m11_port_veri_values {
     local TestCaseLogName=${1}
-    local TestCaseName=${2}
-    local M11Nr=${3}
-    local LogPrefix="[compare_m11]"
-
-    local ErrorCnt=$(grep -i "error" m11_${M11Nr}_simp_output_connected.txt | wc -l)
-    if [ ${ErrorCnt} -ne 0 ]; then
+    local LogPrefix=${2}
+    local ModuleNo=${3}
+    local ErrorCnt="0"
+    ErrorCnt=$(grep -ic "error" m11_"${ModuleNo}"_simp_output_connected.txt)
+    if [ "${ErrorCnt}" -ne 0 ]; then
         return "${ERR_VALUE}"
     else
         return "${ERR_OK}"
