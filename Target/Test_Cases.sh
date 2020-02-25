@@ -11,7 +11,7 @@ function run_as_root {
 }
 
 function run_test_case {
-    local TestCaseID="${1}"
+    local TestCaseId="${1}"
     local TestSummaryDirectory="${2}"
     local OsNameKernel="${3}"
 
@@ -95,7 +95,7 @@ function run_test_case {
             ;;
         *)
             echo "Function test case id not set!"
-    ;;
+            ;;
     esac
 }
 
