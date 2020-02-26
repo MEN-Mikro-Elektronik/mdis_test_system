@@ -39,6 +39,7 @@ while test $# -gt 0 ; do
             shift
             if test $# -gt 0; then
                 TestCaseMainDir="$1"
+                shift
             else
                 echo "No main dir specified"
                 exit 1
@@ -48,17 +49,9 @@ while test $# -gt 0 ; do
             shift
             if test $# -gt 0; then
                 TestCaseId="$1"
+                shift
             else
                 echo "No test id specified"
-                exit 1
-            fi
-            ;;
-        -lprefix)
-            shift
-            if test $# -gt 0; then
-                LogPrefix="$1"
-            else
-                echo "No Log Prefix specified"
                 exit 1
             fi
             ;;
@@ -66,6 +59,7 @@ while test $# -gt 0 ; do
             shift
             if test $# -gt 0; then
                 TestOs="$1"
+                shift
             else
                 echo "No test OS specified"
                 exit 1
@@ -75,6 +69,7 @@ while test $# -gt 0 ; do
             shift
             if test $# -gt 0; then
                 DeviceName="$1"
+                shift
             else
                 echo "No device name specified"
                 exit 1
@@ -83,7 +78,8 @@ while test $# -gt 0 ; do
         -dno)
             shift
             if test $# -gt 0; then
-                DevicesFile="$1"
+                DeviceNo="$1"
+                shift
             else
                 echo "No mezz cham dev file specified"
                 exit 1
@@ -92,7 +88,8 @@ while test $# -gt 0 ; do
         -dfile)
             shift
             if test $# -gt 0; then
-                DeviceNo="$1"
+                DevicesFile="$1"
+                shift
             else
                 echo "No device number specified"
                 exit 1
@@ -102,6 +99,7 @@ while test $# -gt 0 ; do
             shift
             if test $# -gt 0; then
                 InternalTestName="$1"
+                shift
             else
                 echo "No device number specified"
                 exit 1
@@ -116,8 +114,16 @@ done
 TestDescription="${DeviceName}_description"
 TestFunc="${DeviceName}_test"
 
-if [ -z "${TestCaseMainDir}" ] || [ -z "${TestCaseId}" ] || [ -z "${LogPrefix}" ] || [ -z "${TestOs}" ] || [ -z "${DeviceName}" ] || [ -z "${DeviceNo}" ]
+if [ -z "${TestCaseMainDir}" ] || [ -z "${TestCaseId}" ] || [ -z "${TestOs}" ] || [ -z "${DeviceName}" ]
 then
+    echo "TestCaseMainDir: ${TestCaseMainDir}"
+    echo "TestCaseId: ${TestCaseId}"
+    echo "LogPrefix: ${LogPrefix}"
+    echo "TestOs: ${TestOs}"
+    echo "DeviceName: ${DeviceName}"
+    echo "DeviceNo: ${DeviceNo}"
+    echo "(no obligatory) DeviceFile: ${DevicesFile}"
+    echo "(no obligatory) InternalTestName: ${InternalTestName}"
     echo "Lack of params - exit"
     exit "${ERR_NOEXIST}"
 fi
@@ -192,6 +198,15 @@ local TestType=$(echo ${DeviceName} | head -c1)
             ;;
         b)
             echo "${LogPrefix} Board test" | tee -a "${TestCaseLogName}" 2>&1
+            echo "${LogPrefix} \"${TestFunc} ${TestCaseLogName} ${LogPrefix} ${DevicesFile} ${DeviceNo}\""\
+                | tee -a "${TestCaseLogName}" 2>&1
+            "${TestFunc}" "${TestCaseLogName}" "${LogPrefix}" "${DevicesFile}" "${DeviceNo}"
+            CmdResult=$?
+            if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+                TestCaseResult="${CmdResult}"
+            else
+                TestCaseResult=0
+            fi
             ;;
         *)
             echo "${LogPrefix} No valid device name"| tee -a "${TestCaseLogName}" 2>&1

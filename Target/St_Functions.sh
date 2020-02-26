@@ -24,10 +24,10 @@ function create_directory {
                 if ! mkdir "${DirectoryName}"
                 then
                         echo "${LogPrefix}ERR_CREATE :$1 - cannot create directory"
-                        return "${ERR_CREATE}" 
+                        return "${ERR_CREATE}"
                 fi
         else
-                echo "${LogPrefix}Directory: ${DirectoryName} exists ..." 
+                echo "${LogPrefix}Directory: ${DirectoryName} exists ..."
                 return "${ERR_DIR_EXISTS}"
         fi
 
@@ -573,19 +573,19 @@ function m_module_m77_test {
         local LogPrefix="[m77_test]"
 
         # modprobe men_ sth sth 
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_mdis_kernel
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_mdis_kernel
         if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_mdis_kernel" | tee -a ${LogFileName}
+                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_mdis_kernel" | tee -a "${LogFileName}"
                 return ${ERR_VALUE}
         fi
 
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' mdis_createdev -b ${M77CarrierName}
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' mdis_createdev -b "${M77CarrierName}"
         if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  ERR_VALUE: could not mdis_createdev -b ${M77CarrierName}" | tee -a ${LogFileName}
+                echo "${LogPrefix}  ERR_VALUE: could not mdis_createdev -b ${M77CarrierName}" | tee -a "${LogFileName}"
                 return "${ERR_VALUE}"
         fi
 
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix}  ERR_VALUE: could not modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7" | tee -a ${LogFileName}
                 return "${ERR_VALUE}"
@@ -597,38 +597,38 @@ function m_module_m77_test {
 
         if ! uart_test_tty "${tty0}" "${tty1}"
         then
-                echo "${LogPrefix}  ERR_VALUE: ${tty0} with ${tty1}" | tee -a ${LogFileName}
+                echo "${LogPrefix}  ERR_VALUE: ${tty0} with ${tty1}" | tee -a "${LogFileName}"
                 return "${ERR_VALUE}"
         fi
 
         if ! uart_test_tty "${tty3}" "${tty2}"
         then
-                echo "${LogPrefix}  ERR_VALUE: ${tty3} with ${tty2}" | tee -a ${LogFileName}
+                echo "${LogPrefix}  ERR_VALUE: ${tty3} with ${tty2}" | tee -a "${LogFileName}"
                 return "${ERR_VALUE}"
         fi
 
         sleep 2 
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' rmmod men_lx_m77 
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rmmod men_lx_m77 
         if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  ERR_VALUE: could not rmmod m" | tee -a ${LogFileName} 
+                echo "${LogPrefix}  ERR_VALUE: could not rmmod m" | tee -a "${LogFileName}" 
                 return "${ERR_VALUE}"
         fi
 
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7
         if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7" | tee -a ${LogFileName}
+                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7" | tee -a "${LogFileName}"
                 return "${ERR_VALUE}"
         fi
 
         if ! uart_test_tty "${tty1}" "${tty0}"
         then
-                echo "${LogPrefix}  ERR_VALUE: ${tty1} with ${tty0}" | tee -a ${LogFileName}
+                echo "${LogPrefix}  ERR_VALUE: ${tty1} with ${tty0}" | tee -a "${LogFileName}"
                 return "${ERR_VALUE}"
         fi
 
         if ! uart_test_tty "${tty2}" "${tty3}"
         then
-                echo "${LogPrefix}  ERR_VALUE: ${tty2} with ${tty3}" | tee -a ${LogFileName}
+                echo "${LogPrefix}  ERR_VALUE: ${tty2} with ${tty3}" | tee -a "${LogFileName}"
                 return "${ERR_VALUE}"
         fi
 
@@ -749,7 +749,7 @@ function m_module_x_test {
                   ModprobeDriver)
                         # Modprobe driver
                         echo "${LogPrefix} ModprobeDriver" | tee -a "${TestCaseLogName}" 2>&1
-                        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe "${ModprobeDriver}"
+                        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe "${ModprobeDriver}"
                         CmdResult=$?
                         if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
                                 echo "${LogPrefix} Error: ${ERR_MODPROBE} :could not modprobe ${ModprobeDriver}" | tee -a "${TestCaseLogName}" 2>&1

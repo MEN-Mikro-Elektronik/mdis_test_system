@@ -42,7 +42,7 @@ function gpio_test {
     # Test GPIO, banana plugs are not connected to power source
     echo "${MenPcPassword}" | sudo -S --prompt=$'\r' z17_simp ${GPIO2} >> z17_simp_${GPIO2}_banana_plug_disconnected.txt 2>&1
     CmdResult=$?
-    if [ ${CmdResult} -ne ${ERR_OK} ]; then
+    if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
         echo "${LogPrefix} ERR_RUN :could not run z17_simp ${GPIO2}" | tee -a "${TestCaseLogName}" 2>&1
         return "${CmdResult}"
     fi
@@ -50,7 +50,7 @@ function gpio_test {
     # Enable input
     change_input "${TestCaseLogName}" "${TestCaseName}" "${CommandCode}" "${InputSwitchTimeout}" "${LogPrefix}"
     CmdResult=$?
-    if [ ${CmdResult} -ne ${ERR_OK} ]; then
+    if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
         echo "${LogPrefix} Error: ${CmdResult} in function change_input" | tee -a "${TestCaseLogName}" 2>&1
         return "${CmdResult}"
     fi
@@ -58,7 +58,7 @@ function gpio_test {
     # Test GPIO, banana plugs are connected to power source
     echo "${MenPcPassword}" | sudo -S --prompt=$'\r' z17_simp ${GPIO2} >> z17_simp_${GPIO2}_banana_plug_connected.txt 2>&1
     CmdResult=$?
-    if [ ${CmdResult} -ne ${ERR_OK} ]; then
+    if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
         echo "${LogPrefix} ERR_RUN :could not run z17_simp ${GPIO1}" | tee -a "${TestCaseLogName}" 2>&1
         return "${CmdResult}"
     fi
@@ -68,16 +68,16 @@ function gpio_test {
 
     # Compare bit settings for read(s), shall be different
     local Index=4 #to 35
-    local CheckValueDisconnected=$(cat z17_simp_${GPIO2}_banana_plug_disconnected.txt | awk NR==${Index}'{print $18}') 
-    local CheckValueConnected=$(cat z17_simp_${GPIO2}_banana_plug_connected.txt | awk NR==${Index}'{print $18}')
+    local CheckValueDisconnected=$(cat z17_simp_"${GPIO2}"_banana_plug_disconnected.txt | awk NR==${Index}'{print $18}') 
+    local CheckValueConnected=$(cat z17_simp_"${GPIO2}"_banana_plug_connected.txt | awk NR==${Index}'{print $18}')
     for i in $(seq ${Index} 35)
     do
         if [ "${CheckValueDisconnected}" == "${CheckValueConnected}" ]; then
             echo "${LogPrefix} ERR GPIO - read values are the same"
             return ${ERR_VALUE}
         fi
-        CheckValueDisconnected=$(cat z17_simp_${GPIO2}_banana_plug_disconnected.txt | awk NR==${Index}'{print $18}') 
-        CheckValueConnected=$(cat z17_simp_${GPIO2}_banana_plug_connected.txt | awk NR==${Index}'{print $18}')
+        CheckValueDisconnected=$(cat z17_simp_"${GPIO2}"_banana_plug_disconnected.txt | awk NR==${Index}'{print $18}') 
+        CheckValueConnected=$(cat z17_simp_"${GPIO2}"_banana_plug_connected.txt | awk NR==${Index}'{print $18}')
     done
 
     return "${ERR_OK}"

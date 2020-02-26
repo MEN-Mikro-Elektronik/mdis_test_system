@@ -2,8 +2,8 @@
 MyDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${MyDir}/../../Common/Conf.sh"
 source "${MyDir}/../St_Functions.sh"
-source "${MyDir}/../Ip_Core_Tests/z029_can.sh"
-source "${MyDir}/../Ip_Core_Tests/z034_z037_gpio.sh"
+source "${MyDir}/Ip_Core_Tests/z029_can.sh"
+source "${MyDir}/Ip_Core_Tests/z034_z037_gpio.sh"
 
 ############################################################################
 # board f215 test
@@ -12,18 +12,18 @@ source "${MyDir}/../Ip_Core_Tests/z034_z037_gpio.sh"
 # $1    Module number
 # $2    Module log path 
 function f215_description {
-    local moduleNo=${1}
-    local moduleLogPath=${2}
+    local ModuleNo=${1}
+    local ModuleLogPath=${2}
     echo "--------------------------------F215 Test Case--------------------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
     echo "DESCRIPTION:"
-    echo ""
+    echo "    f215_${ModuleNo}"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"
-    echo "    ${moduleLogPath}"
+    echo "    ${ModuleLogPath}"
     echo "    For more detailed information please see corresponding log files in test"
     echo "    case repository"
     echo "    To see error codes definition please check Conf.sh"
