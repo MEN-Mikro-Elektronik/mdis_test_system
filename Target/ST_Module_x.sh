@@ -170,8 +170,8 @@ fi
 
 echo "${LogPrefix} Run function:" | tee -a "${TestCaseLogName}" 2>&1
 
-local TestType=$(echo ${DeviceName} | head -c1)
-    case "${TestType}" in
+TestTypeDev=$(echo ${DeviceName} | head -c1)
+    case "${TestTypeDev}" in
         m)
             echo "${LogPrefix} M-Module test" | tee -a "${TestCaseLogName}" 2>&1
             echo "${LogPrefix} \"${TestFunc} ${TestCaseLogName} ${LogPrefix} ${DeviceNo} ${TestCaseName}\""\
@@ -196,7 +196,7 @@ local TestType=$(echo ${DeviceName} | head -c1)
                 TestCaseResult=0
             fi
             ;;
-        b)
+        f)
             echo "${LogPrefix} Board test" | tee -a "${TestCaseLogName}" 2>&1
             echo "${LogPrefix} \"${TestFunc} ${TestCaseLogName} ${LogPrefix} ${DevicesFile} ${DeviceNo}\""\
                 | tee -a "${TestCaseLogName}" 2>&1
