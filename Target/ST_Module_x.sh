@@ -113,6 +113,7 @@ done
 
 TestDescription="${DeviceName}_description"
 TestFunc="${DeviceName}_test"
+LogPrefix="[${TestCaseId}]"
 
 if [ -z "${TestCaseMainDir}" ] || [ -z "${TestCaseId}" ] || [ -z "${TestOs}" ] || [ -z "${DeviceName}" ]
 then
