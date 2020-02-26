@@ -82,7 +82,7 @@ function f215_test {
             echo "${LogPrefix} Run step @6" | tee -a "${TestCaseLogName}" 2>&1
             # Run step @8 Test CAN interfaces, there should be 2 cans available
             MezzChamDevName="MezzChamDevName.txt"
-            obtain_device_list_chameleon_device "${VenID}" "${DevID}" "${SubVenID}" "${MezzChamDevName}"
+            obtain_device_list_chameleon_device "${VenID}" "${DevID}" "${SubVenID}" "${MezzChamDevName}" "${LogPrefix}" "${TestCaseLogName}"
 
             can_test_ll_z15 "${TestCaseLogName}" "${LogPrefix}" "${MezzChamDevName}"
             CmdResult=$?
@@ -103,12 +103,12 @@ function f215_test {
             echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_ll_z17
             ResultModprobeZ17=$?
             if [ ${ResultModprobeZ17} -ne ${ERR_OK} ]; then
-                    echo "ERR_MODPROBE :could not modprobe men_ll_z17" | tee -a "${TestCaseLogName}" 2>&1
+                    echo "${LogPrefix} ERR_MODPROBE :could not modprobe men_ll_z17" | tee -a "${TestCaseLogName}" 2>&1
                     CmdResult="${ResultModprobeZ17}"
             else
                     GpioNumber=$(grep "^gpio" ${MezzChamDevName} | wc -l)
                     if [ "${GpioNumber}" -ne "2" ]; then
-                            echo "There are ${GpioNumber} GPIO interfaces" \
+                            echo "${LogPrefix} There are ${GpioNumber} GPIO interfaces" \
                               | tee error_log.txt 2>&1
                     else
                             GPIO1=$(grep "^gpio" ${MezzChamDevName} | awk NR==1'{print $1}')
@@ -118,16 +118,16 @@ function f215_test {
                     # Test LEDS -- This cannot be checked automatically yet
                     echo ${MenPcPassword} | sudo -S --prompt=$'\r' z17_simp ${GPIO1} >> z17_simp_${GPIO1}.txt 2>&1
                     if [ $? -ne 0 ]; then
-                            echo "ERR_RUN :could not run z17_simp ${GPIO1}" | tee -a "${TestCaseLogName}" 2>&1
+                            echo "${LogPrefix} ERR_RUN :could not run z17_simp ${GPIO1}" | tee -a "${TestCaseLogName}" 2>&1
                     fi
                     # Test GPIO
                     gpio_test "${TestCaseLogName}" "${TestCaseName}" "${GPIO2}" "${InputToChange}"
                     CmdResult=$?
                     if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-                             echo "gpio_test on ${GPIO2} err: ${CmdResult} "\
+                             echo "${LogPrefix} gpio_test on ${GPIO2} err: ${CmdResult} "\
                                | tee -a ${TestCaseLogName} 2>&1
                     else
-                             echo "gpio_test on ${GPIO2} success "\
+                             echo "${LogPrefix} gpio_test on ${GPIO2} success "\
                                | tee -a ${TestCaseLogName} 2>&1
                     fi
             fi

@@ -134,7 +134,6 @@ if [ "${RunInstantly}" == "1" ]; then
             if ! ping -c 2 "${MenPcIpAddr}"
             then
                     echo "${MenPcIpAddr} is not responding"
-                    r
             fi
 
             cat "${MyDir}/../../Common/Conf.sh" > tmp.sh

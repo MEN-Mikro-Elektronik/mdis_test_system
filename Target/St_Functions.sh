@@ -116,24 +116,25 @@ function run_test_case_dir_create {
 # $5      Board number (optional, when there is more than one-the same mezz board)
 #
 function obtain_device_list_chameleon_device {
-
-        echo "obtain_device_list_chameleon_device"
-
         local VenID=$1
         local DevID=$2
         local SubVenID=$3
         local FileWithResults=$4
         local BoardNumberParam=$5
+        local TestCaseLogName=$6
+        local LogPrefix=$7
 
         local BoardNumber=1
         local BoardsCnt=0
         local BusNr=0
         local DevNr=0
 
+        echo "${LogPrefix} obtain_device_list_chameleon_device" | tee -a ${TestCaseLogName} 2>&1
         # Check how many boards are present
         BoardsCnt=$(echo ${MenPcPassword} | sudo -S --prompt=$'\r' /opt/menlinux/BIN/fpga_load -s | grep "${VenID} * ${DevID} * ${SubVenID}" | wc -l)
 
-        echo "There are: ${BoardsCnt} mezzaine ${VenID} ${DevID} ${SubVenID} board(s) in the system"
+        echo "${LogPrefix} There are: ${BoardsCnt} mezzaine ${VenID} ${DevID} ${SubVenID} board(s) in the system"\
+          | tee -a ${TestCaseLogName} 2>&1
 
         if (( "${BoardsCnt}" >= "2" )) ; then
                 if [ "${BoardNumberParam}" -eq "0" ] || [ "${BoardNumberParam}" -ge "${BoardsCnt}" ]; then
@@ -143,7 +144,8 @@ function obtain_device_list_chameleon_device {
                 fi
         fi
 
-        echo "Obtain modules name from mezz ${BoardNumber}"
+        echo "${LogPrefix} Obtain modules name from mezz ${BoardNumber}"\
+          | tee -a ${TestCaseLogName} 2>&1
 
         # Obtain BUS number
         BusNr=$(echo ${MenPcPassword} | sudo -S --prompt=$'\r' /opt/menlinux/BIN/fpga_load -s | grep "${VenID} * ${DevID} * ${SubVenID}" | awk NR==${BoardNumber}'{print $3}')
@@ -151,13 +153,15 @@ function obtain_device_list_chameleon_device {
         # Obtain DEVICE number
         DevNr=$(echo ${MenPcPassword} | sudo -S --prompt=$'\r' /opt/menlinux/BIN/fpga_load -s | grep "${VenID} * ${DevID} * ${SubVenID}" | awk NR==${BoardNumber}'{print $4}')
         
-        echo "Device BUS:${BusNr}, Dev:${DevNr}"
+        echo "${LogPrefix} Device BUS:${BusNr}, Dev:${DevNr}"\
+          | tee -a ${TestCaseLogName} 2>&1
         # Check how many chameleon devices are present in configuration
-        echo "Current Path:"
-        echo $PWD
+        echo "${LogPrefix} Current Path:" | tee -a ${TestCaseLogName} 2>&1
+        echo "${LogPrefix} $PWD" | tee -a ${TestCaseLogName} 2>&1
 
         local ChamBoardsNr=$(grep "^mezz_cham*" ../system.dsc | wc -l)
-        echo "Number of Chameleon boards: ${ChamBoardsNr}"
+        echo "${LogPrefix} Number of Chameleon boards: ${ChamBoardsNr}"\
+          | tee -a ${TestCaseLogName} 2>&1
 
         local ChamBusNr=0
         local ChamDevNr=0
@@ -177,7 +181,8 @@ function obtain_device_list_chameleon_device {
                 ChamDevNr=$(( 16#$(echo ${ChamDevNr} | awk -F'x' '{print $2}') ))
 
                 if [ ${ChamBusNr} -eq ${BusNr} ] && [ ${ChamDevNr} -eq ${DevNr} ]; then
-                        echo "mezz_cham_${i} board is valid"
+                        echo "${LogPrefix} mezz_cham_${i} board is valid"\
+                          | tee -a ${TestCaseLogName} 2>&1
                         ChamValidId=${i}
                 fi
         done
@@ -196,7 +201,8 @@ function obtain_device_list_chameleon_device {
                         sed -n "/${DevToCheck}/,/}/p" ../system.dsc | grep "mezz_cham_${ChamValidId}" > /dev/null 2>&1
 
                         if [ $? -eq 0 ]; then
-                                echo "Device: ${DevToCheck} belongs to mezz_cham_${ChamValidId}"
+                                echo "${LogPrefix}  Device: ${DevToCheck} belongs to mezz_cham_${ChamValidId}"\
+                                  | tee -a ${TestCaseLogName} 2>&1
                                 echo "${DevToCheck}" >> ${FileWithResults} 
                         fi
                 fi
