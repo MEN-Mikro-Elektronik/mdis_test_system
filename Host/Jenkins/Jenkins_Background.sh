@@ -32,10 +32,10 @@ while true; do
         FileExist=$(run_cmd_on_remote_pc "${CheckFileExistsCmd}")
         if [ "${FileExist}" = "true" ]; then
                 # Check if there is connection with relay
-                if ping -c 2 "${MenBoxPcIpAddr}"
+                if ping -c 2 "${MenBoxPcIpAddr}" > /dev/null 2>&1
                 then
                         # Read from lock file, which input should be changed
-                        echo "${LogPrefix} Lock file exists: change input ${LockFileData}"  
+                        echo "${LogPrefix} Lock file exists: change input ${LockFileData}"
                         CommandCode=$(read_command_code_lock_file)
                         ######################
                         # Change inputs here #

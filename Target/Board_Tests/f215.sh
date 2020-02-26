@@ -82,7 +82,7 @@ function f215_test {
             echo "${LogPrefix} Run step @6" | tee -a "${TestCaseLogName}" 2>&1
             # Run step @8 Test CAN interfaces, there should be 2 cans available
             MezzChamDevName="MezzChamDevName.txt"
-            obtain_device_list_chameleon_device "${VenID}" "${DevID}" "${SubVenID}" "${MezzChamDevName}" "${LogPrefix}" "${TestCaseLogName}"
+            obtain_device_list_chameleon_device "${VenID}" "${DevID}" "${SubVenID}" "${MezzChamDevName}" "1" "${TestCaseLogName}" "${LogPrefix}"
 
             can_test_ll_z15 "${TestCaseLogName}" "${LogPrefix}" "${MezzChamDevName}"
             CmdResult=$?

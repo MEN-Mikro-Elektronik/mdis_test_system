@@ -105,10 +105,10 @@ function change_input {
                 break
             fi
             if [ "${ReleaseCnt}" -eq "${Timeout}" ]; then
-                echo "${LogPrefix} Timeout, no response - force break " | tee -a "${TestCaseLogName}" 2>&1   
+                echo "${LogPrefix} Timeout, no response - force break " | tee -a "${TestCaseLogName}" 2>&1
                 break
             fi
-            ReleaseCnt=$((ReleaseCnt + 1)) 
+            ReleaseCnt=$((ReleaseCnt + 1))
         done
     fi
 
