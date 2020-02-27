@@ -4,6 +4,7 @@ source "${MyDir}/../../Common/Conf.sh"
 source "${MyDir}/../St_Functions.sh"
 source "${MyDir}/Ip_Core_Tests/z029_can.sh"
 source "${MyDir}/Ip_Core_Tests/z034_z037_gpio.sh"
+source "${MyDir}/Ip_Core_Tests/z025_uart.sh"
 
 ############################################################################
 # board f215 test
