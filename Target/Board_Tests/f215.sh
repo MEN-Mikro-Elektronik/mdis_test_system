@@ -56,18 +56,8 @@ function f215_test {
         Step3);&
         Step4);&
         Step5)
-            # Check if mcb_pci is already in blacklist, UART loopback test
-            echo "${LogPrefix} Run step @5" | tee -a "${TestCaseLogName}" 2>&1
-            echo "${MenPcPassword}" | sudo -S --prompt=$'\r' grep "blacklist mcb_pci" /etc/modprobe.d/blacklist.conf > /dev/null
-            if [ $? -ne 0 ]; then
-                # Add mcb_pci into blacklist
-                echo "${MenPcPassword}" | sudo -S --prompt=$'\r' echo "# Add mcb_pci into blacklist" >> /etc/modprobe.d/blacklist.conf
-                echo "${MenPcPassword}" | sudo -S --prompt=$'\r' echo "blacklist mcb_pci" >> /etc/modprobe.d/blacklist.conf
-            else
-                echo "${LogPrefix} blacklist mcb_pci found"
-            fi
+            blacklist_mcb_pci "${TestCaseLogName}" "${LogPrefix}" # Move to PC_Configure script
             UartNoList="UART_board_tty_numbers.txt"
-
             # Debian workaround. Could not dump chameleon table when
             # men_lx_z25 is loaded
             unload_z025_driver "${TestCaseLogName}" "${LogPrefix}"
@@ -118,7 +108,7 @@ function f215_test {
         Step7)
             # Test GPIO / LEDS 
             echo "${LogPrefix} Run step @7" | tee -a "${TestCaseLogName}" 2>&1
-            z034_z037_gpio_test "${TestCaseLogName}" "${MezzChamDevName}" "${LogPrefix}" "${InputToChange}" 
+            z034_z037_gpio_test "${TestCaseLogName}" "${LogPrefix}" "${MezzChamDevName}" "${InputToChange}" 
             CmdResult=$?
             if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
                      echo "${LogPrefix} gpio_test on ${GPIO2} err: ${CmdResult} "\
@@ -128,7 +118,6 @@ function f215_test {
                        | tee -a "${TestCaseLogName}" 2>&1
             fi
             TestCaseStep7=${CmdResult}
-#            TestCaseStep7="${ERR_OK}"
             MachineState="Break"
             ;;
         Break) 

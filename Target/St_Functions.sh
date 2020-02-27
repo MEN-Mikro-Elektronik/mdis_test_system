@@ -102,7 +102,20 @@ function run_test_case_dir_create {
         touch "${TestCaseLogName}"
 }
 
-
+function blacklist_mcb_pci {
+    local TestCaseLogName=${1}
+    local TestCaseName=${2}
+    # Check if mcb_pci is already in blacklist, UART loopback test
+    echo "${LogPrefix} Check if mcb_pci is blacklisted" | tee -a "${TestCaseLogName}" 2>&1
+    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' grep "blacklist mcb_pci" /etc/modprobe.d/blacklist.conf > /dev/null
+    if [ $? -ne 0 ]; then
+        # Add mcb_pci into blacklist
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' echo "# Add mcb_pci into blacklist" >> /etc/modprobe.d/blacklist.conf
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' echo "blacklist mcb_pci" >> /etc/modprobe.d/blacklist.conf
+    else
+        echo "${LogPrefix} blacklist mcb_pci found"
+    fi
+}
 
 ############################################################################
 # Obtain device list from chameleon device, If there are several same boards
