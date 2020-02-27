@@ -225,13 +225,9 @@ function obtain_device_list_chameleon_device {
 #
 function uart_loopback_test {
     local TestCaseLogName=${1}
-    local VenID=${2}
-    local DevID=${3}
-    local SubVenID=${4}
-    local BoardInSystem=${5}
+    local LogPrefix=${2}
+    local UartNoList=${3}
     local CmdResult=${ERR_UNDEFINED}
-    local LogPrefix="[Uart_test]"
-    local UartNoList="UART_board_tty_numbers.txt"
     echo "${LogPrefix} function uart_loopback_test"
 
     echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_mdis_kernel
@@ -487,8 +483,9 @@ function obtain_tty_number_list_from_board {
     local VenID=$2
     local DevID=$3
     local SubVenID=$4
-    local FileWithResults=$5
-    local LogPrefix=$6
+    local BoardNo=$5
+    local FileWithResults=$6
+    local LogPrefix=$7
 
     local BoardCnt=0
     local BoardMaxSlot=8
