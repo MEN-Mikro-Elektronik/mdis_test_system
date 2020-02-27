@@ -114,7 +114,6 @@ function run_test_case_dir_create {
 # $3      SubVen ID
 # $4      File name for results
 # $5      Board number (optional, when there is more than one-the same mezz board)
-#
 function obtain_device_list_chameleon_device {
         local VenID=$1
         local DevID=$2
@@ -225,176 +224,169 @@ function obtain_device_list_chameleon_device {
 # $5    - BoardInSystem
 #
 function uart_loopback_test {
-        echo "function uart_loopback_test"
+    local TestCaseLogName=${1}
+    local VenID=${2}
+    local DevID=${3}
+    local SubVenID=${4}
+    local BoardInSystem=${5}
+    local CmdResult=${ERR_UNDEFINED}
+    local LogPrefix="[Uart_test]"
+    local UartNoList="UART_board_tty_numbers.txt"
+    echo "${LogPrefix} function uart_loopback_test"
 
-        local TestCaseLogName=${1}
-        local VenID=${2}
-        local DevID=${3}
-        local SubVenID=${4}
-        local BoardInSystem=${5}
-        local CmdResult=${ERR_UNDEFINED}
-        local LogPrefix="[Uart_test]"
+    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_mdis_kernel
+    if [ $? -ne 0 ]; then
+            echo "${LogPrefix} ERR_MODPROBE :could not modprobe men_mdis_kernel"\
+              | tee -a "${TestCaseLogName}" 2>&1
+            return "${ERR_MODPROBE}"
+    fi
 
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_mdis_kernel
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_lx_z25 baud_base=1843200 mode=se,se
+    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_lx_z25 baud_base=1843200 mode=se,se
+    if [ $? -ne 0 ]; then
+            echo "${LogPrefix} ERR_MODPROBE :could not modprobe men_lx_z25 baud_base=1843200 mode=se,se"\
+              | tee -a "${TestCaseLogName}" 2>&1
+            return "${ERR_MODPROBE}"
+    fi
 
-        ## DEBIAN workaround -- on DEBIAN chameleon table disapears when module men_lx_z25 is loaded
-        ## rmmod men_lx_z25 for a while. (it must be loaded to set proper uart mmmio address)
-        local IsDebian="$(hostnamectl | grep "Operating System" | grep "Debian" | wc -l)"
-        echo "IsDebian: ${IsDebian}" | tee -a ${TestCaseLogName} 2>&1
-        if [ "${IsDebian}" == "1" ]; then
-            echo ${MenPcPassword} | sudo -S --prompt=$'\r' rmmod men_lx_z25
-        fi
-        ###
+    ## DEBIAN workaround -- on DEBIAN chameleon table disapears when module men_lx_z25 is loaded
+    ## rmmod men_lx_z25 for a while. (it must be loaded to set proper uart mmmio address)
+    local IsDebian="$(hostnamectl | grep "Operating System" | grep "Debian" | wc -l)"
+    echo "${LogPrefix} IsDebian: ${IsDebian}" | tee -a "${TestCaseLogName}" 2>&1
+    if [ "${IsDebian}" == "1" ]; then
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rmmod men_lx_z25
+    fi
 
-        if [ $? -ne 0 ]; then
-                echo "${LogPrefix} ERR_MODPROBE :could not modprobe men_lx_z25 baud_base=1843200 mode=se,se"\
-                  | tee -a ${TestCaseLogName} 2>&1
-                return ${ERR_MODPROBE}
-        fi
+    ## DEBIAN workaround
+    if [ "${IsDebian}" == "1" ]; then
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_lx_z25 baud_base=1843200 mode=se,se
+    fi
+    ###
 
-        obtain_tty_number_list_from_board  ${TestCaseLogName} ${VenID} ${DevID} ${SubVenID} ${BoardInSystem}
-        CmdResult=$?
-        if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-                 echo "${LogPrefix} obtain_tty_number_list_from_board failed, err: ${CmdResult} "\
-                   | tee -a ${TestCaseLogName} 2>&1
-                 return ${CmdResult}
-        fi
-
-        ## DEBIAN workaround
-        if [ "${IsDebian}" == "1" ]; then
-            echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_lx_z25 baud_base=1843200 mode=se,se
-        fi
-        ###
-
-        uart_test_lx_z25 "${TestCaseLogName}" ${LogPrefix}
-        CmdResult=$?
-        if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-                 echo "${LogPrefix} uart_test_lx_z25 failed, err: ${CmdResult} "\
-                   | tee -a ${TestCaseLogName} 2>&1
-                 return ${CmdResult}
-        fi
-        return ${CmdResult}
+    uart_test_lx_z25 "${TestCaseLogName}" "${LogPrefix}" "${UartNoList}"
+    CmdResult=$?
+    if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+             echo "${LogPrefix} uart_test_lx_z25 failed, err: ${CmdResult} "\
+               | tee -a "${TestCaseLogName}" 2>&1
+    fi
+    return "${CmdResult}"
 }
 
 ############################################################################
 # Test RS232 with men_lx_z25 IpCore 
-
+# 
 #
 # parameters:
 # $1      name of file with log 
 # $2      array of ttyS that should be tested
-#        
-#
 function uart_test_lx_z25 {
+    local LogFileName=${1}
+    local LogPrefix=${2}
+    local UartNoList=${3}
 
-        local LogFileName=${1}
-        local LogPrefix=${2}
-        shift
+    FILE="${UartNoList}"
+    if [ -f ${FILE} ]; then
+            echo "${LogPrefix} file UART_board_tty_numbers exists"\
+              | tee -a "${LogFileName}" 2>&1
+            TtyDeviceCnt=$(cat ${FILE} | wc -l)
 
-        FILE="UART_board_tty_numbers.txt"
-        if [ -f ${FILE} ]; then
-                echo "${LogPrefix} file UART_board_tty_numbers exists"\
-                  | tee -a ${LogFileName} 2>&1
-                TtyDeviceCnt=$(cat ${FILE} | wc -l)
+            for i in $(seq 1 ${TtyDeviceCnt}); do
+                    Arr[${i}]=$(cat ${FILE} | awk NR==${i}'{print $1}')
+                    echo "${LogPrefix} read from file: ${Arr[${i}]}"
+            done
+    else
+            echo "${LogPrefix} file UART_board_tty_numbers does not exists"\
+              | tee -a "${LogFileName}" 2>&1
+            return "${ERR_NOEXIST}"
+    fi
 
-                for i in $(seq 1 ${TtyDeviceCnt}); do
-                        Arr[${i}]=$(cat ${FILE} | awk NR==${i}'{print $1}')
-                        echo "${LogPrefix} read from file: ${Arr[${i}]}"
-                done
-        else
-                echo "${LogPrefix} file UART_board_tty_numbers does not exists"\
-                  | tee -a ${LogFileName} 2>&1
-                return ${ERR_NOEXIST}
-        fi
+    local tty0="ttyS$(cat ${FILE} | awk NR==1'{print $1}')"
+    local tty1="ttyS$(cat ${FILE} | awk NR==2'{print $1}')"
 
-        local tty0="ttyS$(cat ${FILE} | awk NR==1'{print $1}')"
-        local tty1="ttyS$(cat ${FILE} | awk NR==2'{print $1}')"
+    uart_test_tty "${tty1}" "${tty0}" "${LogPrefix}" "${LogFileName}"
+    if [ $? -ne 0 ]; then
+            echo "${LogPrefix}  ERR_VALUE: ${tty1} with ${tty0}" | tee -a "${LogFileName}"
+            return "${ERR_VALUE}"
+    fi
 
-        uart_test_tty ${tty1} ${tty0}
-        if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  ERR_VALUE: ${tty1} with ${tty0}" | tee -a ${LogFileName} 
-                return ${ERR_VALUE}
-        fi
-        
-        sleep 1
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' rmmod men_lx_z25 
-        if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  ERR_VALUE: could not rmmod m" | tee -a ${LogFileName} 
-                return ${ERR_VALUE}
-        fi
+    sleep 1
+    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rmmod men_lx_z25 
+    if [ $? -ne 0 ]; then
+            echo "${LogPrefix}  ERR_VALUE: could not rmmod m" | tee -a "${LogFileName}"
+            return "${ERR_VALUE}"
+    fi
 
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_lx_z25 baud_base=1843200 mode=se,se
-        if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  ERR_VALUE: could not  modprobe men_lx_z25 baud_base=1843200 mode=se,se" | tee -a ${LogFileName} 
-                return ${ERR_VALUE}
-        fi
-        sleep 1
+    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_lx_z25 baud_base=1843200 mode=se,se
+    if [ $? -ne 0 ]; then
+            echo "${LogPrefix}  ERR_VALUE: could not  modprobe men_lx_z25 baud_base=1843200 mode=se,se"\
+              | tee -a "${LogFileName}"
+            return "${ERR_VALUE}"
+    fi
+    sleep 1
 
-        uart_test_tty ${tty0} ${tty1}
-        if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  ERR_VALUE: ${tty0} with ${tty1}" | tee -a ${LogFileName} 
-                return ${ERR_VALUE}
-        fi
+    uart_test_tty "${tty0}" "${tty1}" "${LogPrefix}" "${LogFileName}"
+    if [ $? -ne 0 ]; then
+            echo "${LogPrefix}  ERR_VALUE: ${tty0} with ${tty1}" | tee -a "${LogFileName}"
+            return "${ERR_VALUE}"
+    fi
 
-        return ${ERR_OK}
+    return "${ERR_OK}"
 
-        # Be aware of Linux kernel bug 
-        # https://bugs.launchpad.net/ubuntu/+source/linux-signed-hwe/+bug/1815021
-        #
-        #for item in "${Arr[@]}"; do 
-        #        # Conditions must be met: i2c-i801 is loaded, mcb_pci is disabled
-        #        echo ${MenPcPassword} | sudo -S --prompt=$'\r' chmod o+rw /dev/ttyS${item}
-        #        if [ $? -ne 0 ]; then
-        #                echo "${LogPrefix} Could not chmod o+rw on ttyS${item}"\
-        #                  | tee -a ${LogFileName} 2>&1
-        #        fi
-        #        sleep 2
-        #        # Below command prevent infitite loopback on serial port 
-        #        echo ${MenPcPassword} | sudo -S --prompt=$'\r' stty -F /dev/ttyS${item} -echo -onlcr
-        #        if [ $? -ne 0 ]; then
-        #                echo "${LogPrefix} Could not stty -F on ttyS${item}"\
-        #                  | tee -a ${LogFileName} 2>&1
-        #        fi
-        #        sleep 2
-        #        # Listen on port in background
-        #        echo ${MenPcPassword} | sudo -S --prompt=$'\r' cat /dev/ttyS${item}\
-        #          > echo_on_serial_S${item}.txt &
-        #        
-        #        if [ $? -ne 0 ]; then
-        #                echo "${LogPrefix} Could not cat on ttyS${item} in background"\
-        #                  | tee -a ${LogFileName} 2>&1
-        #        fi
-        #        sleep 2 
-        #        # Save background process PID 
-        #        CatEchoTestPID=$!
-        #        # Send data into port
-        #        echo ${MenPcPassword} | sudo -S --prompt=$'\r' echo ${EchoTestMessage} > /dev/ttyS${item}
-        #        if [ $? -ne 0 ]; then
-        #                echo "${LogPrefix} Could not echo on ttyS${item}"\
-        #                  | tee -a ${LogFileName} 2>&1
-        #        fi
-        #        # Kill process
-        #        sleep 2 
-        #        echo ${MenPcPassword} | sudo -S --prompt=$'\r' kill -9 ${CatEchoTestPID}
-        #        if [ $? -ne 0 ]; then
-        #                echo "${LogPrefix} Could not kill cat backgroung process ${CatEchoTestPID} on ttyS${item}"\
-        #                  | tee -a ${LogFileName} 2>&1
-        #        fi
-        #        # Compare and check if echo test message was received.
-        #        sleep 1 
-        #        grep -a "${EchoTestMessage}" echo_on_serial_S${item}.txt
-        #        if [ $? -eq 0 ]; then
-        #                echo "${LogPrefix} Echo succeed on ttyS${item}"\
-        #                  | tee -a ${LogFileName} 2>&1
-        #        else
-        #                echo "${LogPrefix} Echo failed on ttyS${item}"\
-        #                  | tee -a ${LogFileName} 2>&1
-        #                return ${ERR_VALUE}
-        #        fi
-        #
-        #        #rm echo_on_serial_S${item}.txt
-        #done
+    # Linux kernel bug 
+    # https://bugs.launchpad.net/ubuntu/+source/linux-signed-hwe/+bug/1815021
+    #
+    #for item in "${Arr[@]}"; do 
+    #        # Conditions must be met: i2c-i801 is loaded, mcb_pci is disabled
+    #        echo ${MenPcPassword} | sudo -S --prompt=$'\r' chmod o+rw /dev/ttyS${item}
+    #        if [ $? -ne 0 ]; then
+    #                echo "${LogPrefix} Could not chmod o+rw on ttyS${item}"\
+    #                  | tee -a ${LogFileName} 2>&1
+    #        fi
+    #        sleep 2
+    #        # Below command prevent infitite loopback on serial port 
+    #        echo ${MenPcPassword} | sudo -S --prompt=$'\r' stty -F /dev/ttyS${item} -echo -onlcr
+    #        if [ $? -ne 0 ]; then
+    #                echo "${LogPrefix} Could not stty -F on ttyS${item}"\
+    #                  | tee -a ${LogFileName} 2>&1
+    #        fi
+    #        sleep 2
+    #        # Listen on port in background
+    #        echo ${MenPcPassword} | sudo -S --prompt=$'\r' cat /dev/ttyS${item}\
+    #          > echo_on_serial_S${item}.txt &
+    #        
+    #        if [ $? -ne 0 ]; then
+    #                echo "${LogPrefix} Could not cat on ttyS${item} in background"\
+    #                  | tee -a ${LogFileName} 2>&1
+    #        fi
+    #        sleep 2 
+    #        # Save background process PID 
+    #        CatEchoTestPID=$!
+    #        # Send data into port
+    #        echo ${MenPcPassword} | sudo -S --prompt=$'\r' echo ${EchoTestMessage} > /dev/ttyS${item}
+    #        if [ $? -ne 0 ]; then
+    #                echo "${LogPrefix} Could not echo on ttyS${item}"\
+    #                  | tee -a ${LogFileName} 2>&1
+    #        fi
+    #        # Kill process
+    #        sleep 2 
+    #        echo ${MenPcPassword} | sudo -S --prompt=$'\r' kill -9 ${CatEchoTestPID}
+    #        if [ $? -ne 0 ]; then
+    #                echo "${LogPrefix} Could not kill cat backgroung process ${CatEchoTestPID} on ttyS${item}"\
+    #                  | tee -a ${LogFileName} 2>&1
+    #        fi
+    #        # Compare and check if echo test message was received.
+    #        sleep 1 
+    #        grep -a "${EchoTestMessage}" echo_on_serial_S${item}.txt
+    #        if [ $? -eq 0 ]; then
+    #                echo "${LogPrefix} Echo succeed on ttyS${item}"\
+    #                  | tee -a ${LogFileName} 2>&1
+    #        else
+    #                echo "${LogPrefix} Echo failed on ttyS${item}"\
+    #                  | tee -a ${LogFileName} 2>&1
+    #                return ${ERR_VALUE}
+    #        fi
+    #
+    #        #rm echo_on_serial_S${item}.txt
+    #done
 }
 
 ############################################################################
@@ -417,67 +409,67 @@ function uart_test_lx_z25 {
 function uart_test_tty {
         local tty0=${1}
         local tty1=${2}
+        local LogPrefix=${3}
+        local LogFileName=${4}
 
-        
-        #Conditions must be met: i2c-i801 is loaded, mcb_pci is 
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' chmod o+rw /dev/${tty0}
+        #Conditions must be met: i2c-i801 is loaded, mcb_pci is not loaded
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' chmod o+rw /dev/${tty0}
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix} Could not chmod o+rw on ${tty0}"\
-                  | tee -a ${LogFileName} 2>&1
+                  | tee -a "${LogFileName}" 2>&1
         fi
         sleep 1
         # Below command prevent infitite loopback on serial port
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' stty -F /dev/${tty0} -onlcr
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' stty -F /dev/${tty0} -onlcr
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix} Could not stty -F on ttyS${item}"\
-                  | tee -a ${LogFileName} 2>&1
+                  | tee -a "${LogFileName}" 2>&1
         fi
         sleep 1
         # Listen on port in background
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' cat /dev/${tty1}\
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' cat /dev/${tty1}\
           > echo_on_serial_${tty1}.txt &
         
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix} Could not cat on ${tty1} in background"\
-                  | tee -a ${LogFileName} 2>&1
+                  | tee -a "${LogFileName}" 2>&1
         fi
         sleep 1 
         # Save background process PID 
         CatEchoTestPID=$!
 
         # Send data into port
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' echo ${EchoTestMessage} > /dev/${tty0}
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' echo ${EchoTestMessage} > /dev/${tty0}
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix} Could not echo on ${tty0}"\
-                  | tee -a ${LogFileName} 2>&1
+                  | tee -a "${LogFileName}" 2>&1
         fi
         # Kill process
         sleep 1
         # Set up previous settings
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' chmod o-rw /dev/${tty0}
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' chmod o-rw /dev/${tty0}
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix} Could not chmod o+rw on ${tty0}"\
-                  | tee -a ${LogFileName} 2>&1
+                  | tee -a "${LogFileName}" 2>&1
         fi
 
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' kill ${CatEchoTestPID}
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' kill ${CatEchoTestPID}
         if [ $? -ne 0 ]; then
                 echo "${LogPrefix} Could not kill cat backgroung process ${CatEchoTestPID} on ${tty1}"\
-                  | tee -a ${LogFileName} 2>&1
+                  | tee -a "${LogFileName}" 2>&1
         fi
         # Compare and check if echo test message was received.
         sleep 1
         grep -a "${EchoTestMessage}" echo_on_serial_${tty1}.txt
         if [ $? -eq 0 ]; then
                 echo "${LogPrefix} Echo succeed on ${tty1}"\
-                  | tee -a ${LogFileName} 2>&1
-                return ${ERR_OK}
+                  | tee -a "${LogFileName}" 2>&1
+                return "${ERR_OK}"
         else
                 echo "${LogPrefix} Echo failed on ${tty1}"\
-                  | tee -a ${LogFileName} 2>&1
+                  | tee -a "${LogFileName}" 2>&1
         fi
-        
-        return ${ERR_VALUE}
+        return "${ERR_VALUE}"
 }
 
 ############################################################################
@@ -490,155 +482,80 @@ function uart_test_tty {
 # $3      DevID
 # $4      SubVenID
 # $5      Board Number (1 as default)
-#
 function obtain_tty_number_list_from_board {
+    local TestCaseLogName=$1
+    local VenID=$2
+    local DevID=$3
+    local SubVenID=$4
+    local FileWithResults=$5
+    local LogPrefix=$6
 
-        echo "obtain_tty_number_list_from_board"
+    local BoardCnt=0
+    local BoardMaxSlot=8
 
-        local TestCaseLogName=$1
-        local VenID=$2   
-        local DevID=$3
-        local SubVenID=$4
-        
-        # Obtain proper addresses for UART devices, save Chameleon table into file
-        local BoardCnt=0
-        local BoardMaxSlot=8
+    echo "${LogPrefix} obtain_tty_number_list_from_board"
 
-        for i in $(seq 0 ${BoardMaxSlot}); do
-                echo ${MenPcPassword} | sudo -S --prompt=$'\r' /opt/menlinux/BIN/fpga_load ${VenID} ${DevID} ${SubVenID} $i -t > /dev/null 2>&1
-                if [ $? -eq 0 ]; then
-                        BoardCnt=$((${BoardCnt}+1))
-                else
-                        break
-                fi
-        done
+    for i in $(seq 0 ${BoardMaxSlot}); do
+            echo "${MenPcPassword}" | sudo -S --prompt=$'\r' /opt/menlinux/BIN/fpga_load ${VenID} ${DevID} ${SubVenID} ${i} -t > /dev/null 2>&1
+            if [ $? -eq 0 ]; then
+                    BoardCnt=$((BoardCnt+1))
+            else
+                    break
+            fi
+    done
 
-        echo "Found ${BoardCnt}:  ${VenID} ${DevID} ${SubVenID} board(s)" | tee -a ${TestCaseLogName} 2>&1
+    echo "${LogPrefix} Found ${BoardCnt}: ${VenID} ${DevID} ${SubVenID} board(s)"\
+      | tee -a "${TestCaseLogName}" 2>&1
 
-        # Save chamelon table for board(s)
-        for i in $(seq 1 ${BoardCnt}); do
-                echo ${MenPcPassword} | sudo -S --prompt=$'\r' /opt/menlinux/BIN/fpga_load ${VenID} ${DevID} ${SubVenID} $((${i}-1)) -t >> Board_${VenID}_${DevID}_${SubVenID}_${i}_chameleon_table.txt
-                if [ $? -eq 0 ]; then
-                        echo "Chameleon for Board_${VenID}_${DevID}_${SubVenID}_${i} board saved (1)" | tee -a ${TestCaseLogName} 2>&1
-                else
-                        break
-                fi
-        done
+    # Save chamelon table for board(s)
+    for i in $(seq 1 ${BoardCnt}); do
+            echo "${MenPcPassword}" | sudo -S --prompt=$'\r' /opt/menlinux/BIN/fpga_load ${VenID} ${DevID} ${SubVenID} $((${i}-1)) -t >> Board_${VenID}_${DevID}_${SubVenID}_${i}_chameleon_table.txt
+            if [ $? -eq 0 ]; then
+                    echo "${LogPrefix} Chameleon for Board_${VenID}_${DevID}_${SubVenID}_${i} board saved (1)"\
+                      | tee -a "${TestCaseLogName}" 2>&1
+            else
+                    break
+            fi
+    done
 
-        # Save uart devices into file
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' cat /proc/tty/driver/serial >> UART_devices_dump.txt
+    # Save uart devices into file
+    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' cat /proc/tty/driver/serial >> UART_devices_dump.txt
 
-        # Check How many UARTS are on board(s)
-        UartCnt=0
-        for i in $(seq 1 ${BoardCnt}); do
-                UartBrdCnt=$(grep "UART" Board_${VenID}_${DevID}_${SubVenID}_${i}_chameleon_table.txt | wc -l)
-                for j in $(seq 1 ${UartBrdCnt}); do
-                        UartAddr=$(grep "UART" Board_${VenID}_${DevID}_${SubVenID}_${i}_chameleon_table.txt | awk NR==${j}'{print $11}')
-                        if [ $? -eq 0 ]; then
-                                echo "UART ${j} addr for Board_${VenID}_${DevID}_${SubVenID}_${i} board saved" | tee -a ${TestCaseLogName} 2>&1
-                                UartBrdNr[${UartCnt}]=$i      
-                                UartNr[${UartCnt}]=`grep -i ${UartAddr} "UART_devices_dump.txt" | awk '{print $1}' | egrep -o '^[^:]+'`
-                                UartCnt=$((UartCnt+1))
-                        else
-                                echo "No more UARTs in board" | tee -a ${TestCaseLogName} 2>&1
-                        fi 
-                done 
-        done
-        
-        echo "There are ${UartCnt} UART(s) on ${VenID} ${DevID} ${SubVenID} board(s)" | tee -a ${TestCaseLogName} 2>&1
-        if [ ${UartCnt} -eq 0 ]; then
-            return ${ERR_NOT_DEFINED}
-        fi
-        # List all UARTs that are on board(s)
-        touch "UART_board_tty_numbers.txt"
-        
-        # Loop through all UART interfaces per board
-        local UartNrInBoard=0
-        for item in ${UartBrdNr[@]}; do
-                echo Board: ${item}
-                echo "For board ${item} UART ttyS${UartNr[${UartNrInBoard}]} should be tested"\
-                 | tee -a ${TestCaseLogName} 2>&1
-                echo "${UartNr[${UartNrInBoard}]}" >> UART_board_tty_numbers.txt
-                UartNrInBoard=$((${UartNrInBoard} + 1))
-        done
-}
+    # Check How many UARTS are on board(s)
+    UartCnt=0
+    for i in $(seq 1 ${BoardCnt}); do
+            UartBrdCnt=$(grep "UART" Board_${VenID}_${DevID}_${SubVenID}_${i}_chameleon_table.txt | wc -l)
+            for j in $(seq 1 ${UartBrdCnt}); do
+                    UartAddr=$(grep "UART" Board_${VenID}_${DevID}_${SubVenID}_${i}_chameleon_table.txt | awk NR==${j}'{print $11}')
+                    if [ $? -eq 0 ]; then
+                            echo "${LogPrefix}  UART ${j} addr for Board_${VenID}_${DevID}_${SubVenID}_${i} board saved"\
+                              | tee -a "${TestCaseLogName}" 2>&1
+                            UartBrdNr[${UartCnt}]=${i}
+                            UartNr[${UartCnt}]=$(grep -i ${UartAddr} "UART_devices_dump.txt" | awk '{print $1}' | egrep -o '^[^:]+')
+                            UartCnt=$((UartCnt+1))
+                    else
+                            echo "${LogPrefix}  No more UARTs in board" | tee -a "${TestCaseLogName}" 2>&1
+                    fi 
+            done 
+    done
+    
+    echo "${LogPrefix} There are ${UartCnt} UART(s) on ${VenID} ${DevID} ${SubVenID} board(s)"\
+        | tee -a "${TestCaseLogName}" 2>&1
+    if [ ${UartCnt} -eq 0 ]; then
+        return "${ERR_NOT_DEFINED}"
+    fi
+    # List all UARTs that are on board(s)
+    touch "${FileWithResults}"
 
-############################################################################
-# run m77 test 
-# 
-# parameters:
-# $1    Test case log file name
-# $2    Test case name
-# $3    M77 board number
-# $4    Carrier board number
-function m_module_m77_test {
-        local TestCaseLogName=${1}
-        local TestCaseName=${2}
-        local M77Nr=${3}
-        local M77CarrierName="d203_a24_${4}" # obtain from system.dsc (only G204)
-        local LogPrefix="[m77_test]"
-
-        # modprobe men_ sth sth 
-        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_mdis_kernel
-        if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_mdis_kernel" | tee -a "${LogFileName}"
-                return ${ERR_VALUE}
-        fi
-
-        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' mdis_createdev -b "${M77CarrierName}"
-        if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  ERR_VALUE: could not mdis_createdev -b ${M77CarrierName}" | tee -a "${LogFileName}"
-                return "${ERR_VALUE}"
-        fi
-
-        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7
-        if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7" | tee -a ${LogFileName}
-                return "${ERR_VALUE}"
-        fi
-        local tty0="ttyD0"
-        local tty1="ttyD1"
-        local tty2="ttyD2"
-        local tty3="ttyD3"
-
-        if ! uart_test_tty "${tty0}" "${tty1}"
-        then
-                echo "${LogPrefix}  ERR_VALUE: ${tty0} with ${tty1}" | tee -a "${LogFileName}"
-                return "${ERR_VALUE}"
-        fi
-
-        if ! uart_test_tty "${tty3}" "${tty2}"
-        then
-                echo "${LogPrefix}  ERR_VALUE: ${tty3} with ${tty2}" | tee -a "${LogFileName}"
-                return "${ERR_VALUE}"
-        fi
-
-        sleep 2 
-        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rmmod men_lx_m77 
-        if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  ERR_VALUE: could not rmmod m" | tee -a "${LogFileName}" 
-                return "${ERR_VALUE}"
-        fi
-
-        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7
-        if [ $? -ne 0 ]; then
-                echo "${LogPrefix}  ERR_VALUE: could not modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7" | tee -a "${LogFileName}"
-                return "${ERR_VALUE}"
-        fi
-
-        if ! uart_test_tty "${tty1}" "${tty0}"
-        then
-                echo "${LogPrefix}  ERR_VALUE: ${tty1} with ${tty0}" | tee -a "${LogFileName}"
-                return "${ERR_VALUE}"
-        fi
-
-        if ! uart_test_tty "${tty2}" "${tty3}"
-        then
-                echo "${LogPrefix}  ERR_VALUE: ${tty2} with ${tty3}" | tee -a "${LogFileName}"
-                return "${ERR_VALUE}"
-        fi
-
-        return "${ERR_OK}"
+    # Loop through all UART interfaces per board
+    local UartNrInBoard=0
+    for item in ${UartBrdNr[@]}; do
+            echo Board: ${item}
+            echo "${LogPrefix} For board ${item} UART ttyS${UartNr[${UartNrInBoard}]} should be tested"\
+             | tee -a "${TestCaseLogName}" 2>&1
+            echo "${UartNr[${UartNrInBoard}]}" >> "${FileWithResults}"
+            UartNrInBoard=$((UartNrInBoard + 1))
+    done
 }
 
 ############################################################################

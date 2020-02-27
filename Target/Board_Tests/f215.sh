@@ -45,7 +45,7 @@ function f215_test {
     VenID="0x1a88"   
     DevID="0x4d45"
     SubVenID="0x006a"
-    BoardInSystem="1" # Depends on the test case
+    BoardInSystem="1"
     InputToChange=${IN_0_ENABLE}
 
     while ${MachineRun}; do
@@ -56,25 +56,34 @@ function f215_test {
         Step4);&
         Step5)
             # Check if mcb_pci is already in blacklist, UART loopback test
-#            echo "Run step @5" | tee -a "${TestCaseLogName}" 2>&1
-#            echo ${MenPcPassword} | sudo -S --prompt=$'\r' grep "blacklist mcb_pci" /etc/modprobe.d/blacklist.conf > /dev/null
-#            if [ $? -ne 0 ]; then
-#                    # Add mcb_pci into blacklist
-#                    echo ${MenPcPassword} | sudo -S --prompt=$'\r' echo "# Add mcb_pci into blacklist" >> /etc/modprobe.d/blacklist.conf
-#                    echo ${MenPcPassword} | sudo -S --prompt=$'\r' echo "blacklist mcb_pci" >> /etc/modprobe.d/blacklist.conf
-#            else
-#                    echo "blacklist mcb_pci found"
-#            fi
-#            uart_loopback_test ${TestCaseLogName} ${VenID} ${DevID} ${SubVenID} ${BoardInSystem}
-#            CmdResult=$?
-#            if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-#                     echo "uart_test_board err: ${CmdResult} "\
-#                       | tee -a ${TestCaseLogName} 2>&1
-#            else
-#                     echo "uart_test_board success "\
-#                       | tee -a ${TestCaseLogName} 2>&1
-#            fi
-#            TestCaseStep5=${CmdResult}
+            echo "${LogPrefix} Run step @5" | tee -a "${TestCaseLogName}" 2>&1
+            echo "${MenPcPassword}" | sudo -S --prompt=$'\r' grep "blacklist mcb_pci" /etc/modprobe.d/blacklist.conf > /dev/null
+            if [ $? -ne 0 ]; then
+                # Add mcb_pci into blacklist
+                echo "${MenPcPassword}" | sudo -S --prompt=$'\r' echo "# Add mcb_pci into blacklist" >> /etc/modprobe.d/blacklist.conf
+                echo "${MenPcPassword}" | sudo -S --prompt=$'\r' echo "blacklist mcb_pci" >> /etc/modprobe.d/blacklist.conf
+            else
+                echo "${LogPrefix} blacklist mcb_pci found"
+            fi
+            UartNoList="UART_board_tty_numbers.txt"
+            obtain_tty_number_list_from_board  "${TestCaseLogName}" "${VenID}" "${DevID}" "${SubVenID}" "${BoardInSystem}" "${UartNoList}" "${LogPrefix}"
+            CmdResult=$?
+            if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+                echo "${LogPrefix} obtain_tty_number_list_from_board failed, err: ${CmdResult} "\
+                 | tee -a "${TestCaseLogName}" 2>&1
+                return "${CmdResult}"
+            fi
+
+            uart_loopback_test "${TestCaseLogName}" "${VenID}" "${DevID}" "${SubVenID}" "${BoardInSystem}"
+            CmdResult=$?
+            if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+                echo "${LogPrefix} uart_test_board err: ${CmdResult} "\
+                  | tee -a "${TestCaseLogName}" 2>&1
+            else
+                echo "${LogPrefix} uart_test_board success "\
+                  | tee -a "${TestCaseLogName}" 2>&1
+            fi
+            TestCaseStep5=${CmdResult}
             MachineState="Step6"
             ;;
         Step6)
@@ -82,8 +91,7 @@ function f215_test {
             echo "${LogPrefix} Run step @6" | tee -a "${TestCaseLogName}" 2>&1
             # Run step @8 Test CAN interfaces, there should be 2 cans available
             MezzChamDevName="MezzChamDevName.txt"
-            obtain_device_list_chameleon_device "${VenID}" "${DevID}" "${SubVenID}" "${MezzChamDevName}" "1" "${TestCaseLogName}" "${LogPrefix}"
-
+            obtain_device_list_chameleon_device "${VenID}" "${DevID}" "${SubVenID}" "${MezzChamDevName}" "${BoardInSystem}" "${TestCaseLogName}" "${LogPrefix}"
             can_test_ll_z15 "${TestCaseLogName}" "${LogPrefix}" "${MezzChamDevName}"
             CmdResult=$?
             if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
@@ -93,43 +101,20 @@ function f215_test {
                 echo "${LogPrefix} can_test_ll_z15 success "\
                   | tee -a "${TestCaseLogName}" 2>&1
             fi
-
             TestCaseStep6=${CmdResult}
             MachineState="Step7"
             ;;
         Step7)
             # Test GPIO / LEDS 
             echo "${LogPrefix} Run step @7" | tee -a "${TestCaseLogName}" 2>&1
-            echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_ll_z17
-            ResultModprobeZ17=$?
-            if [ ${ResultModprobeZ17} -ne ${ERR_OK} ]; then
-                    echo "${LogPrefix} ERR_MODPROBE :could not modprobe men_ll_z17" | tee -a "${TestCaseLogName}" 2>&1
-                    CmdResult="${ResultModprobeZ17}"
+            z034_z037_gpio_test "${TestCaseLogName}" "${MezzChamDevName}" "${LogPrefix}" "${InputToChange}" 
+            CmdResult=$?
+            if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+                     echo "${LogPrefix} gpio_test on ${GPIO2} err: ${CmdResult} "\
+                       | tee -a "${TestCaseLogName}" 2>&1
             else
-                    GpioNumber=$(grep "^gpio" ${MezzChamDevName} | wc -l)
-                    if [ "${GpioNumber}" -ne "2" ]; then
-                            echo "${LogPrefix} There are ${GpioNumber} GPIO interfaces" \
-                              | tee error_log.txt 2>&1
-                    else
-                            GPIO1=$(grep "^gpio" ${MezzChamDevName} | awk NR==1'{print $1}')
-                            GPIO2=$(grep "^gpio" ${MezzChamDevName} | awk NR==2'{print $1}')
-                    fi
-
-                    # Test LEDS -- This cannot be checked automatically yet
-                    echo ${MenPcPassword} | sudo -S --prompt=$'\r' z17_simp ${GPIO1} >> z17_simp_${GPIO1}.txt 2>&1
-                    if [ $? -ne 0 ]; then
-                            echo "${LogPrefix} ERR_RUN :could not run z17_simp ${GPIO1}" | tee -a "${TestCaseLogName}" 2>&1
-                    fi
-                    # Test GPIO
-                    gpio_test "${TestCaseLogName}" "${TestCaseName}" "${GPIO2}" "${InputToChange}"
-                    CmdResult=$?
-                    if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-                             echo "${LogPrefix} gpio_test on ${GPIO2} err: ${CmdResult} "\
-                               | tee -a ${TestCaseLogName} 2>&1
-                    else
-                             echo "${LogPrefix} gpio_test on ${GPIO2} success "\
-                               | tee -a ${TestCaseLogName} 2>&1
-                    fi
+                     echo "${LogPrefix} gpio_test on ${GPIO2} success "\
+                       | tee -a "${TestCaseLogName}" 2>&1
             fi
             TestCaseStep7=${CmdResult}
 #            TestCaseStep7="${ERR_OK}"

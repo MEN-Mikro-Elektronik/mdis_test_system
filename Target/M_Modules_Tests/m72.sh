@@ -34,7 +34,7 @@ function m72_description {
 # $1    TestCaseLogName
 # $2    LogPrefix
 # $3    M-Module number
-function m_module_m72_test {
+function m72_test {
     local TestCaseLogName=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
