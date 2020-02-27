@@ -208,6 +208,33 @@ function obtain_device_list_chameleon_device {
      done
 }
 
+
+function load_z025_driver {
+    local TestCaseLogName=${1}
+    local LogPrefix=${2}
+    local CmdResult=${ERR_UNDEFINED}
+
+    echo "${LogPrefix} modprobe men_mdis_kernel" | tee -a "${TestCaseLogName}" 2>&1
+    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_mdis_kernel
+    if [ $? -ne 0 ]; then
+        echo "${LogPrefix} ERR_MODPROBE :could not modprobe men_mdis_kernel"\
+          | tee -a "${TestCaseLogName}" 2>&1
+        return "${ERR_MODPROBE}"
+    fi
+
+    echo "${LogPrefix} modprobe men_lx_z25 baud_base=1843200 mode=se,se"\
+        | tee -a "${TestCaseLogName}" 2>&1
+    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_lx_z25 baud_base=1843200 mode=se,se
+    if [ $? -ne 0 ]; then
+        echo "${LogPrefix} ERR_MODPROBE :could not modprobe men_lx_z25 baud_base=1843200 mode=se,se"\
+          | tee -a "${TestCaseLogName}" 2>&1
+        return "${ERR_MODPROBE}"
+    fi
+
+    return "${ERR_OK}"
+}
+
+
 ############################################################################
 # Function that performs all needed steps to check if uart modules are working on
 # specific mezzaine board.
@@ -230,18 +257,11 @@ function uart_loopback_test {
     local CmdResult=${ERR_UNDEFINED}
     echo "${LogPrefix} function uart_loopback_test"
 
-    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_mdis_kernel
-    if [ $? -ne 0 ]; then
-            echo "${LogPrefix} ERR_MODPROBE :could not modprobe men_mdis_kernel"\
-              | tee -a "${TestCaseLogName}" 2>&1
-            return "${ERR_MODPROBE}"
-    fi
-
-    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_lx_z25 baud_base=1843200 mode=se,se
-    if [ $? -ne 0 ]; then
-            echo "${LogPrefix} ERR_MODPROBE :could not modprobe men_lx_z25 baud_base=1843200 mode=se,se"\
-              | tee -a "${TestCaseLogName}" 2>&1
-            return "${ERR_MODPROBE}"
+    load_z025_driver "${TestCaseLogName}" "${LogPrefix}"
+    CmdResult=$?
+    if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+        echo "${LogPrefix} load_z025_driver failed, err: ${CmdResult} "\
+          | tee -a "${TestCaseLogName}" 2>&1
     fi
 
     ## DEBIAN workaround -- on DEBIAN chameleon table disapears when module men_lx_z25 is loaded
@@ -267,6 +287,18 @@ function uart_loopback_test {
     return "${CmdResult}"
 }
 
+
+function unload_z025_driver {
+    local TestCaseLogName=${1}
+    local LogPrefix=${2}
+    ## DEBIAN workaround -- on DEBIAN chameleon table disapears when module men_lx_z25 is loaded
+    ## rmmod men_lx_z25 for a while. (it must be loaded to set proper uart mmmio address)
+    local IsDebian="$(hostnamectl | grep "Operating System" | grep "Debian" | wc -l)"
+    echo "${LogPrefix} IsDebian: ${IsDebian}" | tee -a "${TestCaseLogName}" 2>&1
+    if [ "${IsDebian}" == "1" ]; then
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rmmod men_lx_z25
+    fi
+}
 ############################################################################
 # Test RS232 with men_lx_z25 IpCore 
 # 
@@ -281,7 +313,7 @@ function uart_test_lx_z25 {
 
     FILE="${UartNoList}"
     if [ -f ${FILE} ]; then
-            echo "${LogPrefix} file UART_board_tty_numbers exists"\
+            echo "${LogPrefix} file: \"${FILE}\" exists"\
               | tee -a "${LogFileName}" 2>&1
             TtyDeviceCnt=$(cat ${FILE} | wc -l)
 
@@ -480,40 +512,36 @@ function uart_test_tty {
 # $5      Board Number (1 as default)
 function obtain_tty_number_list_from_board {
     local TestCaseLogName=$1
-    local VenID=$2
-    local DevID=$3
-    local SubVenID=$4
-    local BoardNo=$5
-    local FileWithResults=$6
-    local LogPrefix=$7
+    local ChamTable=$2
+    local UartNoList=$3
+    local LogPrefix=$4
 
     local BoardCnt=0
     local BoardMaxSlot=8
 
-    echo "${LogPrefix} obtain_tty_number_list_from_board"
-
-    for i in $(seq 0 ${BoardMaxSlot}); do
-            echo "${MenPcPassword}" | sudo -S --prompt=$'\r' /opt/menlinux/BIN/fpga_load ${VenID} ${DevID} ${SubVenID} ${i} -t > /dev/null 2>&1
-            if [ $? -eq 0 ]; then
-                    BoardCnt=$((BoardCnt+1))
-            else
-                    break
-            fi
-    done
-
-    echo "${LogPrefix} Found ${BoardCnt}: ${VenID} ${DevID} ${SubVenID} board(s)"\
-      | tee -a "${TestCaseLogName}" 2>&1
-
-    # Save chamelon table for board(s)
-    for i in $(seq 1 ${BoardCnt}); do
-            echo "${MenPcPassword}" | sudo -S --prompt=$'\r' /opt/menlinux/BIN/fpga_load ${VenID} ${DevID} ${SubVenID} $((${i}-1)) -t >> Board_${VenID}_${DevID}_${SubVenID}_${i}_chameleon_table.txt
-            if [ $? -eq 0 ]; then
-                    echo "${LogPrefix} Chameleon for Board_${VenID}_${DevID}_${SubVenID}_${i} board saved (1)"\
-                      | tee -a "${TestCaseLogName}" 2>&1
-            else
-                    break
-            fi
-    done
+#    echo "${LogPrefix} obtain_tty_number_list_from_board"
+#    for i in $(seq 0 ${BoardMaxSlot}); do
+#            echo "${MenPcPassword}" | sudo -S --prompt=$'\r' /opt/menlinux/BIN/fpga_load ${VenID} ${DevID} ${SubVenID} ${i} -t > /dev/null 2>&1
+#            if [ $? -eq 0 ]; then
+#                    BoardCnt=$((BoardCnt+1))
+#            else
+#                    break
+#            fi
+#    done
+#
+#    echo "${LogPrefix} Found ${BoardCnt}: ${VenID} ${DevID} ${SubVenID} board(s)"\
+#      | tee -a "${TestCaseLogName}" 2>&1
+#
+#    # Save chamelon table for board(s)
+#    for i in $(seq 1 ${BoardCnt}); do
+#            echo "${MenPcPassword}" | sudo -S --prompt=$'\r' /opt/menlinux/BIN/fpga_load ${VenID} ${DevID} ${SubVenID} $((${i}-1)) -t >> Board_${VenID}_${DevID}_${SubVenID}_${i}_chameleon_table.txt
+#            if [ $? -eq 0 ]; then
+#                    echo "${LogPrefix} Chameleon for Board_${VenID}_${DevID}_${SubVenID}_${i} board saved (1)"\
+#                      | tee -a "${TestCaseLogName}" 2>&1
+#            else
+#                    break
+#            fi
+#    done
 
     # Save uart devices into file
     echo "${MenPcPassword}" | sudo -S --prompt=$'\r' cat /proc/tty/driver/serial >> UART_devices_dump.txt
@@ -521,11 +549,11 @@ function obtain_tty_number_list_from_board {
     # Check How many UARTS are on board(s)
     UartCnt=0
     for i in $(seq 1 ${BoardCnt}); do
-            UartBrdCnt=$(grep "UART" Board_${VenID}_${DevID}_${SubVenID}_${i}_chameleon_table.txt | wc -l)
+            UartBrdCnt=$(grep "UART" "${ChamTableDumpFile}" | wc -l)
             for j in $(seq 1 ${UartBrdCnt}); do
-                    UartAddr=$(grep "UART" Board_${VenID}_${DevID}_${SubVenID}_${i}_chameleon_table.txt | awk NR==${j}'{print $11}')
+                    UartAddr=$(grep "UART" "${ChamTableDumpFile}" | awk NR==${j}'{print $11}')
                     if [ $? -eq 0 ]; then
-                            echo "${LogPrefix}  UART ${j} addr for Board_${VenID}_${DevID}_${SubVenID}_${i} board saved"\
+                            echo "${LogPrefix}  UART ${j} addr saved"\
                               | tee -a "${TestCaseLogName}" 2>&1
                             UartBrdNr[${UartCnt}]=${i}
                             UartNr[${UartCnt}]=$(grep -i ${UartAddr} "UART_devices_dump.txt" | awk '{print $1}' | egrep -o '^[^:]+')
@@ -536,21 +564,21 @@ function obtain_tty_number_list_from_board {
             done 
     done
     
-    echo "${LogPrefix} There are ${UartCnt} UART(s) on ${VenID} ${DevID} ${SubVenID} board(s)"\
+    echo "${LogPrefix} There are ${UartCnt} UART(s) on Chameleon table log"\
         | tee -a "${TestCaseLogName}" 2>&1
     if [ ${UartCnt} -eq 0 ]; then
         return "${ERR_NOT_DEFINED}"
     fi
     # List all UARTs that are on board(s)
-    touch "${FileWithResults}"
+    touch "${UartNoList}"
 
     # Loop through all UART interfaces per board
     local UartNrInBoard=0
     for item in ${UartBrdNr[@]}; do
-            echo Board: ${item}
+            echo "${LogPrefix} Board: ${item}"
             echo "${LogPrefix} For board ${item} UART ttyS${UartNr[${UartNrInBoard}]} should be tested"\
              | tee -a "${TestCaseLogName}" 2>&1
-            echo "${UartNr[${UartNrInBoard}]}" >> "${FileWithResults}"
+            echo "${UartNr[${UartNrInBoard}]}" >> "${UartNoList}"
             UartNrInBoard=$((UartNrInBoard + 1))
     done
 }

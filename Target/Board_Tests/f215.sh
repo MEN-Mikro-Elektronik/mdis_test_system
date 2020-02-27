@@ -40,6 +40,7 @@ function f215_test {
     local TestCaseLogName=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
+    local ChamTableDumpFile="Chameleon_table.log"
 
     # Board in this Test Case always have
     VenID="0x1a88"   
@@ -66,7 +67,19 @@ function f215_test {
                 echo "${LogPrefix} blacklist mcb_pci found"
             fi
             UartNoList="UART_board_tty_numbers.txt"
-            obtain_tty_number_list_from_board  "${TestCaseLogName}" "${VenID}" "${DevID}" "${SubVenID}" "${BoardInSystem}" "${UartNoList}" "${LogPrefix}"
+
+            # Debian workaround. Could not dump chameleon table when
+            # men_lx_z25 is loaded
+            unload_z025_driver "${TestCaseLogName}" "${LogPrefix}"
+            obtain_device_list_chameleon_device "${VenID}" "${DevID}" "${SubVenID}" "${ChamTableDumpFile}" "${BoardInSystem}" "${TestCaseLogName}" "${LogPrefix}"
+            load_z025_driver "${TestCaseLogName}" "${LogPrefix}"
+            CmdResult=$?
+            if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+                echo "${LogPrefix} load_z025_driver failed, err: ${CmdResult} "\
+                  | tee -a "${TestCaseLogName}" 2>&1
+            fi
+
+            obtain_tty_number_list_from_board  "${TestCaseLogName}" "${ChamTableDumpFile}" "${UartNoList}" "${LogPrefix}"
             CmdResult=$?
             if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
                 echo "${LogPrefix} obtain_tty_number_list_from_board failed, err: ${CmdResult} "\
@@ -74,15 +87,14 @@ function f215_test {
                 return "${CmdResult}"
             fi
 
-            uart_loopback_test "${TestCaseLogName}" "${LogPrefix}" "${UartNoList}"
+            uart_test_lx_z25 "${TestCaseLogName}" "${LogPrefix}" "${UartNoList}"
             CmdResult=$?
             if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-                echo "${LogPrefix} uart_test_board err: ${CmdResult} "\
-                  | tee -a "${TestCaseLogName}" 2>&1
-            else
-                echo "${LogPrefix} uart_test_board success "\
-                  | tee -a "${TestCaseLogName}" 2>&1
+                     echo "${LogPrefix} uart_test_lx_z25 failed, err: ${CmdResult} "\
+                       | tee -a "${TestCaseLogName}" 2>&1
             fi
+            return "${CmdResult}"
+
             TestCaseStep5=${CmdResult}
             MachineState="Step6"
             ;;
