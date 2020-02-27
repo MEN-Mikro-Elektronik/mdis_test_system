@@ -512,7 +512,7 @@ function uart_test_tty {
 # $5      Board Number (1 as default)
 function obtain_tty_number_list_from_board {
     local TestCaseLogName=$1
-    local ChamTable=$2
+    local ChamTableDumpFile=$2
     local UartNoList=$3
     local LogPrefix=$4
 
