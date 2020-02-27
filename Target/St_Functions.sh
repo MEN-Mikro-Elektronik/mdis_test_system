@@ -208,6 +208,53 @@ function obtain_device_list_chameleon_device {
      done
 }
 
+############################################################################
+# Obtain chameleon table dump
+#
+# parameters:
+# $1      Ven ID
+# $2      Dev ID
+# $3      SubVen ID
+# $4      File name for chameleon table
+# $5      Board number (optional, when there is more than one-the same mezz board)
+# $6      Test case log name
+# $7      Log prefix
+function obtain_chameleon_table {
+    local VenID=$1
+    local DevID=$2
+    local SubVenID=$3
+    local FileWithResults=$4
+    local BoardNumberParam=$5 #TBD
+    local TestCaseLogName=$6
+    local LogPrefix=$7
+
+    local BoardCnt=0
+    local BoardMaxSlot=8
+
+    echo "${LogPrefix} obtain_tty_number_list_from_board"
+    for i in $(seq 0 ${BoardMaxSlot}); do
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' /opt/menlinux/BIN/fpga_load ${VenID} ${DevID} ${SubVenID} ${i} -t > /dev/null 2>&1
+        if [ $? -eq 0 ]; then
+            BoardCnt=$((BoardCnt+1))
+        else
+            break
+        fi
+    done
+
+    echo "${LogPrefix} Found ${BoardCnt}: ${VenID} ${DevID} ${SubVenID} board(s)"\
+    | tee -a "${TestCaseLogName}" 2>&1
+
+    # Save chamelon table for board(s)
+    for i in $(seq 1 ${BoardCnt}); do
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' /opt/menlinux/BIN/fpga_load ${VenID} ${DevID} ${SubVenID} $((${i}-1)) -t >> "${FileWithResults}"
+        if [ $? -eq 0 ]; then
+            echo "${LogPrefix} Chameleon for Board_${VenID}_${DevID}_${SubVenID}_${i} board saved (1)"\
+              | tee -a "${TestCaseLogName}" 2>&1
+        else
+            break
+        fi
+    done
+}
 
 function load_z025_driver {
     local TestCaseLogName=${1}
@@ -515,33 +562,6 @@ function obtain_tty_number_list_from_board {
     local ChamTableDumpFile=$2
     local UartNoList=$3
     local LogPrefix=$4
-
-    local BoardCnt=0
-    local BoardMaxSlot=8
-
-#    echo "${LogPrefix} obtain_tty_number_list_from_board"
-#    for i in $(seq 0 ${BoardMaxSlot}); do
-#            echo "${MenPcPassword}" | sudo -S --prompt=$'\r' /opt/menlinux/BIN/fpga_load ${VenID} ${DevID} ${SubVenID} ${i} -t > /dev/null 2>&1
-#            if [ $? -eq 0 ]; then
-#                    BoardCnt=$((BoardCnt+1))
-#            else
-#                    break
-#            fi
-#    done
-#
-#    echo "${LogPrefix} Found ${BoardCnt}: ${VenID} ${DevID} ${SubVenID} board(s)"\
-#      | tee -a "${TestCaseLogName}" 2>&1
-#
-#    # Save chamelon table for board(s)
-#    for i in $(seq 1 ${BoardCnt}); do
-#            echo "${MenPcPassword}" | sudo -S --prompt=$'\r' /opt/menlinux/BIN/fpga_load ${VenID} ${DevID} ${SubVenID} $((${i}-1)) -t >> Board_${VenID}_${DevID}_${SubVenID}_${i}_chameleon_table.txt
-#            if [ $? -eq 0 ]; then
-#                    echo "${LogPrefix} Chameleon for Board_${VenID}_${DevID}_${SubVenID}_${i} board saved (1)"\
-#                      | tee -a "${TestCaseLogName}" 2>&1
-#            else
-#                    break
-#            fi
-#    done
 
     # Save uart devices into file
     echo "${MenPcPassword}" | sudo -S --prompt=$'\r' cat /proc/tty/driver/serial >> UART_devices_dump.txt

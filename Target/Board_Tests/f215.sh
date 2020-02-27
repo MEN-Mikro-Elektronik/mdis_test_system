@@ -71,7 +71,7 @@ function f215_test {
             # Debian workaround. Could not dump chameleon table when
             # men_lx_z25 is loaded
             unload_z025_driver "${TestCaseLogName}" "${LogPrefix}"
-            obtain_device_list_chameleon_device "${VenID}" "${DevID}" "${SubVenID}" "${ChamTableDumpFile}" "${BoardInSystem}" "${TestCaseLogName}" "${LogPrefix}"
+            obtain_chameleon_table "${VenID}" "${DevID}" "${SubVenID}" "${ChamTableDumpFile}" "${BoardInSystem}" "${TestCaseLogName}" "${LogPrefix}"
             load_z025_driver "${TestCaseLogName}" "${LogPrefix}"
             CmdResult=$?
             if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
