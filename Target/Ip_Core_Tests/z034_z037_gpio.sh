@@ -15,11 +15,30 @@ function z034_z037_gpio_description {
     echo "-------------------------Ip Core z034/z037 CAN Test Case----------------------"
 }
 
+############################################################################
+# IP core have to be tested on certain carrier, so user has to specify
+# exact location of ip core in the system
+#
+# parameters:
+# $1    Test case log name
+# $2    Log prefix
+# $3    Board vendor id
+# $4    Board device id
+# $5    Board subvendor id
+# $6    Board number in system
+# $7    Optional parameter - test type (optional)
 function z034_z037_gpio_test {
     local TestCaseLogName=${1}
     local LogPrefix=${2}
-    local MezzChamTable=${3}
-    local RelayOutput="${IN_0_ENABLE}"
+    local VenID=${3}
+    local DevID=${4}
+    local SubVenID=${5}
+    local BoardInSystem=${6}
+    local TestType=${7}
+    local RelayOutput=${IN_0_ENABLE}
+
+    MezzChamDevName="MezzChamDevName.txt"
+    obtain_device_list_chameleon_device "${VenID}" "${DevID}" "${SubVenID}" "${MezzChamDevName}" "${BoardInSystem}" "${TestCaseLogName}" "${LogPrefix}"
 
     echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_ll_z17
     ResultModprobeZ17=$?
@@ -27,13 +46,13 @@ function z034_z037_gpio_test {
         echo "${LogPrefix} ERR_MODPROBE :could not modprobe men_ll_z17" | tee -a "${TestCaseLogName}" 2>&1
         return "${ResultModprobeZ17}"
     else
-        GpioNumber=$(grep "^gpio" "${MezzChamTable}" | wc -l)
+        GpioNumber=$(grep "^gpio" "${MezzChamDevName}" | wc -l)
         if [ "${GpioNumber}" -ne "2" ]; then
             echo "${LogPrefix} There are ${GpioNumber} GPIO interfaces" \
               | tee -a "${TestCaseLogName}" 2>&1
         else
-            GPIO1=$(grep "^gpio" "${MezzChamTable}" | awk NR==1'{print $1}')
-            GPIO2=$(grep "^gpio" "${MezzChamTable}" | awk NR==2'{print $1}')
+            GPIO1=$(grep "^gpio" "${MezzChamDevName}" | awk NR==1'{print $1}')
+            GPIO2=$(grep "^gpio" "${MezzChamDevName}" | awk NR==2'{print $1}')
         fi
 
         # Test GPIO write (leds) - result not checked

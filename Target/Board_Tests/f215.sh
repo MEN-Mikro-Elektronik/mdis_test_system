@@ -40,85 +40,37 @@ function f215_description {
 function f215_test {
     local TestCaseLogName=${1}
     local LogPrefix=${2}
-    local ModuleNo=${3}
-    local ChamTableDumpFile="Chameleon_table.log"
+    local BoardInSystem=${3}
 
     # Board in this Test Case always have
-    VenID="0x1a88"   
+    VenID="0x1a88"
     DevID="0x4d45"
     SubVenID="0x006a"
-    BoardInSystem="1"
-    InputToChange=${IN_0_ENABLE}
+    UartNo="2"
+    CanTest="loopback"
+    GpioTest="read" # "write"
+    MachineState="uart_test"
+    MachineRun=true
 
     while ${MachineRun}; do
         case "${MachineState}" in
-        Step1);&
-        Step2);&
-        Step3);&
-        Step4);&
-        Step5)
+        uart_test)
+            echo "${LogPrefix} Run UART test" | tee -a "${TestCaseLogName}" 2>&1
             blacklist_mcb_pci "${TestCaseLogName}" "${LogPrefix}" # Move to PC_Configure script
-            UartNoList="UART_board_tty_numbers.txt"
-            # Debian workaround. Could not dump chameleon table when
-            # men_lx_z25 is loaded
-            unload_z025_driver "${TestCaseLogName}" "${LogPrefix}"
-            obtain_chameleon_table "${VenID}" "${DevID}" "${SubVenID}" "${ChamTableDumpFile}" "${BoardInSystem}" "${TestCaseLogName}" "${LogPrefix}"
-            load_z025_driver "${TestCaseLogName}" "${LogPrefix}"
-            CmdResult=$?
-            if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-                echo "${LogPrefix} load_z025_driver failed, err: ${CmdResult} "\
-                  | tee -a "${TestCaseLogName}" 2>&1
-            fi
-
-            obtain_tty_number_list_from_board  "${TestCaseLogName}" "${ChamTableDumpFile}" "${UartNoList}" "${LogPrefix}"
-            CmdResult=$?
-            if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-                echo "${LogPrefix} obtain_tty_number_list_from_board failed, err: ${CmdResult} "\
-                 | tee -a "${TestCaseLogName}" 2>&1
-                return "${CmdResult}"
-            fi
-
-            uart_test_lx_z25 "${TestCaseLogName}" "${LogPrefix}" "${UartNoList}"
-            CmdResult=$?
-            if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-                     echo "${LogPrefix} uart_test_lx_z25 failed, err: ${CmdResult} "\
-                       | tee -a "${TestCaseLogName}" 2>&1
-            fi
-
-            TestCaseStep5=${CmdResult}
-            MachineState="Step6"
+            z025_uart_test "${TestCaseLogName}" "${LogPrefix}" "${VenID}" "${DevID}" "${SubVenID}" "${BoardInSystem}" "${UartNo}"
+            UartTestResult=$?
+            MachineState="can_test"
             ;;
-        Step6)
-            # Can test
-            echo "${LogPrefix} Run step @6" | tee -a "${TestCaseLogName}" 2>&1
-            # Run step @8 Test CAN interfaces, there should be 2 cans available
-            MezzChamDevName="MezzChamDevName.txt"
-            obtain_device_list_chameleon_device "${VenID}" "${DevID}" "${SubVenID}" "${MezzChamDevName}" "${BoardInSystem}" "${TestCaseLogName}" "${LogPrefix}"
-            can_test_ll_z15 "${TestCaseLogName}" "${LogPrefix}" "${MezzChamDevName}"
-            CmdResult=$?
-            if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-                echo "${LogPrefix} can_test_ll_z15 err: ${CmdResult} "\
-                  | tee -a "${TestCaseLogName}" 2>&1
-            else
-                echo "${LogPrefix} can_test_ll_z15 success "\
-                  | tee -a "${TestCaseLogName}" 2>&1
-            fi
-            TestCaseStep6=${CmdResult}
-            MachineState="Step7"
+        can_test)
+            echo "${LogPrefix} Run CAN test" | tee -a "${TestCaseLogName}" 2>&1
+            z029_can_test "${TestCaseLogName}" "${LogPrefix}" "${VenID}" "${DevID}" "${SubVenID}" "${BoardInSystem}" "${CanTest}"
+            CanTestResult=${CmdResult}
+            MachineState="gpio_test"
             ;;
-        Step7)
-            # Test GPIO / LEDS 
-            echo "${LogPrefix} Run step @7" | tee -a "${TestCaseLogName}" 2>&1
-            z034_z037_gpio_test "${TestCaseLogName}" "${LogPrefix}" "${MezzChamDevName}" "${InputToChange}" 
-            CmdResult=$?
-            if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-                     echo "${LogPrefix} gpio_test on ${GPIO2} err: ${CmdResult} "\
-                       | tee -a "${TestCaseLogName}" 2>&1
-            else
-                     echo "${LogPrefix} gpio_test on ${GPIO2} success "\
-                       | tee -a "${TestCaseLogName}" 2>&1
-            fi
-            TestCaseStep7=${CmdResult}
+        gpio_test)
+            echo "${LogPrefix} Run GPIO test" | tee -a "${TestCaseLogName}" 2>&1
+            z034_z037_gpio_test  "${TestCaseLogName}" "${LogPrefix}" "${VenID}" "${DevID}" "${SubVenID}" "${BoardInSystem}" "${CanTest}"
+            GpioTestResult=$?
             MachineState="Break"
             ;;
         Break) 
@@ -127,9 +79,16 @@ function f215_test {
             MachineRun=false
             ;;
         *)
-            echo "${LogPrefix} State is not set, start with Step1" | tee -a "${TestCaseLogName}"
-            MachineState="Step1"
+            echo "${LogPrefix} State is not set, start with uart_test" | tee -a "${TestCaseLogName}"
+            MachineState="uart_test"
             ;;
         esac
     done
+
+    if [ "${UartTestResult}" = "${ERR_OK}" ] && [ "${CanTestResult}" = "${ERR_OK}" ] && [ "${GpioTestResult}" = "${ERR_OK}" ]; then
+        return "${ERR_OK}"
+    else
+        return "${ERR_VALUE}"
+    fi
+
 }

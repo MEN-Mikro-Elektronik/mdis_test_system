@@ -15,14 +15,58 @@ function z025_uart_description {
     echo "---------------------------Ip Core z025 UART----------------------------------"
 }
 
+############################################################################
+# IP core have to be tested on certain carrier, so user has to specify
+# exact location of ip core in the system
+#
+# parameters:
+# $1    Test case log name
+# $2    Log prefix
+# $3    Board vendor id
+# $4    Board device id
+# $5    Board subvendor id
+# $6    Board number in system
+# $7    UART interfaces in board (optional)
 function z025_uart_test {
     local TestCaseLogName=${1}
     local LogPrefix=${2}
-    local MezzChamTable=${3}
+    local VenID=${3}
+    local DevID=${4}
+    local SubVenID=${5}
+    local BoardInSystem=${6}
+    local UartNo=${7} 
+    local UartNoList="UART_board_tty_numbers.txt"
+    local ChamTableDumpFile="Chameleon_table_${VenID}_${DevID}_${SubVenID}_${BoardInSystem}.log"
+
+    # Debian workaround. Could not dump chameleon table when
+    # men_lx_z25 is loaded
+    unload_z025_driver "${TestCaseLogName}" "${LogPrefix}"
+    obtain_chameleon_table "${VenID}" "${DevID}" "${SubVenID}" "${ChamTableDumpFile}" "${BoardInSystem}" "${TestCaseLogName}" "${LogPrefix}"
+    load_z025_driver "${TestCaseLogName}" "${LogPrefix}"
+    CmdResult=$?
+    if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+        echo "${LogPrefix} load_z025_driver failed, err: ${CmdResult} "\
+          | tee -a "${TestCaseLogName}" 2>&1
+        return "${CmdResult}"
+    fi
+
+    obtain_tty_number_list_from_board "${TestCaseLogName}" "${ChamTableDumpFile}" "${UartNoList}" "${LogPrefix}"
+    CmdResult=$?
+    if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+        echo "${LogPrefix} obtain_tty_number_list_from_board failed, err: ${CmdResult} "\
+          | tee -a "${TestCaseLogName}" 2>&1
+        return "${CmdResult}"
+    fi
+
+    uart_test_lx_z25 "${TestCaseLogName}" "${LogPrefix}" "${UartNoList}"
+    CmdResult=$?
+    if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+        echo "${LogPrefix} uart_test_lx_z25 failed, err: ${CmdResult} "\
+          | tee -a "${TestCaseLogName}" 2>&1
+    fi
 
     return "${CmdResult}"
 }
-
 
 function load_z025_driver {
     local TestCaseLogName=${1}
@@ -74,18 +118,18 @@ function uart_test_lx_z25 {
 
     FILE="${UartNoList}"
     if [ -f ${FILE} ]; then
-            echo "${LogPrefix} file: \"${FILE}\" exists"\
-              | tee -a "${LogFileName}" 2>&1
-            TtyDeviceCnt=$(cat ${FILE} | wc -l)
+        echo "${LogPrefix} file: \"${FILE}\" exists"\
+          | tee -a "${LogFileName}" 2>&1
+        TtyDeviceCnt=$(cat ${FILE} | wc -l)
 
-            for i in $(seq 1 ${TtyDeviceCnt}); do
-                    Arr[${i}]=$(cat ${FILE} | awk NR==${i}'{print $1}')
-                    echo "${LogPrefix} read from file: ${Arr[${i}]}"
-            done
+        for i in $(seq 1 ${TtyDeviceCnt}); do
+            Arr[${i}]=$(cat ${FILE} | awk NR==${i}'{print $1}')
+            echo "${LogPrefix} read from file: ${Arr[${i}]}"
+        done
     else
-            echo "${LogPrefix} file UART_board_tty_numbers does not exists"\
-              | tee -a "${LogFileName}" 2>&1
-            return "${ERR_NOEXIST}"
+        echo "${LogPrefix} file UART_board_tty_numbers does not exists"\
+          | tee -a "${LogFileName}" 2>&1
+        return "${ERR_NOEXIST}"
     fi
 
     local tty0="ttyS$(cat ${FILE} | awk NR==1'{print $1}')"
@@ -93,29 +137,29 @@ function uart_test_lx_z25 {
 
     uart_test_tty "${tty1}" "${tty0}" "${LogPrefix}" "${LogFileName}"
     if [ $? -ne 0 ]; then
-            echo "${LogPrefix}  ERR_VALUE: ${tty1} with ${tty0}" | tee -a "${LogFileName}"
-            return "${ERR_VALUE}"
+        echo "${LogPrefix}  ERR_VALUE: ${tty1} with ${tty0}" | tee -a "${LogFileName}"
+        return "${ERR_VALUE}"
     fi
 
     sleep 1
     echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rmmod men_lx_z25 
     if [ $? -ne 0 ]; then
-            echo "${LogPrefix}  ERR_VALUE: could not rmmod m" | tee -a "${LogFileName}"
-            return "${ERR_VALUE}"
+        echo "${LogPrefix}  ERR_VALUE: could not rmmod m" | tee -a "${LogFileName}"
+        return "${ERR_VALUE}"
     fi
 
     echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_lx_z25 baud_base=1843200 mode=se,se
     if [ $? -ne 0 ]; then
-            echo "${LogPrefix}  ERR_VALUE: could not  modprobe men_lx_z25 baud_base=1843200 mode=se,se"\
-              | tee -a "${LogFileName}"
-            return "${ERR_VALUE}"
+        echo "${LogPrefix}  ERR_VALUE: could not  modprobe men_lx_z25 baud_base=1843200 mode=se,se"\
+          | tee -a "${LogFileName}"
+        return "${ERR_VALUE}"
     fi
     sleep 1
 
     uart_test_tty "${tty0}" "${tty1}" "${LogPrefix}" "${LogFileName}"
     if [ $? -ne 0 ]; then
-            echo "${LogPrefix}  ERR_VALUE: ${tty0} with ${tty1}" | tee -a "${LogFileName}"
-            return "${ERR_VALUE}"
+        echo "${LogPrefix}  ERR_VALUE: ${tty0} with ${tty1}" | tee -a "${LogFileName}"
+        return "${ERR_VALUE}"
     fi
 
     return "${ERR_OK}"
