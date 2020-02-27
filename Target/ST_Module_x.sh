@@ -7,6 +7,7 @@ source "${MyDir}"/M_Modules_Tests/m47.sh
 source "${MyDir}"/M_Modules_Tests/m65n.sh
 source "${MyDir}"/M_Modules_Tests/m72.sh
 source "${MyDir}"/Board_Tests/f215.sh
+source "${MyDir}"/Board_Tests/g215.sh
 source "${MyDir}"/Board_Tests/f223.sh
 
 CurrDir=$(pwd)
@@ -197,7 +198,8 @@ TestTypeDev=$(echo ${DeviceName} | head -c1)
                 TestCaseResult=0
             fi
             ;;
-        f)
+        f);&
+        g)
             echo "${LogPrefix} Board test" | tee -a "${TestCaseLogName}" 2>&1
             echo "${LogPrefix} \"${TestFunc} ${TestCaseLogName} ${LogPrefix} ${DevicesFile} ${DeviceNo}\""\
                 | tee -a "${TestCaseLogName}" 2>&1
