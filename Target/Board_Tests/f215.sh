@@ -93,7 +93,6 @@ function f215_test {
                      echo "${LogPrefix} uart_test_lx_z25 failed, err: ${CmdResult} "\
                        | tee -a "${TestCaseLogName}" 2>&1
             fi
-            return "${CmdResult}"
 
             TestCaseStep5=${CmdResult}
             MachineState="Step6"
