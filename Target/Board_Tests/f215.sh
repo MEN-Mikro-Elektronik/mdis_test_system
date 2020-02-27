@@ -74,7 +74,7 @@ function f215_test {
                 return "${CmdResult}"
             fi
 
-            uart_loopback_test "${TestCaseLogName}" "${LogPrefix} "${UartNoList}"
+            uart_loopback_test "${TestCaseLogName}" "${LogPrefix}" "${UartNoList}"
             CmdResult=$?
             if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
                 echo "${LogPrefix} uart_test_board err: ${CmdResult} "\
