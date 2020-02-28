@@ -173,6 +173,7 @@ fi
 
 echo "${LogPrefix} Run function:" | tee -a "${TestCaseLogName}" 2>&1
 
+TestTypeDev=$(echo ${DeviceName} | head -c1)
 case "${TestTypeDev}" in
     m)
         echo "${LogPrefix} M-Module test" | tee -a "${TestCaseLogName}" 2>&1
