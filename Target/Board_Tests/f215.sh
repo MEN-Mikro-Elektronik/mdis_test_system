@@ -22,12 +22,12 @@ function f215_description {
     echo "DESCRIPTION:"
     echo "    f215_${ModuleNo}"
     echo "RESULTS"
-    echo "    SUCCESS / FAIL"
-    echo "    If \"FAIL\", please check test case log file:"
-    echo "    ${ModuleLogPath}"
-    echo "    For more detailed information please see corresponding log files in test"
-    echo "    case repository"
-    echo "    To see error codes definition please check Conf.sh"
+    echo "    SUCCESS if ip-cores tests on F215 are passed."
+    echo "    FAIL otherwise"
+    echo ""
+    #echo $(z025_uart_description)
+    #echo $(z029_can_description)
+    #echo $(z034_z037_gpio_description)
 }
 
 ############################################################################
