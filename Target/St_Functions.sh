@@ -180,7 +180,7 @@ function obtain_device_list_chameleon_device {
         echo "${LogPrefix} Current Path:" | tee -a ${TestCaseLogName} 2>&1
         echo "${LogPrefix} $PWD" | tee -a ${TestCaseLogName} 2>&1
 
-        local ChamBoardsNr=$(grep "^mezz_cham*" ../system.dsc | wc -l)
+        local ChamBoardsNr=$(grep "^mezz_cham*" ../../system.dsc | wc -l)
         echo "${LogPrefix} Number of Chameleon boards: ${ChamBoardsNr}"\
           | tee -a ${TestCaseLogName} 2>&1
 
@@ -194,8 +194,8 @@ function obtain_device_list_chameleon_device {
 
         for i in $(seq 1 ${ChamBoardsNr}); do
                 # Display chameleon bus and device number
-                ChamBusNr=$(sed -n "/^mezz_cham_${i}/,/}/p" ../system.dsc | grep "PCI_BUS_NUMBER" | awk '{print $4}')
-                ChamDevNr=$(sed -n "/^mezz_cham_${i}/,/}/p" ../system.dsc | grep "PCI_DEVICE_NUMBER" | awk '{print $4}')
+                ChamBusNr=$(sed -n "/^mezz_cham_${i}/,/}/p" ../../system.dsc | grep "PCI_BUS_NUMBER" | awk '{print $4}')
+                ChamDevNr=$(sed -n "/^mezz_cham_${i}/,/}/p" ../../system.dsc | grep "PCI_DEVICE_NUMBER" | awk '{print $4}')
 
                 # Convert to decimal and check if it is valid chameleon board
                 ChamBusNr=$(( 16#$(echo ${ChamBusNr} | awk -F'x' '{print $2}')))
@@ -209,17 +209,17 @@ function obtain_device_list_chameleon_device {
         done
 
         # Check how many devices are present in system.dsc 
-        local DeviceNr=$(grep "{" ../system.dsc | wc -l )
+        local DeviceNr=$(grep "{" ../../system.dsc  | wc -l )
         
         # Create file with devices description on mezzaine chameleon board
         touch "${FileWithResults}"
 
         for i in $(seq 1 ${DeviceNr}); do
                 #Check if device belongs to choosen chameleon board
-                local DevToCheck=$(grep "{" ../system.dsc | awk NR==${i}'{print $1}')
+                local DevToCheck=$(grep "{" ../../system.dsc  | awk NR==${i}'{print $1}')
 
                 if [ "${DevToCheck}" != "mezz_cham_${ChamValidId}" ]; then
-                        sed -n "/${DevToCheck}/,/}/p" ../system.dsc | grep "mezz_cham_${ChamValidId}" > /dev/null 2>&1
+                        sed -n "/${DevToCheck}/,/}/p" ../../system.dsc  | grep "mezz_cham_${ChamValidId}" > /dev/null 2>&1
 
                         if [ $? -eq 0 ]; then
                                 echo "${LogPrefix}  Device: ${DevToCheck} belongs to mezz_cham_${ChamValidId}"\
