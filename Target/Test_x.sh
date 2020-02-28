@@ -9,6 +9,7 @@ source "${MyDir}"/M_Modules_Tests/m72.sh
 source "${MyDir}"/Board_Tests/f215.sh
 source "${MyDir}"/Board_Tests/g215.sh
 source "${MyDir}"/Board_Tests/f223.sh
+source "${MyDir}"/Board_Tests/carriers.sh
 
 CurrDir=$(pwd)
 
@@ -144,11 +145,24 @@ then
     exit "${ERR_NOEXIST}"
 fi
 
-cd "${MainTestDirectoryPath}/${MainTestDirectoryName}" || exit "${ERR_NOEXIST}"
 ScriptName=${0##*/}
 TestCaseName="${ScriptName%.*}_${TestCaseId}_Test_Case"
 TestCaseLogName="${ScriptName%.*}_log.txt"
 ResultsSummaryTmp="${TestCaseId}.tmp"
+
+#If the same test case ID is present then go into this directory
+TestTypeDev=$(echo ${DeviceName} | head -c1)
+case "${TestTypeDev}" in
+    m);&
+    z)
+        echo "${LogPrefix} module/ipcore test"| tee -a "${TestCaseLogName}" 2>&1
+        cd "${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestCaseName}" || exit "${ERR_NOEXIST}"
+        ;;
+    *)
+        echo "${LogPrefix} board or other test"| tee -a "${TestCaseLogName}" 2>&1
+        cd "${MainTestDirectoryPath}/${MainTestDirectoryName}" || exit "${ERR_NOEXIST}"
+        ;;
+esac
 
 # Move to correct Test_Summary directory
 cd "${TestCaseMainDir}" || exit "${ERR_NOEXIST}"
@@ -172,51 +186,48 @@ fi
 
 echo "${LogPrefix} Run function:" | tee -a "${TestCaseLogName}" 2>&1
 
-TestTypeDev=$(echo ${DeviceName} | head -c1)
-    case "${TestTypeDev}" in
-        m)
-            echo "${LogPrefix} M-Module test" | tee -a "${TestCaseLogName}" 2>&1
-            echo "${LogPrefix} \"${TestFunc} ${TestCaseLogName} ${LogPrefix} ${DeviceNo} ${TestCaseName}\""\
-                | tee -a "${TestCaseLogName}" 2>&1
-            "${TestFunc}" "${TestCaseLogName}" "${LogPrefix}" "${DeviceNo}" "${TestCaseName}"
-            CmdResult=$?
-            if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-                TestCaseResult="${CmdResult}"
-            else
-                TestCaseResult=0
-            fi
-            ;;
-        z)
-            echo "${LogPrefix} Ip core test" | tee -a "${TestCaseLogName}" 2>&1
-            echo "${LogPrefix} \"${TestFunc} ${TestCaseLogName} ${LogPrefix} ${DevicesFile} ${DeviceNo}\""\
-                | tee -a "${TestCaseLogName}" 2>&1
-            "${TestFunc}" "${TestCaseLogName}" "${LogPrefix}" "${DevicesFile}" "${DeviceNo}"
-            CmdResult=$?
-            if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-                TestCaseResult="${CmdResult}"
-            else
-                TestCaseResult=0
-            fi
-            ;;
-        f);&
-        g)
-            echo "${LogPrefix} Board test" | tee -a "${TestCaseLogName}" 2>&1
-            echo "${LogPrefix} \"${TestFunc} ${TestCaseLogName} ${LogPrefix} ${DevicesFile} ${DeviceNo}\""\
-                | tee -a "${TestCaseLogName}" 2>&1
-            "${TestFunc}" "${TestCaseLogName}" "${LogPrefix}" "${DevicesFile}" "${DeviceNo}"
-            CmdResult=$?
-            if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-                TestCaseResult="${CmdResult}"
-            else
-                TestCaseResult=0
-            fi
-            ;;
-        *)
-            echo "${LogPrefix} No valid device name"| tee -a "${TestCaseLogName}" 2>&1
+case "${TestTypeDev}" in
+    m)
+        echo "${LogPrefix} M-Module test" | tee -a "${TestCaseLogName}" 2>&1
+        echo "${LogPrefix} \"${TestFunc} ${TestCaseLogName} ${LogPrefix}_${DeviceName} ${DeviceNo} ${TestCaseName}\""\
+            | tee -a "${TestCaseLogName}" 2>&1
+        "${TestFunc}" "${TestCaseLogName}" "${LogPrefix}_${DeviceName}" "${DeviceNo}" "${TestCaseName}"
+        CmdResult=$?
+        if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+            TestCaseResult="${CmdResult}"
+        else
+            TestCaseResult=0
+        fi
         ;;
-    esac
-
-
+    z)
+        echo "${LogPrefix} Ip core test" | tee -a "${TestCaseLogName}" 2>&1
+        echo "${LogPrefix} \"${TestFunc} ${TestCaseLogName} ${LogPrefix} ${DevicesFile} ${DeviceNo}\""\
+            | tee -a "${TestCaseLogName}" 2>&1
+        "${TestFunc}" "${TestCaseLogName}" "${LogPrefix}" "${DevicesFile}" "${DeviceNo}"
+        CmdResult=$?
+        if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+            TestCaseResult="${CmdResult}"
+        else
+            TestCaseResult=0
+        fi
+        ;;
+    f);&
+    g)
+        echo "${LogPrefix} Board test" | tee -a "${TestCaseLogName}" 2>&1
+        echo "${LogPrefix} \"${TestFunc} ${TestCaseLogName} ${LogPrefix} ${DevicesFile} ${DeviceNo}\""\
+            | tee -a "${TestCaseLogName}" 2>&1
+        "${TestFunc}" "${TestCaseLogName}" "${LogPrefix}" "${DevicesFile}" "${DeviceNo}"
+        CmdResult=$?
+        if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+            TestCaseResult="${CmdResult}"
+        else
+            TestCaseResult=0
+        fi
+        ;;
+    *)
+        echo "${LogPrefix} No valid device name"| tee -a "${TestCaseLogName}" 2>&1
+    ;;
+esac
 
 if [ "${TestCaseResult}" -eq "${ERR_OK}" ]; then
     TestCaseResult="SUCCESS"
