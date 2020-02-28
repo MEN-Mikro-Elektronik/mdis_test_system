@@ -35,9 +35,9 @@ function f215_description {
 # $2    LogPrefix
 # $3    M-Module number
 function f215_test {
-    local TestSummaryDirectory=${1}
-    local TestCaseId=${2}
-    local OsNameKernel=${3}
+    local TestCaseId="${1}"
+    local TestSummaryDirectory="${2}"
+    local OsNameKernel="${3}"
     local TestCaseLogName=${4}
     local LogPrefix=${5}
     local BoardInSystem=${6}
@@ -91,7 +91,7 @@ function f215_test {
             run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
-                                             -dname "z029_can"\
+                                             -dname "z034_z037_gpio"\
                                              -venid "${VenID}"\
                                              -devid "${DevID}"\
                                              -subvenid "${SubVenID}"\
