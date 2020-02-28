@@ -30,9 +30,9 @@ function g204_m65n_description {
 # $2    LogPrefix
 # $3    M-Module number
 function g204_m65n_test {
-    local TestCaseLogName=${1}
-    local LogPrefix=${2}
-    local BoardInSystem=${3}
+    local TestCaseId="${1}"
+    local TestSummaryDirectory="${2}"
+    local OsNameKernel="${3}"
 
     #local TestCaseId="${1}"
     #local TestSummaryDirectory="${2}"
