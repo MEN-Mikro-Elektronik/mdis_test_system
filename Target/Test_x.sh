@@ -232,9 +232,9 @@ case "${TestTypeDev}" in
         ;;
     z)
         echo "${LogPrefix} Ip Core test" | tee -a "${TestCaseLogName}" 2>&1
-        echo "${LogPrefix} \"${TestFunc} ${TestCaseLogName} ${LogPrefix} ${VenID} ${DevID} ${SubVenID} ${DeviceNo} ${InternalTestName}\""\
+        echo "${LogPrefix} \"${TestFunc} ${TestCaseLogName} ${LogPrefix}_${DeviceName} ${VenID} ${DevID} ${SubVenID} ${DeviceNo} ${InternalTestName}\""\
             | tee -a "${TestCaseLogName}" 2>&1
-        "${TestFunc}" "${TestCaseLogName}" "${LogPrefix}" "${VenID}" "${DevID}" "${SubVenID}" "${DeviceNo}" "${InternalTestName}"
+        "${TestFunc}" "${TestCaseLogName}" "${LogPrefix}_${DeviceName}" "${VenID}" "${DevID}" "${SubVenID}" "${DeviceNo}" "${InternalTestName}"
         CmdResult=$?
         if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
             TestCaseResult="${CmdResult}"
@@ -247,7 +247,7 @@ case "${TestTypeDev}" in
         echo "${LogPrefix} Board test" | tee -a "${TestCaseLogName}" 2>&1
         echo "${LogPrefix} \"${TestFunc} ${TestCaseId} ${TestCaseMainDir} ${TestOs} ${TestCaseLogName} ${LogPrefix} ${DevicesFile} ${DeviceNo}\""\
             | tee -a "${TestCaseLogName}" 2>&1
-        "${TestFunc}" "${TestCaseId}" "${TestCaseMainDir}" "${TestOs}" "${TestCaseLogName}" "${LogPrefix}" "${DeviceNo}"
+        "${TestFunc}" "${TestCaseId}" "${TestCaseMainDir}/${TestCaseName}" "${TestOs}" "${TestCaseLogName}" "${LogPrefix}" "${DeviceNo}"
         CmdResult=$?
         if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
             TestCaseResult="${CmdResult}"
