@@ -245,7 +245,7 @@ case "${TestTypeDev}" in
     f);&
     g)
         echo "${LogPrefix} Board test" | tee -a "${TestCaseLogName}" 2>&1
-        echo "${LogPrefix} \"${TestFunc} ${TestCaseId} ${TestCaseMainDir} ${TestOs} ${TestCaseLogName} ${LogPrefix} ${DevicesFile} ${DeviceNo}\""\
+        echo "${LogPrefix} \"${TestFunc} ${TestCaseId} ${TestCaseMainDir}/${TestCaseName} ${TestOs} ${TestCaseLogName} ${LogPrefix} ${DevicesFile} ${DeviceNo}\""\
             | tee -a "${TestCaseLogName}" 2>&1
         "${TestFunc}" "${TestCaseId}" "${TestCaseMainDir}/${TestCaseName}" "${TestOs}" "${TestCaseLogName}" "${LogPrefix}" "${DeviceNo}"
         CmdResult=$?

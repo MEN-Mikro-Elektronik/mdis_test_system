@@ -62,10 +62,10 @@ function f215_test {
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
                                              -dname "z025_uart"\
-                                             -venid "${VenID}"
-                                             -devid "${DevID}"
-                                             -subvenid "${SubVenID}"
-                                             -tspec "${UartNo}"
+                                             -venid "${VenID}"\
+                                             -devid "${DevID}"\
+                                             -subvenid "${SubVenID}"\
+                                             -tspec "${UartNo}"\
                                              -dno "1"
             UartTestResult=$?
             MachineState="can_test"
@@ -77,10 +77,10 @@ function f215_test {
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
                                              -dname "z029_can"\
-                                             -venid "${VenID}"
-                                             -devid "${DevID}"
-                                             -subvenid "${SubVenID}"
-                                             -tspec "${CanTest}"
+                                             -venid "${VenID}"\
+                                             -devid "${DevID}"\
+                                             -subvenid "${SubVenID}"\
+                                             -tspec "${CanTest}"\
                                              -dno "1"
             CanTestResult=${CmdResult}
             MachineState="gpio_test"
@@ -92,10 +92,10 @@ function f215_test {
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
                                              -dname "z029_can"\
-                                             -venid "${VenID}"
-                                             -devid "${DevID}"
-                                             -subvenid "${SubVenID}"
-                                             -tspec "dummy"
+                                             -venid "${VenID}"\
+                                             -devid "${DevID}"\
+                                             -subvenid "${SubVenID}"\
+                                             -tspec "dummy"\
                                              -dno "1"
             GpioTestResult=$?
             MachineState="Break"
