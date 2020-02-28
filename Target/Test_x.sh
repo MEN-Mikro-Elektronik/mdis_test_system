@@ -87,13 +87,33 @@ while test $# -gt 0 ; do
                 exit 1
             fi
             ;;
-        -dfile)
+        -venid)
             shift
             if test $# -gt 0; then
-                DevicesFile="$1"
+                VenID="$1"
                 shift
             else
-                echo "No device number specified"
+                echo "No DevVenId number specified"
+                exit 1
+            fi
+            ;;
+        -devid)
+            shift
+            if test $# -gt 0; then
+                DevID="$1"
+                shift
+            else
+                echo "No DevVenId number specified"
+                exit 1
+            fi
+            ;;
+        -subvenid)
+            shift
+            if test $# -gt 0; then
+                SubVenID="$1"
+                shift
+            else
+                echo "No DevVenId number specified"
                 exit 1
             fi
             ;;
@@ -150,15 +170,17 @@ ScriptName=${0##*/}
 
 TestTypeDev=$(echo ${DeviceName} | head -c1)
 case "${TestTypeDev}" in
-    m)
+    m);&
+    z)
         TestCaseName="${ScriptName%.*}_${TestCaseId}_${DeviceName}_Test_Case"
+        TestCaseLogName="${ScriptName%.*}_${DeviceName}_log.txt"
         ;;
     *)
         TestCaseName="${ScriptName%.*}_${TestCaseId}_Test_Case"
+        TestCaseLogName="${ScriptName%.*}_log.txt"
         ;;
 esac
 
-TestCaseLogName="${ScriptName%.*}_log.txt"
 ResultsSummaryTmp="${TestCaseId}.tmp"
 
 # Move to correct Test_Summary directory
@@ -208,12 +230,24 @@ case "${TestTypeDev}" in
             TestCaseResult=0
         fi
         ;;
+    z)
+        echo "${LogPrefix} Ip Core test" | tee -a "${TestCaseLogName}" 2>&1
+        echo "${LogPrefix} \"${TestFunc} ${TestCaseLogName} ${LogPrefix} ${VenID} ${DevID} ${SubVenID} ${DeviceNo} ${InternalTestName}\""\
+            | tee -a "${TestCaseLogName}" 2>&1
+        "${TestFunc}" "${TestCaseLogName}" "${LogPrefix}" "${VenID}" "${DevID}" "${SubVenID}" "${DeviceNo}" "${InternalTestName}"
+        CmdResult=$?
+        if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+            TestCaseResult="${CmdResult}"
+        else
+            TestCaseResult=0
+        fi
+        ;;
     f);&
     g)
         echo "${LogPrefix} Board test" | tee -a "${TestCaseLogName}" 2>&1
-        echo "${LogPrefix} \"${TestFunc} ${TestCaseLogName} ${LogPrefix} ${DevicesFile} ${DeviceNo}\""\
+        echo "${LogPrefix} \"${TestFunc} ${TestCaseId} ${TestCaseMainDir} ${TestOs} ${TestCaseLogName} ${LogPrefix} ${DevicesFile} ${DeviceNo}\""\
             | tee -a "${TestCaseLogName}" 2>&1
-        "${TestFunc}" "${TestCaseLogName}" "${LogPrefix}" "${DevicesFile}" "${DeviceNo}"
+        "${TestFunc}" "${TestCaseId}" "${TestCaseMainDir}" "${TestOs}" "${TestCaseLogName}" "${LogPrefix}" "${DeviceNo}"
         CmdResult=$?
         if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
             TestCaseResult="${CmdResult}"
@@ -222,7 +256,7 @@ case "${TestTypeDev}" in
         fi
         ;;
     *)
-        echo "${LogPrefix} No valid device name, ip cores not supported yet"| tee -a "${TestCaseLogName}" 2>&1
+        echo "${LogPrefix} No valid device name"| tee -a "${TestCaseLogName}" 2>&1
         ;;
 esac
 

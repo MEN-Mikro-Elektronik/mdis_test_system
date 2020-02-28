@@ -25,9 +25,6 @@ function f215_description {
     echo "    SUCCESS if ip-cores tests on F215 are passed."
     echo "    FAIL otherwise"
     echo ""
-    #echo $(z025_uart_description)
-    #echo $(z029_can_description)
-    #echo $(z034_z037_gpio_description)
 }
 
 ############################################################################
@@ -38,9 +35,12 @@ function f215_description {
 # $2    LogPrefix
 # $3    M-Module number
 function f215_test {
-    local TestCaseLogName=${1}
-    local LogPrefix=${2}
-    local BoardInSystem=${3}
+    local TestSummaryDirectory=${1}
+    local TestCaseId=${2}
+    local OsNameKernel=${3}
+    local TestCaseLogName=${4}
+    local LogPrefix=${5}
+    local BoardInSystem=${6}
 
     # Board in this Test Case always have
     VenID="0x1a88"
@@ -57,19 +57,46 @@ function f215_test {
         uart_test)
             echo "${LogPrefix} Run UART test" | tee -a "${TestCaseLogName}" 2>&1
             blacklist_mcb_pci "${TestCaseLogName}" "${LogPrefix}" # Move to PC_Configure script
-            z025_uart_test "${TestCaseLogName}" "${LogPrefix}" "${VenID}" "${DevID}" "${SubVenID}" "${BoardInSystem}" "${UartNo}"
+            #z025_uart_test "${TestCaseLogName}" "${LogPrefix}" "${VenID}" "${DevID}" "${SubVenID}" "${BoardInSystem}" "${UartNo}"
+            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+                                             -id "${TestCaseId}"\
+                                             -os "${OsNameKernel}"\
+                                             -dname "z025_uart"\
+                                             -venid "${VenID}"
+                                             -devid "${DevID}"
+                                             -subvenid "${SubVenID}"
+                                             -tspec "${UartNo}"
+                                             -dno "1"
             UartTestResult=$?
             MachineState="can_test"
             ;;
         can_test)
             echo "${LogPrefix} Run CAN test" | tee -a "${TestCaseLogName}" 2>&1
-            z029_can_test "${TestCaseLogName}" "${LogPrefix}" "${VenID}" "${DevID}" "${SubVenID}" "${BoardInSystem}" "${CanTest}"
+            #z029_can_test "${TestCaseLogName}" "${LogPrefix}" "${VenID}" "${DevID}" "${SubVenID}" "${BoardInSystem}" "${CanTest}"
+            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+                                             -id "${TestCaseId}"\
+                                             -os "${OsNameKernel}"\
+                                             -dname "z029_can"\
+                                             -venid "${VenID}"
+                                             -devid "${DevID}"
+                                             -subvenid "${SubVenID}"
+                                             -tspec "${CanTest}"
+                                             -dno "1"
             CanTestResult=${CmdResult}
             MachineState="gpio_test"
             ;;
         gpio_test)
             echo "${LogPrefix} Run GPIO test" | tee -a "${TestCaseLogName}" 2>&1
-            z034_z037_gpio_test  "${TestCaseLogName}" "${LogPrefix}" "${VenID}" "${DevID}" "${SubVenID}" "${BoardInSystem}" "${CanTest}"
+            #z034_z037_gpio_test  "${TestCaseLogName}" "${LogPrefix}" "${VenID}" "${DevID}" "${SubVenID}" "${BoardInSystem}" "${CanTest}"
+            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+                                             -id "${TestCaseId}"\
+                                             -os "${OsNameKernel}"\
+                                             -dname "z029_can"\
+                                             -venid "${VenID}"
+                                             -devid "${DevID}"
+                                             -subvenid "${SubVenID}"
+                                             -tspec "dummy"
+                                             -dno "1"
             GpioTestResult=$?
             MachineState="Break"
             ;;
