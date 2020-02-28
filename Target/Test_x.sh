@@ -145,24 +145,11 @@ then
     exit "${ERR_NOEXIST}"
 fi
 
+cd "${MainTestDirectoryPath}/${MainTestDirectoryName}" || exit "${ERR_NOEXIST}"
 ScriptName=${0##*/}
 TestCaseName="${ScriptName%.*}_${TestCaseId}_Test_Case"
 TestCaseLogName="${ScriptName%.*}_log.txt"
 ResultsSummaryTmp="${TestCaseId}.tmp"
-
-#If the same test case ID is present then go into this directory
-TestTypeDev=$(echo ${DeviceName} | head -c1)
-case "${TestTypeDev}" in
-    m);&
-    z)
-        echo "${LogPrefix} module/ipcore test"| tee -a "${TestCaseLogName}" 2>&1
-        cd "${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestCaseName}" || exit "${ERR_NOEXIST}"
-        ;;
-    *)
-        echo "${LogPrefix} board or other test"| tee -a "${TestCaseLogName}" 2>&1
-        cd "${MainTestDirectoryPath}/${MainTestDirectoryName}" || exit "${ERR_NOEXIST}"
-        ;;
-esac
 
 # Move to correct Test_Summary directory
 cd "${TestCaseMainDir}" || exit "${ERR_NOEXIST}"
@@ -214,9 +201,12 @@ case "${TestTypeDev}" in
     f);&
     g)
         echo "${LogPrefix} Board test" | tee -a "${TestCaseLogName}" 2>&1
-        echo "${LogPrefix} \"${TestFunc} ${TestCaseLogName} ${LogPrefix} ${DevicesFile} ${DeviceNo}\""\
+        #echo "${LogPrefix} \"${TestFunc} ${TestCaseLogName} ${LogPrefix} ${DevicesFile} ${DeviceNo}\""\
+        #    | tee -a "${TestCaseLogName}" 2>&1
+        #"${TestFunc}" "${TestCaseLogName}" "${LogPrefix}" "${DevicesFile}" "${DeviceNo}"
+        echo "${LogPrefix} \"${TestFunc} ${TestCaseId} ${TestCaseMainDir}/${TestCaseName} ${TestOs}\""\
             | tee -a "${TestCaseLogName}" 2>&1
-        "${TestFunc}" "${TestCaseLogName}" "${LogPrefix}" "${DevicesFile}" "${DeviceNo}"
+        "${TestFunc}" "${TestCaseId}" "${TestCaseMainDir}/${TestCaseName}" "${TestOs}"
         CmdResult=$?
         if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
             TestCaseResult="${CmdResult}"

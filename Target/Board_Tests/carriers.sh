@@ -30,11 +30,15 @@ function g204_m65n_description {
 # $2    LogPrefix
 # $3    M-Module number
 function g204_m65n_test {
-    local TestCaseId="${1}"
-    local TestSummaryDirectory="${2}"
-    local OsNameKernel="${3}"
+    local TestCaseLogName=${1}
+    local LogPrefix=${2}
+    local BoardInSystem=${3}
+
+    #local TestCaseId="${1}"
+    #local TestSummaryDirectory="${2}"
+    #local OsNameKernel="${3}"
 
     local TestCaseResult="${ERR_VALUE}"
-    TestCaseResult=$(run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "m65n" -dno "1")
-    return "${TestCaseResult}"
+    run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "m65n" -dno "1"
+    return $?
 }
