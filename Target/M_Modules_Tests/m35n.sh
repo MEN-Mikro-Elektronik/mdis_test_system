@@ -56,19 +56,17 @@ function m35n_test {
 
     echo "${LogPrefix} Step1:" | tee -a "${TestCaseLogName}" 2>&1
     m_module_x_test "${TestCaseLogName}" "${TestCaseName}" "${RelayOutput}" "m35" "${ModuleNo}" "simp" "${LogPrefix}"
-    CmdResult=$?
-    if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-        Step1="${CmdResult}"
-    fi
+    SimpTestResult=$?
 
     echo "${LogPrefix} Step2:" | tee -a "${TestCaseLogName}" 2>&1
     m_module_x_test "${TestCaseLogName}" "${TestCaseName}" "${RelayOutput}" "m35" "${ModuleNo}" "blkread" "${LogPrefix}"
-    CmdResult=$?
-    if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-        Step2="${CmdResult}"
-    fi
+    BlkreadTestResult=$?
 
-    if [ "${Step1}" = "${ERR_OK}" ] && [ "${Step2}" = "${ERR_OK}" ]; then
+    echo "${LogPrefix} SimpTestResult: ${SimpTestResult}" | tee -a "${TestCaseLogName}" 2>&1
+    echo "${LogPrefix} BlkreadTestResult: ${BlkreadTestResult}" | tee -a "${TestCaseLogName}" 2>&1
+
+    if [ "${SimpTestResult}" = "${ERR_OK}" ] && [ "${BlkreadTestResult}" = "${ERR_OK}" ]; then
+        echo "${LogPrefix} SimpTestResult, BlkreadTestResult = ERR_OK" | tee -a "${TestCaseLogName}" 2>&1
         return "${ERR_OK}"
     else
         return "${ERR_VALUE}"
