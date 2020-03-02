@@ -38,9 +38,12 @@ function g215_description {
 # $2    LogPrefix
 # $3    M-Module number
 function g215_test {
-    local TestCaseLogName=${1}
-    local LogPrefix=${2}
-    local BoardInSystem=${3}
+    local TestCaseId="${1}"
+    local TestSummaryDirectory="${2}"
+    local OsNameKernel="${3}"
+    local TestCaseLogName=${4}
+    local LogPrefix=${5}
+    local BoardInSystem=${6}
 
     # Board in this Test Case always have
     VenID="0x1a88"
@@ -56,7 +59,6 @@ function g215_test {
         case "${MachineState}" in
         uart_test)
             echo "${LogPrefix} Run UART test" | tee -a "${TestCaseLogName}" 2>&1
-            blacklist_mcb_pci "${TestCaseLogName}" "${LogPrefix}" # Move to PC_Configure script
             run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\

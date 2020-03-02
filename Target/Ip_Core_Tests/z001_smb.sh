@@ -9,14 +9,14 @@ source "${MyDir}/../St_Functions.sh"
 # parameters:
 # $1    Module number
 # $2    Module log path 
-function z001_description {
+function z001_smb_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
     echo "-------------------Ip Core z001 Test Case----------------------------"
 }
 
 
-function z001_test {
+function z001_smb_test {
     local TestCaseLogName=${1}
     local LogPrefix=${2}
     local VenID=${3}
