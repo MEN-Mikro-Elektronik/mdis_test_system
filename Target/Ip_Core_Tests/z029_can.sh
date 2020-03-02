@@ -55,6 +55,7 @@ function z029_can_test {
         loopback_single)
             #It is assumed, that 1 CAN is available in board
             can_test_ll_z15_loopback "${TestCaseLogName}" "${LogPrefix}" "${MezzChamDevName}"
+            CmdResult=$?
             if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
                 echo "${LogPrefix} can_test_ll_z15_loopback err: ${CmdResult} "\
                   | tee -a "${TestCaseLogName}" 2>&1
