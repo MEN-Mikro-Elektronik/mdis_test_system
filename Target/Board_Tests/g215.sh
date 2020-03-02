@@ -12,7 +12,7 @@ source "${MyDir}/Ip_Core_Tests/z025_uart.sh"
 # parameters:
 # $1    Module number
 # $2    Module log path 
-function f215_description {
+function g215_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
     echo "--------------------------------G215 Test Case--------------------------------"

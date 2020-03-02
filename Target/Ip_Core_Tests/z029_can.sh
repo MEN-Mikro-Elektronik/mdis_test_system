@@ -40,7 +40,7 @@ function z029_can_test {
     CmdResult=${ERR_VALUE}
     obtain_device_list_chameleon_device "${VenID}" "${DevID}" "${SubVenID}" "${MezzChamDevName}" "${BoardInSystem}" "${TestCaseLogName}" "${LogPrefix}"
     case "${TestType}" in
-        looback)
+        loopback)
             #It is assumed, that 2 CANs are available, and are connected together
             can_test_ll_z15 "${TestCaseLogName}" "${LogPrefix}" "${MezzChamDevName}"
             CmdResult=$?
@@ -52,7 +52,7 @@ function z029_can_test {
                   | tee -a "${TestCaseLogName}" 2>&1
             fi
             ;;
-        looback_single)
+        loopback_single)
             #It is assumed, that 1 CAN is available in board
             can_test_ll_z15_loopback "${TestCaseLogName}" "${LogPrefix}" "${MezzChamDevName}"
             if [ "${CmdResult}" -ne "${ERR_OK}" ]; then

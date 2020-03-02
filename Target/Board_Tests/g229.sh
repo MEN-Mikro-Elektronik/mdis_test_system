@@ -21,7 +21,7 @@ function g229_description {
     echo "DESCRIPTION:"
     echo "    g229_${ModuleNo}"
     echo "RESULTS"
-    echo "    SUCCESS if ip-cores tests on F215 are passed."
+    echo "    SUCCESS if ip-cores tests on G229 are passed."
     echo "    FAIL otherwise"
     echo ""
 }
@@ -46,8 +46,8 @@ function g229_test {
     DevID="0x4d45"
     SubVenID="0x00d1"
 
-    CanTest="looback_single"
-    MachineState="can_test"
+    CanTest="loopback_single"
+    MachineState="smb_test"
     MachineRun=true
     SmbTestResult=${ERR_VALUE}
     CanTestResult=${ERR_VALUE}
