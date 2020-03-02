@@ -20,6 +20,9 @@ function run_test_case {
         0103)
             run_as_root "${MyDir}/Test_x.sh" "${TestSummaryDirectory}" "${TestCaseId}" "${OsNameKernel}" "g229"
             ;;
+        0104)
+            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "carrier_f205_m47"
+            ;;
         0200)
             run_as_root "${MyDir}/Test_x.sh" "${TestSummaryDirectory}" "${TestCaseId}" "${OsNameKernel}" "m11" "1"
             ;;

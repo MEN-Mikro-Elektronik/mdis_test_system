@@ -52,7 +52,7 @@ function create_directory {
 #       None 
 #
 function get_test_summary_directory_name {
-        local CurrDir="$pwd" 
+        local CurrDir="$pwd"
         local CommitIdShortened
         local SystemName
         local TestResultsDirectoryName

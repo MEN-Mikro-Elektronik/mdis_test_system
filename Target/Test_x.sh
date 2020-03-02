@@ -15,8 +15,8 @@ CurrDir=$(pwd)
 
 ############################################################################
 # This script might be used to run simple m-module test,
-# User has to define m_module description and test function. 
-# example: m65n_description (), m65n_test (), and pass parameter "m65n" with 
+# User has to define m_module description and test function.
+# example: m65n_description (), m65n_test (), and pass parameter "m65n" with
 # m-module number into this script
 # 
 # parameters $1 test case main directory
