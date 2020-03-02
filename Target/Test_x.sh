@@ -7,6 +7,7 @@ source "${MyDir}"/M_Modules_Tests/m47.sh
 source "${MyDir}"/M_Modules_Tests/m65n.sh
 source "${MyDir}"/M_Modules_Tests/m72.sh
 source "${MyDir}"/Board_Tests/f215.sh
+source "${MyDir}"/Board_Tests/f614.sh
 source "${MyDir}"/Board_Tests/g215.sh
 source "${MyDir}"/Board_Tests/f223.sh
 source "${MyDir}"/Board_Tests/carriers.sh
@@ -229,6 +230,7 @@ case "${TestTypeDev}" in
         else
             TestCaseResult=0
         fi
+        ResultsSummaryTmp="${TestCaseId}_${DeviceName}.tmp"
         ;;
     z)
         echo "${LogPrefix} Ip Core test" | tee -a "${TestCaseLogName}" 2>&1
@@ -241,6 +243,7 @@ case "${TestTypeDev}" in
         else
             TestCaseResult=0
         fi
+        ResultsSummaryTmp="${TestCaseId}_${DeviceName}.tmp"
         ;;
     f);&
     g)
