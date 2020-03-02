@@ -82,3 +82,57 @@ function carrier_f205_m47_test {
                                      -dno "1"
     return $?
 }
+
+function carrier_g204_m33_description {
+    local ModuleNo=${1}
+    local ModuleLogPath=${2}
+    echo "--------------------------------G204 m33 Test Case---------------------------"
+    echo "PREREQUISITES:"
+    echo "    M-module m33 is plugged into G204"
+    echo "DESCRIPTION:"
+    echo "    Run m-module test(s)"
+    echo "RESULTS"
+    echo "    SUCCESS if all m-modules(s) tests are passed."
+    echo "    FAIL otherwise"
+}
+
+function carrier_g204_m33_test {
+    local TestCaseId="${1}"
+    local TestSummaryDirectory="${2}"
+    local OsNameKernel="${3}"
+
+    local TestCaseResult="${ERR_VALUE}"
+    run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+                                     -id "${TestCaseId}"\
+                                     -os "${OsNameKernel}"\
+                                     -dname "m33"\
+                                     -dno "1"
+    return $?
+}
+
+function carrier_g204_m35n_description {
+    local ModuleNo=${1}
+    local ModuleLogPath=${2}
+    echo "--------------------------------G204 m35n Test Case---------------------------"
+    echo "PREREQUISITES:"
+    echo "    M-module m35n is plugged into G204"
+    echo "DESCRIPTION:"
+    echo "    Run m-module test(s)"
+    echo "RESULTS"
+    echo "    SUCCESS if all m-modules(s) tests are passed."
+    echo "    FAIL otherwise"
+}
+
+function carrier_g204_m35n_test {
+    local TestCaseId="${1}"
+    local TestSummaryDirectory="${2}"
+    local OsNameKernel="${3}"
+
+    local TestCaseResult="${ERR_VALUE}"
+    run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+                                     -id "${TestCaseId}"\
+                                     -os "${OsNameKernel}"\
+                                     -dname "m35n"\
+                                     -dno "1"
+    return $?
+}

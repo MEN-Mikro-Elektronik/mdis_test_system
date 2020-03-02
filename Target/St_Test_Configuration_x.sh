@@ -78,10 +78,11 @@ echo "${1}" | sudo -S --prompt=$'\r' dmesg --clear
 echo "${LogPrefix} Test Setup: ${TestSetup}"
 case "${TestSetup}" in
         1)
-          run_test_case "0203" "${TestSummaryDirectory}" "${OsNameKernel}" #M33 test
           run_test_case "0100" "${TestSummaryDirectory}" "${OsNameKernel}" #F215 board test
-          run_test_case "0101" "${TestSummaryDirectory}" "${OsNameKernel}"
-          run_test_case "0104" "${TestSummaryDirectory}" "${OsNameKernel}"
+          run_test_case "0200" "${TestSummaryDirectory}" "${OsNameKernel}"
+          run_test_case "0201" "${TestSummaryDirectory}" "${OsNameKernel}"
+          run_test_case "0202" "${TestSummaryDirectory}" "${OsNameKernel}"
+          run_test_case "0203" "${TestSummaryDirectory}" "${OsNameKernel}"
           #echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_Module_x.sh" "${TestSummaryDirectory}" "ID_3000"  "${OsNameKernel}" "m65n" "1"
           #echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_Module_x.sh" "${TestSummaryDirectory}" "ID_3010"  "${OsNameKernel}" "m33" "1"
           #echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_Module_x.sh" "${TestSummaryDirectory}" "ID_3020"  "${OsNameKernel}" "m35n" "1"
