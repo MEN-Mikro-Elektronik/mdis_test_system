@@ -524,7 +524,7 @@ function m_module_x_test {
 
         echo "${LogPrefix} M-Module to test: ${MModuleName}" | tee -a "${TestCaseLogName}" 2>&1
         echo "${LogPrefix} M-Module modprobeDriver: ${ModprobeDriver}" | tee -a "${TestCaseLogName}" 2>&1
-        echo "${LogPrefix} M-Module simp: ${ModuleSimp}" | tee -a "${TestCaseLogName}" 2>&1
+        echo "${LogPrefix} M-Module command: ${ModuleSimp} ${ModuleInstanceName}" | tee -a "${TestCaseLogName}" 2>&1
         echo "${LogPrefix} M-Module cmp function: ${ModuleResultCmpFunc}" | tee -a "${TestCaseLogName}" 2>&1
 
         while ${MachineRun}; do
@@ -558,7 +558,7 @@ function m_module_x_test {
                         # If device cannot be opened there is a log in result  :
                         # *** ERROR (LINUX) #2:  No such file or directory ***
                         echo "${LogPrefix} RunExampleInputDisable" | tee -a "${TestCaseLogName}" 2>&1
-                        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' "${ModuleSimp}" "${ModuleInstanceName}" > ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_disconnected.txt 2>&1
+                        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' "${ModuleSimp} ${ModuleInstanceName}" > ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_disconnected.txt 2>&1
                         ErrorLogCnt=$(grep "ERROR" ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_disconnected.txt | grep "No such file or directory" | wc -l) 
                         CmdResult="${ErrorLogCnt}"
                         if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
@@ -588,7 +588,7 @@ function m_module_x_test {
                         # If device cannot be opened there is a log in result  :
                         # *** ERROR (LINUX) #2:  No such file or directory ***
                         echo "${LogPrefix} RunExampleInputEnable" | tee -a "${TestCaseLogName}" 2>&1
-                        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' "${ModuleSimp}" "${ModuleInstanceName}" > ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_connected.txt 2>&1
+                        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' "${ModuleSimp} ${ModuleInstanceName}" > ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_connected.txt 2>&1
                         ErrorLogCnt=$(grep "ERROR" ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_connected.txt | grep "No such file or directory" | wc -l) 
                         CmdResult="${ErrorLogCnt}"
                         if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
