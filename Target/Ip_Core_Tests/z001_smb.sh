@@ -4,7 +4,7 @@ source "${MyDir}/../../Common/Conf.sh"
 source "${MyDir}/../St_Functions.sh"
 
 ############################################################################
-# m72 test description
+# z001 smb test description
 #
 # parameters:
 # $1    Module number
@@ -17,7 +17,16 @@ function z001_description {
 
 
 function z001_test {
-    echo "z001_test is empty"
+    local TestCaseLogName=${1}
+    local LogPrefix=${2}
+    local VenID=${3}
+    local DevID=${4}
+    local SubVenID=${5}
+    local BoardInSystem=${6}
+    local TestType=${7}
+    echo "${LogPrefix} z001_smb fixed on G25A with G229 board"
+    smb_test_lx_z001 "${TestCaseLogName}" "${LogPrefix}" "DBZIB" "0x51"
+    return $?
 }
 ############################################################################
 # Test Z001_SMB IP core with men_lx_z001
@@ -29,8 +38,9 @@ function z001_test {
 #
 function smb_test_lx_z001 {
     local TestCaseLogName=${1}
-    local BoardName="${2}"
-    local ReadAddress="${3}"
+    local LogPrefix=${2}
+    local BoardName="${3}"
+    local ReadAddress="${4}"
     local SMBUS_ID
     local Patt1Def
     local Patt2Def
@@ -43,7 +53,7 @@ function smb_test_lx_z001 {
 
     echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_lx_z001
     if [ $? -ne 0 ]; then
-        echo "ERR_MODPROBE: could not modprobe men_lx_z001" | tee -a "${TestCaseLogName}" 2>&1
+        echo "${LogPrefix} ERR_MODPROBE: could not modprobe men_lx_z001" | tee -a "${TestCaseLogName}" 2>&1
         return "${ERR_MODPROBE}"
     fi
 
@@ -56,11 +66,11 @@ function smb_test_lx_z001 {
     cat "i2c_bus_dump_before.log" | grep "${BoardName}"
     CmdResult=$?
     if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-        echo "ERR_VALUE: i2cdump failed for ${SMBUS_ID}" | tee -a "${TestCaseLogName}" 2>&1
+        echo "${LogPrefix} ERR_VALUE: i2cdump failed for ${SMBUS_ID}" | tee -a "${TestCaseLogName}" 2>&1
 
         echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rmmod men_lx_z001
         if [ $? -ne 0 ]; then
-            echo "ERR_RMMOD: could not rmmod men_lx_z001" | tee -a "${TestCaseLogName}" 2>&1
+            echo "${LogPrefix} ERR_RMMOD: could not rmmod men_lx_z001" | tee -a "${TestCaseLogName}" 2>&1
         fi
 
         return ${ERR_VALUE}
@@ -77,11 +87,11 @@ function smb_test_lx_z001 {
     echo "${MenPcPassword}" | sudo -S --prompt=$'\r' i2cset -y "${SMBUS_ID}" "${ReadAddress}" 0xfe "${Patt2Def}" w
     if [[ "${Patt1Read}" != "${Patt1Write}" || \
           "${Patt2Read}" != "${Patt2Write}" ]]; then
-        echo "ERR_VALUE: read pattern does not match pattern written for ${SMBUS_ID}" | tee -a "${TestCaseLogName}" 2>&1
+        echo "${LogPrefix} ERR_VALUE: read pattern does not match pattern written for ${SMBUS_ID}" | tee -a "${TestCaseLogName}" 2>&1
 
         echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rmmod men_lx_z001
         if [ $? -ne 0 ]; then
-            echo "ERR_RMMOD: could not rmmod men_lx_z001" | tee -a "${TestCaseLogName}" 2>&1
+            echo "${LogPrefix} ERR_RMMOD: could not rmmod men_lx_z001" | tee -a "${TestCaseLogName}" 2>&1
         fi
 
         return "${ERR_VALUE}"
@@ -89,7 +99,7 @@ function smb_test_lx_z001 {
 
     echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rmmod men_lx_z001
     if [ $? -ne 0 ]; then
-        echo "ERR_RMMOD: could not rmmod men_lx_z001" | tee -a "${TestCaseLogName}" 2>&1
+        echo "${LogPrefix} ERR_RMMOD: could not rmmod men_lx_z001" | tee -a "${TestCaseLogName}" 2>&1
     fi
 
     return "${ERR_OK}"

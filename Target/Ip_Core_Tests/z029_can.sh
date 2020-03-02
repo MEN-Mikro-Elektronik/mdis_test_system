@@ -37,44 +37,37 @@ function z029_can_test {
     local TestType=${7}
 
     MezzChamDevName="MezzChamDevName.txt"
+    CmdResult=${ERR_VALUE}
     obtain_device_list_chameleon_device "${VenID}" "${DevID}" "${SubVenID}" "${MezzChamDevName}" "${BoardInSystem}" "${TestCaseLogName}" "${LogPrefix}"
-    can_test_ll_z15 "${TestCaseLogName}" "${LogPrefix}" "${MezzChamDevName}"
-    CmdResult=$?
-    if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-        echo "${LogPrefix} can_test_ll_z15 err: ${CmdResult} "\
-          | tee -a "${TestCaseLogName}" 2>&1
-    else
-        echo "${LogPrefix} can_test_ll_z15 success "\
-          | tee -a "${TestCaseLogName}" 2>&1
-    fi
+    case "${TestType}" in
+        looback)
+            #It is assumed, that 2 CANs are available, and are connected together
+            can_test_ll_z15 "${TestCaseLogName}" "${LogPrefix}" "${MezzChamDevName}"
+            CmdResult=$?
+            if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+                echo "${LogPrefix} can_test_ll_z15 err: ${CmdResult} "\
+                  | tee -a "${TestCaseLogName}" 2>&1
+            else
+                echo "${LogPrefix} can_test_ll_z15 success "\
+                  | tee -a "${TestCaseLogName}" 2>&1
+            fi
+            ;;
+        looback_single)
+            #It is assumed, that 1 CAN is available in board
+            can_test_ll_z15_loopback "${TestCaseLogName}" "${LogPrefix}" "${MezzChamDevName}"
+            if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+                echo "${LogPrefix} can_test_ll_z15_loopback err: ${CmdResult} "\
+                  | tee -a "${TestCaseLogName}" 2>&1
+            else
+                echo "${LogPrefix} can_test_ll_z15_loopback success "\
+                  | tee -a "${TestCaseLogName}" 2>&1
+            fi
+            ;;
+        *)
+            echo "${LogPrefix} No valid device name"| tee -a "${TestCaseLogName}" 2>&1
+        ;;
+    esac
 
-#    local TestType=$(echo ${DeviceName} | head -c1)
-#        case "${TestType}" in
-#            singleCan)
-#                can_test_ll_z15 "${TestCaseLogName}" "${LogPrefix}" "${MezzChamDescriptionFile}"
-#                CmdResult=$?
-#                if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-#                    echo "${LogPrefix} can_test_ll_z15 err: ${CmdResult} "\
-#                      | tee -a "${TestCaseLogName}" 2>&1
-#                else
-#                    echo "${LogPrefix} can_test_ll_z15 success "\
-#                      | tee -a "${TestCaseLogName}" 2>&1
-#                fi
-#                ;;
-#            doubleCan)
-#                can_test_ll_z15_loopback "${TestCaseLogName}" "${LogPrefix}" "${MezzChamDescriptionFile}"
-#                if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-#                    echo "${LogPrefix} can_test_ll_z15_loopback err: ${CmdResult} "\
-#                      | tee -a "${TestCaseLogName}" 2>&1
-#                else
-#                    echo "${LogPrefix} can_test_ll_z15_loopback success "\
-#                      | tee -a "${TestCaseLogName}" 2>&1
-#                fi
-#                ;;
-#            *)
-#                echo "${LogPrefix} No valid device name"| tee -a "${TestCaseLogName}" 2>&1
-#            ;;
-#        esac
     return "${CmdResult}"
 }
 
@@ -120,8 +113,9 @@ function can_test_ll_z15 {
 # Test CAN with men_ll_z15 IpCore (loopback)
 #
 # parameters:
-# $1      name of file with log 
-# $2      mezzaine chameleon device description file
+# $1      name of file with log
+# $2      log prefix
+# $3      mezzaine chameleon device description file
 function can_test_ll_z15_loopback {
     local LogFileName=${1}
     local LogPrefix=${2}
@@ -146,36 +140,6 @@ function can_test_ll_z15_loopback {
         return "${ERR_VALUE}"
     else
         local CanResult=$(grep "TEST RESULT:" mscan_loopb_${CAN1}.txt | awk NR==1'{print $3}')
-        if [ "${CanResult}" -ne "${ERR_OK}" ]; then
-            return "${ERR_RUN}"
-        fi
-        return "${ERR_OK}"
-    fi
-}
-
-############################################################################
-# Test CAN with men_ll_z15 IpCore (loopback) version 2
-#
-# parameters:
-# $1      name of file with log 
-# $2      CAN device name
-function can_test_ll_z15_loopback2 {
-    local LogFileName=$1
-    local CANDevice=$2
-    local LogPrefix="[Can_test]"
-
-    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_ll_z15
-    if [ $? -ne 0 ]; then
-        echo "${LogPrefix}  ERR_VALUE :could not modprobe men_ll_z15" | tee -a "${LogFileName}"
-        return "${ERR_VALUE}"
-    fi
-
-    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' mscan_loopb ${CANDevice} >> mscan_loopb_"${CANDevice}".txt 2>&1
-    if [ $? -ne 0 ]; then
-        echo "${LogPrefix}  mscan_loopb on ${CANDevice} error" | tee -a "${LogFileName}"
-        return "${ERR_VALUE}"
-    else
-        local CanResult=$(grep "TEST RESULT:" mscan_loopb_${CANDevice}.txt | awk NR==1'{print $3}')
         if [ "${CanResult}" -ne "${ERR_OK}" ]; then
             return "${ERR_RUN}"
         fi

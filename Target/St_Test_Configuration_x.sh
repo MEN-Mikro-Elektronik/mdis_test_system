@@ -84,24 +84,10 @@ case "${TestSetup}" in
           run_test_case "0201" "${TestSummaryDirectory}" "${OsNameKernel}"
           run_test_case "0202" "${TestSummaryDirectory}" "${OsNameKernel}"
           run_test_case "0203" "${TestSummaryDirectory}" "${OsNameKernel}"
-          #echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_Module_x.sh" "${TestSummaryDirectory}" "ID_3000"  "${OsNameKernel}" "m65n" "1"
-          #echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_Module_x.sh" "${TestSummaryDirectory}" "ID_3010"  "${OsNameKernel}" "m33" "1"
-          #echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_Module_x.sh" "${TestSummaryDirectory}" "ID_3020"  "${OsNameKernel}" "m35n" "1"
-          # M-Modules plugged on F205
-          #echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_Module_x.sh" "${TestSummaryDirectory}" "ID_3030"  "${OsNameKernel}" "m47" "1"
-          #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M82_M_Module_Test.sh" ${TestSummaryDirectory}
-          #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M35_M_Module_Test.sh" ${TestSummaryDirectory}
-          #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_F215_Interface_Test.sh" ${TestSummaryDirectory}
-          #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G215_Interface_Test.sh" ${TestSummaryDirectory}
           ;;
         2)
-          echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_F205_M57_M_Module_Test.sh" "${TestSummaryDirectory}" "1"
-          echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_M32_M58_M_Module_Test.sh" "${TestSummaryDirectory}"
-          echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_M37_M62_M_Module_Test.sh" "${TestSummaryDirectory}"
-          echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_F223_Test.sh" "${TestSummaryDirectory}"
-          echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_M66_M31_M_Module_Test.sh" "${TestSummaryDirectory}"
-          echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_M43_M11_M_Module_Test.sh" "${TestSummaryDirectory}"
-          echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_SMB2_Test.sh" "${TestSummaryDirectory}" "smb2_1" "F026L00"
+          run_test_case "0103" "${TestSummaryDirectory}" "${OsNameKernel}" #g229 board test
+          run_test_case "0104" "${TestSummaryDirectory}" "${OsNameKernel}" #g215 board test
           ;;
         3)
           echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M77_M_Module_Test.sh" "${TestSummaryDirectory}" "1" "3"

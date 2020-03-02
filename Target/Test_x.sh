@@ -9,6 +9,7 @@ source "${MyDir}"/M_Modules_Tests/m72.sh
 source "${MyDir}"/Board_Tests/f215.sh
 source "${MyDir}"/Board_Tests/f614.sh
 source "${MyDir}"/Board_Tests/g215.sh
+source "${MyDir}"/Board_Tests/g229.sh
 source "${MyDir}"/Board_Tests/f223.sh
 source "${MyDir}"/Board_Tests/carriers.sh
 
