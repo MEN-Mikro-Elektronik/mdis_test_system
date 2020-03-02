@@ -64,7 +64,7 @@ function z029_can_test {
             fi
             ;;
         *)
-            echo "${LogPrefix} No valid device name"| tee -a "${TestCaseLogName}" 2>&1
+            echo "${LogPrefix} No valid test name: ${TestType}"| tee -a "${TestCaseLogName}" 2>&1
         ;;
     esac
 

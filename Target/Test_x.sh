@@ -119,7 +119,7 @@ while test $# -gt 0 ; do
                 exit 1
             fi
             ;;
-        -ttype)
+        -tspec)
             shift
             if test $# -gt 0; then
                 InternalTestName="$1"
