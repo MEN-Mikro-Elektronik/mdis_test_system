@@ -80,7 +80,7 @@ function f215_test {
                                              -subvenid "${SubVenID}"\
                                              -tspec "${CanTest}"\
                                              -dno "1"
-            CanTestResult=${CmdResult}
+            CanTestResult=$?
             MachineState="gpio_test"
             ;;
         gpio_test)

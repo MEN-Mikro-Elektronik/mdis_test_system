@@ -482,11 +482,12 @@ function m_module_x_test {
                       ModuleSimp="m34_blkread -r=14 -b=1 -i=3 -d=1"
                       ModuleSimpOutput="blkread"
                       ModuleResultCmpFunc="compare_m35_blkread_values"
+                      ModuleInstanceName="${MModuleName}_${MModuleBoardNr}"
                 else
                       ModuleSimp="m34_simp"
                       ModuleResultCmpFunc="compare_m35_simp_values"
+                      ModuleInstanceName="${MModuleName}_${MModuleBoardNr} 14"
                 fi
-                ModuleInstanceName="${MModuleName}_${MModuleBoardNr} 14" 
                 ;;
           m36n)
                 ModprobeDriver="men_ll_m36"

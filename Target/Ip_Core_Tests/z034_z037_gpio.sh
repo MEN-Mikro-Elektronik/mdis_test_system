@@ -12,7 +12,7 @@ source "${MyDir}/../St_Functions.sh"
 function z034_z037_gpio_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
-    echo "-------------------------Ip Core z034/z037 CAN Test Case----------------------"
+    echo "-------------------------Ip Core z034/z037 GPIO Test Case----------------------"
 }
 
 ############################################################################
