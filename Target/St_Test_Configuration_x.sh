@@ -92,19 +92,17 @@ case "${TestSetup}" in
         3)
           run_test_case "0101" "${TestSummaryDirectory}" "${OsNameKernel}" #f223 board test
           run_test_case "0204" "${TestSummaryDirectory}" "${OsNameKernel}"
+          run_test_case "0205" "${TestSummaryDirectory}" "${OsNameKernel}"
+          run_test_case "0206" "${TestSummaryDirectory}" "${OsNameKernel}"
           ;;
         4)
-          echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G229_Test.sh" "${TestSummaryDirectory}"
           echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M77_M_Module_Test.sh" "${TestSummaryDirectory}" "1" "1"
-          #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M82_M_Module_Test.sh" ${TestSummaryDirectory}
-          echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M72_M_Module_Test.sh" "${TestSummaryDirectory}"
           echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_SMB2_Test.sh" "${TestSummaryDirectory}" "smb2_1" "G025A03"
           ;;
         5)
           echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_BL51E_Test.sh" "${TestSummaryDirectory}"
           ;;
         6)
-          echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M65_M_Module_Test.sh" "${TestSummaryDirectory}"
           ;;
         *)
           echo "TEST SETUP IS NOT SET"
