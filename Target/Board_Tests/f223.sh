@@ -125,7 +125,7 @@ function f223_test {
                 ;;
         esac
     done
-    if [ "${TestCaseStep2}" = "${ERR_OK}" ] && [ "${TestCaseStep3}" = "${ERR_OK}" ] &&\
+    if [ "${TestCaseStep2}" = "${ERR_OK}" ] && [ "${TestCaseStep2}" = "${ERR_OK}" ] &&\
        [ "${TestCaseStep3}" = "${ERR_OK}" ] && [ "${TestCaseStep4}" = "${ERR_OK}" ] &&\
        [ "${TestCaseStep5}" = "${ERR_OK}" ]; then
         return "${ERR_OK}"
