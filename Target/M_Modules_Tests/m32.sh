@@ -44,7 +44,7 @@ function m32_test {
     local ModuleNo=${3}
 
     echo "${LogPrefix} Step1: modprobe men_ll_m31" | tee -a "${TestCaseLogName}" 2>&1
-    if echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_ll_m31
+    if ! run_as_root "modprobe men_ll_m31"
     then
         echo "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m31"\
          | tee -a "${TestCaseLogName}"
@@ -53,7 +53,7 @@ function m32_test {
 
     # Run m31_simp
     echo "${LogPrefix} Step2: run m31_simp m32_${ModuleNo}" | tee -a "${TestCaseLogName}" 2>&1
-    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' m31_simp m32_"${ModuleNo}" > m31_simp.log
+    run_as_root "m31_simp m32_\"${ModuleNo}\" > m31_simp.log"
     if [ $? -ne 0 ]; then
         echo "${LogPrefix} Could not run m31_simp "\
           | tee -a "${TestCaseLogName}" 2>&1
