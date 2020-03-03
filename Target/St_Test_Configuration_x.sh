@@ -90,12 +90,8 @@ case "${TestSetup}" in
           run_test_case "0104" "${TestSummaryDirectory}" "${OsNameKernel}" #g215 board test
           ;;
         3)
-          echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M77_M_Module_Test.sh" "${TestSummaryDirectory}" "1" "3"
-          echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M82_M_Module_Test.sh" "${TestSummaryDirectory}"
-          echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M36N_M_Module_Test.sh" "${TestSummaryDirectory}"
-          #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M77_M_Module_Test.sh" ${TestSummaryDirectory} "1" "1" #M77Nr, G204Nr
-          #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M82_M_Module_Test.sh" ${TestSummaryDirectory}
-          #echo ${1} | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M82_M_Module_Test.sh" ${TestSummaryDirectory} "2" #second device instance
+          run_test_case "0101" "${TestSummaryDirectory}" "${OsNameKernel}" #f223 board test
+          run_test_case "0204" "${TestSummaryDirectory}" "${OsNameKernel}"
           ;;
         4)
           echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G229_Test.sh" "${TestSummaryDirectory}"

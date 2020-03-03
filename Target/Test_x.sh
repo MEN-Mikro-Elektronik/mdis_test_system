@@ -11,7 +11,8 @@ source "${MyDir}"/Board_Tests/f614.sh
 source "${MyDir}"/Board_Tests/g215.sh
 source "${MyDir}"/Board_Tests/g229.sh
 source "${MyDir}"/Board_Tests/f223.sh
-source "${MyDir}"/Board_Tests/carriers.sh
+source "${MyDir}"/Board_Tests/carriers_f205.sh
+source "${MyDir}"/Board_Tests/carriers_g204.sh
 
 CurrDir=$(pwd)
 

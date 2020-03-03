@@ -37,8 +37,8 @@ function run_test_case {
         0203)
             run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "carrier_g204_m35n"
             ;;
-        0211)
-            run_as_root "${MyDir}/Test_x.sh" "${TestSummaryDirectory}" "${TestCaseId}" "${OsNameKernel}" "m62n" "1"
+        0204)
+            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "carrier_f205_m57"
             ;;
         0212)
             run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "m65n" -dno "1"

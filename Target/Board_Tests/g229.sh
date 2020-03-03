@@ -19,7 +19,10 @@ function g229_description {
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
     echo "DESCRIPTION:"
-    echo "    g229_${ModuleNo}"
+    echo "    Run tests on g229_${ModuleNo} for ip cores:"
+    echo "      - Z001 (smb test)"
+    echo "      - Z029 (can test)"
+    echo "      - Z135 (hsuart test)"
     echo "RESULTS"
     echo "    SUCCESS if ip-cores tests on G229 are passed."
     echo "    FAIL otherwise"
@@ -80,6 +83,20 @@ function g229_test {
                                              -tspec "${CanTest}"\
                                              -dno "1"
             CanTestResult=$?
+            MachineState="uart_test"
+            ;;
+        uart_test)
+            echo "${LogPrefix} Run HSUART test" | tee -a "${TestCaseLogName}" 2>&1
+            #run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+            #                                 -id "${TestCaseId}"\
+            #                                 -os "${OsNameKernel}"\
+            #                                 -dname "z029_can"\
+            #                                 -venid "${VenID}"\
+            #                                 -devid "${DevID}"\
+            #                                 -subvenid "${SubVenID}"\
+            #                                 -tspec "${CanTest}"\
+            #                                 -dno "1"
+            UartTestResult=${ERR_NOEXIST}
             MachineState="Break"
             ;;
         Break)
@@ -94,7 +111,7 @@ function g229_test {
         esac
     done
 
-    if [ "${CanTestResult}" = "${ERR_OK}" ] && [ "${SmbTestResult}" = "${ERR_OK}" ] ; then
+    if [ "${CanTestResult}" = "${ERR_OK}" ] && [ "${SmbTestResult}" = "${ERR_OK}" ] && [ "${UartTestResult}" = "${ERR_OK}" ]; then
         return "${ERR_OK}"
     else
         return "${ERR_VALUE}"
