@@ -277,3 +277,49 @@ function carrier_f205_m43_m11_test {
         return "${ERR_VALUE}"
     fi
 }
+
+############################################################################
+# board f205_m36_m72 description
+#
+# parameters:
+# $1    Module number
+# $2    Module log path
+function carrier_f205_m36_m72_description {
+    local ModuleNo=${1}
+    local ModuleLogPath=${2}
+    carrier_f205_TMP_description "m36_${ModuleNo}" "${ModuleLogPath}" "m72_${ModuleNo}" "${ModuleLogPath}"
+}
+
+############################################################################
+# run board f205_m36_m72 test
+#
+# parameters:
+# $1    Test case id
+# $2    Test summary directory
+# $3    Os name kernel
+function carrier_f205_m36_m72_test {
+    local TestCaseId="${1}"
+    local TestSummaryDirectory="${2}"
+    local OsNameKernel="${3}"
+
+    local TestCaseResult="${ERR_VALUE}"
+    run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+                                     -id "${TestCaseId}"\
+                                     -os "${OsNameKernel}"\
+                                     -dname "m36"\
+                                     -dno "1"
+    MResult0=$?
+
+    run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+                                     -id "${TestCaseId}"\
+                                     -os "${OsNameKernel}"\
+                                     -dname "m72"\
+                                     -dno "1"
+    MResult1=$?
+
+    if [ "${MResult0}" = "${ERR_OK}" ] && [ "${MResult1}" = "${ERR_OK}" ]; then
+        return "${ERR_OK}"
+    else
+        return "${ERR_VALUE}"
+    fi
+}
