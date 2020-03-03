@@ -13,6 +13,20 @@ function run_as_root {
     fi
 }
 
+function print {
+    local Msg="${1}"
+    local LogFile="${2}"
+    echo "${Msg}" | tee -a "${LogFile}" 2>&1
+}
+
+function debug_print {
+    local Msg="${1}"
+    local LogFile="${2}"
+    if [ "${VERBOSE_PRINT}" == "1" ]; then
+        echo "${Msg}" | tee -a "${LogFile}" 2>&1
+    fi
+}
+
 # This script contains all common functions that are used by St_xxxx testcases.
 #
 ############################################################################

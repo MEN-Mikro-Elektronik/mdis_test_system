@@ -44,13 +44,14 @@ IN_3_DISABLE=203        # change input 3 to disable (with BL51 stands for RELAY 
 IN_4_DISABLE=204        # change input 4 to disable
 
 # Address of Target that will be tested
-MenPcIpAddr="10.1.1.195"
+MenPcIpAddr="10.1.1.153"
 
 #------------------------------------------------------------------------------
 #-------------------------PLEASE SPECIFY THE TEST SETUP------------------------
 #------------------------------------------------------------------------------
-TestSetup="1"
+TestSetup="3"
 
+VERBOSE_PRINT="1"
 
 # Credentials for Pc that will be tested - required by ssh connection and sudo cmds
 MenPcLogin="men"

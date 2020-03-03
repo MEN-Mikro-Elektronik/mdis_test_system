@@ -42,24 +42,22 @@ function m32_test {
     local TestCaseLogName=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
-
-    echo "${LogPrefix} Step1: modprobe men_ll_m31" | tee -a "${TestCaseLogName}" 2>&1
-    if ! run_as_root "modprobe men_ll_m31"
+    print "${LogPrefix} m32_test in progress..."
+    debug_print "${LogPrefix} Step1: modprobe men_ll_m31"
+    if ! run_as_root modprobe men_ll_m31
     then
-        echo "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m31"\
-         | tee -a "${TestCaseLogName}"
+        debug_print "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m31"
         return "${ERR_VALUE}"
     fi
 
     # Run m31_simp
-    echo "${LogPrefix} Step2: run m31_simp m32_${ModuleNo}" | tee -a "${TestCaseLogName}" 2>&1
-    run_as_root "m31_simp m32_\"${ModuleNo}\" > m31_simp.log"
+    debug_print "${LogPrefix} Step2: run m31_simp m32_${ModuleNo}"
+    run_as_root m31_simp m32_"${ModuleNo}" > m31_simp.log
     if [ $? -ne 0 ]; then
-        echo "${LogPrefix} Could not run m31_simp "\
-          | tee -a "${TestCaseLogName}" 2>&1
+        debug_print "${LogPrefix} Could not run m31_simp "
     fi
 
-    echo "${LogPrefix} Step3: check for errors" | tee -a "${TestCaseLogName}" 2>&1
+    debug_print "${LogPrefix} Step3: check for errors"
     grep "^ device m32_${ModuleNo} opened" m31_simp.log && \
     grep "^ number of channels:      16" m31_simp.log && \
     grep "^ channel  0 : 1" m31_simp.log && \
@@ -82,8 +80,7 @@ function m32_test {
     grep "^ state:     1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1" m31_simp.log && \
     grep "^ device m32_${ModuleNo} closed" m31_simp.log
     if [ $? -ne 0 ]; then
-        echo "${LogPrefix} Invalid log output, ERROR"\
-          | tee -a "${TestCaseLogName}" 2>&1
+        debug_print "${LogPrefix} Invalid log output, ERROR"
         return "${ERR_VALUE}"
     fi
 
