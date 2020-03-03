@@ -36,29 +36,28 @@ function m33_description {
 # run m33 test
 #
 # parameters:
-# $1    TestCaseLogName
-# $2    LogPrefix
+# $1    Log file
+# $2    Log prefix
 # $3    M-Module number
 function m33_test {
-    local TestCaseLogName=${1}
+    local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
 
-    echo "${LogPrefix} Step1: modprobe men_ll_m33" | tee -a "${TestCaseLogName}" 2>&1
-    if ! echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_ll_m33
+    debug_print "${LogPrefix} Step1: modprobe men_ll_m33" "${LogFile}"
+    if ! run_as_root modprobe men_ll_m33
     then
-        echo "${LogPrefix} ERR_VALUE: could not modprobe men_ll_m33" | tee -a "${TestCaseLogName}"
+        debug_print "${LogPrefix} ERR_VALUE: could not modprobe men_ll_m33" "${LogFile}"
         return "${ERR_VALUE}"
     fi
 
-    echo "${LogPrefix} Step2: run m33_demo m33_${ModuleNo}" | tee -a "${TestCaseLogName}" 2>&1
-    if ! echo "${MenPcPassword}" | sudo -S --prompt=$'\r' m33_demo m33_"${ModuleNo}" > m33_demo.log
+    debug_print "${LogPrefix} Step2: run m33_demo m33_${ModuleNo}" "${LogFile}"
+    if ! run_as_root m33_demo m33_"${ModuleNo}" > m33_demo.log
     then
-        echo "${LogPrefix} Could not run m33_demo " \
-          | tee -a "${TestCaseLogName}" 2>&1
+        debug_print "${LogPrefix} Could not run m33_demo " "${LogFile}"
     fi
 
-    echo "${LogPrefix} Step3: check for errors" | tee -a "${TestCaseLogName}" 2>&1
+    debug_print "${LogPrefix} Step3: check for errors" "${LogFile}"
     grep "^Device m33_${ModuleNo}" m33_demo.log > /dev/null && \
     grep "^channel 0: produce ramps" m33_demo.log > /dev/null && \
     grep "^ lowest..highest ramp" m33_demo.log > /dev/null && \
@@ -66,8 +65,7 @@ function m33_test {
     grep "^channel 0: toggle lowest/highest" m33_demo.log > /dev/null && \
     grep "^Device m33_1 closed" m33_demo.log > /dev/null
     if [ $? -ne 0 ]; then
-            echo "${LogPrefix} Invalid log output, ERROR" \
-              | tee -a "${TestCaseLogName}" 2>&1
+            debug_print "${LogPrefix} Invalid log output, ERROR" "${LogFile}"
             return "${ERR_VALUE}"
     fi
 

@@ -31,26 +31,22 @@ function m11_description {
 # run m11 test
 #
 # parameters:
-# $1    TestCaseLogName
-# $2    LogPrefix
+# $1    Log file
+# $2    Log prefix
 # $3    M-Module number
 # $4    Test Case Name
 function m11_test {
-    local LogName=${1}
+    local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
     local TestCaseName=${4}
     local RelayOutput="${IN_0_ENABLE}"
 
-    print "${LogPrefix} m11_test in progress..." "${LogFile}"
-    debug_print "${LogPrefix} Step1:" "${LogName}"
-    m_module_x_test "${LogName}" "${TestCaseName}" "${RelayOutput}" "m11" "${ModuleNo}" "" "${LogPrefix}"
-    CmdResult=$?
-    if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-        Step1="${CmdResult}"
-    fi
+    debug_print "${LogPrefix} Step1:" "${LogFile}"
+    m_module_x_test "${LogFile}" "${TestCaseName}" "${RelayOutput}" "m11" "${ModuleNo}" "" "${LogPrefix}"
+    MResult=$?
 
-    if [ "${Step1}" = "${ERR_OK}" ]; then
+    if [ "${MResult}" = "${ERR_OK}" ]; then
         return "${ERR_OK}"
     else
         return "${ERR_VALUE}"
@@ -62,10 +58,10 @@ function m11_test {
 # fix for m11 M-Module if plugged into f205 carrier.
 #
 # parameters:
-# $1    TestCaseLogName
-# $2    LogPrefix
+# $1    Log file
+# $2    Log prefix
 function m11_f205_fix {
-    local LogName=${1}
+    local LogFile=${1}
     local LogPrefix=${2}
     local CurrentPath=$PWD
 
@@ -87,11 +83,11 @@ function m11_f205_fix {
 # compare_m11_port_veri_values
 #
 # parameters:
-# $1    TestCaseLogName
-# $2    LogPrefix
+# $1    Log file
+# $2    Log prefix
 # $3    M-Module number
 function compare_m11_port_veri_values {
-    local TestCaseLogName=${1}
+    local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
     local ErrorCnt="0"

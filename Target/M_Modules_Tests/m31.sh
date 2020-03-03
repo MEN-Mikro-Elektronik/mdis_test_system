@@ -31,24 +31,19 @@ function m31_description {
 # run 31 test
 #
 # parameters:
-# $1    TestCaseLogName
-# $2    LogPrefix
+# $1    Log file
+# $2    Log prefix
 # $3    M-Module number
 function m31_test {
-    local TestCaseLogName=${1}
+    local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
     local TestCaseName=${4}
     local RelayOutput="${IN_0_ENABLE}"
 
-    echo "${LogPrefix} Step1:" | tee -a "${TestCaseLogName}" 2>&1
-    m_module_x_test "${TestCaseLogName}" "${TestCaseName}" "${RelayOutput}" "m31" "${ModuleNo}" "" "${LogPrefix}"
-    CmdResult=$?
-    if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-        Step1="${CmdResult}"
-    fi
-
-    if [ "${Step1}" = "${ERR_OK}" ]; then
+    m_module_x_test "${LogFile}" "${TestCaseName}" "${RelayOutput}" "m31" "${ModuleNo}" "" "${LogPrefix}"
+    MResult=$?
+    if [ "${MResult}" = "${ERR_OK}" ]; then
         return "${ERR_OK}"
     else
         return "${ERR_VALUE}"
@@ -59,22 +54,22 @@ function m31_test {
 # compare_m31_simp_values
 #
 # parameters:
-# $1    Test case log file name
-# $2    LogPrefix
+# $1    Log file
+# $2    Log prefix
 # $3    M-Module number
 function compare_m31_simp_values {
-    local TestCaseLogName=${1}
+    local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
 
-    echo "${LogPrefix} compare_m31_simp_values"
+    print "${LogPrefix} compare_m31_simp_values" "${LogFile}"
     local ValueChannelConnected_0
     local ValueChannelDisconnected_0
     ValueChannelConnected_0=$(grep "channel  0 : " m31_"${ModuleNo}"_simp_output_connected.txt | awk NR==1'{print $4}')
     ValueChannelDisconnected_0=$(grep "channel  0 : " m31_"${ModuleNo}"_simp_output_disconnected.txt | awk NR==1'{print $4}')
     if [ "${ValueChannelConnected_0}" == "" ] || [ "${ValueChannelDisconnected_0}" == "" ] || \
        [ "${ValueChannelConnected_0}" -eq "${ValueChannelDisconnected_0}" ]; then
-        echo "${LogPrefix} ValueChannelConnected_0 equal with ValueChannelDisconnected_0" | tee -a "${TestCaseLogName}" 2>&1
+        debug_print "${LogPrefix} ValueChannelConnected_0 equal with ValueChannelDisconnected_0" "${LogFile}"
         return "${ERR_VALUE}"
     fi
 
@@ -84,7 +79,7 @@ function compare_m31_simp_values {
     ValueChannelDisconnected_1=$(grep "channel  0 : " m31_"${ModuleNo}"_simp_output_disconnected.txt | awk NR==1'{print $4}')
     if [ "${ValueChannelConnected_1}" == "" ] || [ "${ValueChannelDisconnected_1}" == "" ] || \
        [ "${ValueChannelConnected_1}" -eq "${ValueChannelDisconnected_1}" ]; then
-        echo "${LogPrefix} ValueChannelConnected_1 equal with ValueChannelDisconnected_1" | tee -a "${TestCaseLogName}" 2>&1
+        debug_print "${LogPrefix} ValueChannelConnected_1 equal with ValueChannelDisconnected_1" "${LogFile}"
         return "${ERR_VALUE}"
     fi
 
@@ -94,7 +89,7 @@ function compare_m31_simp_values {
     ValueChannelStateDisconnected=$(grep "state: " m31_"${ModuleNo}"_simp_output_disconnected.txt | awk NR==1'{print $2 $3}')
     if [ "${ValueChannelStateConnected}" == "" ] || [ "${ValueChannelStateDisconnected}" == "" ] || \
        [ "${ValueChannelStateConnected}" -eq "${ValueChannelStateDisconnected}" ]; then
-        echo "${LogPrefix} ValueChannelStateConnected equal with ValueChannelStateDisconnected"  | tee -a "${TestCaseLogName}" 2>&1
+        debug_print "${LogPrefix} ValueChannelStateConnected equal with ValueChannelStateDisconnected" "${LogFile}"
         return "${ERR_VALUE}"
     fi
 

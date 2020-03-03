@@ -32,17 +32,17 @@ function m32_description {
 }
 
 ############################################################################
-# run m32 test
+# run 31 test
 #
 # parameters:
-# $1    TestCaseLogName
-# $2    LogPrefix
+# $1    Log file
+# $2    Log prefix
 # $3    M-Module number
 function m32_test {
     local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
-    print "${LogPrefix} m32_test in progress..." "${LogFile}"
+
     debug_print "${LogPrefix} Step1: modprobe men_ll_m31" "${LogFile}"
     if ! run_as_root modprobe men_ll_m31
     then
