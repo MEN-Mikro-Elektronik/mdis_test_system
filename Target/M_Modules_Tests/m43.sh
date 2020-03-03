@@ -31,19 +31,20 @@ function m43_description {
 # run 43 test
 #
 # parameters:
-# $1    TestCaseLogName
+# $1    LogName
 # $2    LogPrefix
 # $3    M-Module number
 # $3    Test Case name
 function m43_test {
-    local TestCaseLogName=${1}
+    local LogName=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
     local TestCaseName=${4}
     local RelayOutput="${IN_0_ENABLE}"
 
-    echo "${LogPrefix} Step1:" | tee -a "${TestCaseLogName}" 2>&1
-    m_module_x_test "${TestCaseLogName}" "${TestCaseName}" "${RelayOutput}" "m43" "${ModuleNo}" "" "${LogPrefix}"
+    print "${LogPrefix} m43_test in progress..." "${LogFile}"
+    debug_print "${LogPrefix} Step1:" "${LogName}"
+    m_module_x_test "${LogName}" "${TestCaseName}" "${RelayOutput}" "m43" "${ModuleNo}" "" "${LogPrefix}"
     CmdResult=$?
     if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
         Step1="${CmdResult}"
@@ -60,11 +61,11 @@ function m43_test {
 # compare_m43_simp_values
 #
 # parameters:
-# $1    TestCaseLogName
+# $1    LogName
 # $2    LogPrefix
 # $3    M-Module number
 function compare_m43_simp_values {
-    local TestCaseLogName=${1}
+    local LogName=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
 
@@ -74,7 +75,7 @@ function compare_m43_simp_values {
     DeviceOpened=$(grep -ic "Device m43_${ModuleNo} opened" m43_"${ModuleNo}"_simp_output_connected.txt)
     DeviceClosed=$(grep -ic "Device m43_${ModuleNo} closed" m43_"${ModuleNo}"_simp_output_connected.txt)
     EndLine=$(tail -1 m43_"${ModuleNo}"_simp_output_connected.txt)
-    echo "${LogPrefix} DeviceOpened: ${DeviceOpened}, DeviceClosed: ${DeviceClosed}, EndLine: ${EndLine}" | tee -a "${TestCaseLogName}" 2>&1
+    debug_print "${LogPrefix} DeviceOpened: ${DeviceOpened}, DeviceClosed: ${DeviceClosed}, EndLine: ${EndLine}" "${LogName}"
     if [ "${DeviceOpened}" -eq 1 ] && [ "${DeviceClosed}" -eq 1 ] && [ "${EndLine}" == "=> OK" ]; then
         return "${ERR_OK}"
     else

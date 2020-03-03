@@ -186,3 +186,94 @@ function carrier_f205_m37_m62_test {
     fi
 }
 
+############################################################################
+# board f205_m66_m31 description
+#
+# parameters:
+# $1    Module number
+# $2    Module log path
+function carrier_f205_m66_m31_description {
+    local ModuleNo=${1}
+    local ModuleLogPath=${2}
+    carrier_f205_TMP_description "m66_${ModuleNo}" "${ModuleLogPath}" "m31_${ModuleNo}" "${ModuleLogPath}"
+}
+
+############################################################################
+# run board f205_m66_m31 test
+#
+# parameters:
+# $1    Test case id
+# $2    Test summary directory
+# $3    Os name kernel
+function carrier_f205_m66_m31_test {
+    local TestCaseId="${1}"
+    local TestSummaryDirectory="${2}"
+    local OsNameKernel="${3}"
+
+    local TestCaseResult="${ERR_VALUE}"
+    run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+                                     -id "${TestCaseId}"\
+                                     -os "${OsNameKernel}"\
+                                     -dname "m66"\
+                                     -dno "1"
+    MResult0=$?
+
+    run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+                                     -id "${TestCaseId}"\
+                                     -os "${OsNameKernel}"\
+                                     -dname "m31"\
+                                     -dno "1"
+    MResult1=$?
+
+    if [ "${MResult0}" = "${ERR_OK}" ] && [ "${MResult1}" = "${ERR_OK}" ]; then
+        return "${ERR_OK}"
+    else
+        return "${ERR_VALUE}"
+    fi
+}
+
+############################################################################
+# board f205_m43_m11 description
+#
+# parameters:
+# $1    Module number
+# $2    Module log path
+function carrier_f205_m43_m11_description {
+    local ModuleNo=${1}
+    local ModuleLogPath=${2}
+    carrier_f205_TMP_description "m43_${ModuleNo}" "${ModuleLogPath}" "m11_${ModuleNo}" "${ModuleLogPath}"
+}
+
+############################################################################
+# run board f205_m43_m11 test
+#
+# parameters:
+# $1    Test case id
+# $2    Test summary directory
+# $3    Os name kernel
+function carrier_f205_m43_m11_test {
+    local TestCaseId="${1}"
+    local TestSummaryDirectory="${2}"
+    local OsNameKernel="${3}"
+
+    local TestCaseResult="${ERR_VALUE}"
+    run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+                                     -id "${TestCaseId}"\
+                                     -os "${OsNameKernel}"\
+                                     -dname "m43"\
+                                     -dno "1"
+    MResult0=$?
+
+    run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+                                     -id "${TestCaseId}"\
+                                     -os "${OsNameKernel}"\
+                                     -dname "m11"\
+                                     -dno "1"
+    MResult1=$?
+
+    if [ "${MResult0}" = "${ERR_OK}" ] && [ "${MResult1}" = "${ERR_OK}" ]; then
+        return "${ERR_OK}"
+    else
+        return "${ERR_VALUE}"
+    fi
+}

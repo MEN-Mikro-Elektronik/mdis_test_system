@@ -36,14 +36,15 @@ function m11_description {
 # $3    M-Module number
 # $4    Test Case Name
 function m11_test {
-    local TestCaseLogName=${1}
+    local LogName=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
     local TestCaseName=${4}
     local RelayOutput="${IN_0_ENABLE}"
 
-    echo "${LogPrefix} Step1:" | tee -a "${TestCaseLogName}" 2>&1
-    m_module_x_test "${TestCaseLogName}" "${TestCaseName}" "${RelayOutput}" "m11" "${ModuleNo}" "" "${LogPrefix}"
+    print "${LogPrefix} m11_test in progress..." "${LogFile}"
+    debug_print "${LogPrefix} Step1:" "${LogName}"
+    m_module_x_test "${LogName}" "${TestCaseName}" "${RelayOutput}" "m11" "${ModuleNo}" "" "${LogPrefix}"
     CmdResult=$?
     if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
         Step1="${CmdResult}"
@@ -64,17 +65,17 @@ function m11_test {
 # $1    TestCaseLogName
 # $2    LogPrefix
 function m11_f205_fix {
-    local TestCaseLogName=${1}
+    local LogName=${1}
     local LogPrefix=${2}
     local CurrentPath=$PWD
 
-    echo "${LogPrefix} m11_f205_fix" | tee -a "${TestCaseLogName}" 2>&1
+    debug_print "${LogPrefix} m11_f205_fix" "${LogFile}"
     ## Define wether M-Module ID-PROM is checked
     ## 0 := disable -- ignore IDPROM
     ## 1 := enable
     #ID_CHECK = U_INT32 0
-    echo "${LogPrefix} Current Path:" | tee -a "${TestCaseLogName}" 2>&1
-    echo "${CurrentPath}" | tee -a "${TestCaseLogName}" 2>&1
+    debug_print "${LogPrefix} Current Path:" "${LogFile}"
+    debug_print "${CurrentPath}" "${LogFile}"
 
     cd ..
     sed -i '/.*m11_1.*/a ID_CHECK = U_INT32 0' system.dsc

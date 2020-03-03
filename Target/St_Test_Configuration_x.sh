@@ -94,6 +94,8 @@ case "${TestSetup}" in
           run_test_case "0204" "${TestSummaryDirectory}" "${OsNameKernel}"
           run_test_case "0205" "${TestSummaryDirectory}" "${OsNameKernel}"
           run_test_case "0206" "${TestSummaryDirectory}" "${OsNameKernel}"
+          run_test_case "0207" "${TestSummaryDirectory}" "${OsNameKernel}"
+          run_test_case "0208" "${TestSummaryDirectory}" "${OsNameKernel}"
           ;;
         4)
           echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M77_M_Module_Test.sh" "${TestSummaryDirectory}" "1" "1"
