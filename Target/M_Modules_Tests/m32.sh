@@ -58,27 +58,27 @@ function m32_test {
     fi
 
     debug_print "${LogPrefix} Step3: check for errors" "${LogFile}"
-    grep "^ device m32_${ModuleNo} opened" m31_simp.log && \
-    grep "^ number of channels:      16" m31_simp.log && \
-    grep "^ channel  0 : 1" m31_simp.log && \
-    grep "^ channel  1 : 1" m31_simp.log && \
-    grep "^ channel  2 : 1" m31_simp.log && \
-    grep "^ channel  3 : 1" m31_simp.log && \
-    grep "^ channel  4 : 1" m31_simp.log && \
-    grep "^ channel  5 : 1" m31_simp.log && \
-    grep "^ channel  6 : 1" m31_simp.log && \
-    grep "^ channel  7 : 1" m31_simp.log && \
-    grep "^ channel  8 : 1" m31_simp.log && \
-    grep "^ channel  9 : 1" m31_simp.log && \
-    grep "^ channel 10 : 1" m31_simp.log && \
-    grep "^ channel 11 : 1" m31_simp.log && \
-    grep "^ channel 12 : 1" m31_simp.log && \
-    grep "^ channel 13 : 1" m31_simp.log && \
-    grep "^ channel 14 : 1" m31_simp.log && \
-    grep "^ channel 15 : 1" m31_simp.log && \
-    grep "^ channel:   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15" m31_simp.log && \
-    grep "^ state:     1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1" m31_simp.log && \
-    grep "^ device m32_${ModuleNo} closed" m31_simp.log
+    grep "^ device m32_${ModuleNo} opened" m31_simp.log > /dev/null && \
+    grep "^ number of channels:      16" m31_simp.log > /dev/null && \
+    grep "^ channel  0 : 1" m31_simp.log > /dev/null && \
+    grep "^ channel  1 : 1" m31_simp.log > /dev/null && \
+    grep "^ channel  2 : 1" m31_simp.log > /dev/null && \
+    grep "^ channel  3 : 1" m31_simp.log > /dev/null && \
+    grep "^ channel  4 : 1" m31_simp.log > /dev/null && \
+    grep "^ channel  5 : 1" m31_simp.log > /dev/null && \
+    grep "^ channel  6 : 1" m31_simp.log > /dev/null && \
+    grep "^ channel  7 : 1" m31_simp.log > /dev/null && \
+    grep "^ channel  8 : 1" m31_simp.log > /dev/null && \
+    grep "^ channel  9 : 1" m31_simp.log > /dev/null && \
+    grep "^ channel 10 : 1" m31_simp.log > /dev/null && \
+    grep "^ channel 11 : 1" m31_simp.log > /dev/null && \
+    grep "^ channel 12 : 1" m31_simp.log > /dev/null && \
+    grep "^ channel 13 : 1" m31_simp.log > /dev/null && \
+    grep "^ channel 14 : 1" m31_simp.log > /dev/null && \
+    grep "^ channel 15 : 1" m31_simp.log > /dev/null && \
+    grep "^ channel:   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15" m31_simp.log > /dev/null && \
+    grep "^ state:     1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1" m31_simp.log > /dev/null && \
+    grep "^ device m32_${ModuleNo} closed" m31_simp.log > /dev/null
     if [ $? -ne 0 ]; then
         debug_print "${LogPrefix} Invalid log output, ERROR" "${LogFile}"
         return "${ERR_VALUE}"
