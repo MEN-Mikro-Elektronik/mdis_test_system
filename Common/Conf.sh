@@ -65,9 +65,7 @@ MenPcIpAddr="10.1.1.195"
 #------------------------------------------------------------------------------
 #-------------------------PLEASE SPECIFY THE TEST SETUP------------------------
 #------------------------------------------------------------------------------
-TestSetup="1"
-
-VERBOSE_PRINT="1"
+TEST_SETUP="1"
 
 # Credentials for Pc that will be tested - required by ssh connection and sudo cmds
 MenPcLogin="men"

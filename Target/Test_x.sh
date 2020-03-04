@@ -40,15 +40,6 @@ CurrDir=$(pwd)
 #            $4 Module name
 #            $5 Module num
 
-#TestCaseMainDir="${1}"
-#TestCaseId="${2}"
-#LogPrefix="[${2}]"
-#TestOs="${3}"
-#DeviceName="${4}"
-#DeviceNo="${5}"
-#TestType=""
-#DevicesFile=""
-
 # read parameters
 while test $# -gt 0 ; do
     case "$1" in

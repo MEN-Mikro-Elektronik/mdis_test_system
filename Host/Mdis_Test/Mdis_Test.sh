@@ -50,6 +50,9 @@ function print_test {
     # Add brief test case description
     for K in "${!TEST_CASES_MAP[@]}"; do echo "${K}: ${TEST_CASES_MAP[${K}]}"; done
 }
+
+VERBOSE_LEVEL="0"
+
 # read parameters
 while test $# -gt 0 ; do
     case "$1" in
@@ -59,11 +62,11 @@ while test $# -gt 0 ; do
             ;;
         --run-instantly)
             shift
-            RunInstantly="1"
+            RUN_INSTANTLY="1"
             ;;
         --no-build)
             shift
-            BuildMdis="0"
+            BUILD_MDIS="0"
             ;;
         --verbose*)
             VERBOSE_LEVEL="$(echo "$1" | sed -e 's/^[^=]*=//g')"
@@ -78,7 +81,7 @@ while test $# -gt 0 ; do
             shift
             ;;
         --run-setup*)
-            RUN_TEST_SETUP="$(echo "$1" | sed -e 's/^[^=]*=//g')"
+            TEST_SETUP="$(echo "$1" | sed -e 's/^[^=]*=//g')"
             shift
             ;;
         *)
@@ -88,8 +91,8 @@ while test $# -gt 0 ; do
         esac
 done
 
-echo "Test Setup: ${TestSetup}"
-case ${TestSetup} in
+echo "Test Setup: ${TEST_SETUP}"
+case ${TEST_SETUP} in
     1)
         GrubOses=( "${GrubOsesF23P[@]}" )
         ;;
@@ -160,7 +163,7 @@ function runTests {
     # run
     St_Test_Setup_Configuration="St_Test_Configuration_x.sh"
     echo "run:"
-    echo "${St_Test_Setup_Configuration} ${TestSetup}"
+    echo "${St_Test_Setup_Configuration} ${TEST_SETUP}"
 
     # Make all scripts executable
     run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' chmod +x ${GitTestCommonDirPath}/*"
@@ -174,10 +177,14 @@ function runTests {
     echo "${LogPrefix} MdisTestBackgroundPID is ${MdisTestBackgroundPID}"
 
     # Run Test script - now scripts from remote device should be run
-    make_visible_in_log "TEST CASE - ${St_Test_Setup_Configuration} ${TestSetup}"
-    if ! run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' ${GitTestTargetDirPath}/${St_Test_Setup_Configuration} ${TestSetup} ${BuildMdis} ${Today}"
+    make_visible_in_log "TEST CASE - ${St_Test_Setup_Configuration} ${TEST_SETUP}"
+    if ! run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' ${GitTestTargetDirPath}/${St_Test_Setup_Configuration} --test-setup=${TEST_SETUP}\
+                                                                                                                                     --date=${Today}\
+                                                                                                                                     --debug-level=${VERBOSE_LEVEL}\
+                                                                                                                                     --build-mdis\
+                                                                                                                                     --test-id=${RUN_TEST_ID}"
     then
-        echo "${LogPrefix} Error while running St_Test_Configuration script"
+        echo "${LogPrefix} Error while running St_Test_Configuration_x.sh script"
     fi
 
     cleanMdisTestBackgroundJob
@@ -187,12 +194,8 @@ function runTests {
     # Test scripts have not been downloaded into remote yet.
 }
 
-#function run_single_test {
-#
-#}
-
 # MAIN start here
-if [ "${RunInstantly}" == "1" ]; then
+if [ "${RUN_INSTANTLY}" == "1" ]; then
     ssh-keygen -R "${MenPcIpAddr}"
     # Check if devices are available
     if ! ping -c 2 "${MenPcIpAddr}"
@@ -201,7 +204,7 @@ if [ "${RunInstantly}" == "1" ]; then
     fi
 
     cat "${MyDir}/../../Common/Conf.sh" > tmp.sh
-    echo "RunInstantly=\"1\"" >> tmp.sh
+    echo "RUN_INSTANTLY=\"1\"" >> tmp.sh
     cat "${MyDir}"/Pc_Configure.sh >> tmp.sh
 
     if ! run_script_on_remote_pc "${MyDir}"/tmp.sh

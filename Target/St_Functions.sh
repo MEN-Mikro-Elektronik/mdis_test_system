@@ -35,7 +35,7 @@ function print {
 function debug_print {
     local Msg="${1}"
     local LogFile="${2}"
-    if [ "${VERBOSE_PRINT}" == "1" ]; then
+    if [ "${VERBOSE_LEVEL}" -eq "1" ]; then
         echo "${Msg}" | tee -a "${LogFile}" 2>&1
     fi
 }
