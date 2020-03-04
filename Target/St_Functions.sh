@@ -4,6 +4,19 @@ source "${MyDir}"/../Common/Conf.sh
 source "${MyDir}"/Mdis_Functions.sh
 source "${MyDir}"/Relay_Functions.sh
 
+# This script contains all common functions that are used by test cases
+#
+
+function run_test_case {
+    local TestCaseId="${1}"
+    local TestSummaryDirectory="${2}"
+    local OsNameKernel="${3}"
+    if [ ${TEST_CASES_MAP[${TestCaseId}]+_} ]; then
+        run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "${TEST_CASES_MAP[${TestCaseId}]}"
+    else
+        echo "Test case not found"
+    fi
+}
 
 ### @brief Run command as root
 ### @param $@ Command to run, command arguments
@@ -27,37 +40,32 @@ function debug_print {
     fi
 }
 
-# This script contains all common functions that are used by St_xxxx testcases.
-#
-############################################################################
-# Create directory for St_xxxx Test Case. 
-# Create test_case_system_result.txt file with informations:
-#       - creation date
-#       - operating system
-#       - id of used commit 
-#       - test case result section 
-# parameters:
-# $1    Test Case directory name
-#
-function create_directory {
-        local DirectoryName="$1"
-        local LogPrefix="$2 "
-        if [ ! -d "${DirectoryName}" ]; then
-                # create and move to Test Case directory 
-                if ! mkdir "${DirectoryName}"
-                then
-                        echo "${LogPrefix}ERR_CREATE :$1 - cannot create directory"
-                        return "${ERR_CREATE}"
-                fi
-        else
-                echo "${LogPrefix}Directory: ${DirectoryName} exists ..."
-                return "${ERR_DIR_EXISTS}"
-        fi
-
-        return "${ERR_OK}"
+function checkDeviceNo {
+    echo "checkDeviceNo empty"
 }
 
-
+############################################################################
+# Create directory
+#
+# parameters:
+# $1    ditectory name,
+# $2    log prefix
+function create_directory {
+    local DirectoryName="$1"
+    local LogPrefix="$2 "
+    if [ ! -d "${DirectoryName}" ]; then
+        # create and move to Test Case directory 
+        if ! mkdir "${DirectoryName}"
+        then
+            echo "${LogPrefix} ERR_CREATE :$1 - cannot create directory"
+            return "${ERR_CREATE}"
+        fi
+    else
+        echo "${LogPrefix}Directory: ${DirectoryName} exists ..."
+        return "${ERR_DIR_EXISTS}"
+    fi
+    return "${ERR_OK}"
+}
 
 ############################################################################
 # Get test summary directory name 
@@ -66,17 +74,17 @@ function create_directory {
 #       None 
 #
 function get_test_summary_directory_name {
-        local CurrDir="$pwd"
-        local CommitIdShortened
-        local SystemName
-        local TestResultsDirectoryName
-        cd "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" || exit "${ERR_NOEXIST}"
-        CommitIdShortened=$(git log --pretty=format:'%h' -n 1)
-        SystemName=$(hostnamectl | grep "Operating System" | awk '{ print $3 $4 }')
-        TestResultsDirectoryName="Results_${SystemName}_commit_${CommitIdShortened}"
-        cd "${CurrDir}" || exit "${ERR_NOEXIST}"
+    local CurrDir="$pwd"
+    local CommitIdShortened
+    local SystemName
+    local TestResultsDirectoryName
+    cd "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" || exit "${ERR_NOEXIST}"
+    CommitIdShortened=$(git log --pretty=format:'%h' -n 1)
+    SystemName=$(hostnamectl | grep "Operating System" | awk '{ print $3 $4 }')
+    TestResultsDirectoryName="Results_${SystemName}_commit_${CommitIdShortened}"
+    cd "${CurrDir}" || exit "${ERR_NOEXIST}"
 
-        echo "${TestResultsDirectoryName}"
+    echo "${TestResultsDirectoryName}"
 }
 
 

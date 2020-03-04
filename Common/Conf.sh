@@ -43,13 +43,29 @@ IN_2_DISABLE=202        # change input 2 to disable (with BL51 stands for RELAY 
 IN_3_DISABLE=203        # change input 3 to disable (with BL51 stands for RELAY 2) 
 IN_4_DISABLE=204        # change input 4 to disable
 
+declare -A TEST_CASES_MAP
+TEST_CASES_MAP["0100"]="f215"
+TEST_CASES_MAP["0101"]="f223"
+TEST_CASES_MAP["0102"]="f614"
+TEST_CASES_MAP["0103"]="g229"
+TEST_CASES_MAP["0104"]="g215"
+TEST_CASES_MAP["0200"]="carrier_g204_m65n"
+TEST_CASES_MAP["0201"]="carrier_g204_m33"
+TEST_CASES_MAP["0202"]="carrier_g204_m35n"
+TEST_CASES_MAP["0300"]="carrier_f205_m47"
+TEST_CASES_MAP["0301"]="carrier_f205_m57"
+TEST_CASES_MAP["0302"]="carrier_f205_m37_m62"
+TEST_CASES_MAP["0303"]="carrier_f205_m32_m58"
+TEST_CASES_MAP["0304"]="carrier_f205_m66_m31"
+TEST_CASES_MAP["0305"]="carrier_f205_m43_m11"
+
 # Address of Target that will be tested
-MenPcIpAddr="10.1.1.153"
+MenPcIpAddr="10.1.1.195"
 
 #------------------------------------------------------------------------------
 #-------------------------PLEASE SPECIFY THE TEST SETUP------------------------
 #------------------------------------------------------------------------------
-TestSetup="3"
+TestSetup="1"
 
 VERBOSE_PRINT="1"
 
