@@ -123,6 +123,7 @@ echo "${LogPrefix} Test Setup: ${TestSetup}"
     case "${TestSetup}" in
         0)
             run_test_case "${TestId}" "${TestSummaryDirectory}" "${OsNameKernel}"
+            ;;
         1)
             run_test_case "0100" "${TestSummaryDirectory}" "${OsNameKernel}" #F215 board test
             run_test_case "0102" "${TestSummaryDirectory}" "${OsNameKernel}" #F614 board test
