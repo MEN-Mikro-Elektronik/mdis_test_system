@@ -2,7 +2,6 @@
 
 MyDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${MyDir}"/St_Functions.sh
-#source "${MyDir}"/Test_Cases.sh
 source "${MyDir}"/Mdis_Functions.sh
 source "${MyDir}"/Relay_Functions.sh
 
@@ -33,21 +32,21 @@ CommitSha="Commit_${CommitSha}"
 create_directory "${CommitSha}" "${LogPrefix}"
 CmdResult=$?
 if [ "${CmdResult}" -ne "${ERR_OK}" ] && [ "${CmdResult}" -ne "${ERR_DIR_EXISTS}" ]; then
-        exit "${CmdResult}"
+    exit "${CmdResult}"
 fi
 cd "${CommitSha}" || exit "${ERR_NOEXIST}"
 
 create_directory "${TestConfiguration}" "${LogPrefix}"
 CmdResult=$?
 if [ "${CmdResult}" -ne "${ERR_OK}" ] && [ "${CmdResult}" -ne "${ERR_DIR_EXISTS}" ]; then
-        exit "${CmdResult}"
+    exit "${CmdResult}"
 fi
 cd "${TestConfiguration}" || exit "${ERR_NOEXIST}"
 
 create_directory "${Today}" "${LogPrefix}" || exit "${ERR_NOEXIST}"
 CmdResult=$?
 if [ "${CmdResult}" -ne "${ERR_OK}" ] && [ "${CmdResult}" -ne "${ERR_DIR_EXISTS}" ]; then
-        exit "${CmdResult}"
+    exit "${CmdResult}"
 fi
 cd "${Today}" || exit "${ERR_NOEXIST}"
 
@@ -55,7 +54,7 @@ OsNameKernel=$(echo "${OsNameKernel}" | tr -dc '[:alnum:]')
 create_directory "${OsNameKernel}" "${LogPrefix}"
 CmdResult=$?
 if [ "${CmdResult}" -ne "${ERR_OK}" ] && [ "${CmdResult}" -ne "${ERR_DIR_EXISTS}" ]; then
-        exit ${CmdResult}
+    exit ${CmdResult}
 fi
 cd "${OsNameKernel}" || exit "${ERR_NOEXIST}"
 
@@ -76,41 +75,41 @@ fi
 echo "${1}" | sudo -S --prompt=$'\r' dmesg --clear
 
 echo "${LogPrefix} Test Setup: ${TestSetup}"
-case "${TestSetup}" in
+    case "${TestSetup}" in
         1)
-          run_test_case "0100" "${TestSummaryDirectory}" "${OsNameKernel}" #F215 board test
-          run_test_case "0102" "${TestSummaryDirectory}" "${OsNameKernel}" #F614 board test
-          run_test_case "0200" "${TestSummaryDirectory}" "${OsNameKernel}"
-          run_test_case "0201" "${TestSummaryDirectory}" "${OsNameKernel}"
-          run_test_case "0202" "${TestSummaryDirectory}" "${OsNameKernel}"
-          run_test_case "0203" "${TestSummaryDirectory}" "${OsNameKernel}"
-          ;;
+            run_test_case "0100" "${TestSummaryDirectory}" "${OsNameKernel}" #F215 board test
+            run_test_case "0102" "${TestSummaryDirectory}" "${OsNameKernel}" #F614 board test
+            run_test_case "0200" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case "0201" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case "0202" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case "0203" "${TestSummaryDirectory}" "${OsNameKernel}"
+            ;;
         2)
-          run_test_case "0103" "${TestSummaryDirectory}" "${OsNameKernel}" #g229 board test
-          run_test_case "0104" "${TestSummaryDirectory}" "${OsNameKernel}" #g215 board test
-          ;;
+            run_test_case "0103" "${TestSummaryDirectory}" "${OsNameKernel}" #g229 board test
+            run_test_case "0104" "${TestSummaryDirectory}" "${OsNameKernel}" #g215 board test
+            ;;
         3)
-          run_test_case "0101" "${TestSummaryDirectory}" "${OsNameKernel}" #f223 board test
-          run_test_case "0204" "${TestSummaryDirectory}" "${OsNameKernel}"
-          run_test_case "0205" "${TestSummaryDirectory}" "${OsNameKernel}"
-          run_test_case "0206" "${TestSummaryDirectory}" "${OsNameKernel}"
-          run_test_case "0207" "${TestSummaryDirectory}" "${OsNameKernel}"
-          run_test_case "0208" "${TestSummaryDirectory}" "${OsNameKernel}"
-          ;;
+            run_test_case "0101" "${TestSummaryDirectory}" "${OsNameKernel}" #f223 board test
+            run_test_case "0204" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case "0205" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case "0206" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case "0207" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case "0208" "${TestSummaryDirectory}" "${OsNameKernel}"
+            ;;
         4)
-          echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M77_M_Module_Test.sh" "${TestSummaryDirectory}" "1" "1"
-          echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_SMB2_Test.sh" "${TestSummaryDirectory}" "smb2_1" "G025A03"
-          ;;
+            echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M77_M_Module_Test.sh" "${TestSummaryDirectory}" "1" "1"
+            echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_SMB2_Test.sh" "${TestSummaryDirectory}" "smb2_1" "G025A03"
+            ;;
         5)
-          echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_BL51E_Test.sh" "${TestSummaryDirectory}"
-          ;;
+            echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_BL51E_Test.sh" "${TestSummaryDirectory}"
+            ;;
         6)
-          ;;
+            ;;
         *)
-          echo "TEST SETUP IS NOT SET"
-          exit 99
-        ;;
-esac
+            echo "TEST SETUP IS NOT SET"
+            exit 99
+            ;;
+    esac
 
 echo "${1}" | sudo -S --prompt=$'\r' bash -c "dmesg > dmesg_log.txt"
 
