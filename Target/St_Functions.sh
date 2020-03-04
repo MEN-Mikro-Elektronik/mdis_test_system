@@ -11,7 +11,7 @@ function run_test_case {
     local TestCaseId="${1}"
     local TestSummaryDirectory="${2}"
     local OsNameKernel="${3}"
-    if [ ${TEST_CASES_MAP[${TestCaseId}]+_} ]; then
+    if [ "${TEST_CASES_MAP[${TestCaseId}]+_}" ]; then
         run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "${TEST_CASES_MAP[${TestCaseId}]}"
     else
         echo "Test case not found"
@@ -74,7 +74,7 @@ function create_directory {
 #       None 
 #
 function get_test_summary_directory_name {
-    local CurrDir="$pwd"
+    local CurrDir=$(pwd)
     local CommitIdShortened
     local SystemName
     local TestResultsDirectoryName
@@ -96,9 +96,13 @@ function get_test_summary_directory_name {
 #
 function get_os_name_with_kernel_ver {
     cd "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" || exit "${ERR_NOEXIST}"
-    local SystemName=$(hostnamectl | grep "Operating System" | awk '{ print $3 $4 }')
-    local Kernel=$(uname -r)
-    local Arch=$(uname -m)
+    local SystemName
+    local Kernel
+    local Arch
+    SystemName=$(hostnamectl | grep "Operating System" | awk '{ print $3 $4 }')
+    Kernel=$(uname -r)
+    Arch=$(uname -m)
+
     cd "${CurrDir}" || exit "${ERR_NOEXIST}"
     SystemName="${SystemName//\//_}"
     SystemName="${SystemName//(/_}"
@@ -174,7 +178,7 @@ function obtain_device_list_chameleon_device {
 
     debug_print "${LogPrefix} obtain_device_list_chameleon_device" "${TestCaseLogName}"
     # Check how many boards are present
-    BoardsCnt=$(run_as_root /opt/menlinux/BIN/fpga_load -s | grep "${VenID} * ${DevID} * ${SubVenID}" | wc -l)
+    BoardsCnt=$(run_as_root /opt/menlinux/BIN/fpga_load -s | grep -c "${VenID} * ${DevID} * ${SubVenID}")
     debug_print "${LogPrefix} There are: ${BoardsCnt} mezzaine ${VenID} ${DevID} ${SubVenID} board(s) in the system" "${TestCaseLogName}"
 
     if (( "${BoardsCnt}" >= "2" )) ; then
@@ -198,7 +202,8 @@ function obtain_device_list_chameleon_device {
     debug_print "${LogPrefix} Current Path:" "${TestCaseLogName}"
     debug_print "${LogPrefix} $PWD" "${TestCaseLogName}"
 
-    local ChamBoardsNr=$(grep "^mezz_cham*" ../../system.dsc | wc -l)
+    local ChamBoardsNr
+    ChamBoardsNr=$(grep -c "^mezz_cham*" ../../system.dsc)
     debug_print "${LogPrefix} Number of Chameleon boards: ${ChamBoardsNr}" "${TestCaseLogName}"
 
     local ChamBusNr=0
@@ -209,7 +214,7 @@ function obtain_device_list_chameleon_device {
     #   PCI_BUS_NUMBER = BusNr
     #   PCI_DEVICE_NUMBER = DevNr
 
-    for i in $(seq 1 ${ChamBoardsNr}); do
+    for i in $(seq 1 "${ChamBoardsNr}"); do
         # Display chameleon bus and device number
         ChamBusNr=$(sed -n "/^mezz_cham_${i}/,/}/p" ../../system.dsc | grep "PCI_BUS_NUMBER" | awk '{print $4}')
         ChamDevNr=$(sed -n "/^mezz_cham_${i}/,/}/p" ../../system.dsc | grep "PCI_DEVICE_NUMBER" | awk '{print $4}')
@@ -218,28 +223,29 @@ function obtain_device_list_chameleon_device {
         ChamBusNr=$(( 16#$(echo ${ChamBusNr} | awk -F'x' '{print $2}')))
         ChamDevNr=$(( 16#$(echo ${ChamDevNr} | awk -F'x' '{print $2}') ))
 
-        if [ ${ChamBusNr} -eq ${BusNr} ] && [ ${ChamDevNr} -eq ${DevNr} ]; then
+        if [ "${ChamBusNr}" -eq "${BusNr}" ] && [ "${ChamDevNr}" -eq "${DevNr}" ]; then
             print "${LogPrefix} mezz_cham_${i} board is valid" "${TestCaseLogName}"
             ChamValidId=${i}
         fi
     done
 
-    # Check how many devices are present in system.dsc 
-    local DeviceNr=$(grep "{" ../../system.dsc  | wc -l )
+    # Check how many devices are present in system.dsc
+    local DeviceNr
+    DeviceNr=$(grep -c "{" ../../system.dsc)
     
     # Create file with devices description on mezzaine chameleon board
     touch "${FileWithResults}"
 
-    for i in $(seq 1 ${DeviceNr}); do
+    for i in $(seq 1 "${DeviceNr}"); do
         #Check if device belongs to choosen chameleon board
-        local DevToCheck=$(grep "{" ../../system.dsc  | awk NR==${i}'{print $1}')
-
+        local DevToCheck
+        DevToCheck=$(grep "{" ../../system.dsc  | awk NR==${i}'{print $1}')
         if [ "${DevToCheck}" != "mezz_cham_${ChamValidId}" ]; then
             sed -n "/${DevToCheck}/,/}/p" ../../system.dsc  | grep "mezz_cham_${ChamValidId}" > /dev/null 2>&1
 
             if [ $? -eq 0 ]; then
                 print "${LogPrefix}  Device: ${DevToCheck} belongs to mezz_cham_${ChamValidId}" "${TestCaseLogName}"
-                echo "${DevToCheck}" >> ${FileWithResults}
+                echo "${DevToCheck}" >> "${FileWithResults}"
             fi
         fi
     done
@@ -270,7 +276,7 @@ function obtain_chameleon_table {
 
     echo "${LogPrefix} obtain_tty_number_list_from_board"
     for i in $(seq 0 ${BoardMaxSlot}); do
-        run_as_root /opt/menlinux/BIN/fpga_load ${VenID} ${DevID} ${SubVenID} ${i} -t > /dev/null 2>&1
+        run_as_root /opt/menlinux/BIN/fpga_load "${VenID}" "${DevID}" "${SubVenID}" "${i}" -t > /dev/null 2>&1
         if [ $? -eq 0 ]; then
             BoardCnt=$((BoardCnt+1))
         else
@@ -278,15 +284,13 @@ function obtain_chameleon_table {
         fi
     done
 
-    echo "${LogPrefix} Found ${BoardCnt}: ${VenID} ${DevID} ${SubVenID} board(s)"\
-    | tee -a "${TestCaseLogName}" 2>&1
+    debug_print "${LogPrefix} Found ${BoardCnt}: ${VenID} ${DevID} ${SubVenID} board(s)" "${TestCaseLogName}"
 
     # Save chamelon table for board(s)
     for i in $(seq 1 ${BoardCnt}); do
-        run_as_root /opt/menlinux/BIN/fpga_load ${VenID} ${DevID} ${SubVenID} $((${i}-1)) -t >> "${FileWithResults}"
+        run_as_root /opt/menlinux/BIN/fpga_load "${VenID}" "${DevID}" "${SubVenID}" $((i-1)) -t >> "${FileWithResults}"
         if [ $? -eq 0 ]; then
-            echo "${LogPrefix} Chameleon for Board_${VenID}_${DevID}_${SubVenID}_${i} board saved (1)"\
-              | tee -a "${TestCaseLogName}" 2>&1
+            debug_print "${LogPrefix} Chameleon for Board_${VenID}_${DevID}_${SubVenID}_${i} board saved (1)" "${TestCaseLogName}"
         else
             break
         fi
@@ -340,7 +344,7 @@ function uart_test_tty {
     CatEchoTestPID=$!
 
     # Send data into port
-    run_as_root echo ${EchoTestMessage} > /dev/${tty0}
+    run_as_root echo "${EchoTestMessage}" > /dev/${tty0}
     if [ $? -ne 0 ]; then
         debug_print "${LogPrefix} Could not echo on ${tty0}" "${LogFile}"
     fi
@@ -379,7 +383,7 @@ function uart_test_tty {
 # $4      SubVenID
 # $5      Board Number (1 as default)
 function obtain_tty_number_list_from_board {
-    local TestCaseLogName=$1
+    local LogFile=$1
     local ChamTableDumpFile=$2
     local UartNoList=$3
     local LogPrefix=$4
@@ -389,24 +393,22 @@ function obtain_tty_number_list_from_board {
 
     # Check How many UARTS are on board(s)
     UartCnt=0
-    for i in $(seq 1 ${BoardCnt}); do
-        UartBrdCnt=$(grep "UART" "${ChamTableDumpFile}" | wc -l)
-        for j in $(seq 1 ${UartBrdCnt}); do
+    for i in $(seq 1 "${BoardCnt}"); do
+        UartBrdCnt=$(grep -c "UART" "${ChamTableDumpFile}")
+        for j in $(seq 1 "${UartBrdCnt}"); do
             UartAddr=$(grep "UART" "${ChamTableDumpFile}" | awk NR==${j}'{print $11}')
             if [ $? -eq 0 ]; then
-                echo "${LogPrefix}  UART ${j} addr saved"\
-                  | tee -a "${TestCaseLogName}" 2>&1
+                debug_print "${LogPrefix}  UART ${j} addr saved" "${LogFile}"
                 UartBrdNr[${UartCnt}]=${i}
                 UartNr[${UartCnt}]=$(grep -i ${UartAddr} "UART_devices_dump.txt" | awk '{print $1}' | egrep -o '^[^:]+')
                 UartCnt=$((UartCnt+1))
             else
-                echo "${LogPrefix}  No more UARTs in board" | tee -a "${TestCaseLogName}" 2>&1
+                debug_print "${LogPrefix}  No more UARTs in board" "${LogFile}"
             fi
         done
     done
 
-    echo "${LogPrefix} There are ${UartCnt} UART(s) on Chameleon table log"\
-        | tee -a "${TestCaseLogName}" 2>&1
+    debug_print "${LogPrefix} There are ${UartCnt} UART(s) on Chameleon table log" "${LogFile}"
     if [ ${UartCnt} -eq 0 ]; then
         return "${ERR_NOT_DEFINED}"
     fi
@@ -415,10 +417,9 @@ function obtain_tty_number_list_from_board {
 
     # Loop through all UART interfaces per board
     local UartNrInBoard=0
-    for item in ${UartBrdNr[@]}; do
-        echo "${LogPrefix} Board: ${item}"
-        echo "${LogPrefix} For board ${item} UART ttyS${UartNr[${UartNrInBoard}]} should be tested"\
-         | tee -a "${TestCaseLogName}" 2>&1
+    for item in "${UartBrdNr[@]}"; do
+        debug_print "${LogPrefix} Board: ${item}" "${LogFile}"
+        debug_print "${LogPrefix} For board ${item} UART ttyS${UartNr[${UartNrInBoard}]} should be tested" "${LogFile}"
         echo "${UartNr[${UartNrInBoard}]}" >> "${UartNoList}"
         UartNrInBoard=$((UartNrInBoard + 1))
     done
@@ -443,14 +444,14 @@ function obtain_tty_number_list_from_board {
 #       m66
 #       m31
 #       m35 
-#       m36 - not yet !!
+#       m36
 #       m82
 
 # parameters:
-# $1    
+# $1
 #
 function m_module_x_test {
-    local TestCaseLogName=${1}
+    local LogFile=${1}
     local TestCaseName=${2}
     local CommandCode=${3}
     local MModuleName=${4}
@@ -486,14 +487,14 @@ function m_module_x_test {
         m35)
             ModprobeDriver="men_ll_m34"
             if [ "${SubtestName}" == "blkread" ]; then
-                  ModuleSimp="m34_blkread -r=14 -b=1 -i=3 -d=1"
-                  ModuleSimpOutput="blkread"
-                  ModuleResultCmpFunc="compare_m35_blkread_values"
-                  ModuleInstanceName="${MModuleName}_${MModuleBoardNr}"
+                ModuleSimp="m34_blkread -r=14 -b=1 -i=3 -d=1"
+                ModuleSimpOutput="blkread"
+                ModuleResultCmpFunc="compare_m35_blkread_values"
+                ModuleInstanceName="${MModuleName}_${MModuleBoardNr}"
             else
-                  ModuleSimp="m34_simp"
-                  ModuleResultCmpFunc="compare_m35_simp_values"
-                  ModuleInstanceName="${MModuleName}_${MModuleBoardNr} 14"
+                ModuleSimp="m34_simp"
+                ModuleResultCmpFunc="compare_m35_simp_values"
+                ModuleInstanceName="${MModuleName}_${MModuleBoardNr} 14"
             fi
             ;;
         m36n)
@@ -529,20 +530,20 @@ function m_module_x_test {
             ;;
     esac
 
-    echo "${LogPrefix} M-Module to test: ${MModuleName}" | tee -a "${TestCaseLogName}" 2>&1
-    echo "${LogPrefix} M-Module modprobeDriver: ${ModprobeDriver}" | tee -a "${TestCaseLogName}" 2>&1
-    echo "${LogPrefix} M-Module command: ${ModuleSimp} ${ModuleInstanceName}" | tee -a "${TestCaseLogName}" 2>&1
-    echo "${LogPrefix} M-Module cmp function: ${ModuleResultCmpFunc}" | tee -a "${TestCaseLogName}" 2>&1
+    debug_print "${LogPrefix} M-Module to test: ${MModuleName}" "${LogFile}"
+    debug_print "${LogPrefix} M-Module modprobeDriver: ${ModprobeDriver}" "${LogFile}"
+    debug_print "${LogPrefix} M-Module command: ${ModuleSimp} ${ModuleInstanceName}" "${LogFile}"
+    debug_print "${LogPrefix} M-Module cmp function: ${ModuleResultCmpFunc}" "${LogFile}"
 
     while ${MachineRun}; do
         case "${MachineState}" in
             ModprobeDriver)
                 # Modprobe driver
-                echo "${LogPrefix} ModprobeDriver" | tee -a "${TestCaseLogName}" 2>&1
+                debug_print "${LogPrefix} ModprobeDriver" "${LogFile}"
                 run_as_root modprobe "${ModprobeDriver}"
                 CmdResult=$?
                 if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-                    echo "${LogPrefix} Error: ${ERR_MODPROBE} :could not modprobe ${ModprobeDriver}" | tee -a "${TestCaseLogName}" 2>&1
+                    debug_print "${LogPrefix} Error: ${ERR_MODPROBE} :could not modprobe ${ModprobeDriver}" "${LogFile}"
                     MachineRun=false
                 else
                     MachineState="CheckInput"
@@ -550,11 +551,11 @@ function m_module_x_test {
                 ;;
             CheckInput)
                 # Check if input is disabled - if not disable input 
-                echo "${LogPrefix} CheckInput" | tee -a "${TestCaseLogName}" 2>&1
-                change_input "${TestCaseLogName}" "${TestCaseName}" $((CommandCode+100)) "${InputSwitchTimeout}" "${LogPrefix}"
+                debug_print "${LogPrefix} CheckInput" "${LogFile}"
+                change_input "${LogFile}" "${TestCaseName}" $((CommandCode+100)) "${InputSwitchTimeout}" "${LogPrefix}"
                 CmdResult=$?
                 if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-                    echo "${LogPrefix} Error: ${CmdResult} in function change_input" | tee -a "${TestCaseLogName}" 2>&1
+                    debug_print "${LogPrefix} Error: ${CmdResult} in function change_input" "${LogFile}"
                     MachineRun=false
                 else
                     MachineState="RunExampleInputDisable"
@@ -564,12 +565,12 @@ function m_module_x_test {
                 # Run example first time (banana plugs disconnected)
                 # If device cannot be opened there is a log in result  :
                 # *** ERROR (LINUX) #2:  No such file or directory ***
-                echo "${LogPrefix} RunExampleInputDisable" | tee -a "${TestCaseLogName}" 2>&1
+                debug_print "${LogPrefix} RunExampleInputDisable" "${LogFile}"
                 run_as_root ${ModuleSimp} ${ModuleInstanceName} > ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_disconnected.txt 2>&1
-                ErrorLogCnt=$(grep "ERROR" ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_disconnected.txt | grep "No such file or directory" | wc -l) 
+                ErrorLogCnt=$(grep "ERROR" ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_disconnected.txt | grep -c "No such file or directory") 
                 CmdResult="${ErrorLogCnt}"
                 if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-                    echo "${LogPrefix} Error: ${ERR_SIMP_ERROR} :could not run ${ModuleSimp} ${ModuleInstanceName} " | tee -a "${TestCaseLogName}" 2>&1
+                    debug_print "${LogPrefix} Error: ${ERR_SIMP_ERROR} :could not run ${ModuleSimp} ${ModuleInstanceName}" "${LogFile}"
                     MachineRun=false
                 else
                     if [ "${MModuleName}" == "m35" ] && [ "${SubtestName}" == "blkread" ]; then
@@ -580,11 +581,11 @@ function m_module_x_test {
                 fi
                 ;;
             EnableInput)
-                echo "${LogPrefix} EnableInput" | tee -a "${TestCaseLogName}" 2>&1
-                change_input "${TestCaseLogName}" "${TestCaseName}" "${CommandCode}" "${InputSwitchTimeout}" "${LogPrefix}"
+                debug_print "${LogPrefix} EnableInput" "${LogFile}"
+                change_input "${LogFile}" "${TestCaseName}" "${CommandCode}" "${InputSwitchTimeout}" "${LogPrefix}"
                 CmdResult=$?
                 if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-                    echo "${LogPrefix} Error: ${CmdResult} in function change_input" | tee -a "${TestCaseLogName}" 2>&1
+                    debug_print "${LogPrefix} Error: ${CmdResult} in function change_input" "${LogFile}"
                     MachineState=false
                 else
                     MachineState="RunExampleInputEnable"
@@ -594,23 +595,23 @@ function m_module_x_test {
                 # Run example second time (banana plugs connected)
                 # If device cannot be opened there is a log in result  :
                 # *** ERROR (LINUX) #2:  No such file or directory ***
-                echo "${LogPrefix} RunExampleInputEnable" | tee -a "${TestCaseLogName}" 2>&1
+                debug_print "${LogPrefix} RunExampleInputEnable" "${LogFile}"
                 run_as_root ${ModuleSimp} ${ModuleInstanceName} > ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_connected.txt 2>&1
-                ErrorLogCnt=$(grep "ERROR" ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_connected.txt | grep "No such file or directory" | wc -l) 
+                ErrorLogCnt=$(grep "ERROR" ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_connected.txt | grep -c "No such file or directory") 
                 CmdResult="${ErrorLogCnt}"
                 if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-                    echo "${LogPrefix} Error: ${ERR_SIMP_ERROR} :could not run ${ModuleSimp} ${ModuleInstanceName} " | tee -a ${TestCaseLogName} 2>&1
+                    debug_print "${LogPrefix} Error: ${ERR_SIMP_ERROR} :could not run ${ModuleSimp} ${ModuleInstanceName}" "${LogFile}"
                     MachineState="DisableInput"
                 else
                     MachineState="CompareResults"
                 fi
                 ;;
             CompareResults)
-                echo "${LogPrefix} CompareResults" | tee -a "${TestCaseLogName}" 2>&1
-                "${ModuleResultCmpFunc}" "${TestCaseLogName}" "${LogPrefix}" "${MModuleBoardNr}"
+                debug_print "${LogPrefix} CompareResults" "${LogFile}"
+                "${ModuleResultCmpFunc}" "${LogFile}" "${LogPrefix}" "${MModuleBoardNr}"
                 CmdResult=$?
                 if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-                    echo "${LogPrefix} Error: ${CmdResult} in ${ModuleResultCmpFunc} ${TestCaseLogName} ${TestCaseName} ${MModuleBoardNr}" | tee -a ${TestCaseLogName} 2>&1
+                    debug_print "${LogPrefix} Error: ${CmdResult} in ${ModuleResultCmpFunc} ${LogFile} ${TestCaseName} ${MModuleBoardNr}" "${LogFile}"
                     MachineState="DisableInput"
                     TestError=${CmdResult}
                 else
@@ -619,16 +620,16 @@ function m_module_x_test {
                 fi
                 ;;
             DisableInput)
-                echo "${LogPrefix} DisableInput" | tee -a "${TestCaseLogName}" 2>&1
-                change_input "${TestCaseLogName}" "${TestCaseName}" $((CommandCode+100)) "${InputSwitchTimeout}" "${LogPrefix}"
+                debug_print "${LogPrefix} DisableInput" "${LogFile}"
+                change_input "${LogFile}" "${TestCaseName}" $((CommandCode+100)) "${InputSwitchTimeout}" "${LogPrefix}"
                 CmdResult=$?
                 if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-                    echo "${LogPrefix} Error: ${CmdResult} in function change_input" | tee -a "${TestCaseLogName}" 2>&1
+                    debug_print "${LogPrefix} Error: ${CmdResult} in function change_input" "${LogFile}"
                 fi
                 MachineRun=false
                 ;;
             *)
-                echo "${LogPrefix} State is not set, start with ModprobeDriver"
+                debug_print "${LogPrefix} State is not set, start with ModprobeDriver" "${LogFile}"
                 MachineState="ModprobeDriver"
                 ;;
         esac
