@@ -16,12 +16,12 @@ BuildMdis="0"
 while test $# -gt 0 ; do
     case "$1" in
         --test-setup*)
-            shift
             TestSetup="$(echo "$1" | sed -e 's/^[^=]*=//g')"
+            shift
             ;;
         --date*)
-            shift
             Date="$(echo "$1" | sed -e 's/^[^=]*=//g')"
+            shift
             ;;
         --debug-level*)
             Verbose="$(echo "$1" | sed -e 's/^[^=]*=//g')"
