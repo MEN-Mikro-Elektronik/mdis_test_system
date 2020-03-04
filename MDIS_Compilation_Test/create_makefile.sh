@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ### @file create_makefile.sh
-### @brief Parse all Makefiles and create one for all
+### @brief Parse all Makefiles and create one (shared/static) for all
 
 ################################################################################
 # FUNCTIONS
@@ -128,6 +128,7 @@ read_makefile() {
 	local IFS
 	local LINE
 	local SET
+	local MODE
 
 	IFS=
 	while read -r LINE; do
@@ -138,10 +139,13 @@ read_makefile() {
 			else
 				SET=
 			fi
+		elif [[ "${LINE}" =~ ^LIB_MODE[[:space:]]*=[[:space:]]*(shared|static) ]]; then
+			MODE="${BASH_REMATCH[1]}"
 		elif [[ "${LINE}" =~ ^[[:space:]]*([A-Za-z0-9_\./]+)[[:space:]]?\\? ]]; then
-			if [ "${SET}" != "" ]; then
+			if [ "${SET}" != "" ] && \
+				[ "${MODE}" != "" ]; then
 				if setValue "SETS" "${SET}"; then
-					setAdd "${SET}" "${BASH_REMATCH[1]}"
+					setAdd "${MODE}_${SET}" "${BASH_REMATCH[1]}"
 				else
 					SET=
 				fi
@@ -160,19 +164,17 @@ create_variable_string() {
 	local -i SIZE
 	local VALUE
 
-	if setValue "SETS" "${1}"; then
-		SIZE="$(setSize "${1}")"
-		if [ "${SIZE}" != "0" ]; then
-			echo "\\\\"
-			for VALUE in $(setToArray "${1}"); do
-				SIZE="$((SIZE-1))"
-				if [ "${SIZE}" != 0 ]; then
-					echo -e "\t${VALUE} \\\\\\"
-				else
-					echo -e "\t${VALUE}"
-				fi
-			done
-		fi
+	SIZE="$(setSize "${1}")"
+	if [ "${SIZE}" != "0" ]; then
+		echo "\\\\"
+		for VALUE in $(setToArray "${1}"); do
+			SIZE="$((SIZE-1))"
+			if [ "${SIZE}" != 0 ]; then
+				echo -e "\t${VALUE} \\\\\\"
+			else
+				echo -e "\t${VALUE}"
+			fi
+		done
 	fi
 }
 
@@ -238,7 +240,7 @@ MDIS_SUPPORT_RTAI = no
 # the libraries. \\\"shared\\\" mode makes programs smaller but
 # requires installation of shared libraries on the target
 
-LIB_MODE = shared
+LIB_MODE = \${LIB_MODE}
 
 # Defines whether to build and install the release (nodbg) or
 # debug (dbg) versions of the kernel modules. The debug version
@@ -316,16 +318,22 @@ declare -ar SETS=("ALL_LL_DRIVERS" \
 	"ALL_NATIVE_DRIVERS" \
 	"ALL_NATIVE_LIBS" \
 	"ALL_NATIVE_TOOLS")
-declare -r OUTPUT="Makefile.all"
+declare -ar MODES=("shared" \
+	"static")
+declare -ar OUTPUTS=("Makefile.shared" \
+	"Makefile.static")
 declare -a MAKEFILES
 declare MAKEFILE
 declare SET
 declare VALUE
+declare -i i
 
 setNew "SETS"
 for SET in "${SETS[@]}"; do
 	setAdd "SETS" "${SET}"
-	setNew "${SET}"
+	for (( i=0 ; i<${#MODES[@]} ; i++ )); do
+		setNew "${MODES[${i}]}_${SET}"
+	done
 done
 
 echo -n "Parsing Makefiles..."
@@ -336,15 +344,28 @@ for MAKEFILE in "${MAKEFILES[@]}"; do
 done
 echo "done!"
 
-for SET in $(setToArray "SETS"); do
-	VALUE="$(create_variable_string "${SET}")"
-	declare "${SET}"
-	eval "${SET}=\"${VALUE}\""
+for (( i=0 ; i<${#MODES[@]} ; i++ )); do
+	declare LIB_MODE
+	# LIB_MODE Used in $TEMPLATE
+	# shellcheck disable=SC2034
+	LIB_MODE="${MODES[${i}]}"
+	for SET in $(setToArray "SETS"); do
+		VALUE="$(create_variable_string "${MODES[${i}]}_${SET}")"
+		declare "${SET}"
+		eval "${SET}=\"${VALUE}\""
+	done
+	echo -n "Writing ${OUTPUTS[${i}]}..."
+	eval "echo \"${TEMPLATE}\" > \"${OUTPUTS[${i}]}\""
+	echo "done!"
+	for SET in $(setToArray "SETS"); do
+		unset -v "${SET}"
+	done
+	unset -v "LIB_MODE"
 done
-eval "echo \"${TEMPLATE}\" > \"${OUTPUT}\""
-echo "Writing ${OUTPUT}...done!"
 
 for SET in "${SETS[@]}"; do
-	setDelete "${SET}"
+	for (( i=0 ; i<${#MODES[@]} ; i++ )); do
+		setDelete "${MODES[${i}]}_${SET}"
+	done
 done
 setDelete "SETS"
