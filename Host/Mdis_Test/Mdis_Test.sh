@@ -2,11 +2,11 @@
 
 MyDir="$(dirname "$0")"
 source "${MyDir}/../../Common/Conf.sh"
-source "${MyDir}/Jenkins_Functions.sh"
-LogPrefix="[Jenkins]"
+source "${MyDir}/Mdis_Test_Functions.sh"
+LogPrefix="[Mdis_Test]"
 
 # This script checks if hardware is present
-# Jenkins run result identification
+# Mdis Test run result identification
 Today=$(date +%Y_%m_%d_%H_%M_%S)
 
 BuildMdis="1"
@@ -56,21 +56,21 @@ case ${TestSetup} in
 esac
         echo "GrubOses: ${GrubOses}"
 
-JenkinsBackgroundPID=0
+MdisTestBackgroundPID=0
 
 trap cleanOnExit SIGINT SIGTERM
 function cleanOnExit() {
         echo "** cleanOnExit"
-        echo "JenkinsBackgroundPID: ${JenkinsBackgroundPID}"
-        if [ ${JenkinsBackgroundPID} -ne 0 ]; then
+        echo "MdisTestBackgroundPID: ${MdisTestBackgroundPID}"
+        if [ ${MdisTestBackgroundPID} -ne 0 ]; then
             # Kill process
-            echo "${LogPrefix} kill process ${JenkinsBackgroundPID}"
+            echo "${LogPrefix} kill process ${MdisTestBackgroundPID}"
 
-            if ! kill ${JenkinsBackgroundPID}
+            if ! kill ${MdisTestBackgroundPID}
             then
-                    echo "${LogPrefix} Could not kill cat backgroung process ${JenkinsBackgroundPID}"
+                    echo "${LogPrefix} Could not kill cat backgroung process ${MdisTestBackgroundPID}"
             else
-                    echo "${LogPrefix} process ${JenkinsBackgroundPID} killed"
+                    echo "${LogPrefix} process ${MdisTestBackgroundPID} killed"
             fi
             sleep 1
             jobs
@@ -79,17 +79,17 @@ function cleanOnExit() {
         exit
 }
 
-function cleanJenkinsBackgroundJob {
+function cleanMdisTestBackgroundJob {
         echo "** cleanOnExit"
-        if [ ${JenkinsBackgroundPID} -ne 0 ]; then
+        if [ ${MdisTestBackgroundPID} -ne 0 ]; then
             # Kill process
-            echo "${LogPrefix} kill process ${JenkinsBackgroundPID}"
+            echo "${LogPrefix} kill process ${MdisTestBackgroundPID}"
 
-            if ! kill  ${JenkinsBackgroundPID}
+            if ! kill  ${MdisTestBackgroundPID}
             then
-                    echo "${LogPrefix} Could not kill cat backgroung process ${JenkinsBackgroundPID}"
+                    echo "${LogPrefix} Could not kill cat backgroung process ${MdisTestBackgroundPID}"
             else
-                    echo "${LogPrefix} process ${JenkinsBackgroundPID} killed"
+                    echo "${LogPrefix} process ${MdisTestBackgroundPID} killed"
             fi
             sleep 1
             jobs
@@ -107,20 +107,20 @@ function runTests {
             run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' chmod +x ${GitTestTargetDirPath}/*"
             run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' chmod +x ${GitTestHostDirPath}/*"
 
-            ./Jenkins_Background.sh &
+            ./Mdis_Test_Background.sh &
 
-            # Save background process PID 
-            JenkinsBackgroundPID=$!
-            echo "${LogPrefix} JenkinsBackgroundPID is ${JenkinsBackgroundPID}"
+            # Save background process PID
+            MdisTestBackgroundPID=$!
+            echo "${LogPrefix} MdisTestBackgroundPID is ${MdisTestBackgroundPID}"
 
-            # Run Test script - now scripts from remote device should be run 
+            # Run Test script - now scripts from remote device should be run
             make_visible_in_log "TEST CASE - ${St_Test_Setup_Configuration} ${TestSetup}"
             if ! run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' ${GitTestTargetDirPath}/${St_Test_Setup_Configuration} ${TestSetup} ${BuildMdis} ${Today}"
             then
                     echo "${LogPrefix} Error while running St_Test_Configuration script"
             fi
 
-            cleanJenkinsBackgroundJob
+            cleanMdisTestBackgroundJob
             # Initialize tested device 
             # run_cmd_on_remote_pc "mkdir $TestCaseDirectoryName"
             # Below command must be run from local device, 

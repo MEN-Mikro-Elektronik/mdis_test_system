@@ -110,7 +110,7 @@ MdisExternalDirectoryPath="/media/tests/MDIS_External_Sources"
 MdisResultsDirectoryPath="${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisResultsDirectoryName}"
 GitTestCommonDirPath="${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}/Common"
 GitTestTargetDirPath="${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}/Target"
-GitTestHostDirPath="${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}/Host/Jenkins"
+GitTestHostDirPath="${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}/Host/Mdis_Test"
 
 ResultsFileLogName="Results_summary.log"
 
