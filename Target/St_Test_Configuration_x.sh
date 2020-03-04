@@ -42,8 +42,8 @@ while test $# -gt 0 ; do
         esac
 done
 
-if [ "${TestSetup}" -eq "0" ] ; then
-    if [ "${TestId}" -ne "0" ]
+if [ "${TestSetup}" -eq "0" ]; then
+    if [ "${TestId}" -ne "0" ]; then
         TestConfiguration="St_Test_Id_${TestId}"
     else
         echo "Wrong parameters:"
