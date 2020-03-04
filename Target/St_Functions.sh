@@ -393,9 +393,9 @@ function obtain_tty_number_list_from_board {
 
     # Check How many UARTS are on board(s)
     UartCnt=0
-    for i in $(seq 1 "${BoardCnt}"); do
+    for i in $(seq 1 ${BoardCnt}); do
         UartBrdCnt=$(grep -c "UART" "${ChamTableDumpFile}")
-        for j in $(seq 1 "${UartBrdCnt}"); do
+        for j in $(seq 1 ${UartBrdCnt}); do
             UartAddr=$(grep "UART" "${ChamTableDumpFile}" | awk NR==${j}'{print $11}')
             if [ $? -eq 0 ]; then
                 debug_print "${LogPrefix}  UART ${j} addr saved" "${LogFile}"

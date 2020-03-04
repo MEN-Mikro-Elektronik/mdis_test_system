@@ -82,7 +82,7 @@ echo "${LogPrefix} Test Setup: ${TestSetup}"
             run_test_case "0200" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case "0201" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case "0202" "${TestSummaryDirectory}" "${OsNameKernel}"
-            run_test_case "0203" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case "0300" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
         2)
             run_test_case "0103" "${TestSummaryDirectory}" "${OsNameKernel}" #g229 board test

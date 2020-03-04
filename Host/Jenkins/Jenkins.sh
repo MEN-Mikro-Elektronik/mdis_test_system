@@ -127,9 +127,9 @@ function runTests {
             # Test scripts have not been downloaded into remote yet.
 }
 
-function run_single_test {
-
-}
+#function run_single_test {
+#
+#}
 
 # MAIN start here
 if [ "${RunInstantly}" == "1" ]; then
