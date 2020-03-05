@@ -5,7 +5,7 @@ source "${MyDir}"/Mdis_Functions.sh
 source "${MyDir}"/Relay_Functions.sh
 
 # This script contains all common functions that are used by test cases
-#
+
 
 function run_test_case {
     local TestCaseId="${1}"
@@ -244,7 +244,7 @@ function obtain_device_list_chameleon_device {
             sed -n "/${DevToCheck}/,/}/p" ../../system.dsc  | grep "mezz_cham_${ChamValidId}" > /dev/null 2>&1
 
             if [ $? -eq 0 ]; then
-                print "${LogPrefix}  Device: ${DevToCheck} belongs to mezz_cham_${ChamValidId}" "${TestCaseLogName}"
+                debug_print "${LogPrefix}  Device: ${DevToCheck} belongs to mezz_cham_${ChamValidId}" "${TestCaseLogName}"
                 echo "${DevToCheck}" >> "${FileWithResults}"
             fi
         fi
@@ -268,13 +268,13 @@ function obtain_chameleon_table {
     local SubVenID=$3
     local FileWithResults=$4
     local BoardNumberParam=$5 #TBD
-    local TestCaseLogName=$6
+    local LogFile=$6
     local LogPrefix=$7
 
     local BoardCnt=0
     local BoardMaxSlot=8
 
-    echo "${LogPrefix} obtain_tty_number_list_from_board"
+    debug_print "${LogPrefix} obtain_tty_number_list_from_board" "${LogFile}"
     for i in $(seq 0 ${BoardMaxSlot}); do
         run_as_root /opt/menlinux/BIN/fpga_load "${VenID}" "${DevID}" "${SubVenID}" "${i}" -t > /dev/null 2>&1
         if [ $? -eq 0 ]; then
@@ -284,13 +284,13 @@ function obtain_chameleon_table {
         fi
     done
 
-    debug_print "${LogPrefix} Found ${BoardCnt}: ${VenID} ${DevID} ${SubVenID} board(s)" "${TestCaseLogName}"
+    debug_print "${LogPrefix} Found ${BoardCnt}: ${VenID} ${DevID} ${SubVenID} board(s)" "${LogFile}"
 
     # Save chamelon table for board(s)
     for i in $(seq 1 ${BoardCnt}); do
         run_as_root /opt/menlinux/BIN/fpga_load "${VenID}" "${DevID}" "${SubVenID}" $((i-1)) -t >> "${FileWithResults}"
         if [ $? -eq 0 ]; then
-            debug_print "${LogPrefix} Chameleon for Board_${VenID}_${DevID}_${SubVenID}_${i} board saved (1)" "${TestCaseLogName}"
+            debug_print "${LogPrefix} Chameleon for Board_${VenID}_${DevID}_${SubVenID}_${i} board saved (1)" "${LogFile}"
         else
             break
         fi

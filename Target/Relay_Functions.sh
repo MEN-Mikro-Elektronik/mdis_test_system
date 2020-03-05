@@ -67,7 +67,7 @@ function read_command_code_status {
         debug_print "${LogPrefix} ${LockResult}" "${LogFile}"
         return "${ERR_SWITCH}"
     else
-        print "${LogPrefix} ${LockResult} rc: no input change result yet" "${LogFile}"
+        debug_print "${LogPrefix} ${LockResult} rc: no input change result yet" "${LogFile}"
         return "${ERR_LOCK_INVALID}"
     fi
 }
