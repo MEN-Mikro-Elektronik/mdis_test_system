@@ -355,3 +355,10 @@ function reboot_and_wait {
 
     return "${Return}"
 }
+
+function debug_print_host {
+    local Msg="${1}"
+    if [ "${VERBOSE_LEVEL}" -ge "2" ]; then
+        echo "${Msg}"
+    fi
+}

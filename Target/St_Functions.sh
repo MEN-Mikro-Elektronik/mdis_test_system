@@ -40,13 +40,6 @@ function debug_print {
     fi
 }
 
-function debug_print_host {
-    local Msg="${1}"
-    if [ "${VERBOSE_LEVEL}" -ge "2" ]; then
-        echo "${Msg}"
-    fi
-}
-
 function checkDeviceNo {
     echo "checkDeviceNo empty"
 }

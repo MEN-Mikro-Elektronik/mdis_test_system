@@ -2,7 +2,6 @@
 
 MyDir="$(dirname "$0")"
 source "${MyDir}/../../Common/Conf.sh"
-source "${MyDir}/../../Target/St_Functions.sh"
 source "${MyDir}/Mdis_Test_Functions.sh"
 LogPrefix="[Mdis_Test]"
 
@@ -91,6 +90,8 @@ while test $# -gt 0 ; do
             ;;
         esac
 done
+
+run_as_root echo "VERBOSE_LEVEL=${VERBOSE_LEVEL}" | tee -a "${MyDir}/../../Common/Conf.sh"
 
 echo "Test Setup: ${TEST_SETUP}"
 case ${TEST_SETUP} in
