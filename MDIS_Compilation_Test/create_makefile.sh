@@ -192,7 +192,7 @@ declare -r TEMPLATE=\
 # 2018-09-28
 
 ifndef MEN_LIN_DIR
-MEN_LIN_DIR = /media/men/Data/Data/Compilation_MDIS_Test/13MD05-90_Install
+MEN_LIN_DIR = /opt/menlinux
 
 endif
 
@@ -211,7 +211,7 @@ WIZ_CDK = Selfhosted
 # typically /usr/src/linux. This directory is used when
 # building the kernel modules.
 
-LIN_KERNEL_DIR = /media/men/Data/Data/Compilation_MDIS_Test/Linux_Kernels/linux
+LIN_KERNEL_DIR = /usr/src/linux
 
 # Defines whether to build MDIS to support RTAI. If enabled,
 # MDIS modules support RTAI in addition to the standard Linux
