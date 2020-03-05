@@ -193,7 +193,7 @@ function install_13MD05_90_sources {
             echo "${MenPcPassword}" | sudo --stdin --prompt=$'\r' ln --symbolic --no-dereference --force "/usr/src/linux-headers-${CurrentKernel}" "/usr/src/linux"
         fi
         # install sources of MDIS
-        if [ "${RunInstantly}" != "1" ]; then
+        if [ "${RUN_INSTANTLY}" != "1" ]; then
             echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -rf /opt/menlinux
             echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -f /lib/modules/"$(uname -r)"/misc/men_*.ko
             echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -f /etc/mdis/*.bin

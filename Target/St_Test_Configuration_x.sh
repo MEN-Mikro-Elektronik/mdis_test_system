@@ -5,18 +5,64 @@ source "${MyDir}"/St_Functions.sh
 source "${MyDir}"/Mdis_Functions.sh
 source "${MyDir}"/Relay_Functions.sh
 
-# This script runs all available test cases for given systen configuration.
-# Test cases are described in document: 13MD05-90_xx_xx-JPE-TestReport
-# 
-# Test should be located in dir -- Test_Summary_commit_xxxx_setup_xx_date
+# This script runs mdis tests
 
-# parameters:
-# $1     Men password
-# $2     Unique test ID - date
-TestSetup=${1}
-BuildMdis=${2}
-Today=${3}
-TestConfiguration="St_Test_Configuration_${TestSetup}"
+TestSetup="0"
+Date="_2020"
+VERBOSE_LEVEL="0"
+TestId="0"
+BuildMdis="0"
+
+while test $# -gt 0 ; do
+    case "$1" in
+        --test-setup*)
+            TestSetup="$(echo "$1" | sed -e 's/^[^=]*=//g')"
+            shift
+            ;;
+        --date*)
+            Date="$(echo "$1" | sed -e 's/^[^=]*=//g')"
+            shift
+            ;;
+        --debug-level*)
+            VERBOSE_LEVEL="$(echo "$1" | sed -e 's/^[^=]*=//g')"
+            shift
+            ;;
+        --test-id*)
+            TestId="$(echo "$1" | sed -e 's/^[^=]*=//g')"
+            shift
+            ;;
+        --build-mdis)
+            BuildMdis="1"
+            shift
+            ;;
+        *)
+            echo "No valid parameters"
+            break
+            ;;
+        esac
+done
+
+if [ "${TestSetup}" -eq "0" ]; then
+    if [ "${TestId}" -ne "0" ]; then
+        TestConfiguration="St_Test_Id_${TestId}"
+    else
+        echo "Wrong parameters:"
+        echo "TestSetup: ${TestSetup}"
+        echo "TestId: ${TestId}"
+        exit "${ERR_VALUE}"
+    fi
+else
+    TestConfiguration="St_Test_Setup_${TestSetup}"
+fi
+
+echo "test-setup=${TestSetup}"
+echo "date=${Date}"
+echo "debug-level=${VERBOSE_LEVEL}"
+echo "test-id=${TestId}"
+echo "build-mdis=${BuildMdis}"
+
+run_as_root echo "VERBOSE_LEVEL=${VERBOSE_LEVEL}" | tee -a "${MyDir}/../Common/Conf.sh"
+
 CommitSha="$(get_mdis_sources_commit_sha)"
 OsNameKernel="$(get_os_name_with_kernel_ver)"
 LogPrefix="[St_Test_Conf]"
@@ -43,12 +89,12 @@ if [ "${CmdResult}" -ne "${ERR_OK}" ] && [ "${CmdResult}" -ne "${ERR_DIR_EXISTS}
 fi
 cd "${TestConfiguration}" || exit "${ERR_NOEXIST}"
 
-create_directory "${Today}" "${LogPrefix}" || exit "${ERR_NOEXIST}"
+create_directory "${Date}" "${LogPrefix}" || exit "${ERR_NOEXIST}"
 CmdResult=$?
 if [ "${CmdResult}" -ne "${ERR_OK}" ] && [ "${CmdResult}" -ne "${ERR_DIR_EXISTS}" ]; then
     exit "${CmdResult}"
 fi
-cd "${Today}" || exit "${ERR_NOEXIST}"
+cd "${Date}" || exit "${ERR_NOEXIST}"
 
 OsNameKernel=$(echo "${OsNameKernel}" | tr -dc '[:alnum:]')
 create_directory "${OsNameKernel}" "${LogPrefix}"
@@ -58,7 +104,7 @@ if [ "${CmdResult}" -ne "${ERR_OK}" ] && [ "${CmdResult}" -ne "${ERR_DIR_EXISTS}
 fi
 cd "${OsNameKernel}" || exit "${ERR_NOEXIST}"
 
-TestSummaryDirectory="${MdisResultsDirectoryPath}/${CommitSha}/${TestConfiguration}/${Today}/${OsNameKernel}"
+TestSummaryDirectory="${MdisResultsDirectoryPath}/${CommitSha}/${TestConfiguration}/${Date}/${OsNameKernel}"
 cd "${MainTestDirectoryPath}" || exit "${ERR_NOEXIST}"
 
 if [ "${BuildMdis}" -eq "1" ]; then
@@ -72,10 +118,14 @@ if [ "${BuildMdis}" -eq "1" ]; then
     fi
 fi
 
-echo "${1}" | sudo -S --prompt=$'\r' dmesg --clear
+# Clear dmesg log
+run_as_root dmesg --clear
 
 echo "${LogPrefix} Test Setup: ${TestSetup}"
     case "${TestSetup}" in
+        0)
+            run_test_case "${TestId}" "${TestSummaryDirectory}" "${OsNameKernel}"
+            ;;
         1)
             run_test_case "0100" "${TestSummaryDirectory}" "${OsNameKernel}" #F215 board test
             run_test_case "0102" "${TestSummaryDirectory}" "${OsNameKernel}" #F614 board test
@@ -97,21 +147,21 @@ echo "${LogPrefix} Test Setup: ${TestSetup}"
             run_test_case "0208" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
         4)
-            echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M77_M_Module_Test.sh" "${TestSummaryDirectory}" "1" "1"
-            echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_SMB2_Test.sh" "${TestSummaryDirectory}" "smb2_1" "G025A03"
+            #echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M77_M_Module_Test.sh" "${TestSummaryDirectory}" "1" "1"
+            #echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_SMB2_Test.sh" "${TestSummaryDirectory}" "smb2_1" "G025A03"
             ;;
         5)
-            echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_BL51E_Test.sh" "${TestSummaryDirectory}"
+            #echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_BL51E_Test.sh" "${TestSummaryDirectory}"
             ;;
         6)
             ;;
         *)
-            echo "TEST SETUP IS NOT SET"
+            echo "TEST SETUP OR TEST ID IS NOT SET PROPERLY"
             exit 99
             ;;
     esac
-
-echo "${1}" | sudo -S --prompt=$'\r' bash -c "dmesg > dmesg_log.txt"
+# Save dmesg log
+run_as_root bash -c "dmesg > dmesg_log.txt"
 
 echo "Create Test Results summary for TestSetup ${TestSetup}"
 cd "${TestSummaryDirectory}" || exit "${ERR_NOEXIST}"

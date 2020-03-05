@@ -18,9 +18,13 @@ function f614_description {
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
     echo "DESCRIPTION:"
-    echo "    f614_${ModuleNo}"
+    echo "    F614_${ModuleNo} Interfaces Test"
+    echo "    Run tests for devices: z087_eth"
+    echo "PURPOSE:"
+    echo "    Check if interfaces of F614 board are detected and are working"
+    echo "    correctly"
     echo "RESULTS"
-    echo "    SUCCESS if ip-cores tests on f614 are passed."
+    echo "    SUCCESS if ip-cores tests on F614 are passed."
     echo "    FAIL otherwise"
     echo ""
 }
@@ -29,14 +33,17 @@ function f614_description {
 # run board f614 test
 #
 # parameters:
-# $1    TestCaseLogName
-# $2    LogPrefix
-# $3    M-Module number
+# $1    Test case ID
+# $2    Test summary directory
+# $3    Os kernel
+# $4    Log file
+# $5    Log prefix
+# $6    Board number
 function f614_test {
     local TestCaseId="${1}"
     local TestSummaryDirectory="${2}"
     local OsNameKernel="${3}"
-    local TestCaseLogName=${4}
+    local LogFile=${4}
     local LogPrefix=${5}
     local BoardInSystem=${6}
 
@@ -51,7 +58,7 @@ function f614_test {
     while ${MachineRun}; do
         case "${MachineState}" in
         eth_test)
-            echo "${LogPrefix} Run UART test" | tee -a "${TestCaseLogName}" 2>&1
+            debug_print "${LogPrefix} Run ETH test" "${LogFile}"
             run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
@@ -66,11 +73,11 @@ function f614_test {
             ;;
         Break) 
             # Clean after Test Case
-            echo "${LogPrefix} Break State" | tee --a "${TestCaseLogName}"
+            debug_print "${LogPrefix} Break State" "${LogFile}"
             MachineRun=false
             ;;
         *)
-            echo "${LogPrefix} State is not set, start with eth_test" | tee -a "${TestCaseLogName}"
+            debug_print "${LogPrefix} State is not set, start with eth_test" "${LogFile}"
             MachineState="eth_test"
             ;;
         esac

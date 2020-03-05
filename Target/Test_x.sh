@@ -40,15 +40,6 @@ CurrDir=$(pwd)
 #            $4 Module name
 #            $5 Module num
 
-#TestCaseMainDir="${1}"
-#TestCaseId="${2}"
-#LogPrefix="[${2}]"
-#TestOs="${3}"
-#DeviceName="${4}"
-#DeviceNo="${5}"
-#TestType=""
-#DevicesFile=""
-
 # read parameters
 while test $# -gt 0 ; do
     case "$1" in
@@ -214,17 +205,14 @@ if ! run_test_case_dir_create "${TestCaseLogName}" "${TestCaseName}"
 then
     echo "${LogPrefix} run_test_case_dir_create: Failed, exit Test Case ${TestCaseId}"
     exit "${CmdResult}"
-else
-    echo "${LogPrefix} run_test_case_dir_create: Success"
 fi
 
-echo "${LogPrefix} Run function:" | tee -a "${TestCaseLogName}" 2>&1
+debug_print "${LogPrefix} Run function:" "${TestCaseLogName}"
 
 case "${TestTypeDev}" in
     c)
-        echo "${LogPrefix} Carrier board with M-Module test" | tee -a "${TestCaseLogName}" 2>&1
-        echo "${LogPrefix} \"${TestFunc} ${TestCaseId} ${TestCaseMainDir}/${TestCaseName} ${TestOs}\""\
-            | tee -a "${TestCaseLogName}" 2>&1
+        print "${LogPrefix} Carrier board with M-Module test: ${DeviceName}" "${TestCaseLogName}"
+        debug_print "${LogPrefix} \"${TestFunc} ${TestCaseId} ${TestCaseMainDir}/${TestCaseName} ${TestOs}\"" "${TestCaseLogName}"
         "${TestFunc}" "${TestCaseId}" "${TestCaseMainDir}/${TestCaseName}" "${TestOs}"
         CmdResult=$?
         if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
@@ -234,9 +222,8 @@ case "${TestTypeDev}" in
         fi
         ;;
     m)
-        echo "${LogPrefix} M-Module test" | tee -a "${TestCaseLogName}" 2>&1
-        echo "${LogPrefix} \"${TestFunc} ${TestCaseLogName} ${LogPrefix}_${DeviceName} ${DeviceNo} ${TestCaseName}\""\
-            | tee -a "${TestCaseLogName}" 2>&1
+        print "${LogPrefix} M-Module test: ${DeviceName}" "${TestCaseLogName}"
+        debug_print "${LogPrefix} \"${TestFunc} ${TestCaseLogName} ${LogPrefix}_${DeviceName} ${DeviceNo} ${TestCaseName}\"" "${TestCaseLogName}"
         "${TestFunc}" "${TestCaseLogName}" "${LogPrefix}_${DeviceName}" "${DeviceNo}" "${TestCaseName}"
         CmdResult=$?
         if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
@@ -247,9 +234,9 @@ case "${TestTypeDev}" in
         ResultsSummaryTmp="${TestCaseId}_${DeviceName}.tmp"
         ;;
     z)
-        echo "${LogPrefix} Ip Core test" | tee -a "${TestCaseLogName}" 2>&1
-        echo "${LogPrefix} \"${TestFunc} ${TestCaseLogName} ${LogPrefix}_${DeviceName} ${VenID} ${DevID} ${SubVenID} ${DeviceNo} ${InternalTestName}\""\
-            | tee -a "${TestCaseLogName}" 2>&1
+        print "${LogPrefix} Ip Core test: ${DeviceName}" "${TestCaseLogName}"
+        debug_print "${LogPrefix} \"${TestFunc} ${TestCaseLogName} ${LogPrefix}_${DeviceName} ${VenID} ${DevID} ${SubVenID} ${DeviceNo} ${InternalTestName}\""\
+        "${TestCaseLogName}"
         "${TestFunc}" "${TestCaseLogName}" "${LogPrefix}_${DeviceName}" "${VenID}" "${DevID}" "${SubVenID}" "${DeviceNo}" "${InternalTestName}"
         CmdResult=$?
         if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
@@ -261,9 +248,8 @@ case "${TestTypeDev}" in
         ;;
     f);&
     g)
-        echo "${LogPrefix} Board test" | tee -a "${TestCaseLogName}" 2>&1
-        echo "${LogPrefix} \"${TestFunc} ${TestCaseId} ${TestCaseMainDir}/${TestCaseName} ${TestOs} ${TestCaseLogName} ${LogPrefix} ${DevicesFile} ${DeviceNo}\""\
-            | tee -a "${TestCaseLogName}" 2>&1
+        print "${LogPrefix} Board test: ${DeviceName}" "${TestCaseLogName}"
+        debug_print "${LogPrefix} \"${TestFunc} ${TestCaseId} ${TestCaseMainDir}/${TestCaseName} ${TestOs} ${TestCaseLogName} ${LogPrefix} ${DevicesFile} ${DeviceNo}\"" "${TestCaseLogName}"
         "${TestFunc}" "${TestCaseId}" "${TestCaseMainDir}/${TestCaseName}" "${TestOs}" "${TestCaseLogName}" "${LogPrefix}" "${DeviceNo}"
         CmdResult=$?
         if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
@@ -273,7 +259,7 @@ case "${TestTypeDev}" in
         fi
         ;;
     *)
-        echo "${LogPrefix} No valid device name"| tee -a "${TestCaseLogName}" 2>&1
+        debug_print "${LogPrefix} No valid device name" "${TestCaseLogName}"
         ;;
 esac
 
@@ -283,7 +269,7 @@ else
     TestCaseResult="FAIL"
 fi
 
-"${TestDescription}" "${DeviceNo}" "${TestCaseLogName}">> "${ResultsSummaryTmp}"
+"${TestDescription}" "${DeviceNo}" "${TestCaseLogName}" >> "${ResultsSummaryTmp}"
 echo "${LogPrefix} Test_Result:${TestCaseResult}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
 echo "${LogPrefix} Test_ID: ${TestCaseId}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
 echo "${LogPrefix} Test_Setup: ${TestSetup}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1

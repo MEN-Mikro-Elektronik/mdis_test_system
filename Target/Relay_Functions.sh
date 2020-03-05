@@ -77,14 +77,12 @@ function read_command_code_status {
 # $1    Test case log file name
 # $2    Test case name
 # $3    Command Code
-# $4    Timeout ( x * 5sec) example: 60 * 5 sec
-# $5    LogPrefix
+# $4    LogPrefix
 function change_input {
     local TestCaseLogName=${1}
     local TestCaseName=${2}
     local CommandCode=${3}
-    local Timeout=${4}
-    local LogPrefix=${5}
+    local LogPrefix=${4}
     local ReleaseCnt=1
     local Result=${ERR_SWITCH}
 
@@ -104,7 +102,7 @@ function change_input {
                 rm "${LockFileName}"
                 break
             fi
-            if [ "${ReleaseCnt}" -eq "${Timeout}" ]; then
+            if [ "${ReleaseCnt}" -eq "${INPUT_SWITCH_TIMEOUT}" ]; then
                 echo "${LogPrefix} Timeout, no response - force break " | tee -a "${TestCaseLogName}" 2>&1
                 break
             fi
