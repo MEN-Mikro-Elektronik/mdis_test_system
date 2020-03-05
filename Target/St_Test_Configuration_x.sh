@@ -9,7 +9,7 @@ source "${MyDir}"/Relay_Functions.sh
 
 TestSetup="0"
 Date="_2020"
-export VERBOSE_LEVEL="0"
+VERBOSE_LEVEL="0"
 TestId="0"
 BuildMdis="0"
 
@@ -60,6 +60,8 @@ echo "date=${Date}"
 echo "debug-level=${VERBOSE_LEVEL}"
 echo "test-id=${TestId}"
 echo "build-mdis=${BuildMdis}"
+
+run_as_root echo "VERBOSE_LEVEL=${VERBOSE_LEVEL}" | tee -a "${MyDir}/../Common/Conf.sh"
 
 CommitSha="$(get_mdis_sources_commit_sha)"
 OsNameKernel="$(get_os_name_with_kernel_ver)"
@@ -117,7 +119,7 @@ if [ "${BuildMdis}" -eq "1" ]; then
 fi
 
 # Clear dmesg log
-echo "${1}" | sudo -S --prompt=$'\r' dmesg --clear
+run_as_root dmesg --clear
 
 echo "${LogPrefix} Test Setup: ${TestSetup}"
     case "${TestSetup}" in
@@ -145,11 +147,11 @@ echo "${LogPrefix} Test Setup: ${TestSetup}"
             run_test_case "0208" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
         4)
-            echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M77_M_Module_Test.sh" "${TestSummaryDirectory}" "1" "1"
-            echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_SMB2_Test.sh" "${TestSummaryDirectory}" "smb2_1" "G025A03"
+            #echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M77_M_Module_Test.sh" "${TestSummaryDirectory}" "1" "1"
+            #echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_SMB2_Test.sh" "${TestSummaryDirectory}" "smb2_1" "G025A03"
             ;;
         5)
-            echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_BL51E_Test.sh" "${TestSummaryDirectory}"
+            #echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_BL51E_Test.sh" "${TestSummaryDirectory}"
             ;;
         6)
             ;;
@@ -159,7 +161,7 @@ echo "${LogPrefix} Test Setup: ${TestSetup}"
             ;;
     esac
 # Save dmesg log
-echo "${1}" | sudo -S --prompt=$'\r' bash -c "dmesg > dmesg_log.txt"
+run_as_root bash -c "dmesg > dmesg_log.txt"
 
 echo "Create Test Results summary for TestSetup ${TestSetup}"
 cd "${TestSummaryDirectory}" || exit "${ERR_NOEXIST}"
