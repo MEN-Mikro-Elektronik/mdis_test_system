@@ -8,7 +8,9 @@ function cleanOnExit() {
 
 MyDir="$(dirname "$0")"
 source "$MyDir/../../Common/Conf.sh"
+source "${MyDir}/../../Target/St_Functions.sh"
 source "$MyDir/Mdis_Test_Functions.sh"
+
 LogPrefix="[Background_Job]"
 
 # This script checks 
@@ -21,7 +23,8 @@ FileExist=$(run_cmd_on_remote_pc "${CheckFileExistsCmd}")
 
 # Remove lock file if exists 
 # This is executed before Test Case is started 
-echo "${LogPrefix} Lock file should not exists. This field should be \"false\": ${FileExist}"
+debug_print_host "${LogPrefix} Lock file should not exists. This field should be \"false\": ${FileExist}"
+
 if [ "${FileExist}" = "true" ]; then
     run_cmd_on_remote_pc "rm ${LockFileName}"
 fi
@@ -35,7 +38,7 @@ while true; do
         if ping -c 2 "${MenBoxPcIpAddr}" > /dev/null 2>&1
         then
             # Read from lock file, which input should be changed
-            echo "${LogPrefix} Lock file exists: change input ${LockFileData}"
+            debug_print_host "${LogPrefix} Lock file exists: change input ${LockFileData}"
             CommandCode=$(read_command_code_lock_file)
             ######################
             # Change inputs here #
@@ -51,7 +54,7 @@ while true; do
                 fi
             fi
         else
-            echo "${LogPrefix} No connection with relay: ${MenBoxPcIpAddr}"
+            debug_print_host "${LogPrefix} No connection with relay: ${MenBoxPcIpAddr}"
         fi
     fi
 done

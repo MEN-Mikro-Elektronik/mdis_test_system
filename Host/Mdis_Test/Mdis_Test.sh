@@ -2,6 +2,7 @@
 
 MyDir="$(dirname "$0")"
 source "${MyDir}/../../Common/Conf.sh"
+source "${MyDir}/../../Target/St_Functions.sh"
 source "${MyDir}/Mdis_Test_Functions.sh"
 LogPrefix="[Mdis_Test]"
 

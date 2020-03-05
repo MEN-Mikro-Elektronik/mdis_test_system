@@ -84,9 +84,9 @@ function write_command_code_lock_file_result {
     echo "${ResultExists}"
 
     if [ -z "${ResultExists}" ]; then
-        echo "${LogPrefix} No result in lock file" 
+        debug_print_host "${LogPrefix} No result in lock file" 
     else
-        echo "${LogPrefix} Result is written into lock file" 
+        debug_print_host "${LogPrefix} Result is written into lock file" 
         return "${ERR_OK}"
     fi
 
@@ -96,15 +96,15 @@ function write_command_code_lock_file_result {
     if [ "${CommandCodeResult}" = "${LockFileSuccess}" ]; then
         if ! run_cmd_on_remote_pc "${WriteSuccessCmd}"
         then
-            echo "${LogPrefix} Error while write_command_code_lock_file_result success"
+            debug_print_host "${LogPrefix} Error while write_command_code_lock_file_result success"
         fi
-        echo "${LogPrefix} write_command_code_lock_file_result: success"
+        debug_print_host "${LogPrefix} write_command_code_lock_file_result: success"
     elif [ "${CommandCodeResult}" = "${LockFileFailed}" ];then
         if ! run_cmd_on_remote_pc "${WriteFailedCmd}"
         then
-            echo "${LogPrefix} Error while write_command_code_lock_file_result failed"
+            debug_print_host "${LogPrefix} Error while write_command_code_lock_file_result failed"
         fi
-        echo "${LogPrefix} write_command_code_lock_file_result: failed"
+        debug_print_host "${LogPrefix} write_command_code_lock_file_result: failed"
     else
         echo "${LogPrefix} Write_command_code_status: Unknown status code"
         return "${ERR_LOCK_INVALID}"
@@ -170,7 +170,7 @@ function change_input_BL51E {
     local CommandCode=${1}
     local LogPrefix=${2}
 
-    echo "${LogPrefix} Function change_input_BL51E: ${CommandCode}"
+    debug_print_host "${LogPrefix} Function change_input_BL51E: ${CommandCode}"
 
     local I801Loaded
     I801Loaded=$(run_cmd_on_remote_input_switch "lsmod | grep i2c_i801 | wc -l")
@@ -184,7 +184,7 @@ function change_input_BL51E {
             echo "${LogPrefix} Modprobe i2c_i801 error"
             return "${ERR_MODPROBE}"
         else
-            echo "${LogPrefix} Modprobe i2c_i801 success"
+            debug_print_host "${LogPrefix} Modprobe i2c_i801 success"
         fi
     fi
 
@@ -220,7 +220,7 @@ function change_input_BL51E {
     esac
 
     RegisterDataToWrite=$(echo "obase=16; $((16#${RegisterData}^2#${RegisterDataMask}))" | bc )
-    echo "${LogPrefix} RegisterDataToWrite : 0x${RegisterDataToWrite}"
+    debug_print_host "${LogPrefix} RegisterDataToWrite : 0x${RegisterDataToWrite}"
 
     run_cmd_on_remote_input_switch "echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cset -y ${I2CNR} 0x22 0x${RegisterDataToWrite}"
 
@@ -230,7 +230,7 @@ function change_input_BL51E {
     if [ $? -eq "1" ]; then
         return "${ERR_OK}"
     else
-        echo "${LogPrefix}  ERR_SWITCH: ${CommandCode} is set"
+        debug_print_host "${LogPrefix}  ERR_SWITCH: ${CommandCode} is set"
         return "${ERR_SWITCH}"
     fi
 }
