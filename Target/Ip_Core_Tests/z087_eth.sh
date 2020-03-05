@@ -13,6 +13,7 @@ function z087_eth_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
     echo "-------------------Ip Core z087 Test Case----------------------------"
+    echo "ADD DESCRIPTION"
 }
 
 ############################################################################
@@ -20,7 +21,7 @@ function z087_eth_description {
 # exact location of ip core in the system
 #
 # parameters:
-# $1    Test case log name
+# $1    Log file
 # $2    Log prefix
 # $3    Board vendor id
 # $4    Board device id
@@ -28,60 +29,67 @@ function z087_eth_description {
 # $6    Board number in system
 # $7    Optional parameter - test type (optional)
 function z087_eth_test {
-    local TestCaseLogName=${1}
+    local LogFile=${1}
     local LogPrefix=${2}
     local VenID=${3}
     local DevID=${4}
     local SubVenID=${5}
     local BoardInSystem=${6}
     local TestType=${7}
-    echo "${LogPrefix} z087 fixed on F614 - add support for other chameleon dev"
-    eth_test "${TestCaseLogName}" "${LogPrefix}"
+    debug_print "${LogPrefix} z087 fixed on F614 - add support for other chameleon dev" "${LogFile}"
+    eth_test "${LogFile}" "${LogPrefix}"
     return $?
 }
 
+############################################################################
+# Test z087 ip core
+# 
+# parameters:
+# $1    Log file
+# $2    Log prefix
+# $3    Mezzaine chameleon device description file
 function eth_test {
-    local LogFileName=${1}
+    local LogFile=${1}
     local LogPrefix=${2}
     local MezzChamDevDescriptionFile=${3}
 
     local TestError=${ERR_VALUE}
-    local GwDefault=
-    local GwCurrent=
-    local GwIp=
-    local GwCount=
-    local GwSet=
-    local EthListBefore=
-    local EthListAfter=
-    local EthList=
+    local GwDefault
+    local GwCurrent
+    local GwIp
+    local GwCount
+    local GwSet
+    local EthListBefore
+    local EthListAfter
+    local EthList
 
     GwDefault="$(ip route list | grep "^default" | head --lines=1)"
-    echo "${LogPrefix} Default gateway: ${GwDefault}" | tee --append "${LogFileName}"
+    debug_print "${LogPrefix} Default gateway: ${GwDefault}""${LogFile}"
     GwCurrent=${GwDefault}
     GwIp="$(echo "${GwDefault}" | grep --perl-regexp --only-matching "via\s+[\d\.]+" | grep --perl-regexp --only-matching "[\d\.]+")"
-    echo "${LogPrefix}  Default gateway IP address: ${GwIp}" | tee --append "${LogFileName}"
+    debug_print "${LogPrefix}  Default gateway IP address: ${GwIp}" "${LogFile}"
 
     EthListBefore="$(ifconfig -a | grep --perl-regexp --only-matching "^[\w\d]+")"
-    echo -e "${LogPrefix} ETH interfaces before driver was loaded:\n${EthListBefore}" | tee --append "${LogFileName}"
+    debug_print "${LogPrefix} ETH interfaces before driver was loaded:\n${EthListBefore}" "${LogFile}"
 
-    if ! echo "${MenPcPassword}" | sudo --stdin --prompt=$'\r' modprobe men_lx_z77 phyadr=1,2
+    if ! run_as_root modprobe men_lx_z77 phyadr=1,2
     then
-        echo "${LogPrefix}  ERR ${ERR_MODPROBE}:could not modprobe men_lx_z77" | tee --append "${LogFileName}"
+        debug_print "${LogPrefix}  ERR ${ERR_MODPROBE}:could not modprobe men_lx_z77" "${LogFile}"
         return "${ERR_MODPROBE}"
     fi
 
     EthListAfter="$(ifconfig -a | grep --perl-regexp --only-matching "^[\w\d]+")"
-    echo -e "${LogPrefix} ETH interfaces after driver was loaded:\n${EthListAfter}" | tee --append "${LogFileName}"
+    debug_print "${LogPrefix} ETH interfaces after driver was loaded:\n${EthListAfter}" "${LogFile}"
 
     EthList="$(echo "${EthListBefore}" "${EthListAfter}" | sed 's/ /\n/g' | sort | uniq --unique)"
-    echo -e "${LogPrefix} ETH interfaces to test:\n${EthList}" | tee --append "${LogFileName}"
+    debug_print "${LogPrefix} ETH interfaces to test:\n${EthList}" "${LogFile}"
 
     if [ "${EthList}" == "" ]; then
         TestError="${ERR_VALUE}"
-        echo "${LogPrefix}  No ETH interfaces for test" | tee --append "${LogFileName}"
+        debug_print "${LogPrefix}  No ETH interfaces for test" "${LogFile}"
     else
         TestError="${ERR_OK}"
-        echo "${LogPrefix}  Waiting for ETH interfaces to obtain IP address..." | tee --append "${LogFileName}"
+        debug_print "${LogPrefix}  Waiting for ETH interfaces to obtain IP address..." "${LogFile}"
         sleep 15
     fi
 
@@ -89,7 +97,7 @@ function eth_test {
     for Index in $(seq 1 ${GwCount}); do
         GwSet="$(ip route list | grep "^default" | head --lines=1)"
         if [ "${GwSet}" != "" ]; then
-            echo "${MenPcPassword}" | sudo --stdin --prompt=$'\r' ip route delete ${GwSet}
+            run_as_root ip route delete "${GwSet}"
         fi
     done
 
@@ -97,32 +105,32 @@ function eth_test {
         GwSet="$(ip route list | grep "^default" | head --lines=1)"
         if [ "${GwIp}" != "" ]; then
             if [ "${GwSet}" != "" ]; then
-                echo "${MenPcPassword}" | sudo --stdin --prompt=$'\r' ip route delete ${GwSet}
+                run_as_root ip route delete "${GwSet}"
             fi
             GwCurrent="default via ${GwIp} dev ${Eth}"
-            echo "${LogPrefix}  Changing default gateway to: ${GwCurrent}" | tee --append "${LogFileName}"
-            echo "${MenPcPassword}" | sudo --stdin --prompt=$'\r' ip route add ${GwCurrent}
+            debug_print "${LogPrefix}  Changing default gateway to: ${GwCurrent}" "${LogFile}"
+            run_as_root ip route add "${GwCurrent}"
             GwSet="$(ip route list | grep "^default" | head --lines=1)"
-            echo "${LogPrefix} Default gateway is now: ${GwSet}" | tee --append "${LogFileName}"
+            debug_print "${LogPrefix} Default gateway is now: ${GwSet}" "${LogFile}"
         fi
 
-        echo "Testing ping on ETH interface ${Eth}" | tee --append "${LogFileName}"
-        ping -c "${PingPacketCount}" -W "${PingPacketTimeout}" -I "${Eth}" "${PingTestHost}" | tee --append "${LogFileName}" 2>&1
+        debug_print "Testing ping on ETH interface ${Eth}" "${LogFile}"
+        ping -c "${PING_PACKET_COUNT}" -W "${PING_PACKET_TIMEOUT}" -I "${Eth}" "${PING_TEST_HOST}" | tee --append "${LogFile}" 2>&1
         if [ "${PIPESTATUS[0]}" -ne 0 ]; then
             TestError="${ERR_VALUE}"
-            echo "${LogPrefix} No ping reply on ETH interface ${Eth}" | tee --append "${LogFileName}"
+            debug_print "${LogPrefix} No ping reply on ETH interface ${Eth}" "${LogFile}"
         else
-            echo "${LogPrefix} Ping on ETH interface ${Eth} OK" | tee --append "${LogFileName}"
+            debug_print "${LogPrefix} Ping on ETH interface ${Eth} OK" "${LogFile}"
         fi
     done
 
     GwSet="$(ip route list | grep "^default" | head --lines=1)"
     if [ "${GwSet}" != "" ] && [ "${GwDefault}" != "" ] && [ "${GwSet}" != "${GwDefault}" ]; then
-        echo "${MenPcPassword}" | sudo --stdin --prompt=$'\r' ip route delete ${GwSet}
-        echo "${LogPrefix}  Changing default gateway to: ${GwDefault}" | tee --append "${LogFileName}"
-        echo "${MenPcPassword}" | sudo --stdin --prompt=$'\r' ip route add ${GwDefault}
+        run_as_root ip route delete "${GwSet}"
+        debug_print "${LogPrefix}  Changing default gateway to: ${GwDefault}" "${LogFile}"
+        run_as_root ip route add "${GwDefault}"
         GwSet="$(ip route list | grep "^default" | head --lines=1)"
-        echo "${LogPrefix}  Default gateway is now: ${GwSet}" | tee --append "${LogFileName}"
+        debug_print "${LogPrefix}  Default gateway is now: ${GwSet}" "${LogFile}"
     fi
 
     return "${TestError}"

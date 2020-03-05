@@ -37,34 +37,33 @@ function m65n_description {
 # m65n_test
 #
 # parameters:
-# $1    TestCaseLogName
+# $1    LogFile
 # $2    LogPrefix
 # $3    M-Module number
 function m65n_test {
-    local TestCaseLogName=${1}
+    local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
 
-    echo "${LogPrefix} Step1: modprobe men_ll_icanl2" | tee -a "${TestCaseLogName}" 2>&1
-    if ! echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_ll_icanl2
+    debug_print "${LogPrefix} Step1: modprobe men_ll_icanl2" "${LogFile}"
+    if ! run_as_root modprobe men_ll_icanl2
     then
-        echo "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_icanl2" | tee -a "${TestCaseLogName}"
+        debug_print "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_icanl2" "${LogFile}"
         return "${ERR_VALUE}"
     fi
 
     # Run icanl2_veri tests twice
-    echo "${LogPrefix} Step2: run icanl2_veri m65_${ModuleNo}a m65_${ModuleNo}b -n=2" | tee -a "${TestCaseLogName}" 2>&1
-    if ! echo "${MenPcPassword}" | sudo -S --prompt=$'\r' icanl2_veri m65_"${ModuleNo}"a m65_"${ModuleNo}"b -n=2 > icanl2_veri.log
+    debug_print "${LogPrefix} Step2: run icanl2_veri m65_${ModuleNo}a m65_${ModuleNo}b -n=2" "${LogFile}"
+    if ! run_as_root icanl2_veri m65_"${ModuleNo}"a m65_"${ModuleNo}"b -n=2 > icanl2_veri.log
     then
-        echo "${LogPrefix} Could not run icanl2_veri "\
-          | tee -a "${TestCaseLogName}" 2>&1
+        debug_print "${LogPrefix} Could not run icanl2_veri "\
+          | tee -a "${LogFile}" 2>&1
     fi
 
-    echo "${LogPrefix} Step3: check for errors" | tee -a "${TestCaseLogName}" 2>&1
+    debug_print "${LogPrefix} Step3: check for errors" "${LogFile}"
     if ! grep "TEST RESULT: 0 errors" icanl2_veri.log > /dev/null
     then
-        echo "${LogPrefix} Invalid log output, ERROR"\
-          | tee -a "${TestCaseLogName}" 2>&1
+        debug_print "${LogPrefix} Invalid log output, ERROR" "${LogFile}"
         return "${ERR_VALUE}"
     fi
 

@@ -43,30 +43,30 @@ function m35n_description {
 # run m35n test
 #
 # parameters:
-# $1    TestCaseLogName
+# $1    LogFile
 # $2    LogPrefix
 # $3    M-Module number
 # $4    Test case came
 function m35n_test {
-    local TestCaseLogName=${1}
+    local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
     local TestCaseName=${4}
     local RelayOutput="${IN_0_ENABLE}"
 
-    echo "${LogPrefix} Step1:" | tee -a "${TestCaseLogName}" 2>&1
-    m_module_x_test "${TestCaseLogName}" "${TestCaseName}" "${RelayOutput}" "m35" "${ModuleNo}" "simp" "${LogPrefix}"
+    debug_print "${LogPrefix} Step1:" "${LogFile}"
+    m_module_x_test "${LogFile}" "${TestCaseName}" "${RelayOutput}" "m35" "${ModuleNo}" "simp" "${LogPrefix}"
     SimpTestResult=$?
 
-    echo "${LogPrefix} Step2:" | tee -a "${TestCaseLogName}" 2>&1
-    m_module_x_test "${TestCaseLogName}" "${TestCaseName}" "${RelayOutput}" "m35" "${ModuleNo}" "blkread" "${LogPrefix}"
+    debug_print "${LogPrefix} Step2:" "${LogFile}"
+    m_module_x_test "${LogFile}" "${TestCaseName}" "${RelayOutput}" "m35" "${ModuleNo}" "blkread" "${LogPrefix}"
     BlkreadTestResult=$?
 
-    echo "${LogPrefix} SimpTestResult: ${SimpTestResult}" | tee -a "${TestCaseLogName}" 2>&1
-    echo "${LogPrefix} BlkreadTestResult: ${BlkreadTestResult}" | tee -a "${TestCaseLogName}" 2>&1
+    print "${LogPrefix} SimpTestResult: ${SimpTestResult}" "${LogFile}"
+    print "${LogPrefix} BlkreadTestResult: ${BlkreadTestResult}" "${LogFile}"
 
     if [ "${SimpTestResult}" = "${ERR_OK}" ] && [ "${BlkreadTestResult}" = "${ERR_OK}" ]; then
-        echo "${LogPrefix} SimpTestResult, BlkreadTestResult = ERR_OK" | tee -a "${TestCaseLogName}" 2>&1
+        debug_print "${LogPrefix} SimpTestResult, BlkreadTestResult = ERR_OK" "${LogFile}"
         return "${ERR_OK}"
     else
         return "${ERR_VALUE}"
@@ -80,36 +80,36 @@ function m35n_test {
 # If Chanel is connected with 12V, value should be 0xffff
 #
 # parameters:
-# $1    TestCaseLogName
+# $1    LogFile
 # $2    LogPrefix
 # $3    M-Module number
 function compare_m35_simp_values {
-    local TestCaseLogName=${1}
+    local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
 
-    echo "${LogPrefix} compare_m35_simp_values"
+    debug_print "${LogPrefix} compare_m35_simp_values" "${LogFile}"
     local ValueChannelStateConnected
     local ValueChannelStateDisconnected
     ValueChannelStateConnected=$(grep "ch0 = " m35_"${ModuleNo}"_simp_output_connected.txt | awk NR==1'{print $3}')
     ValueChannelStateDisconnected=$(grep  "ch0 = "  m35_"${ModuleNo}"_simp_output_disconnected.txt | awk NR==1'{print $3}')
 
-    ValueChannelStateConnected=$(echo "${ValueChannelStateConnected}" | sed 's/0x//')
-    ValueChannelStateDisconnected=$(echo "${ValueChannelStateDisconnected}" | sed 's/0x//')
+    ValueChannelStateConnected="${ValueChannelStateConnected//0x/}"
+    ValueChannelStateDisconnected="${ValueChannelStateDisconnected//0x/}"
 
     ValueChannelStateConnected=$((16#${ValueChannelStateConnected}))
     ValueChannelStateDisconnected=$((16#${ValueChannelStateDisconnected}))
 
-    echo "${LogPrefix} ValueChannelStateConnected: ${ValueChannelStateConnected}"
-    echo "${LogPrefix} ValueChannelStateDisconnected: ${ValueChannelStateDisconnected}"
+    debug_print "${LogPrefix} ValueChannelStateConnected: ${ValueChannelStateConnected}" "${LogFile}"
+    debug_print "${LogPrefix} ValueChannelStateDisconnected: ${ValueChannelStateDisconnected}" "${LogFile}"
 
     if [ "${ValueChannelStateDisconnected}" -ge "5000" ]; then
-        echo "${LogPrefix} ValueChannelStateDisconnected is not ~ 0 "  | tee -a "${TestCaseLogName}" 2>&1
+        debug_print "${LogPrefix} ValueChannelStateDisconnected is not ~ 0 " "${LogFile}"
         return "${ERR_VALUE}"
     fi
 
     if [ "${ValueChannelStateConnected}" -lt "65000" ]; then
-        echo "${LogPrefix} ValueChannelStateConnected is not ~ 0xffff "  | tee -a "${TestCaseLogName}" 2>&1
+        debug_print "${LogPrefix} ValueChannelStateConnected is not ~ 0xffff " "${LogFile}"
         return "${ERR_VALUE}"
     fi
 
@@ -123,22 +123,22 @@ function compare_m35_simp_values {
 # If Chanel is connected with 12V, value should be greater than 0
 #
 # parameters:
-# $1    TestCaseLogName
+# $1    LogFile
 # $2    LogPrefix
 # $3    M-Module number
 function compare_m35_blkread_values {
-    local TestCaseLogName=${1}
+    local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
 
-    echo "${LogPrefix} compare_m35_blkread_values"
+    debug_print "${LogPrefix} compare_m35_blkread_values" "${LogFile}"
     local ValueChannelStateDisconnected
     ValueChannelStateDisconnected=$(grep -P "^[0-9a-f]+\+[0-9a-f]+:" m35_"${ModuleNo}"_blkread_output_disconnected.txt | head -n 1 | awk '{print $2}' | grep -oP "^[0-9]+")
 
-    echo "${LogPrefix} ValueChannelStateDisconnected: ${ValueChannelStateDisconnected}"
+    debug_print "${LogPrefix} ValueChannelStateDisconnected: ${ValueChannelStateDisconnected}" "${LogFile}"
 
     if [ "${ValueChannelStateDisconnected}" == "" ] || [ "${ValueChannelStateDisconnected}" -ne "0" ]; then
-        echo "${LogPrefix} ValueChannelStateDisconnected is not 0 "  | tee -a "${TestCaseLogName}" 2>&1
+        debug_print "${LogPrefix} ValueChannelStateDisconnected is not 0 " "${LogFile}"
         return "${ERR_VALUE}"
     fi
 

@@ -114,7 +114,7 @@ case ${TEST_SETUP} in
     *)
         echo "TEST SETUP IS NOT SET"
         exit 99
-    ;;
+        ;;
 esac
 
 echo "GrubOses: ${GrubOses}"
@@ -161,9 +161,9 @@ function cleanMdisTestBackgroundJob {
 
 function runTests {
     # run
-    St_Test_Setup_Configuration="St_Test_Configuration_x.sh"
+    St_Test_Configuration="St_Test_Configuration_x.sh"
     echo "run:"
-    echo "${St_Test_Setup_Configuration} ${TEST_SETUP}"
+    echo "${St_Test_Configuration} ${TEST_SETUP}"
 
     # Make all scripts executable
     run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' chmod +x ${GitTestCommonDirPath}/*"
@@ -177,12 +177,12 @@ function runTests {
     echo "${LogPrefix} MdisTestBackgroundPID is ${MdisTestBackgroundPID}"
 
     # Run Test script - now scripts from remote device should be run
-    make_visible_in_log "TEST CASE - ${St_Test_Setup_Configuration} ${TEST_SETUP}"
-    if ! run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' ${GitTestTargetDirPath}/${St_Test_Setup_Configuration} --test-setup=${TEST_SETUP}\
-                                                                                                                                     --date=${Today}\
-                                                                                                                                     --debug-level=${VERBOSE_LEVEL}\
-                                                                                                                                     --build-mdis\
-                                                                                                                                     --test-id=${RUN_TEST_ID}"
+    make_visible_in_log "TEST CASE - ${St_Test_Configuration} ${TEST_SETUP}"
+    if ! run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' ${GitTestTargetDirPath}/${St_Test_Configuration} --test-setup=${TEST_SETUP}\
+                                                                                                                               --date=${Today}\
+                                                                                                                               --debug-level=${VERBOSE_LEVEL}\
+                                                                                                                               --build-mdis\
+                                                                                                                               --test-id=${RUN_TEST_ID}"
     then
         echo "${LogPrefix} Error while running St_Test_Configuration_x.sh script"
     fi

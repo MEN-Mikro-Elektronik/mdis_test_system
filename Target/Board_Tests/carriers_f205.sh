@@ -18,9 +18,11 @@ function carrier_f205_TMP_description {
     local ModuleLogPath1=${4}
     echo "--------F205 ${ModuleName0} ${ModuleName1} Test Case---"
     echo "PREREQUISITES:"
-    echo "    M-module(s) ${ModuleName0}, ${ModuleName1} are(is) plugged into F205"
+    echo "    M-module(s) ${ModuleName0}, ${ModuleName1} is(are) plugged into F205"
     echo "DESCRIPTION:"
-    echo "    Run m-module(s) test"
+    echo "    F205 ${ModuleName0}, ${ModuleName1} Interface Test"
+    echo "PURPOSE:"
+    echo "    Check if M-modules(s) on F205 is(are) working correctly"
     echo "RESULTS"
     echo "    SUCCESS if all m-modules(s) tests are passed."
     echo "    FAIL otherwise"

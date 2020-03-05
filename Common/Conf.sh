@@ -73,7 +73,7 @@ MenPcPassword="men"
 
 # Address of device that will be changing status of inputs in tested device 
 MenBoxPcIpAddr="10.1.1.78"
-InputSwitchTimeout=10 #seconds
+INPUT_SWITCH_TIMEOUT=10 #seconds
 
 # Credentials, address, and command to download Git repository with Test Cases source
 GitTestSourcesBranch="jpe-dev-02_02"
@@ -131,11 +131,11 @@ LockFileSuccess="success"
 LockFileFailed="failed"
 
 # Number of request packets to send
-PingPacketCount=3
+PING_PACKET_COUNT=3
 # Time to wait for a response [s]
-PingPacketTimeout=1
+PING_PACKET_TIMEOUT=1
 # Host to test
-PingTestHost=www.google.com
+PING_TEST_HOST=www.google.com
 
 # Uart loopback message to test
 EchoTestMessage="UART LOOPBACK TEST"

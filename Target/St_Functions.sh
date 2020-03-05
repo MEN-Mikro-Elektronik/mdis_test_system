@@ -552,7 +552,7 @@ function m_module_x_test {
             CheckInput)
                 # Check if input is disabled - if not disable input 
                 debug_print "${LogPrefix} CheckInput" "${LogFile}"
-                change_input "${LogFile}" "${TestCaseName}" $((CommandCode+100)) "${InputSwitchTimeout}" "${LogPrefix}"
+                change_input "${LogFile}" "${TestCaseName}" $((CommandCode+100)) "${LogPrefix}"
                 CmdResult=$?
                 if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
                     debug_print "${LogPrefix} Error: ${CmdResult} in function change_input" "${LogFile}"
@@ -582,7 +582,7 @@ function m_module_x_test {
                 ;;
             EnableInput)
                 debug_print "${LogPrefix} EnableInput" "${LogFile}"
-                change_input "${LogFile}" "${TestCaseName}" "${CommandCode}" "${InputSwitchTimeout}" "${LogPrefix}"
+                change_input "${LogFile}" "${TestCaseName}" "${CommandCode}" "${LogPrefix}"
                 CmdResult=$?
                 if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
                     debug_print "${LogPrefix} Error: ${CmdResult} in function change_input" "${LogFile}"
@@ -621,7 +621,7 @@ function m_module_x_test {
                 ;;
             DisableInput)
                 debug_print "${LogPrefix} DisableInput" "${LogFile}"
-                change_input "${LogFile}" "${TestCaseName}" $((CommandCode+100)) "${InputSwitchTimeout}" "${LogPrefix}"
+                change_input "${LogFile}" "${TestCaseName}" $((CommandCode+100)) "${LogPrefix}"
                 CmdResult=$?
                 if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
                     debug_print "${LogPrefix} Error: ${CmdResult} in function change_input" "${LogFile}"
