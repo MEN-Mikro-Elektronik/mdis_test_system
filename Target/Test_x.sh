@@ -200,6 +200,7 @@ cd "${TestCaseMainDir}" || exit "${ERR_NOEXIST}"
 
 TestCaseResult=${ERR_UNDEFINED}
 CmdResult=${ERR_UNDEFINED}
+PrintTerminalResults="1"
 
 if ! run_test_case_dir_create "${TestCaseLogName}" "${TestCaseName}"
 then
@@ -232,6 +233,7 @@ case "${TestTypeDev}" in
             TestCaseResult=0
         fi
         ResultsSummaryTmp="${TestCaseId}_${DeviceName}.tmp"
+        PrintTerminalResults="0"
         ;;
     z)
         print "${LogPrefix} Ip Core test: ${DeviceName}" "${TestCaseLogName}"
@@ -245,6 +247,7 @@ case "${TestTypeDev}" in
             TestCaseResult=0
         fi
         ResultsSummaryTmp="${TestCaseId}_${DeviceName}.tmp"
+        PrintTerminalResults="0"
         ;;
     f);&
     g)
@@ -270,10 +273,19 @@ else
 fi
 
 "${TestDescription}" "${DeviceNo}" "${TestCaseLogName}" >> "${ResultsSummaryTmp}"
-echo "${LogPrefix} Test_Result:${TestCaseResult}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
-echo "${LogPrefix} Test_ID: ${TestCaseId}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
-echo "${LogPrefix} Test_Setup: ${TestSetup}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
-echo "${LogPrefix} Test_Os: ${TestOs}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
+
+if [ ${PrintTerminalResults} -eq "1" ]; then
+    echo "${LogPrefix} Test_Result:${TestCaseResult}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
+    echo "${LogPrefix} Test_ID: ${TestCaseId}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
+    echo "${LogPrefix} Test_Setup: ${TestSetup}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
+    echo "${LogPrefix} Test_Os: ${TestOs}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
+else
+    echo "${LogPrefix} Test_Result for ${TestCaseName}: ${TestCaseResult}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
+    echo "${LogPrefix} Test_Result:${TestCaseResult}" | tee -a "${TestCaseLogName}" >> "${ResultsSummaryTmp}" 2>&1
+    echo "${LogPrefix} Test_ID: ${TestCaseId}" | tee -a "${TestCaseLogName}" >> "${ResultsSummaryTmp}" 2>&1
+    echo "${LogPrefix} Test_Setup: ${TestSetup}" | tee -a "${TestCaseLogName}" >> "${ResultsSummaryTmp}" 2>&1
+    echo "${LogPrefix} Test_Os: ${TestOs}" |  tee -a "${TestCaseLogName}" >> "${ResultsSummaryTmp}" 2>&1
+fi
 
 # move to previous directory
 cd "${CurrDir}" || exit "${ERR_NOEXIST}"

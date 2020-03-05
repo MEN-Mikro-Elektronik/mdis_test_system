@@ -118,6 +118,11 @@ if [ "${BuildMdis}" -eq "1" ]; then
     fi
 fi
 
+if ! rmmod_all_men_modules
+then
+    echo "${LogPrefix} Could not rmmmod all MEN modules !"
+fi
+
 # Clear dmesg log
 run_as_root dmesg --clear
 
@@ -160,6 +165,12 @@ echo "${LogPrefix} Test Setup: ${TestSetup}"
             exit 99
             ;;
     esac
+
+if ! rmmod_all_men_modules
+then
+    echo "${LogPrefix} Could not rmmmod all MEN modules !"
+fi
+
 # Save dmesg log
 run_as_root bash -c "dmesg > dmesg_log.txt"
 
