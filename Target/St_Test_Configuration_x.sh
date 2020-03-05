@@ -9,7 +9,7 @@ source "${MyDir}"/Relay_Functions.sh
 
 TestSetup="0"
 Date="_2020"
-Verbose="0"
+export VERBOSE_LEVEL="0"
 TestId="0"
 BuildMdis="0"
 
@@ -24,7 +24,7 @@ while test $# -gt 0 ; do
             shift
             ;;
         --debug-level*)
-            Verbose="$(echo "$1" | sed -e 's/^[^=]*=//g')"
+            VERBOSE_LEVEL="$(echo "$1" | sed -e 's/^[^=]*=//g')"
             shift
             ;;
         --test-id*)
@@ -57,7 +57,7 @@ fi
 
 echo "test-setup=${TestSetup}"
 echo "date=${Date}"
-echo "debug-level=${Verbose}"
+echo "debug-level=${VERBOSE_LEVEL}"
 echo "test-id=${TestId}"
 echo "build-mdis=${BuildMdis}"
 
