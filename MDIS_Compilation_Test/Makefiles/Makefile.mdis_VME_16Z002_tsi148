@@ -126,6 +126,7 @@ ALL_COM_TOOLS =
  #HWBUG/program.mak
 
 ALL_NATIVE_DRIVERS = \
+	DRIVERS/VME_16Z002/driver.mak \
 	DRIVERS/VME_16Z002/driver_tsi148.mak
 
 ALL_NATIVE_LIBS = 

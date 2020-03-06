@@ -129,7 +129,8 @@ ALL_NATIVE_DRIVERS = \
 	DRIVERS/VME_16Z002/driver.mak \
 	DRIVERS/VME_16Z002/driver_pldz002.mak \
 	DRIVERS/VME_16Z002/driver_serflash.mak \
-	DRIVERS/VME_16Z002/driver_pldz002_cham.mak
+	DRIVERS/VME_16Z002/driver_pldz002_cham.mak \
+	DRIVERS/CHAMELEON/driver.mak
 
 ALL_NATIVE_LIBS = 
 
