@@ -118,7 +118,8 @@ ALL_COM_TOOLS =
 ALL_NATIVE_DRIVERS = \
 	DRIVERS/Z001_SMB/driver.mak \
 	DRIVERS/Z001_SMB/driver_g2x.mak \
-	DRIVERS/Z001_SMB/driver_sw.mak
+	DRIVERS/Z001_SMB/driver_sw.mak \
+	DRIVERS/CHAMELEON/driver.mak
 
 ALL_NATIVE_LIBS = 
 
