@@ -91,6 +91,7 @@ while test $# -gt 0 ; do
 done
 
 echo "VERBOSE_LEVEL=${VERBOSE_LEVEL}" | tee -a "${MyDir}/../../Common/Conf.sh"
+echo "TEST_SETUP=${TEST_SETUP}" | tee -a "${MyDir}/../../Common/Conf.sh"
 
 echo "Test Setup: ${TEST_SETUP}"
 case ${TEST_SETUP} in

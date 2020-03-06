@@ -62,11 +62,6 @@ TEST_CASES_MAP["0305"]="carrier_f205_m43_m11"
 # Address of Target that will be tested
 MenPcIpAddr="10.1.1.195"
 
-#------------------------------------------------------------------------------
-#-------------------------PLEASE SPECIFY THE TEST SETUP------------------------
-#------------------------------------------------------------------------------
-TEST_SETUP="1"
-
 # Credentials for Pc that will be tested - required by ssh connection and sudo cmds
 MenPcLogin="men"
 MenPcPassword="men"

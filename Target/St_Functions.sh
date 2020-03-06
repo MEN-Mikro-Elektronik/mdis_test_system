@@ -591,7 +591,7 @@ function m_module_x_test {
                 # If device cannot be opened there is a log in result  :
                 # *** ERROR (LINUX) #2:  No such file or directory ***
                 debug_print "${LogPrefix} RunExampleInputDisable" "${LogFile}"
-                run_as_root "${ModuleSimp}" "${ModuleInstanceName}" > "${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_disconnected.txt" 2>&1
+                run_as_root ${ModuleSimp} ${ModuleInstanceName} > "${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_disconnected.txt" 2>&1
                 ErrorLogCnt=$(grep "ERROR" "${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_disconnected.txt" | grep -c "No such file or directory") 
                 CmdResult="${ErrorLogCnt}"
                 if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
@@ -621,7 +621,7 @@ function m_module_x_test {
                 # If device cannot be opened there is a log in result  :
                 # *** ERROR (LINUX) #2:  No such file or directory ***
                 debug_print "${LogPrefix} RunExampleInputEnable" "${LogFile}"
-                run_as_root "${ModuleSimp}" "${ModuleInstanceName}" > "${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_connected.txt" 2>&1
+                run_as_root ${ModuleSimp} ${ModuleInstanceName} > "${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_connected.txt" 2>&1
                 ErrorLogCnt=$(grep "ERROR" "${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_connected.txt" | grep -c "No such file or directory") 
                 CmdResult="${ErrorLogCnt}"
                 if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
