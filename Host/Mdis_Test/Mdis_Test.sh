@@ -51,7 +51,7 @@ function print_test {
 }
 
 VERBOSE_LEVEL="0"
-
+TEST_SETUP="0"
 # read parameters
 while test $# -gt 0 ; do
     case "$1" in
@@ -95,6 +95,9 @@ echo "TEST_SETUP=${TEST_SETUP}" | tee -a "${MyDir}/../../Common/Conf.sh"
 
 echo "Test Setup: ${TEST_SETUP}"
 case ${TEST_SETUP} in
+    0)
+        GrubOses=( "${GrubOsesF23P[@]}" ) #What oses should be run?
+        ;;
     1)
         GrubOses=( "${GrubOsesF23P[@]}" )
         ;;
