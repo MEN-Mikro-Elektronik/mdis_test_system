@@ -100,14 +100,14 @@ DEVNODE_INSTALL_DIR = /dev
 ALL_LL_DRIVERS = \
 	Z017/DRIVER/COM/driver.mak \
 	Z017/DRIVER/COM/driver_io.mak \
-        Z017/DRIVER/COM/driver_sw.mak \
+	Z017/DRIVER/COM/driver_sw.mak \
 	Z017/DRIVER/COM/driver_io_sw.mak \
 	Z017/DRIVER/COM/driver_z127.mak \
 	Z017/DRIVER/COM/driver_z127_noirq.mak \
 	Z017/DRIVER/COM/driver_z127_sw.mak \
 	Z017/DRIVER/COM/driver_z127_noirq_sw.mak \
 	Z017/DRIVER/COM/driver_z127v01.mak \
-        Z017/DRIVER/COM/driver_z127v01_sw.mak
+	Z017/DRIVER/COM/driver_z127v01_sw.mak
 
 ALL_BB_DRIVERS = 
 
@@ -121,7 +121,7 @@ ALL_CORE_LIBS = \
 	CHAMELEON/COM/library.mak
 
 ALL_LL_TOOLS = \
-        Z017/EXAMPLE/Z17_EC0400/COM/program.mak \
+	Z017/EXAMPLE/Z17_EC0400/COM/program.mak \
 	Z017/EXAMPLE/Z17_SIMP/COM/program.mak \
 	Z017/TOOLS/Z17_IO/COM/program.mak \
 	Z017/TOOLS/Z127_IO/COM/program.mak \

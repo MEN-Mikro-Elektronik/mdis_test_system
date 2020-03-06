@@ -109,7 +109,7 @@ ALL_BB_DRIVERS = \
 	D201/DRIVER/COM/driver.mak \
 	D201/DRIVER/COM/driver_c203.mak \
 	D201/DRIVER/COM/driver_f201.mak \
-	D201/DRIVER/COM/driver_c203_sw.mak 
+	D201/DRIVER/COM/driver_c203_sw.mak
 
 ALL_USR_LIBS = \
 	USR_OSS/library.mak \

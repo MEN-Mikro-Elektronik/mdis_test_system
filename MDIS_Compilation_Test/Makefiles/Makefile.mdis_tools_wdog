@@ -107,7 +107,7 @@ ALL_USR_LIBS = \
 
 ALL_CORE_LIBS = \
 	DBG/library.mak \
-        DBG/library_usr.mak \
+	DBG/library_usr.mak \
 	OSS/library.mak \
 	CHAMELEON/COM/library.mak
 

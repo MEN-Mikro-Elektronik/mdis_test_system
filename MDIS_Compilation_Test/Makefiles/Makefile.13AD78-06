@@ -98,9 +98,10 @@ DESC_INSTALL_DIR = /etc/mdis
 DEVNODE_INSTALL_DIR = /dev
 
 ALL_LL_DRIVERS = \
-	AD78/DRIVER/COM/driver.mak 
+	AD78/DRIVER/COM/driver.mak
 
-ALL_BB_DRIVERS = 
+ALL_BB_DRIVERS = \
+	SMB2BB/DRIVER/NATIVE/driver.mak
 
 ALL_USR_LIBS = \
 	USR_OSS/library.mak \
@@ -117,7 +118,7 @@ ALL_LL_TOOLS = \
 	AD78/TOOLS/PU05_CTRL/COM/program.mak \
 	AD78/TOOLS/AD78_TEST/COM/program.mak
 # only for win? 
- #AD78/EXAMPLE/AD78_WIN/COM/program.mak 
+ #AD78/EXAMPLE/AD78_WIN/COM/program.mak
 
 
 ALL_COM_TOOLS = 

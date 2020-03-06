@@ -116,7 +116,7 @@ ALL_LL_TOOLS = \
 	M011/EXAMPLE/M11_SIMP/COM/program.mak \
 	M011/TOOLS/M11_WRITE/COM/program.mak \
 	M011/TOOLS/M11_PORT_VERI/COM/program.mak \
-	M011/TOOLS/M11_READ/COM/program.mak 
+	M011/TOOLS/M11_READ/COM/program.mak
 
 ALL_COM_TOOLS = 
 

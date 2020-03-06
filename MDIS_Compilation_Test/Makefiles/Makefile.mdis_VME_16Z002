@@ -111,10 +111,10 @@ ALL_USR_LIBS = \
 ALL_CORE_LIBS = \
 	DBG/library.mak \
 	OSS/library.mak \
-        CHAMELEON/COM/library.mak \
-        OSS/library_usr.mak \
-        BBIS_KERNEL/library.mak \
-        MDIS_KERNEL/library.mak 
+	CHAMELEON/COM/library.mak \
+	OSS/library_usr.mak \
+	BBIS_KERNEL/library.mak \
+	MDIS_KERNEL/library.mak
 
 ALL_LL_TOOLS = 
 

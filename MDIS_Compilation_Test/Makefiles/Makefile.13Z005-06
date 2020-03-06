@@ -99,7 +99,7 @@ DEVNODE_INSTALL_DIR = /dev
 
 ALL_LL_DRIVERS = \
 	SJA1000/DRIVER/COM/driver.mak \
-        SJA1000/DRIVER/COM/driver_sw.mak
+	SJA1000/DRIVER/COM/driver_sw.mak
 
 ALL_BB_DRIVERS = 
 

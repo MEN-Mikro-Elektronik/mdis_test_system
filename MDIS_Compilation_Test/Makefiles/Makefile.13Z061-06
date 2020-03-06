@@ -98,8 +98,8 @@ DESC_INSTALL_DIR = /etc/mdis
 DEVNODE_INSTALL_DIR = /dev
 
 ALL_LL_DRIVERS = \
-        Z061_PWM/DRIVER/COM/driver_sw.mak \
-        Z061_PWM/DRIVER/COM/driver.mak
+	Z061_PWM/DRIVER/COM/driver_sw.mak \
+	Z061_PWM/DRIVER/COM/driver.mak
 
 ALL_BB_DRIVERS = 
 
@@ -113,8 +113,8 @@ ALL_CORE_LIBS = \
 	CHAMELEON/COM/library.mak
 
 ALL_LL_TOOLS = \
-        Z061_PWM/EXAMPLE/Z61_SIMP/COM/program.mak \
-        Z061_PWM/TOOLS/Z61_CTRL/COM/program.mak
+	Z061_PWM/EXAMPLE/Z61_SIMP/COM/program.mak \
+	Z061_PWM/TOOLS/Z61_CTRL/COM/program.mak
 
 ALL_COM_TOOLS = 
 

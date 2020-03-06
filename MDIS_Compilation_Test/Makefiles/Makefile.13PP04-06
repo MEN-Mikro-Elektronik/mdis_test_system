@@ -100,7 +100,7 @@ DEVNODE_INSTALL_DIR = /dev
 ALL_LL_DRIVERS = \
 	PP04/DRIVER/COM/driver.mak \
 	PP04/DRIVER/COM/driver_sw.mak
-        
+
 ALL_BB_DRIVERS = 
 
 ALL_USR_LIBS = \

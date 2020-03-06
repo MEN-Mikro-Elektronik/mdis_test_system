@@ -101,7 +101,7 @@ ALL_LL_DRIVERS = \
 	SMB2/DRIVER/COM/driver.mak
 
 ALL_BB_DRIVERS = \
-    SMB2BB/DRIVER/NATIVE/driver.mak
+	SMB2BB/DRIVER/NATIVE/driver.mak
 
 ALL_USR_LIBS = \
 	USR_OSS/library.mak \
@@ -128,7 +128,7 @@ ALL_LL_TOOLS = \
 	SMB2/TOOLS/SMB2_POE/COM/program.mak \
 	SMB2/TOOLS/SMB2_EEPROD2/COM/program.mak \
 	SMB2/TOOLS/SMB2_TEST/COM/program.mak \
-    SMB2/TOOLS/SMB2_BMC_CTRL/COM/program.mak
+	SMB2/TOOLS/SMB2_BMC_CTRL/COM/program.mak
 
 ALL_COM_TOOLS = 
 

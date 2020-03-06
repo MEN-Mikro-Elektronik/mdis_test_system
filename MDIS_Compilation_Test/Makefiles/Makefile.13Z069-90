@@ -116,7 +116,7 @@ ALL_COM_TOOLS =
 
 ALL_NATIVE_DRIVERS = \
 	DRIVERS/Z069_RST_WDG/driver.mak \
-        DRIVERS/Z069_RST_WDG/driver_io.mak \
+	DRIVERS/Z069_RST_WDG/driver_io.mak \
 	DRIVERS/CHAMELEON/driver.mak
 
 ALL_NATIVE_LIBS = 

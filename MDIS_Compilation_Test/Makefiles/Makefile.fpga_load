@@ -98,23 +98,23 @@ STATIC_LIB_INSTALL_DIR = /usr/local/lib
 #DEVNODE_INSTALL_DIR = /dev
 
 ALL_CORE_LIBS = \
-     OSS/library.mak
-        
+	OSS/library.mak
+
 ALL_USR_LIBS = \
-     USR_OSS/library.mak \
-     USR_UTL/COM/library.mak \
-     OSS/library_usr.mak \
-     DBG/library_usr.mak \
-     CHAMELEON/COM/library_io.mak \
-     CHAMELEON/COM/library_io_sw.mak \
-     CHAMELEON/COM/library_usr.mak \
-     CHAMELEON/COM/library_usr_io.mak \
-     CHAMELEON/COM/library_usr_sw.mak \
-     CHAMELEON/COM/library_usr_io_sw.mak \
-     VME4L_API/library.mak
+	USR_OSS/library.mak \
+	USR_UTL/COM/library.mak \
+	OSS/library_usr.mak \
+	DBG/library_usr.mak \
+	CHAMELEON/COM/library_io.mak \
+	CHAMELEON/COM/library_io_sw.mak \
+	CHAMELEON/COM/library_usr.mak \
+	CHAMELEON/COM/library_usr_io.mak \
+	CHAMELEON/COM/library_usr_sw.mak \
+	CHAMELEON/COM/library_usr_io_sw.mak \
+	VME4L_API/library.mak
 
 ALL_COM_TOOLS = \
-     FPGA_LOAD/program.mak 
+	FPGA_LOAD/program.mak
 
 #ALL_DEV_TOOLS = 
 

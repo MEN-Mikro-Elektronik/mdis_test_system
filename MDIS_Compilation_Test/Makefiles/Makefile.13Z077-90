@@ -116,8 +116,8 @@ ALL_COM_TOOLS =
 
 ALL_NATIVE_DRIVERS = \
 	DRIVERS/ETH_16Z077/DRIVER/driver.mak \
-        DRIVERS/ETH_16Z077/DRIVER/driver_project_lib.mak \
-        DRIVERS/ETH_16Z077/DRIVER/driver_sw.mak \
+	DRIVERS/ETH_16Z077/DRIVER/driver_project_lib.mak \
+	DRIVERS/ETH_16Z077/DRIVER/driver_sw.mak \
 	DRIVERS/CHAMELEON/driver.mak
 
 ALL_NATIVE_LIBS = 
