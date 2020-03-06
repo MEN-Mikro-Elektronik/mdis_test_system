@@ -98,12 +98,12 @@ DESC_INSTALL_DIR = /etc/mdis
 DEVNODE_INSTALL_DIR = /dev
 
 ALL_LL_DRIVERS = \
-        MT/DRIVER/COM/driver_nohw.mak \
-        MT/DRIVER/COM/driver_lm2.mak \
-        MT/DRIVER/COM/driver_lm3.mak \
-        MT/DRIVER/COM/driver.mak \
-        MT/DRIVER/COM/driver_lm1.mak \
-        MT/DRIVER/COM/driver_pci.mak
+	MT/DRIVER/COM/driver_nohw.mak \
+	MT/DRIVER/COM/driver_lm2.mak \
+	MT/DRIVER/COM/driver_lm3.mak \
+	MT/DRIVER/COM/driver.mak \
+	MT/DRIVER/COM/driver_lm1.mak \
+	MT/DRIVER/COM/driver_pci.mak
 
 ALL_BB_DRIVERS = 
 
@@ -117,20 +117,20 @@ ALL_CORE_LIBS = \
 	CHAMELEON/COM/library.mak
 
 ALL_LL_TOOLS = \
-        MT/EXAMPLE/MT_SIMP/COM/program.mak \
-        MT/TOOLS/MT_BENCH/COM/program.mak \
-        MT/TOOLS/MT_SPINLTEST/COM/program.mak \
-        MT/TOOLS/MT_BUSYLOOP/COM/program.mak \
-        MT/TOOLS/MT_OPENCLOSE/COM/program.mak \
-        MT/TOOLS/MT_SLEEP/COM/program.mak \
-        MT/TOOLS/MT_ALARM/COM/program.mak \
-        MT/TOOLS/MT_CALL/COM/program.mak \
-        MT/TOOLS/MT_IRQMAX/COM/program.mak \
-        MT/TOOLS/MT_IRQRATE/COM/program.mak \
-        MT/TOOLS/MT_MDELAY/COM/program.mak \
-        MT/TOOLS/MT_PATHES/COM/program.mak \
-        MT/TOOLS/MT_IOMODE/COM/program.mak \
-        MT/TOOLS/MT_SEMTEST/COM/program.mak
+	MT/EXAMPLE/MT_SIMP/COM/program.mak \
+	MT/TOOLS/MT_BENCH/COM/program.mak \
+	MT/TOOLS/MT_SPINLTEST/COM/program.mak \
+	MT/TOOLS/MT_BUSYLOOP/COM/program.mak \
+	MT/TOOLS/MT_OPENCLOSE/COM/program.mak \
+	MT/TOOLS/MT_SLEEP/COM/program.mak \
+	MT/TOOLS/MT_ALARM/COM/program.mak \
+	MT/TOOLS/MT_CALL/COM/program.mak \
+	MT/TOOLS/MT_IRQMAX/COM/program.mak \
+	MT/TOOLS/MT_IRQRATE/COM/program.mak \
+	MT/TOOLS/MT_MDELAY/COM/program.mak \
+	MT/TOOLS/MT_PATHES/COM/program.mak \
+	MT/TOOLS/MT_IOMODE/COM/program.mak \
+	MT/TOOLS/MT_SEMTEST/COM/program.mak
 
 # Do not build this tools under Linux
 # For futher info, check issues: #68, #123,

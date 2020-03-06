@@ -98,14 +98,14 @@ DESC_INSTALL_DIR = /etc/mdis
 DEVNODE_INSTALL_DIR = /dev
 
 ALL_LL_DRIVERS = \
-        QSPIM/DRIVER/COM/driver.mak \
+	QSPIM/DRIVER/COM/driver.mak \
 	QSPIM/DRIVER/COM/driver_z76.mak \
 	QSPIM/DRIVER/COM/driver_z76_em1a.mak \
 	QSPIM/DRIVER/COM/driver_z76_sw.mak \
 	QSPIM/DRIVER/COM/driver_z76_em1a_sw.mak \
 	QSPIM/DRIVER/COM/driver_a12.mak \
-        QSPIM/DRIVER/COM/driver_d201.mak \
-        QSPIM/DRIVER/COM/driver_dma.mak \
+	QSPIM/DRIVER/COM/driver_d201.mak \
+	QSPIM/DRIVER/COM/driver_dma.mak \
 	QSPIM/DRIVER/COM/driver_z76_dma_sw.mak
 
 ALL_BB_DRIVERS = 
@@ -121,11 +121,11 @@ ALL_CORE_LIBS = \
 
 ALL_LL_TOOLS = \
 	QSPIM/EXAMPLE/QSPIM_A4N/COM/program.mak \
-        QSPIM/EXAMPLE/QSPIM_AD48N/COM/program.mak \
+	QSPIM/EXAMPLE/QSPIM_AD48N/COM/program.mak \
 	QSPIM/EXAMPLE/QSPIM_SIG/COM/program.mak \
 	QSPIM/EXAMPLE/QSPIM_BC02/COM/program.mak \
 	QSPIM/EXAMPLE/QSPIM_FRAM/COM/program.mak \
-        QSPIM/EXAMPLE/QSPIM_XC7/COM/program.mak
+	QSPIM/EXAMPLE/QSPIM_XC7/COM/program.mak
  #QSPIM/EXAMPLE/QSPIM_CB/COM/program.mak lack of drvsupp, os_men, dbg
 
 ALL_COM_TOOLS = 

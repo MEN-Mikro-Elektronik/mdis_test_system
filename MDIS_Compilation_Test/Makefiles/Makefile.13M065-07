@@ -98,13 +98,13 @@ DESC_INSTALL_DIR = /etc/mdis
 DEVNODE_INSTALL_DIR = /dev
 
 ALL_LL_DRIVERS = \
-    ICANL2/DRIVER/COM/driver.mak \
-    ICANL2/DRIVER/COM/driver_sw.mak
+	ICANL2/DRIVER/COM/driver.mak \
+	ICANL2/DRIVER/COM/driver_sw.mak
 
 ALL_BB_DRIVERS = 
 
 ALL_USR_LIBS = \
-    ICANL2_API/COM/library.mak \
+	ICANL2_API/COM/library.mak \
 	USR_OSS/library.mak \
 	USR_UTL/COM/library.mak
 
@@ -114,10 +114,10 @@ ALL_CORE_LIBS = \
 	CHAMELEON/COM/library.mak
 
 ALL_LL_TOOLS = \
-    ICANL2/EXAMPLE/ICANL2_CYC/COM/program.mak \
-    ICANL2/EXAMPLE/ICANL2_SIGNAL/COM/program.mak \
-    ICANL2/EXAMPLE/ICANL2_SIMP/COM/program.mak \
-    ICANL2/TEST/ICANL2_VERI/COM/program.mak
+	ICANL2/EXAMPLE/ICANL2_CYC/COM/program.mak \
+	ICANL2/EXAMPLE/ICANL2_SIGNAL/COM/program.mak \
+	ICANL2/EXAMPLE/ICANL2_SIMP/COM/program.mak \
+	ICANL2/TEST/ICANL2_VERI/COM/program.mak
 
 ALL_COM_TOOLS = 
 

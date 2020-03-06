@@ -110,7 +110,7 @@ ALL_CORE_LIBS = \
 	OSS/library.mak \
 	CHAMELEON/COM/library.mak \
 	ID/COM/library.mak \
-	ID/COM/library_sw.mak 
+	ID/COM/library_sw.mak
 
 ALL_LL_TOOLS = 
 

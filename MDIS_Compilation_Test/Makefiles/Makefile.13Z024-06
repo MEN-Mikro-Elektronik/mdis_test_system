@@ -100,8 +100,8 @@ DEVNODE_INSTALL_DIR = /dev
 ALL_LL_DRIVERS = \
 	MMODPRG/DRIVER/COM/driver.mak \
 	MMODPRG/DRIVER/COM/driver_4k.mak \
-        MMODPRG/DRIVER/COM/driver_sw.mak \
-	MMODPRG/DRIVER/COM/driver_4k_sw.mak 
+	MMODPRG/DRIVER/COM/driver_sw.mak \
+	MMODPRG/DRIVER/COM/driver_4k_sw.mak
 
 ALL_BB_DRIVERS = 
 

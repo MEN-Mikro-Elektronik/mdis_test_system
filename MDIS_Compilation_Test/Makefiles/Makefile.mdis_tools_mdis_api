@@ -109,12 +109,12 @@ ALL_CORE_LIBS = \
 	DBG/library.mak \
 	OSS/library.mak \
 	CHAMELEON/COM/library.mak \
-        MDIS_API/library.mak
+	MDIS_API/library.mak
 
 ALL_LL_TOOLS = 
 
 ALL_COM_TOOLS = \
-        MDIS_API/MDIS_CREATEDEV/program.mak \
+	MDIS_API/MDIS_CREATEDEV/program.mak \
 	MDIS_API/M_ERRSTR/COM/program.mak \
 	MDIS_API/M_GETBLOCK/COM/program.mak \
 	MDIS_API/M_GETSTAT/COM/program.mak \
@@ -126,8 +126,7 @@ ALL_COM_TOOLS = \
 	MDIS_API/M_SETBLOCK/COM/program.mak \
 	MDIS_API/M_SETSTAT/COM/program.mak \
 	MDIS_API/M_SETSTAT_BLK/COM/program.mak \
-	MDIS_API/M_WRITE/COM/program.mak 
-
+	MDIS_API/M_WRITE/COM/program.mak
 
 ALL_NATIVE_DRIVERS = 
 

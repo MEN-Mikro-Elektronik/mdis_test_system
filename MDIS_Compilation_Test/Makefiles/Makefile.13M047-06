@@ -98,8 +98,8 @@ DESC_INSTALL_DIR = /etc/mdis
 DEVNODE_INSTALL_DIR = /dev
 
 ALL_LL_DRIVERS = \
-    M047/DRIVER/COM/driver_sw.mak \
-    M047/DRIVER/COM/driver.mak
+	M047/DRIVER/COM/driver_sw.mak \
+	M047/DRIVER/COM/driver.mak
 
 ALL_BB_DRIVERS = 
 
@@ -113,9 +113,9 @@ ALL_CORE_LIBS = \
 	CHAMELEON/COM/library.mak
 
 ALL_LL_TOOLS = \
-    M047/EXAMPLE/M47_SIMP/COM/program.mak \
-    M047/TOOLS/M47_TOOL/COM/program.mak \
-    M047/TOOLS/M47_TEST/COM/program.mak
+	M047/EXAMPLE/M47_SIMP/COM/program.mak \
+	M047/TOOLS/M47_TOOL/COM/program.mak \
+	M047/TOOLS/M47_TEST/COM/program.mak
 
 ALL_COM_TOOLS = 
 

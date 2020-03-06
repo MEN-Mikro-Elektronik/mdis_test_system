@@ -116,7 +116,7 @@ ALL_COM_TOOLS =
 
 ALL_NATIVE_DRIVERS = \
 	DRIVERS/13Z135/driver.mak \
-        DRIVERS/13Z135/driver_sw.mak \
+	DRIVERS/13Z135/driver_sw.mak \
 	DRIVERS/CHAMELEON/driver.mak
 
 

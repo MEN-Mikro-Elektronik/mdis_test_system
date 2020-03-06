@@ -135,7 +135,7 @@ ALL_COM_TOOLS = \
 	VME4L_API/VME4L_CTRL/program.mak \
 	VME4L_API/VME4L_IRQGEN/program.mak \
 	HWBUG/program.mak \
-    mm_ident/program.mak
+	mm_ident/program.mak
 
 ALL_NATIVE_DRIVERS =
 
