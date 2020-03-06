@@ -90,7 +90,7 @@ if [ "${CmdResult}" -ne "${ERR_OK}" ] && [ "${CmdResult}" -ne "${ERR_DIR_EXISTS}
 fi
 cd "${TestConfiguration}" || exit "${ERR_NOEXIST}"
 
-create_directory "${Date}" "${LogPrefix}" || exit "${ERR_NOEXIST}"
+create_directory "${Date}" "${LogPrefix}"
 CmdResult=$?
 if [ "${CmdResult}" -ne "${ERR_OK}" ] && [ "${CmdResult}" -ne "${ERR_DIR_EXISTS}" ]; then
     exit "${CmdResult}"
