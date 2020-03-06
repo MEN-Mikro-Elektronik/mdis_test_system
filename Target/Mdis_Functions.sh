@@ -14,11 +14,10 @@ function scan_and_install {
     local CmdResult="${ERR_UNDEFINED}"
 
     # scan the hardware
-    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' /opt/menlinux/scan_system.sh /opt/menlinux --assume-yes --internal-swmodules > scan_system_output.txt 2>&1
-    CmdResult=$?
-    if [ "${CmdResult}" -ne 0 ]; then
-            echo "${LogPrefix}ERR_SCAN :scan_system script error"
-            return "${ERR_SCAN}"
+    if ! run_as_root /opt/menlinux/scan_system.sh /opt/menlinux --assume-yes --internal-swmodules > scan_system_output.txt 2>&1
+    then
+        echo "${LogPrefix}ERR_SCAN :scan_system script error"
+        return "${ERR_SCAN}"
     fi
 
     make_install "${LogPrefix}"
@@ -33,14 +32,15 @@ function scan_and_install {
 function make_install {
     local LogPrefix="${1} "
     echo "${LogPrefix}make_install"
-    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' make > make_output.txt 2>&1
-    if [ $? -ne 0 ]; then
+
+    if ! run_as_root make > make_output.txt 2>&1 
+    then
         echo "ERR 3 :make error" 
         exit "${ERR_MAKE}"
     fi
 
-    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' make install > make_install_output.txt 2>&1
-    if [ $? -ne 0 ]; then
+    if ! run_as_root make install > make_install_output.txt 2>&1
+    then
         echo "${LogPrefix}ERR 4 :make install error"
         exit "${ERR_INSTALL}"
     fi
@@ -56,7 +56,8 @@ function get_mdis_sources_commit_sha {
     cd "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" || exit "${ERR_NOEXIST}"
     local CommitIdShortened
     CommitIdShortened=$(git log --pretty=format:'%h' -n 1)
-    local SystemName=$(hostnamectl | grep "Operating System" | awk '{ print $3"_"$4 }')
+    local SystemName
+    SystemName=$(hostnamectl | grep "Operating System" | awk '{ print $3"_"$4 }')
     cd "${CurrDir}" || exit "${ERR_NOEXIST}"
 
     echo "${CommitIdShortened}"
@@ -85,7 +86,7 @@ function mdis_prepare {
     # Check if any errors exists in output files
     if ! error_check "${LogPrefix}"
     then
-        return ${CmdResult}
+        return "${CmdResult}"
     fi
 
     # Check this files:
@@ -122,6 +123,7 @@ function run_test_case_common_end_actions {
     if ! clean_test_case_files
     then
         echo "${LogPrefix}clean_test_case_files error"
+        return "${ERR_VALUE}"
     fi
 
     # Remove loaded men_* modules from OS
@@ -130,9 +132,9 @@ function run_test_case_common_end_actions {
     #if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
     #        echo "could not rmmod_all_men_modules" 
     #fi
-    echo "${LogPrefix}case ${TestCaseName} finished"         | tee -a "${TestCaseLogName}" 2>&1
+    echo "${LogPrefix}case ${TestCaseName} finished" | tee -a "${TestCaseLogName}" 2>&1
 
-    return "${CmdResult}"
+    return "${ERR_OK}"
 }
 
 ############################################################################
@@ -146,8 +148,8 @@ function rmmod_all_men_modules {
     for i in $(seq 1 ${MenLsmodModuleCnt});
     do
         #echo "$i rmmod $(lsmod | grep men_ | awk NR==1'{print $1}')"
-        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rmmod $(lsmod | grep ^men_ | awk NR==1'{print $1}')
-        if [ $? -ne 0 ]; then
+        if ! run_as_root rmmod "$(lsmod | grep ^men_ | awk NR==1'{print $1}')"
+        then
             echo "ERR_RMMOD :cannot rmmod module $(lsmod | grep ^men_ | awk NR==1'{print $1}')"
             return "${ERR_RMMOD}"
         fi
@@ -160,10 +162,10 @@ function rmmod_all_men_modules {
 # parameters:
 #       None
 function clean_test_case_files {
-    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -rf BIN/
-    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -rf DESC/
-    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -rf LIB/
-    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -rf OBJ/
+    run_as_root rm -rf BIN/
+    run_as_root rm -rf DESC/
+    run_as_root rm -rf LIB/
+    run_as_root rm -rf OBJ/
     #echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf /etc/mdis/*
     #echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf /lib/modules/linux_src ../misc/*
 }
@@ -174,8 +176,8 @@ function clean_test_case_files {
 # $1    File name
 function warning_check {
     local FileName="${1}"
-    cat "${FileName}" | grep warning: >/dev/null
-    if [ $? -eq 0 ]
+
+    if ! < "${FileName}" grep "warning:" >/dev/null
     then 
         echo "Warning Check FAILED!"
         return "${ERR_WARNING}"

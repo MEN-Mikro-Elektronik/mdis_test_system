@@ -174,7 +174,7 @@ fi
 cd "${MainTestDirectoryPath}/${MainTestDirectoryName}" || exit "${ERR_NOEXIST}"
 ScriptName=${0##*/}
 
-TestTypeDev=$(echo ${DeviceName} | head -c1)
+TestTypeDev=$(echo "${DeviceName}" | head -c1)
 case "${TestTypeDev}" in
     m);&
     z)
