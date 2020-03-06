@@ -194,7 +194,7 @@ function change_input_BL51E {
     I2CNR=$(run_cmd_on_remote_input_switch "echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cdetect -y -l | grep smbus | awk '{print \$1}' | sed 's/i2c-//'" )
     RegisterData=$(run_cmd_on_remote_input_switch "echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cget -y ${I2CNR} 0x22 | sed 's/0x//' ")
 
-    check_input_state_is_set ${CommandCode} ${RegisterData} ${LogPrefix}
+    check_input_state_is_set "${CommandCode}" "${RegisterData}" "${LogPrefix}"
     if [ $? -eq "1" ]; then
         #echo "${LogPrefix} Nothing to do, Input: ${CommandCode} is set"
         return "${ERR_OK}"
@@ -226,7 +226,7 @@ function change_input_BL51E {
 
     # Check if value is set
     RegisterData=$(run_cmd_on_remote_input_switch "echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cget -y ${I2CNR} 0x22 | sed 's/0x//' ")
-    check_input_state_is_set ${CommandCode} ${RegisterData} ${LogPrefix}
+    check_input_state_is_set "${CommandCode}" "${RegisterData}" "${LogPrefix}"
     if [ $? -eq "1" ]; then
         return "${ERR_OK}"
     else
