@@ -6,7 +6,13 @@ source "${MyDir}"/Relay_Functions.sh
 
 # This script contains all common functions that are used by test cases
 
-
+############################################################################
+# run_test_case specified by user
+#
+# parameters:
+# $1     Test case id
+# $2     Test case summary directory
+# $3     OS kernel no
 function run_test_case {
     local TestCaseId="${1}"
     local TestSummaryDirectory="${2}"
@@ -18,20 +24,35 @@ function run_test_case {
     fi
 }
 
-### @brief Run command as root
-### @param $@ Command to run, command arguments
+############################################################################
+# Run command as root
+#
+# parameters:
+# $1     command to run
 function run_as_root {
     if [ "${#}" -gt "0" ]; then
         echo "${MenPcPassword}" | sudo -S --prompt=$'\r' -- "${@}"
     fi
 }
 
+############################################################################
+# Print into terminal and into log file
+#
+# parameters:
+# $1     Msg to print/log
+# $2     Log file name
 function print {
     local Msg="${1}"
     local LogFile="${2}"
     echo "${Msg}" | tee -a "${LogFile}" 2>&1
 }
 
+############################################################################
+# Print debug verbose information into terminal and into log file
+#
+# parameters:
+# $1     Msg to print/log
+# $2     Log file name
 function debug_print {
     local Msg="${1}"
     local LogFile="${2}"
@@ -40,6 +61,11 @@ function debug_print {
     fi
 }
 
+############################################################################
+# Check if tested device belongs to board specified in the test case
+#
+# parameters:
+# $1     ??
 function checkDeviceNo {
     echo "checkDeviceNo empty"
 }
@@ -48,8 +74,8 @@ function checkDeviceNo {
 # Create directory
 #
 # parameters:
-# $1    ditectory name,
-# $2    log prefix
+# $1    Directory name
+# $2    Log prefix
 function create_directory {
     local DirectoryName="$1"
     local LogPrefix="$2 "
@@ -71,13 +97,13 @@ function create_directory {
 # Get test summary directory name 
 #
 # parameters:
-#       None 
-#
+#       None
 function get_test_summary_directory_name {
-    local CurrDir=$(pwd)
+    local CurrDir
     local CommitIdShortened
     local SystemName
     local TestResultsDirectoryName
+    CurrDir=$(pwd)
     cd "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" || exit "${ERR_NOEXIST}"
     CommitIdShortened=$(git log --pretty=format:'%h' -n 1)
     SystemName=$(hostnamectl | grep "Operating System" | awk '{ print $3 $4 }')
@@ -87,13 +113,11 @@ function get_test_summary_directory_name {
     echo "${TestResultsDirectoryName}"
 }
 
-
 ############################################################################
-# Get mdis sources commit sha
+# Get os name and kernel version
 #
 # parameters:
-#       None 
-#
+#       None
 function get_os_name_with_kernel_ver {
     cd "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" || exit "${ERR_NOEXIST}"
     local SystemName
@@ -111,15 +135,13 @@ function get_os_name_with_kernel_ver {
 }
 
 ############################################################################
-# Run_test_case_common_actions - perform: 
-#       - create directory and move into it
-#       - create test case log file
+# Create test case directory and log file
 #
 # parameters:
-# $1     Test Case Log name 
+# $1     Log file
 # $2     Test Case name
 function run_test_case_dir_create {
-    local TestCaseLogName=${1}
+    local LogFile=${1}
     local TestCaseName=${2}
 
     local CmdResult="${ERR_UNDEFINED}"
@@ -134,16 +156,24 @@ function run_test_case_dir_create {
     cd "${TestCaseName}" || exit "${ERR_NOEXIST}"
 
     # Create log file
-    touch "${TestCaseLogName}"
+    touch "${LogFile}"
 }
 
+############################################################################
+# Check if mcb_pci is blacklisted on current os and add entry into
+# blacklist.conf if necessary
+#
+# parameters:
+# $1     Log file
+# $2     Test Case name
 function blacklist_mcb_pci {
-    local TestCaseLogName=${1}
+    local LogFile=${1}
     local TestCaseName=${2}
     # Check if mcb_pci is already in blacklist, UART loopback test
-    echo "${LogPrefix} Check if mcb_pci is blacklisted" | tee -a "${TestCaseLogName}" 2>&1
-    run_as_root grep "blacklist mcb_pci" /etc/modprobe.d/blacklist.conf > /dev/null
-    if [ $? -ne 0 ]; then
+    echo "${LogPrefix} Check if mcb_pci is blacklisted" | tee -a "${LogFile}" 2>&1
+
+    if ! run_as_root grep "blacklist mcb_pci" /etc/modprobe.d/blacklist.conf > /dev/null
+    then
         # Add mcb_pci into blacklist
         run_as_root echo "# Add mcb_pci into blacklist" >> /etc/modprobe.d/blacklist.conf
         run_as_root echo "blacklist mcb_pci" >> /etc/modprobe.d/blacklist.conf
@@ -154,21 +184,23 @@ function blacklist_mcb_pci {
 
 ############################################################################
 # Obtain device list from chameleon device, If there are several same boards
-# number of board have to specified (default 1 board is taken as valid) 
+# number of board have to specified (default the first board is taken)
 #
 # parameters:
 # $1      Ven ID
 # $2      Dev ID
 # $3      SubVen ID
-# $4      File name for results
-# $5      Board number (optional, when there is more than one-the same mezz board)
+# $4      File with result name
+# $5      Board number
+# $6      Log file
+# $7      Log prefix
 function obtain_device_list_chameleon_device {
     local VenID=$1
     local DevID=$2
     local SubVenID=$3
     local FileWithResults=$4
     local BoardNumberParam=$5
-    local TestCaseLogName=$6
+    local LogFile=$6
     local LogPrefix=$7
 
     local BoardNumber=1
@@ -176,10 +208,10 @@ function obtain_device_list_chameleon_device {
     local BusNr=0
     local DevNr=0
 
-    debug_print "${LogPrefix} obtain_device_list_chameleon_device" "${TestCaseLogName}"
+    debug_print "${LogPrefix} obtain_device_list_chameleon_device" "${LogFile}"
     # Check how many boards are present
     BoardsCnt=$(run_as_root /opt/menlinux/BIN/fpga_load -s | grep -c "${VenID} * ${DevID} * ${SubVenID}")
-    debug_print "${LogPrefix} There are: ${BoardsCnt} mezzaine ${VenID} ${DevID} ${SubVenID} board(s) in the system" "${TestCaseLogName}"
+    debug_print "${LogPrefix} There are: ${BoardsCnt} mezzaine ${VenID} ${DevID} ${SubVenID} board(s) in the system" "${LogFile}"
 
     if (( "${BoardsCnt}" >= "2" )) ; then
         if [ "${BoardNumberParam}" -eq "0" ] || [ "${BoardNumberParam}" -ge "${BoardsCnt}" ]; then
@@ -189,22 +221,22 @@ function obtain_device_list_chameleon_device {
         fi
     fi
 
-    debug_print "${LogPrefix} Obtain modules name from mezz ${BoardNumber}" "${TestCaseLogName}"
+    debug_print "${LogPrefix} Obtain modules name from mezz ${BoardNumber}" "${LogFile}"
 
     # Obtain BUS number
-    BusNr=$(run_as_root /opt/menlinux/BIN/fpga_load -s | grep "${VenID} * ${DevID} * ${SubVenID}" | awk NR==${BoardNumber}'{print $3}')
+    BusNr=$(run_as_root /opt/menlinux/BIN/fpga_load -s | grep "${VenID} * ${DevID} * ${SubVenID}" | awk NR=="${BoardNumber}"'{print $3}')
 
     # Obtain DEVICE number
-    DevNr=$(run_as_root /opt/menlinux/BIN/fpga_load -s | grep "${VenID} * ${DevID} * ${SubVenID}" | awk NR==${BoardNumber}'{print $4}')
+    DevNr=$(run_as_root /opt/menlinux/BIN/fpga_load -s | grep "${VenID} * ${DevID} * ${SubVenID}" | awk NR=="${BoardNumber}"'{print $4}')
 
-    debug_print "${LogPrefix} Device BUS:${BusNr}, Dev:${DevNr}" "${TestCaseLogName}"
+    debug_print "${LogPrefix} Device BUS:${BusNr}, Dev:${DevNr}" "${LogFile}"
     # Check how many chameleon devices are present in configuration
-    debug_print "${LogPrefix} Current Path:" "${TestCaseLogName}"
-    debug_print "${LogPrefix} $PWD" "${TestCaseLogName}"
+    debug_print "${LogPrefix} Current Path:" "${LogFile}"
+    debug_print "${LogPrefix} $PWD" "${LogFile}"
 
     local ChamBoardsNr
     ChamBoardsNr=$(grep -c "^mezz_cham*" ../../system.dsc)
-    debug_print "${LogPrefix} Number of Chameleon boards: ${ChamBoardsNr}" "${TestCaseLogName}"
+    debug_print "${LogPrefix} Number of Chameleon boards: ${ChamBoardsNr}" "${LogFile}"
 
     local ChamBusNr=0
     local ChamDevNr=0
@@ -220,11 +252,11 @@ function obtain_device_list_chameleon_device {
         ChamDevNr=$(sed -n "/^mezz_cham_${i}/,/}/p" ../../system.dsc | grep "PCI_DEVICE_NUMBER" | awk '{print $4}')
 
         # Convert to decimal and check if it is valid chameleon board
-        ChamBusNr=$(( 16#$(echo ${ChamBusNr} | awk -F'x' '{print $2}')))
-        ChamDevNr=$(( 16#$(echo ${ChamDevNr} | awk -F'x' '{print $2}') ))
+        ChamBusNr=$(( 16#$(echo "${ChamBusNr}" | awk -F'x' '{print $2}')))
+        ChamDevNr=$(( 16#$(echo "${ChamDevNr}" | awk -F'x' '{print $2}') ))
 
         if [ "${ChamBusNr}" -eq "${BusNr}" ] && [ "${ChamDevNr}" -eq "${DevNr}" ]; then
-            print "${LogPrefix} mezz_cham_${i} board is valid" "${TestCaseLogName}"
+            print "${LogPrefix} mezz_cham_${i} board is valid" "${LogFile}"
             ChamValidId=${i}
         fi
     done
@@ -239,12 +271,11 @@ function obtain_device_list_chameleon_device {
     for i in $(seq 1 "${DeviceNr}"); do
         #Check if device belongs to choosen chameleon board
         local DevToCheck
-        DevToCheck=$(grep "{" ../../system.dsc  | awk NR==${i}'{print $1}')
+        DevToCheck=$(grep "{" ../../system.dsc  | awk NR=="${i}"'{print $1}')
         if [ "${DevToCheck}" != "mezz_cham_${ChamValidId}" ]; then
-            sed -n "/${DevToCheck}/,/}/p" ../../system.dsc  | grep "mezz_cham_${ChamValidId}" > /dev/null 2>&1
-
-            if [ $? -eq 0 ]; then
-                debug_print "${LogPrefix}  Device: ${DevToCheck} belongs to mezz_cham_${ChamValidId}" "${TestCaseLogName}"
+            if sed -n "/${DevToCheck}/,/}/p" ../../system.dsc  | grep "mezz_cham_${ChamValidId}" > /dev/null 2>&1
+            then
+                debug_print "${LogPrefix}  Device: ${DevToCheck} belongs to mezz_cham_${ChamValidId}" "${LogFile}"
                 echo "${DevToCheck}" >> "${FileWithResults}"
             fi
         fi
@@ -260,14 +291,14 @@ function obtain_device_list_chameleon_device {
 # $3      SubVen ID
 # $4      File name for chameleon table
 # $5      Board number (optional, when there is more than one-the same mezz board)
-# $6      Test case log name
+# $6      Log file
 # $7      Log prefix
 function obtain_chameleon_table {
     local VenID=$1
     local DevID=$2
     local SubVenID=$3
     local FileWithResults=$4
-    local BoardNumberParam=$5 #TBD
+    local BoardNumberParam=$5
     local LogFile=$6
     local LogPrefix=$7
 
@@ -276,8 +307,8 @@ function obtain_chameleon_table {
 
     debug_print "${LogPrefix} obtain_tty_number_list_from_board" "${LogFile}"
     for i in $(seq 0 ${BoardMaxSlot}); do
-        run_as_root /opt/menlinux/BIN/fpga_load "${VenID}" "${DevID}" "${SubVenID}" "${i}" -t > /dev/null 2>&1
-        if [ $? -eq 0 ]; then
+        if run_as_root /opt/menlinux/BIN/fpga_load "${VenID}" "${DevID}" "${SubVenID}" "${i}" -t > /dev/null 2>&1
+        then
             BoardCnt=$((BoardCnt+1))
         else
             break
@@ -288,8 +319,8 @@ function obtain_chameleon_table {
 
     # Save chamelon table for board(s)
     for i in $(seq 1 ${BoardCnt}); do
-        run_as_root /opt/menlinux/BIN/fpga_load "${VenID}" "${DevID}" "${SubVenID}" $((i-1)) -t >> "${FileWithResults}"
-        if [ $? -eq 0 ]; then
+        if run_as_root /opt/menlinux/BIN/fpga_load "${VenID}" "${DevID}" "${SubVenID}" $((i-1)) -t >> "${FileWithResults}"
+        then
             debug_print "${LogPrefix} Chameleon for Board_${VenID}_${DevID}_${SubVenID}_${i} board saved (1)" "${LogFile}"
         else
             break
@@ -301,19 +332,20 @@ function obtain_chameleon_table {
 # Test RS232 at given tty_xx device
 # Example:
 #       uart_test_tty xxxx yyyy
-#
 # where x is: ttyS0 ... ttySx / ttyD0 ... ttyDx
-# where y is: ttyS0 ... ttySx / ttyD0 ... ttyDx  
-# It two uarts are connected with each other, then pass two different parameters
-# It uart is connected with loopback, then pass two same parameters
+# where y is: ttyS0 ... ttySx / ttyD0 ... ttyDx
+#
+# If two uarts are connected with each other then pass two different tty devices
+# If one uart is connected with loopback, then pass two same tty devices
 # Example:
 #       uart_test_tty xxxx yyyy
-#       uart_test_tty ttyD0 ttyD1
-#       uart_test_tty ttyD0 ttyD0
+#       uart_test_tty ttyD0 ttyD1 (double)
+#       uart_test_tty ttyD0 ttyD0 (single)
 # parameters:
 # $1      tty 0 name
 # $2      tty 1 name
-#
+# $3      Log file
+# $4      Log prefix
 function uart_test_tty {
     local tty0=${1}
     local tty1=${2}
@@ -321,49 +353,51 @@ function uart_test_tty {
     local LogFile=${4}
 
     #Conditions must be met: i2c-i801 is loaded, mcb_pci is not loaded
-    run_as_root chmod o+rw /dev/${tty0}
-    if [ $? -ne 0 ]; then
+    if ! run_as_root chmod o+rw "/dev/${tty0}"
+    then
         debug_print "${LogPrefix} Could not chmod o+rw on ${tty0}" "${LogFile}"
     fi
     sleep 1
+
     # Below command prevent infitite loopback on serial port
-    run_as_root stty -F /dev/${tty0} -onlcr
-    if [ $? -ne 0 ]; then
+    if ! run_as_root stty -F "/dev/${tty0}" -onlcr
+    then
         debug_print "${LogPrefix} Could not stty -F on ttyS${item}" "${LogFile}"
     fi
     sleep 1
     # Listen on port in background
-    run_as_root cat /dev/${tty1}\
-      > echo_on_serial_${tty1}.txt &
 
-    if [ $? -ne 0 ]; then
+    if ! run_as_root cat "/dev/${tty1}" > "echo_on_serial_${tty1}.txt" &
+    then
         debug_print "${LogPrefix} Could not cat on ${tty1} in background" "${LogFile}"
     fi
-    sleep 1 
-    # Save background process PID 
+    sleep 1
+    # Save background process PID
     CatEchoTestPID=$!
 
     # Send data into port
-    run_as_root echo "${EchoTestMessage}" > /dev/${tty0}
-    if [ $? -ne 0 ]; then
+    if ! run_as_root echo "${EchoTestMessage}" > "/dev/${tty0}"
+    then
         debug_print "${LogPrefix} Could not echo on ${tty0}" "${LogFile}"
     fi
     # Kill process
     sleep 1
     # Set up previous settings
-    run_as_root chmod o-rw /dev/${tty0}
-    if [ $? -ne 0 ]; then
+
+    if ! run_as_root chmod o-rw "/dev/${tty0}"
+    then
         debug_print "${LogPrefix} Could not chmod o+rw on ${tty0}" "${LogFile}"
     fi
 
-    run_as_root kill ${CatEchoTestPID}
-    if [ $? -ne 0 ]; then
+    if ! run_as_root kill "${CatEchoTestPID}"
+    then
         print "${LogPrefix} Could not kill cat backgroung process ${CatEchoTestPID} on ${tty1}" "${LogFile}"
     fi
     # Compare and check if echo test message was received.
     sleep 1
-    grep -a "${EchoTestMessage}" echo_on_serial_${tty1}.txt
-    if [ $? -eq 0 ]; then
+    
+    if grep -a "${EchoTestMessage}" "echo_on_serial_${tty1}.txt"
+    then
         debug_print "${LogPrefix} Echo succeed on ${tty1}" "${LogFile}"
         return "${ERR_OK}"
     else
@@ -377,11 +411,10 @@ function uart_test_tty {
 # in linux system. Addresses for UART and ttyS are compared. 
 #
 # parameters:
-# $1      Log file name
-# $2      VenID
-# $3      DevID
-# $4      SubVenID
-# $5      Board Number (1 as default)
+# $1      Log file
+# $2      Dump of chameleon table
+# $3      Uart device list
+# $4      Log prefix
 function obtain_tty_number_list_from_board {
     local LogFile=$1
     local ChamTableDumpFile=$2
@@ -396,19 +429,16 @@ function obtain_tty_number_list_from_board {
     for i in $(seq 1 ${BoardCnt}); do
         UartBrdCnt=$(grep -c "UART" "${ChamTableDumpFile}")
         for j in $(seq 1 ${UartBrdCnt}); do
-            UartAddr=$(grep "UART" "${ChamTableDumpFile}" | awk NR==${j}'{print $11}')
-            if [ $? -eq 0 ]; then
-                debug_print "${LogPrefix}  UART ${j} addr saved" "${LogFile}"
-                UartBrdNr[${UartCnt}]=${i}
-                UartNr[${UartCnt}]=$(grep -i ${UartAddr} "UART_devices_dump.txt" | awk '{print $1}' | egrep -o '^[^:]+')
-                UartCnt=$((UartCnt+1))
-            else
-                debug_print "${LogPrefix}  No more UARTs in board" "${LogFile}"
-            fi
+            UartAddr=$(grep "UART" "${ChamTableDumpFile}" | awk NR=="${j}"'{print $11}')
+            debug_print "${LogPrefix} UART ${j} addr saved" "${LogFile}"
+            UartBrdNr[${UartCnt}]=${i}
+            UartNr[${UartCnt}]=$(grep -i "${UartAddr}" "UART_devices_dump.txt" | awk '{print $1}' | egrep -o '^[^:]+')
+            UartCnt=$((UartCnt+1))
         done
     done
 
     debug_print "${LogPrefix} There are ${UartCnt} UART(s) on Chameleon table log" "${LogFile}"
+
     if [ ${UartCnt} -eq 0 ]; then
         return "${ERR_NOT_DEFINED}"
     fi
@@ -435,21 +465,16 @@ function obtain_tty_number_list_from_board {
 #   5 - RunExampleInputDisable
 #   6 - CompareResults
 #   7 - DisableInput
+# To check if m-module is supported, please find 'case' below
 #
-#   IMPORTANT: 
-#   If device cannot be opened there should always be line:
-#   *** ERROR (LINUX) #2:  No such file or directory ***
-#
-# Function supports below m-modules
-#       m66
-#       m31
-#       m35 
-#       m36
-#       m82
-
 # parameters:
-# $1
-#
+# $1    Log file
+# $2    Test case name
+# $3    Relay switch
+# $4    M-module name
+# $5    M-module number
+# $6    Test name (if there is more than 1)
+# $7    Log prefix
 function m_module_x_test {
     local LogFile=${1}
     local TestCaseName=${2}
@@ -566,8 +591,8 @@ function m_module_x_test {
                 # If device cannot be opened there is a log in result  :
                 # *** ERROR (LINUX) #2:  No such file or directory ***
                 debug_print "${LogPrefix} RunExampleInputDisable" "${LogFile}"
-                run_as_root ${ModuleSimp} ${ModuleInstanceName} > ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_disconnected.txt 2>&1
-                ErrorLogCnt=$(grep "ERROR" ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_disconnected.txt | grep -c "No such file or directory") 
+                run_as_root "${ModuleSimp}" "${ModuleInstanceName}" > "${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_disconnected.txt" 2>&1
+                ErrorLogCnt=$(grep "ERROR" "${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_disconnected.txt" | grep -c "No such file or directory") 
                 CmdResult="${ErrorLogCnt}"
                 if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
                     debug_print "${LogPrefix} Error: ${ERR_SIMP_ERROR} :could not run ${ModuleSimp} ${ModuleInstanceName}" "${LogFile}"
@@ -596,8 +621,8 @@ function m_module_x_test {
                 # If device cannot be opened there is a log in result  :
                 # *** ERROR (LINUX) #2:  No such file or directory ***
                 debug_print "${LogPrefix} RunExampleInputEnable" "${LogFile}"
-                run_as_root ${ModuleSimp} ${ModuleInstanceName} > ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_connected.txt 2>&1
-                ErrorLogCnt=$(grep "ERROR" ${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_connected.txt | grep -c "No such file or directory") 
+                run_as_root "${ModuleSimp}" "${ModuleInstanceName}" > "${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_connected.txt" 2>&1
+                ErrorLogCnt=$(grep "ERROR" "${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_connected.txt" | grep -c "No such file or directory") 
                 CmdResult="${ErrorLogCnt}"
                 if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
                     debug_print "${LogPrefix} Error: ${ERR_SIMP_ERROR} :could not run ${ModuleSimp} ${ModuleInstanceName}" "${LogFile}"

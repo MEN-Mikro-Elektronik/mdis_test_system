@@ -53,6 +53,8 @@ function make_install {
 # parameters:
 #       None
 function get_mdis_sources_commit_sha {
+    local CurrDir
+    CurrDir=$(pwd)
     cd "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" || exit "${ERR_NOEXIST}"
     local CommitIdShortened
     CommitIdShortened=$(git log --pretty=format:'%h' -n 1)
@@ -177,7 +179,7 @@ function clean_test_case_files {
 function warning_check {
     local FileName="${1}"
 
-    if ! < "${FileName}" grep "warning:" >/dev/null
+    if < "${FileName}" grep "warning:" >/dev/null
     then 
         echo "Warning Check FAILED!"
         return "${ERR_WARNING}"
