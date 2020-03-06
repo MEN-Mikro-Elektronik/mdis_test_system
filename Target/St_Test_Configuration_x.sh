@@ -7,7 +7,7 @@ source "${MyDir}"/Relay_Functions.sh
 
 # This script runs mdis tests
 
-TestSetup="0"
+TEST_SETUP="0"
 Date="_2020"
 VERBOSE_LEVEL="0"
 TestId="0"
@@ -42,20 +42,20 @@ while test $# -gt 0 ; do
         esac
 done
 
-if [ "${TestSetup}" -eq "0" ]; then
+if [ "${TEST_SETUP}" -eq "0" ]; then
     if [ "${TestId}" -ne "0" ]; then
         TestConfiguration="St_Test_Id_${TestId}"
     else
         echo "Wrong parameters:"
-        echo "TestSetup: ${TestSetup}"
+        echo "TestSetup: ${TEST_SETUP}"
         echo "TestId: ${TestId}"
         exit "${ERR_VALUE}"
     fi
 else
-    TestConfiguration="St_Test_Setup_${TestSetup}"
+    TestConfiguration="St_Test_Setup_${TEST_SETUP}"
 fi
 
-echo "test-setup=${TestSetup}"
+echo "test-setup=${TEST_SETUP}"
 echo "date=${Date}"
 echo "debug-level=${VERBOSE_LEVEL}"
 echo "test-id=${TestId}"
@@ -127,8 +127,8 @@ fi
 # Clear dmesg log
 run_as_root dmesg --clear
 
-echo "${LogPrefix} Test Setup: ${TestSetup}"
-    case "${TestSetup}" in
+echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
+    case "${TEST_SETUP}" in
         0)
             run_test_case "${TestId}" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
@@ -175,7 +175,7 @@ fi
 # Save dmesg log
 run_as_root bash -c "dmesg > dmesg_log.txt"
 
-echo "Create Test Results summary for TestSetup ${TestSetup}"
+echo "Create Test Results summary for TEST_SETUP ${TEST_SETUP}"
 cd "${TestSummaryDirectory}" || exit "${ERR_NOEXIST}"
 
 SystemInfo="$(uname -a)"
