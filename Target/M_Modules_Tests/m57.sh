@@ -22,6 +22,8 @@ function m57_description {
     echo "      profidp_simp m57_${moduleNo} and save the command output"
     echo "    3.Verify if profidp_simp command output is valid - does not contain errors"
     echo "      Device was opened and closed succesfully"
+    echo "PURPOSE:"
+    echo "    Check if M-module m57 is working correctly"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"

@@ -18,6 +18,8 @@ function m82_description {
     echo "    are available in the system"
     echo "DESCRIPTION:"
     echo "    m82_${ModuleNo}"
+    echo "PURPOSE:"
+    echo "    Check if M-module m82 is working correctly"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"

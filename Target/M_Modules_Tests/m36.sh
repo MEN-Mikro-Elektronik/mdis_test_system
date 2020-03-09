@@ -18,6 +18,8 @@ function m36_description {
     echo "    are available in the system"
     echo "DESCRIPTION:"
     echo "    m36_${ModuleNo}"
+    echo "PURPOSE:"
+    echo "    Check if M-module m36 is working correctly"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"

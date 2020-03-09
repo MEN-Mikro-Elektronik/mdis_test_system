@@ -24,6 +24,8 @@ function m65n_description {
     echo "      output"
     echo "    3.Verify if icanl2_veri command output is valid - does not contain"
     echo "      errors (find line 'TEST RESULT: 0 errors)"
+    echo "PURPOSE:"
+    echo "    Check if M-module m65n is working correctly"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"

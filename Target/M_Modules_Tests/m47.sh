@@ -22,6 +22,8 @@ function m47_description {
     echo "      m47_simp m47_${ModuleNo} and save the command output"
     echo "    3.Verify if m47_simp command output is valid - does not contain errors"
     echo "      Device was opened and closed succesfully"
+    echo "PURPOSE:"
+    echo "    Check if M-module m47 is working correctly"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"

@@ -23,6 +23,8 @@ function m33_description {
     echo "      m33_demo m33_${ModuleNo} and save the command output"
     echo "    3.Verify if m33_demo command output is valid - does not contain errors"
     echo "      Device was opened and closed succesfully"
+    echo "PURPOSE:"
+    echo "    Check if M-module m33 is working correctly"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"

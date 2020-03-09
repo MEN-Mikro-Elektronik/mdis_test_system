@@ -30,6 +30,8 @@ function m35n_description {
     echo "      Run command: 'm34_blkread m35_${ModuleNo} -r=14 -b=1 -i=3 -d=1'"
     echo "      and save command output"
     echo "      Verify if m34_blkread command output is valid - does not contain errors"
+    echo "PURPOSE:"
+    echo "    Check if M-module m35n is working correctly"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"
