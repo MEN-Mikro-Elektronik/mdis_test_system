@@ -16,7 +16,9 @@ function carrier_g204_TMP_description {
     echo "PREREQUISITES:"
     echo "    M-module ${ModuleName} is plugged into G204"
     echo "DESCRIPTION:"
-    echo "    Run ${ModuleName} m-module test(s)"
+    echo "   G204 ${ModuleName} test(s)"
+    echo "PURPOSE:"
+    echo "    Check if M-module on G204 is working correctly"
     echo "RESULTS"
     echo "    SUCCESS if all m-modules(s) tests are passed."
     echo "    FAIL otherwise"
@@ -29,7 +31,7 @@ function carrier_g204_TMP_description {
 # $1    Module number
 # $2    Module log path
 function carrier_g204_m65n_description {
-    local ModuleNo=${1}
+    local ModuleNo="1"
     local ModuleLogPath=${2}
     carrier_g204_TMP_description "m65n_${ModuleNo}" "${ModuleLogPath}"
 }
@@ -62,8 +64,8 @@ function carrier_g204_m65n_test {
 # $1    Module number
 # $2    Module log path
 function carrier_g204_m33_description {
-    local ModuleNo=${1}
-    local ModuleLogPath=${2}
+    local ModuleNo="1"
+    local ModuleLogPath
     carrier_g204_TMP_description "m33_${ModuleNo}" "${ModuleLogPath}"
 }
 
@@ -95,7 +97,7 @@ function carrier_g204_m33_test {
 # $1    Module number
 # $2    Module log path
 function carrier_g204_m35n_description {
-    local ModuleNo=${1}
+    local ModuleNo="1"
     local ModuleLogPath=${2}
     carrier_g204_TMP_description "m35n_${ModuleNo}" "${ModuleLogPath}"
 }
@@ -128,7 +130,7 @@ function carrier_g204_m35n_test {
 # $1    Module number
 # $2    Module log path
 function carrier_g204_m36_description {
-    local ModuleNo=${1}
+    local ModuleNo="1"
     local ModuleLogPath=${2}
     carrier_g204_TMP_description "m36_${ModuleNo}" "${ModuleLogPath}"
 }
@@ -161,7 +163,7 @@ function carrier_g204_m36_test {
 # $1    Module number
 # $2    Module log path
 function carrier_g204_m72_description {
-    local ModuleNo=${1}
+    local ModuleNo="1"
     local ModuleLogPath=${2}
     carrier_g204_TMP_description "m72_${ModuleNo}" "${ModuleLogPath}"
 }
@@ -194,7 +196,7 @@ function carrier_g204_m72_test {
 # $1    Module number
 # $2    Module log path
 function carrier_g204_m77_description {
-    local ModuleNo=${1}
+    local ModuleNo="1"
     local ModuleLogPath=${2}
     carrier_g204_TMP_description "m77_${ModuleNo}" "${ModuleLogPath}"
 }
@@ -227,7 +229,7 @@ function carrier_g204_m77_test {
 # $1    Module number
 # $2    Module log path
 function carrier_g204_m82_description {
-    local ModuleNo=${1}
+    local ModuleNo="1"
     local ModuleLogPath=${2}
     carrier_g204_TMP_description "m82_${ModuleNo}" "${ModuleLogPath}"
 }
