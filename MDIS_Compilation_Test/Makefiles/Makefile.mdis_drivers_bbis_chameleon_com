@@ -107,9 +107,7 @@ ALL_BB_DRIVERS = \
 	CHAMELEON/DRIVER/COM/driver_pcitbl_io.mak \
 	CHAMELEON/DRIVER/COM/driver_pcitbl_msi.mak \
 	CHAMELEON/DRIVER/COM/driver_os9.mak \
-	CHAMELEON/DRIVER/COM/driver_io.mak \
-	CHAMELEON/DRIVER/COM/driver_iom.mak \
-	CHAMELEON/DRIVER/COM/driver_pciom.mak
+	CHAMELEON/DRIVER/COM/driver_io.mak
 
 ALL_USR_LIBS = \
 	USR_OSS/library.mak \
