@@ -13,7 +13,28 @@ function z087_eth_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
     echo "-------------------Ip Core z087 Test Case----------------------------"
-    echo "ADD DESCRIPTION"
+    echo "PREREQUISITES:"
+    echo "    It is assumed that all necessary drivers have been build and are"
+    echo "    available in the system"
+    echo "    ETH interfaces should be plugged into network switch"
+    echo "DESCRIPTION:"
+    echo "    1.Read list of available network interfaces"
+    echo "    2.Load m-module drivers: modprobe men_lx_z77 phyadr=1,2"
+    echo "    3.Read list of available network interfaces and note new ones"
+    echo "    4.Configure routing table to put all traffic through new interface"
+    echo "    5.Ping any working public host: ping 8.8.8.8"
+    echo "    6.Go to 4. if there's any new interface left that has not been tested"
+    echo "    7.Check the results - result log shall contain no errors or warnings"
+    echo "PURPOSE:"
+    echo "    Check if ip core z087 with men_lx_z77 driver is working"
+    echo "    correctly"
+    echo "RESULTS"
+    echo "    SUCCESS / FAIL"
+    echo "    If \"FAIL\", please check test case log file:"
+    echo "    ${ModuleLogPath}"
+    echo "    For more detailed information please see corresponding log files in test"
+    echo "    case repository"
+    echo "    To see error codes definition please check Conf.sh"
 }
 
 ############################################################################
