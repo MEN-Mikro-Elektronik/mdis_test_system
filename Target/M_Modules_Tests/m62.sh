@@ -20,7 +20,7 @@ function m62_description {
     echo "    1.Load m-module drivers: modprobe men_ll_m62"
     echo "    2.Run example/verification program:"
     echo "      m62_simp m62_${ModuleNo} and save the command output"
-    echo "    3.Verify if profidp_simp command output is valid - does not contain errors"
+    echo "    3.Verify if m62_simp command output is valid - does not contain errors"
     echo "      Device was opened and closed succesfully"
     echo "PURPOSE:"
     echo "    Check if M-module m62 is working correctly"

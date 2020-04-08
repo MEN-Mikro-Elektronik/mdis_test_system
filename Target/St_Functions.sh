@@ -119,7 +119,6 @@ function get_test_summary_directory_name {
 # parameters:
 #       None
 function get_os_name_with_kernel_ver {
-    cd "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" || exit "${ERR_NOEXIST}"
     local SystemName
     local Kernel
     local Arch
@@ -127,7 +126,6 @@ function get_os_name_with_kernel_ver {
     Kernel=$(uname -r)
     Arch=$(uname -m)
 
-    cd "${CurrDir}" || exit "${ERR_NOEXIST}"
     SystemName="${SystemName//\//_}"
     SystemName="${SystemName//(/_}"
     SystemName="${SystemName//)/_}"
