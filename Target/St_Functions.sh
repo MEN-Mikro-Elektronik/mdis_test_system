@@ -127,8 +127,8 @@ function get_os_name_with_kernel_ver {
     Arch=$(uname -m)
 
     SystemName="${SystemName//\//_}"
-    SystemName="${SystemName//(/_}"
-    SystemName="${SystemName//)/_}"
+    SystemName="${SystemName//\(/_}"
+    SystemName="${SystemName//\)/_}"
     echo "${SystemName}_${Kernel}_${Arch}"
 }
 
