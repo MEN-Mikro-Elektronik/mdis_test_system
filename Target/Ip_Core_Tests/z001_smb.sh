@@ -13,6 +13,26 @@ function z001_smb_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
     echo "-------------------Ip Core z001 Test Case----------------------------"
+    echo "PREREQUISITES:"
+    echo "    It is assumed that all necessary drivers have been build and are"
+    echo "    available in the system"
+    echo "DESCRIPTION:"
+    echo "    1.List available SMB devices: i2cdetect -y -l"
+    echo "    2.Load m-module drivers: modprobe men_lx_z001"
+    echo "    3.List available SMB devices and note one with name begining with 16Z001"
+    echo "    4.Read data from SMB device EEPROM"
+    echo "    5.Write data to SMB device EEPROM"
+    echo "    6.Read data from SMB device EEPROM again"
+    echo "    7.Check if data read from EEPROM is equal to data written"
+    echo "PURPOSE:"
+    echo "    Check if ip core z001 with men_lx_z001 driver is working correctly"
+    echo "RESULTS"
+    echo "    SUCCESS / FAIL"
+    echo "    If \"FAIL\", please check test case log file:"
+    echo "    ${ModuleLogPath}"
+    echo "    For more detailed information please see corresponding log files in test"
+    echo "    case repository"
+    echo "    To see error codes definition please check Conf.sh"
 }
 
 
