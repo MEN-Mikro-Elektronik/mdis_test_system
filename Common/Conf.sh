@@ -60,7 +60,7 @@ TEST_CASES_MAP["0304"]="carrier_f205_m66_m31"
 TEST_CASES_MAP["0305"]="carrier_f205_m43_m11"
 
 # Address of Target that will be tested
-MenPcIpAddr="10.1.1.195"
+MenPcIpAddr="10.1.1.103"
 
 # Credentials for Pc that will be tested - required by ssh connection and sudo cmds
 MenPcLogin="men"
@@ -149,7 +149,7 @@ GrubOsesF26L=("0" \
         "Debian GNU/Linux, with Linux 4.19.0-6-686-pae (on /dev/sda18)" \
         "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)" \
         "Poky (Yocto Project Reference Distro) 2.5 (sumo) (on /dev/sda21)" \
-        "Poky (Yocto Project Reference Distro) 2.7.1 (warrior) (on /dev/sda22)"
+        "Poky (Yocto Project Reference Distro) 2.7.1 (warrior) (on /dev/sda22)" \
         )
 
 #F23P
@@ -159,7 +159,7 @@ GrubOsesF23P=("0" \
         "CentOS Linux 7 (Core) (on /dev/sda10)" \
         "CentOS Linux 8 (Core) (on /dev/sda11)" \
         "Debian GNU/Linux, with Linux 4.19.0-6-686-pae (on /dev/sda18)" \
-        "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)"
+        "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)" \
         )
 #G22
 GrubOsesG22=("0" \
@@ -173,7 +173,7 @@ GrubOsesG23=("0" \
         "Debian GNU/Linux, with Linux 4.19.0-6-686-pae (on /dev/sda18)" \
         "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)" \
         "CentOS Linux 7 (Core) (on /dev/sda6)" \
-        "CentOS Linux 7 (Core) (on /dev/sda9)"
+        "CentOS Linux 7 (Core) (on /dev/sda9)" \
         )
 #G25A
 GrubOsesG25A=("0" \
@@ -184,7 +184,7 @@ GrubOsesG25A=("0" \
         "Debian GNU/Linux, with Linux 4.19.0-6-686-pae (on /dev/sda18)" \
         "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)" \
         "Poky (Yocto Project Reference Distro) 2.5 (sumo) (on /dev/sda21)" \
-        "Poky (Yocto Project Reference Distro) 2.7.1 (warrior) (on /dev/sda22)"
+        "Poky (Yocto Project Reference Distro) 2.7.1 (warrior) (on /dev/sda22)" \
         )
 #BL51E
 GrubOsesBL51E=("0" \
