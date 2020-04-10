@@ -134,9 +134,8 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             ;;
         1)
             run_test_case "0100" "${TestSummaryDirectory}" "${OsNameKernel}" #F215 board test
-            run_test_case "0102" "${TestSummaryDirectory}" "${OsNameKernel}" #F614 board test
+            run_test_case "0104" "${TestSummaryDirectory}" "${OsNameKernel}" #G215 board test
             run_test_case "0200" "${TestSummaryDirectory}" "${OsNameKernel}"
-            run_test_case "0201" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case "0202" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case "0300" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
