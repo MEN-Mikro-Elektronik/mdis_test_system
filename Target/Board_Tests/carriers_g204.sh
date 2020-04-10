@@ -223,6 +223,39 @@ function carrier_g204_m77_test {
 }
 
 ############################################################################
+# board g204_m81 test description
+#
+# parameters:
+# $1    Module number
+# $2    Module log path
+function carrier_g204_m81_description {
+    local ModuleNo="1"
+    local ModuleLogPath=${2}
+    carrier_g204_TMP_description "m81_${ModuleNo}" "${ModuleLogPath}"
+}
+
+############################################################################
+# run board g204_m81 test
+#
+# parameters:
+# $1    Test case id
+# $2    Test summary directory
+# $3    Os name kernel
+function carrier_g204_m81_test {
+    local TestCaseId="${1}"
+    local TestSummaryDirectory="${2}"
+    local OsNameKernel="${3}"
+
+    local TestCaseResult="${ERR_VALUE}"
+    run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+                                     -id "${TestCaseId}"\
+                                     -os "${OsNameKernel}"\
+                                     -dname "m81"\
+                                     -dno "1"
+    return $?
+}
+
+############################################################################
 # board g204_m82 test description
 #
 # parameters:

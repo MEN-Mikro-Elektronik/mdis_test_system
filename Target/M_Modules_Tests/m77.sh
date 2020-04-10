@@ -18,7 +18,7 @@ function m72_description {
     echo "    are available in the system"
     echo "DESCRIPTION:"
     echo "    1.Load mdis kernel driver: modprobe men_mdis_kernel"
-    echo "    2.Create mdis device: mdis_createdev -b ..."
+    echo "    2.Create mdis device: mdis_createdev -b <carrier>"
     echo "    3.Load m-module drivers: modprobe men_lx_m77 ..."
     echo "    4.Set proper port file mode: chmod o+rw \"/dev/ttyD0\""
     echo "    5.Prevent infitite loopback on serial port: stty -F \"/dev/ttyD0\""

@@ -19,7 +19,7 @@ function m72_description {
     echo "DESCRIPTION:"
     echo "    1.Load m-module drivers: modprobe men_ll_m72"
     echo "    2.Run example/verification program:"
-    echo "      m72_out mm72_${ModuleNo} and allow it to run couple second; save the command output"
+    echo "      m72_out m72_${ModuleNo} and allow it to run couple second; save the command output"
     echo "    3.Run example/verification program:"
     echo "      m72_single m72_"${ModuleNo}" and save the command output"
     echo "    4.Verify if m72_single command output is valid - does not contain errors"
