@@ -53,11 +53,8 @@ function m66_test {
     echo "${LogPrefix} Step1:" | tee -a "${TestCaseLogName}" 2>&1
     m_module_x_test "${TestCaseLogName}" "${TestCaseName}" "${RelayOutput}" "m66" "${ModuleNo}" "" "${LogPrefix}"
     CmdResult=$?
-    if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-        Step1="${CmdResult}"
-    fi
 
-    if [ "${Step1}" = "${ERR_OK}" ]; then
+    if [ "${CmdResult}" == "${ERR_OK}" ]; then
         return "${ERR_OK}"
     else
         return "${ERR_VALUE}"
