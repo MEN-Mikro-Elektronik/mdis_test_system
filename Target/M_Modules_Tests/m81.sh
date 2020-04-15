@@ -17,8 +17,10 @@ function m81_description {
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
     echo "DESCRIPTION:"
-    echo "    1.Load m-module drivers: modprobe driver"
-    echo "    2."
+    echo "    1.Load m-module drivers: modprobe driver men_ll_m27"
+    echo "    2.Run m27_simp m81_${ModuleNo}"
+    echo "    3.Compare m27_simp results with reference results, verify if m27_simp log"
+    echo "      does not contain errors"
     echo "PURPOSE:"
     echo "    Check if M-module m81 is working correctly"
     echo "RESULTS"
@@ -38,14 +40,70 @@ function m81_description {
 # $2    LogPrefix
 # $3    M-Module number
 function m81_test {
-    local TestCaseLogName=${1}
+    local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
-    return "${ERR_VALUE}"
 
-    #echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_ll_m81
-    #if [ $? -ne 0 ]; then
-    #    echo "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m81" | tee -a "${TestCaseLogName}"
-    #    return "${ERR_VALUE}"
-    #fi
+    debug_print "${LogPrefix} Step1: modprobe men_ll_m27" "${LogFile}"
+    if ! run_as_root modprobe men_ll_m27
+    then
+        debug_print "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m27" "${LogFile}"
+        return "${ERR_VALUE}"
+    fi
+
+    # Run m27_simp test
+    debug_print "${LogPrefix} Step2: run m27_simp m81_${ModuleNo}" "${LogFile}"
+    if ! run_as_root m27_simp m81_${ModuleNo} > m27_simp_m81_${ModuleNo}.log &
+    then
+        debug_print "${LogPrefix} Could not run m27_simp "\
+          | tee -a "${LogFile}" 2>&1
+    fi
+
+    # Kill bacground processess m27_simp
+    m27_simp_PID=$(ps aux | grep m27_simp | awk 'NR==1 {print $2}')
+    sleep 25
+
+    if ! run_as_root kill -9 "${m27_simp_PID}"
+    then
+        echo "${LogPrefix} Could not kill m27_simp"\
+          | tee -a "${LogFile}" 2>&1
+    fi
+
+    local Result=$(compare_m27_simp_values "${LogFile}" "${LogPrefix}" "${ModuleNo}")
+    return "${Result}"
+}
+
+############################################################################
+# compare_m27_simp_values
+# output shall be the same as:
+# toggle channels
+# channel:   00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15
+# Set/Reset: SR SR SR SR SR SR SR SR SR SR SR SR SR SR SR SR 
+#
+# set all channels alternately (1,0,1,..)
+# 
+# read all channels
+# channel:   00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15
+# read data:  S  R  S  R  S  R  S  R  S  R  S  R  S  R  S  R 
+#
+# parameters:
+# $1    Log file
+# $2    Log prefix
+# $3    M-Module number
+function compare_m27_simp_values {
+    local LogFile=${1}
+    local LogPrefix=${2}
+    local ModuleNo=${3}
+
+    debug_print "${LogPrefix} compare_m27_simp_values " "${LogFile}"
+    grep "^set all channels alternately (1,0,1,..)" m27_simp_m81_${ModuleNo}.log > /dev/null && \
+    grep "^read all channels" m27_simp_m81_${ModuleNo}.log > /dev/null && \
+    grep "^channel:   00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15" m27_simp_m81_${ModuleNo}.log > /dev/null && \
+    grep "^read data:  S  R  S  R  S  R  S  R  S  R  S  R  S  R  S  R" m27_simp_m81_${ModuleNo}.log > /dev/null && \
+    if [ $? -ne 0 ]; then
+        debug_print "${LogPrefix} Invalid log output, ERROR" "${LogFile}"
+        return "${ERR_VALUE}"
+    fi
+
+    return "${ERR_OK}"
 }

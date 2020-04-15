@@ -39,72 +39,54 @@ function m72_description {
 # run m72 test 
 # 
 # parameters:
-# $1    TestCaseLogName
+# $1    LogFile
 # $2    LogPrefix
 # $3    M-Module number
 function m72_test {
-    local TestCaseLogName=${1}
+    local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
 
-    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_ll_m72
-    if [ $? -ne 0 ]; then
-        echo "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m72" | tee -a "${TestCaseLogName}"
+    if ! run_as_root modprobe men_ll_m72
+    then
+        debug_print "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m72" "${LogFile}"
         return "${ERR_VALUE}"
     fi
 
-    # Run m72_out in background. 
-    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' stdbuf -oL m72_out m72_"${ModuleNo}" 0 < /dev/null > m72_out.log &
-    if [ $? -ne 0 ]; then
-        echo "${LogPrefix} Could not run m72_out "\
-          | tee -a "${TestCaseLogName}" 2>&1
-
-    fi
-    # Save background process PID 
-    M72_Out_PID=$!
+    # Run m72_out in background.
+    M72_Out_PID=$(run_as_root stdbuf -oL m72_out m72_"${ModuleNo}" 0 < /dev/null > m72_out.log &)
+    debug_print "${LogPrefix} Process M72_Out_PID to kill ${M72_Out_PID}" "${LogFile}"
 
     # Here output from m72_out should be 0
-    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' stdbuf -oL m72_single m72_"${ModuleNo}" 1 < /dev/null > m72_single_run.log &
-    if [ $? -ne 0 ]; then
-        echo "${LogPrefix} Could not run m72_out "\
-          | tee -a "${TestCaseLogName}" 2>&1
-    fi
-
-    M72_Single_PID=$!
+    M72_Single_PID=$(run_as_root stdbuf -oL m72_single m72_"${ModuleNo}" 1 < /dev/null > m72_single_run.log &)
+    debug_print "${LogPrefix} Process m72_single to kill ${M72_Single_PID}" "${LogFile}"
 
     # Count changes for a while ...
     sleep 10
-    echo "${LogPrefix} Processes to kill: "
-    echo "${LogPrefix} M72_Out_PID: ${M72_Out_PID}"
-    echo "${LogPrefix} M72_Single_PID: ${M72_Single_PID}"
 
     # Kill background processes  sudo stdbuf 
-    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' kill -9 "${M72_Out_PID}"
-    if [ $? -ne 0 ]; then
-        echo "${LogPrefix} Could not kill m72_out"\
-          | tee -a "${TestCaseLogName}" 2>&1
+    if ! run_as_root kill -9 "${M72_Out_PID}"
+    then
+        debug_print "${LogPrefix} Could not kill m72_out" "${LogFile}"
     fi
 
-    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' kill -9 "${M72_Single_PID}"
-    if [ $? -ne 0 ]; then
-        echo "${LogPrefix} Could not kill m72_single"\
-          | tee -a "${TestCaseLogName}" 2>&1
+    if ! run_as_root kill -9 "${M72_Single_PID}"
+    then
+        debug_print "${LogPrefix} Could not kill m72_single" "${LogFile}"
     fi
 
     # Kill bacground processess m72_single, m72_out
     M72_Out_PID=$(ps aux | grep m72_single | awk 'NR==1 {print $2}')
     M72_Single_PID=$(ps aux | grep m72_out | awk 'NR==1 {print $2}')
 
-    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' kill -9 "${M72_Out_PID}"
-    if [ $? -ne 0 ]; then
-        echo "${LogPrefix} Could not kill m72_out"\
-          | tee -a "${TestCaseLogName}" 2>&1
+    if ! run_as_root kill -9 "${M72_Out_PID}"
+    then
+        debug_print "${LogPrefix} Could not kill m72_out" "${LogFile}"
     fi
 
-    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' kill -9 "${M72_Single_PID}"
-    if [ $? -ne 0 ]; then
-        echo "${LogPrefix} Could not kill m72_single"\
-          | tee -a "${TestCaseLogName}" 2>&1
+    if ! run_as_root kill -9 "${M72_Single_PID}"
+    then
+        debug_print "${LogPrefix} Could not kill m72_single" "${LogFile}"
     fi
 
     # Here output from m72_out should != 0 
@@ -115,16 +97,13 @@ function m72_test {
     # tac FILE | egrep -m 1 .
     # awk '/./{line=$0} END{print line}' FILE
 
-    echo "${LogPrefix} Counter value is $(awk '/./{line=$0} END{print line}' m72_single_run.log)"\
-      | tee -a "${TestCaseLogName}" 2>&1
+    debug_print "${LogPrefix} Counter value is $(awk '/./{line=$0} END{print line}' m72_single_run.log)" "${LogFile}"
 
     local CounterValue=$(( 16#$( awk '/./{line=$0} END{print line}' m72_single_run.log | sed 's/counter=//' | awk -F'x' '{print $2}')))
-    echo "${LogPrefix} Counter value is ${CounterValue}"\
-      | tee -a "${TestCaseLogName}" 2>&1
+    debug_print "${LogPrefix} Counter value is ${CounterValue}" "${LogFile}"
 
     if [ ${CounterValue} -eq "0" ]; then 
-        echo "${LogPrefix} Counter value is ${CounterValue} = 0, ERROR"\
-          | tee -a "${TestCaseLogName}" 2>&1
+        debug_print "${LogPrefix} Counter value is ${CounterValue} = 0, ERROR" "${LogFile}"
         return "${ERR_VALUE}"
     fi
 
