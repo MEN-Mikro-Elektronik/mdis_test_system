@@ -129,7 +129,7 @@ function carrier_g204_m35n_test {
 # parameters:
 # $1    Module number
 # $2    Module log path
-function carrier_g204_m36_description {
+function carrier_g204_m36n_description {
     local ModuleNo="1"
     local ModuleLogPath=${2}
     carrier_g204_TMP_description "m36_${ModuleNo}" "${ModuleLogPath}"
@@ -142,7 +142,7 @@ function carrier_g204_m36_description {
 # $1    Test case id
 # $2    Test summary directory
 # $3    Os name kernel
-function carrier_g204_m36_test {
+function carrier_g204_m36n_test {
     local TestCaseId="${1}"
     local TestSummaryDirectory="${2}"
     local OsNameKernel="${3}"
@@ -195,7 +195,7 @@ function carrier_g204_m72_test {
 # parameters:
 # $1    Module number
 # $2    Module log path
-function carrier_g204_m77_description {
+function carrier_g204_m77n_description {
     local ModuleNo="1"
     local ModuleLogPath=${2}
     carrier_g204_TMP_description "m77_${ModuleNo}" "${ModuleLogPath}"
@@ -208,7 +208,7 @@ function carrier_g204_m77_description {
 # $1    Test case id
 # $2    Test summary directory
 # $3    Os name kernel
-function carrier_g204_m77_test {
+function carrier_g204_m77n_test {
     local TestCaseId="${1}"
     local TestSummaryDirectory="${2}"
     local OsNameKernel="${3}"
