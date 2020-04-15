@@ -47,7 +47,7 @@ function m11_test {
     local TestCaseName=${4}
     local RelayOutput="${IN_0_ENABLE}"
 
-    m11_f205_fix
+    m11_f205_fix "${1}" "${2}"
     debug_print "${LogPrefix} Step1:" "${LogFile}"
     m_module_x_test "${LogFile}" "${TestCaseName}" "${RelayOutput}" "m11" "${ModuleNo}" "" "${LogPrefix}"
     MResult=$?
@@ -79,7 +79,7 @@ function m11_f205_fix {
     debug_print "${LogPrefix} Current Path:" "${LogFile}"
     debug_print "${CurrentPath}" "${LogFile}"
 
-    cd ..
+    cd ../..
     sed -i '/.*m11_1.*/a ID_CHECK = U_INT32 0' system.dsc
     make_install "${LogPrefix}"
     cd "${CurrentPath}" || exit "${ERR_NOEXIST}"
