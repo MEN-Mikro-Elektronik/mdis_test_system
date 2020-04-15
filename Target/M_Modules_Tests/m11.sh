@@ -47,7 +47,7 @@ function m11_test {
     local TestCaseName=${4}
     local RelayOutput="${IN_0_ENABLE}"
 
-    m11_f205_fix
+    m11_f205_fix "${1}" "${2}"
     debug_print "${LogPrefix} Step1:" "${LogFile}"
     m_module_x_test "${LogFile}" "${TestCaseName}" "${RelayOutput}" "m11" "${ModuleNo}" "" "${LogPrefix}"
     MResult=$?
