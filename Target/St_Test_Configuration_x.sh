@@ -133,11 +133,11 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             run_test_case "${TestId}" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
         1)
-            run_test_case "0100" "${TestSummaryDirectory}" "${OsNameKernel}" #F215 board test
-            run_test_case "0104" "${TestSummaryDirectory}" "${OsNameKernel}" #G215 board test
-            run_test_case "0200" "${TestSummaryDirectory}" "${OsNameKernel}"
-            run_test_case "0202" "${TestSummaryDirectory}" "${OsNameKernel}"
-            run_test_case "0300" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case "0100" "${TestSummaryDirectory}" "${OsNameKernel}" # F215 board test
+            run_test_case "0104" "${TestSummaryDirectory}" "${OsNameKernel}" # G215 board test
+            run_test_case "0200" "${TestSummaryDirectory}" "${OsNameKernel}" # M65 @ G204
+            run_test_case "0202" "${TestSummaryDirectory}" "${OsNameKernel}" # M35N @ G204
+            run_test_case "0300" "${TestSummaryDirectory}" "${OsNameKernel}" # M33 & M47 @ F205
             ;;
         2)
             run_test_case "0102" "${TestSummaryDirectory}" "${OsNameKernel}" # F614 @ F23P
@@ -149,16 +149,12 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             run_test_case "0301" "${TestSummaryDirectory}" "${OsNameKernel}" # M57 @ F205
             ;;
         3)
-            run_test_case "0101" "${TestSummaryDirectory}" "${OsNameKernel}" #f223 board test
-            run_test_case "0204" "${TestSummaryDirectory}" "${OsNameKernel}"
-            run_test_case "0205" "${TestSummaryDirectory}" "${OsNameKernel}"
-            run_test_case "0206" "${TestSummaryDirectory}" "${OsNameKernel}"
-            run_test_case "0207" "${TestSummaryDirectory}" "${OsNameKernel}"
-            run_test_case "0208" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case "0205" "${TestSummaryDirectory}" "${OsNameKernel}" # M77N @ G204
+            run_test_case "0206" "${TestSummaryDirectory}" "${OsNameKernel}" # M36N @ G204
             ;;
         4)
-            #echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_G204_M77_M_Module_Test.sh" "${TestSummaryDirectory}" "1" "1"
-            #echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_SMB2_Test.sh" "${TestSummaryDirectory}" "smb2_1" "G025A03"
+            run_test_case "0203" "${TestSummaryDirectory}" "${OsNameKernel}" # M81 @ G204
+            run_test_case "0204" "${TestSummaryDirectory}" "${OsNameKernel}" # M72 @ G204
             ;;
         5)
             #echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_BL51E_Test.sh" "${TestSummaryDirectory}"
