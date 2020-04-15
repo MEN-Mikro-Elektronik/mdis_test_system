@@ -79,7 +79,7 @@ function m11_f205_fix {
     debug_print "${LogPrefix} Current Path:" "${LogFile}"
     debug_print "${CurrentPath}" "${LogFile}"
 
-    cd ..
+    cd ../..
     sed -i '/.*m11_1.*/a ID_CHECK = U_INT32 0' system.dsc
     make_install "${LogPrefix}"
     cd "${CurrentPath}" || exit "${ERR_NOEXIST}"
