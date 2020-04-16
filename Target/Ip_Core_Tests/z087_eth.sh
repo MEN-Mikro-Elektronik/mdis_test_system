@@ -85,7 +85,7 @@ function eth_test {
     local EthList
 
     GwDefault="$(ip route list | grep "^default" | head --lines=1)"
-    debug_print "${LogPrefix} Default gateway: ${GwDefault}""${LogFile}"
+    debug_print "${LogPrefix} Default gateway: ${GwDefault}" "${LogFile}"
     GwCurrent=${GwDefault}
     GwIp="$(echo "${GwDefault}" | grep --perl-regexp --only-matching "via\s+[\d\.]+" | grep --perl-regexp --only-matching "[\d\.]+")"
     debug_print "${LogPrefix}  Default gateway IP address: ${GwIp}" "${LogFile}"
@@ -118,7 +118,7 @@ function eth_test {
     for Index in $(seq 1 ${GwCount}); do
         GwSet="$(ip route list | grep "^default" | head --lines=1)"
         if [ "${GwSet}" != "" ]; then
-            run_as_root ip route delete "${GwSet}"
+            run_as_root ip route delete ${GwSet}
         fi
     done
 
@@ -126,11 +126,11 @@ function eth_test {
         GwSet="$(ip route list | grep "^default" | head --lines=1)"
         if [ "${GwIp}" != "" ]; then
             if [ "${GwSet}" != "" ]; then
-                run_as_root ip route delete "${GwSet}"
+                run_as_root ip route delete ${GwSet}
             fi
             GwCurrent="default via ${GwIp} dev ${Eth}"
             debug_print "${LogPrefix}  Changing default gateway to: ${GwCurrent}" "${LogFile}"
-            run_as_root ip route add "${GwCurrent}"
+            run_as_root ip route add ${GwCurrent}
             GwSet="$(ip route list | grep "^default" | head --lines=1)"
             debug_print "${LogPrefix} Default gateway is now: ${GwSet}" "${LogFile}"
         fi
@@ -147,9 +147,9 @@ function eth_test {
 
     GwSet="$(ip route list | grep "^default" | head --lines=1)"
     if [ "${GwSet}" != "" ] && [ "${GwDefault}" != "" ] && [ "${GwSet}" != "${GwDefault}" ]; then
-        run_as_root ip route delete "${GwSet}"
+        run_as_root ip route delete ${GwSet}
         debug_print "${LogPrefix}  Changing default gateway to: ${GwDefault}" "${LogFile}"
-        run_as_root ip route add "${GwDefault}"
+        run_as_root ip route add ${GwDefault}
         GwSet="$(ip route list | grep "^default" | head --lines=1)"
         debug_print "${LogPrefix}  Default gateway is now: ${GwSet}" "${LogFile}"
     fi
