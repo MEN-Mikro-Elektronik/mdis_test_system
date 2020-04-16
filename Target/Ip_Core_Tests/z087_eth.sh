@@ -76,6 +76,7 @@ function eth_test {
 
     local TestError=${ERR_VALUE}
     local GwDefault
+    local GwBlah
     local GwCurrent
     local GwIp
     local GwCount
@@ -87,6 +88,9 @@ function eth_test {
     GwDefault="$(ip route list | grep "^default" | head --lines=1)"
     debug_print "${LogPrefix} Default gateway: ${GwDefault}" "${LogFile}"
     GwCurrent=${GwDefault}
+    if [[ "$GwCurrent" =~ ^.+[[:space:]]dev[[:space:]][a-zA-Z0-9]+(.*)$ ]]; then
+        GwBlah="${BASH_REMATCH[1]}"
+    fi
     GwIp="$(echo "${GwDefault}" | grep --perl-regexp --only-matching "via\s+[\d\.]+" | grep --perl-regexp --only-matching "[\d\.]+")"
     debug_print "${LogPrefix}  Default gateway IP address: ${GwIp}" "${LogFile}"
 
@@ -128,7 +132,7 @@ function eth_test {
             if [ "${GwSet}" != "" ]; then
                 run_as_root ip route delete ${GwSet}
             fi
-            GwCurrent="default via ${GwIp} dev ${Eth}"
+            GwCurrent="default via ${GwIp} dev ${Eth}${GwBlah}"
             debug_print "${LogPrefix}  Changing default gateway to: ${GwCurrent}" "${LogFile}"
             run_as_root ip route add ${GwCurrent}
             GwSet="$(ip route list | grep "^default" | head --lines=1)"
