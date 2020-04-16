@@ -383,7 +383,7 @@ function uart_test_tty {
     sleep 1
     # Listen on port in background
 
-    if ! run_as_root cat "/dev/${tty1}" > "echo_on_serial_${tty1}.txt" &
+    if ! run_as_root $(cat /dev/${tty1} > echo_on_serial_${tty1}.txt &)
     then
         debug_print "${LogPrefix} Could not cat on ${tty1} in background" "${LogFile}"
     fi

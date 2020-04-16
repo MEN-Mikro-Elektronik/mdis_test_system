@@ -57,11 +57,11 @@ function m77_test {
         debug_print "${LogPrefix} ERR_VALUE: could not find m77 board in system" "${LogFile}"
         return "${ERR_VALUE}"
     else
-        debug_print "${LogPrefix} M77CarrierName: ${M77CarrierName}" "${LogFile}"
+        debug_print "${LogPrefix} M77 CarrierName: ${M77CarrierName}" "${LogFile}"
         # Check if this is G204 or F205
-        local CarrierG204=0
-        CarrierG204=$(echo "${CarrierG204}" | grep -c "d203")
-        if [ "${CarrierG204}" -gt 0 ]
+        local IsCarrierG204="0"
+        IsCarrierG204=$(echo "${M77CarrierName}" | grep -c "d203")
+        if [ "${IsCarrierG204}" -gt 0 ]
         then
             debug_print "${LogPrefix} m77 @ G204" "${LogFile}"
         else
@@ -75,8 +75,7 @@ function m77_test {
         return "${ERR_VALUE}"
     fi
     
-    
-    if ! run_as_root mdis_createdev -b "${M77CarrierName}"
+    if ! run_as_root mdis_createdev -b "${M77CarrierName}" > /dev/null
     then
         debug_print "${LogPrefix}  ERR_VALUE: could not mdis_createdev -b ${M77CarrierName}" "${LogFile}"
         return "${ERR_VALUE}"
@@ -92,13 +91,13 @@ function m77_test {
     local tty2="ttyD2"
     local tty3="ttyD3"
 
-    if ! uart_test_tty "${tty0}" "${tty1}"
+    if ! uart_test_tty "${tty0}" "${tty1}" "${LogPrefix}" "${LogFile}"
     then
         debug_print "${LogPrefix}  ERR_VALUE: ${tty0} with ${tty1}" "${LogFile}"
         return "${ERR_VALUE}"
     fi
 
-    if ! uart_test_tty "${tty3}" "${tty2}"
+    if ! uart_test_tty "${tty3}" "${tty2}" "${LogPrefix}" "${LogFile}"
     then
         debug_print "${LogPrefix}  ERR_VALUE: ${tty3} with ${tty2}" "${LogFile}"
         return "${ERR_VALUE}"
@@ -117,13 +116,13 @@ function m77_test {
         return "${ERR_VALUE}"
     fi
 
-    if ! uart_test_tty "${tty1}" "${tty0}"
+    if ! uart_test_tty "${tty1}" "${tty0}" "${LogPrefix}" "${LogFile}"
     then
         debug_print "${LogPrefix}  ERR_VALUE: ${tty1} with ${tty0}" "${LogFile}"
         return "${ERR_VALUE}"
     fi
 
-    if ! uart_test_tty "${tty2}" "${tty3}"
+    if ! uart_test_tty "${tty2}" "${tty3}" "${LogPrefix}" "${LogFile}"
     then
         debug_print "${LogPrefix}  ERR_VALUE: ${tty2} with ${tty3}" "${LogFile}"
         return "${ERR_VALUE}"
