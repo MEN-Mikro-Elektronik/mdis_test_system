@@ -44,47 +44,47 @@ function m77_description {
 # $2    LogPrefix
 # $3    M-Module number
 function m77_test {
-    local TestCaseLogName=${1}
+    local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
-    echo "m77_Test"
+    
+    local M77CarrierName=""
+    # obtain from system.dsc
+    M77CarrierName=$(obtain_m_module_carrier_name  "m77_${ModuleNo}") 
 
-}
+    if [ -z "${M77CarrierName}" ]
+    then
+        debug_print "${LogPrefix} ERR_VALUE: could not find m77 board in system" "${LogFile}"
+        return "${ERR_VALUE}"
+    else
+        debug_print "${LogPrefix} M77CarrierName: ${M77CarrierName}" "${LogFile}"
+        # Check if this is G204 or F205
+        local CarrierG204=0
+        CarrierG204=$(echo "${CarrierG204}" | grep -c "d203")
+        if [ "${CarrierG204}" -gt 0 ]
+        then
+            debug_print "${LogPrefix} m77 @ G204" "${LogFile}"
+        else
+            debug_print "${LogPrefix} m77 @ F205" "${LogFile}"
+        fi
+    fi
 
-
-############################################################################
-# run m77 test 
-# 
-# parameters:
-# $1    Test case log file name
-# $2    Test case name
-# $3    M77 board number
-# $4    Carrier board number
-function m_module_m77_test {
-    local TestCaseLogName=${1}
-    local TestCaseName=${2}
-    local M77Nr=${3}
-    local M77CarrierName="d203_a24_${4}" # obtain from system.dsc (only G204)
-    local LogPrefix="[m77_test]"
-
-    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_mdis_kernel
-    if [ $? -ne 0 ]; then
-        echo "${LogPrefix}  ERR_VALUE: could not modprobe men_mdis_kernel"\
-          | tee -a "${LogFileName}"
+    if ! run_as_root modprobe men_mdis_kernel
+    then
+        debug_print "${LogPrefix} ERR_VALUE: could not modprobe men_mdis_kernel" "${LogFile}"
+        return "${ERR_VALUE}"
+    fi
+    
+    
+    if ! run_as_root mdis_createdev -b "${M77CarrierName}"
+    then
+        debug_print "${LogPrefix}  ERR_VALUE: could not mdis_createdev -b ${M77CarrierName}" "${LogFile}"
         return "${ERR_VALUE}"
     fi
 
-    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' mdis_createdev -b "${M77CarrierName}"
-    if [ $? -ne 0 ]; then
-        echo "${LogPrefix}  ERR_VALUE: could not mdis_createdev -b ${M77CarrierName}"\
-          | tee -a "${LogFileName}"
-        return "${ERR_VALUE}"
-    fi
-
-    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7
-    if [ $? -ne 0 ]; then
-        echo "${LogPrefix}  ERR_VALUE: could not modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7"\
-          | tee -a "${LogFileName}"
+    if ! run_as_root modprobe men_lx_m77 devName=m77_"${ModuleNo}" brdName="${M77CarrierName}" slotNo=0 mode=7,7,7,7
+    then
+        debug_print "${LogPrefix}  ERR_VALUE: could not modprobe men_lx_m77 devName=m77_${ModuleNo} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7" "${LogFile}"
         return "${ERR_VALUE}"
     fi
     local tty0="ttyD0"
@@ -94,42 +94,40 @@ function m_module_m77_test {
 
     if ! uart_test_tty "${tty0}" "${tty1}"
     then
-        echo "${LogPrefix}  ERR_VALUE: ${tty0} with ${tty1}" | tee -a "${LogFileName}"
+        debug_print "${LogPrefix}  ERR_VALUE: ${tty0} with ${tty1}" "${LogFile}"
         return "${ERR_VALUE}"
     fi
 
     if ! uart_test_tty "${tty3}" "${tty2}"
     then
-        echo "${LogPrefix}  ERR_VALUE: ${tty3} with ${tty2}" | tee -a "${LogFileName}"
+        debug_print "${LogPrefix}  ERR_VALUE: ${tty3} with ${tty2}" "${LogFile}"
         return "${ERR_VALUE}"
     fi
 
     sleep 2 
-    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rmmod men_lx_m77 
-    if [ $? -ne 0 ]; then
-        echo "${LogPrefix}  ERR_VALUE: could not rmmod m" | tee -a "${LogFileName}"
+    if ! run_as_root rmmod men_lx_m77
+    then
+        debug_print "${LogPrefix}  ERR_VALUE: could not rmmod m" "${LogFile}"
         return "${ERR_VALUE}"
     fi
 
-    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7
-    if [ $? -ne 0 ]; then
-        echo "${LogPrefix}  ERR_VALUE: could not modprobe men_lx_m77 devName=m77_${M77Nr} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7"\
-          | tee -a "${LogFileName}"
+    if ! run_as_root modprobe men_lx_m77 devName=m77_"${ModuleNo}" brdName="${M77CarrierName}" slotNo=0 mode=7,7,7,7
+    then
+        debug_print "${LogPrefix}  ERR_VALUE: could not modprobe men_lx_m77 devName=m77_${ModuleNo} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7" "${LogFile}"
         return "${ERR_VALUE}"
     fi
 
     if ! uart_test_tty "${tty1}" "${tty0}"
     then
-        echo "${LogPrefix}  ERR_VALUE: ${tty1} with ${tty0}" | tee -a "${LogFileName}"
+        debug_print "${LogPrefix}  ERR_VALUE: ${tty1} with ${tty0}" "${LogFile}"
         return "${ERR_VALUE}"
     fi
 
     if ! uart_test_tty "${tty2}" "${tty3}"
     then
-        echo "${LogPrefix}  ERR_VALUE: ${tty2} with ${tty3}" | tee -a "${LogFileName}"
+        debug_print "${LogPrefix}  ERR_VALUE: ${tty2} with ${tty3}" "${LogFile}"
         return "${ERR_VALUE}"
     fi
 
     return "${ERR_OK}"
 }
-
