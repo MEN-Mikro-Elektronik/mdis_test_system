@@ -9,10 +9,10 @@ source "${MyDir}/../St_Functions.sh"
 # parameters:
 # $1    Module number
 # $2    Module log path 
-function m36_description {
+function m36n_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
-    echo "------------------------------M36 Test Case-----------------------------------"
+    echo "------------------------------M36n Test Case-----------------------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
@@ -36,14 +36,14 @@ function m36_description {
 }
 
 ############################################################################
-# run m36 test
+# run m36n test
 #
 # parameters:
 # $1    TestCaseLogName
 # $2    LogPrefix
 # $3    M-Module number
 # $4    Test case name
-function m36_test {
+function m36n_test {
     local TestCaseLogName=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
@@ -51,7 +51,7 @@ function m36_test {
     local RelayOutput="${IN_0_ENABLE}"
 
     echo "${LogPrefix} Step1:" | tee -a "${TestCaseLogName}" 2>&1
-    m_module_x_test "${TestCaseLogName}" "${TestCaseName}" "${RelayOutput}" "m36" "${ModuleNo}" "" "${LogPrefix}"
+    m_module_x_test "${TestCaseLogName}" "${TestCaseName}" "${RelayOutput}" "m36n" "${ModuleNo}" "" "${LogPrefix}"
     CmdResult=$?
     if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
         Step1="${CmdResult}"

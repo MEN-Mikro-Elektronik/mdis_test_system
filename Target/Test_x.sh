@@ -6,7 +6,7 @@ source "${MyDir}"/M_Modules_Tests/m31.sh
 source "${MyDir}"/M_Modules_Tests/m32.sh
 source "${MyDir}"/M_Modules_Tests/m33.sh
 source "${MyDir}"/M_Modules_Tests/m35n.sh
-source "${MyDir}"/M_Modules_Tests/m36.sh
+source "${MyDir}"/M_Modules_Tests/m36n.sh
 source "${MyDir}"/M_Modules_Tests/m37.sh
 source "${MyDir}"/M_Modules_Tests/m43.sh
 source "${MyDir}"/M_Modules_Tests/m47.sh
