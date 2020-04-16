@@ -53,10 +53,9 @@ function m81_test {
 
     # Run m27_simp test
     debug_print "${LogPrefix} Step2: run m27_simp m81_${ModuleNo}" "${LogFile}"
-    if ! run_as_root m27_simp m81_${ModuleNo} > m27_simp_m81_${ModuleNo}.log &
+    if ! run_as_root $(m27_simp m81_${ModuleNo} > m27_simp_m81_${ModuleNo}.log &)
     then
-        debug_print "${LogPrefix} Could not run m27_simp "\
-          | tee -a "${LogFile}" 2>&1
+        debug_print "${LogPrefix} Could not run m27_simp " "${LogFile}"
     fi
 
     # Kill bacground processess m27_simp
@@ -65,11 +64,11 @@ function m81_test {
 
     if ! run_as_root kill -9 "${m27_simp_PID}"
     then
-        echo "${LogPrefix} Could not kill m27_simp"\
-          | tee -a "${LogFile}" 2>&1
+        debug_print "${LogPrefix} Could not kill m27_simp" "${LogFile}"
     fi
 
-    local Result=$(compare_m27_simp_values "${LogFile}" "${LogPrefix}" "${ModuleNo}")
+    local Result
+    Result=$(compare_m27_simp_values "${LogFile}" "${LogPrefix}" "${ModuleNo}")
     return "${Result}"
 }
 

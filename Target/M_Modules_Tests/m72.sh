@@ -54,31 +54,24 @@ function m72_test {
     fi
 
     # Run m72_out in background.
-    M72_Out_PID=$(run_as_root stdbuf -oL m72_out m72_"${ModuleNo}" 0 < /dev/null > m72_out.log &)
-    debug_print "${LogPrefix} Process M72_Out_PID to kill ${M72_Out_PID}" "${LogFile}"
+    if ! run_as_root $(stdbuf -oL m72_out m72_"${ModuleNo}" 0 < /dev/null > m72_out.log &)
+    then
+        debug_print "${LogPrefix} Could not run m72_out" "${LogFile}"
+    fi
 
     # Here output from m72_out should be 0
-    M72_Single_PID=$(run_as_root stdbuf -oL m72_single m72_"${ModuleNo}" 1 < /dev/null > m72_single_run.log &)
-    debug_print "${LogPrefix} Process m72_single to kill ${M72_Single_PID}" "${LogFile}"
+    if ! run_as_root $(stdbuf -oL m72_single m72_"${ModuleNo}" 1 < /dev/null > m72_single_run.log &)
+    then
+        debug_print "${LogPrefix} Could not run m72_single" "${LogFile}"
+    fi
 
-    # Count changes for a while ...
+    # Count changes for a while
     sleep 10
 
-    # Kill background processes  sudo stdbuf 
-    if ! run_as_root kill -9 "${M72_Out_PID}"
-    then
-        debug_print "${LogPrefix} Could not kill m72_out" "${LogFile}"
-    fi
-
-    if ! run_as_root kill -9 "${M72_Single_PID}"
-    then
-        debug_print "${LogPrefix} Could not kill m72_single" "${LogFile}"
-    fi
-
-    # Kill bacground processess m72_single, m72_out
     M72_Out_PID=$(ps aux | grep m72_single | awk 'NR==1 {print $2}')
     M72_Single_PID=$(ps aux | grep m72_out | awk 'NR==1 {print $2}')
 
+    # Kill background processes
     if ! run_as_root kill -9 "${M72_Out_PID}"
     then
         debug_print "${LogPrefix} Could not kill m72_out" "${LogFile}"
