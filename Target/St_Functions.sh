@@ -378,7 +378,7 @@ function uart_test_tty {
     # Below command prevent infitite loopback on serial port
     if ! run_as_root stty -F "/dev/${tty0}" -onlcr
     then
-        debug_print "${LogPrefix} Could not stty -F on ttyS${item}" "${LogFile}"
+        debug_print "${LogPrefix} Could not stty -F on /dev/${tty0}" "${LogFile}"
     fi
     sleep 1
     # Listen on port in background
@@ -389,7 +389,7 @@ function uart_test_tty {
     fi
     sleep 1
     # Save background process PID
-    CatEchoTestPID=$!
+    CatEchoTestPID=$(ps aux | grep "cat /dev/${tty1}" | awk 'NR==1 {print $2}')
 
     # Send data into port
     if ! run_as_root echo "${EchoTestMessage}" > "/dev/${tty0}"
