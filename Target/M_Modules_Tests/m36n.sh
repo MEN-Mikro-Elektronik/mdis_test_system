@@ -51,7 +51,7 @@ function m36n_test {
     local RelayOutput="${IN_0_ENABLE}"
 
     echo "${LogPrefix} Step1:" | tee -a "${TestCaseLogName}" 2>&1
-    m_module_x_test "${TestCaseLogName}" "${TestCaseName}" "${RelayOutput}" "m36" "${ModuleNo}" "" "${LogPrefix}"
+    m_module_x_test "${TestCaseLogName}" "${TestCaseName}" "${RelayOutput}" "m36n" "${ModuleNo}" "" "${LogPrefix}"
     CmdResult=$?
     if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
         Step1="${CmdResult}"

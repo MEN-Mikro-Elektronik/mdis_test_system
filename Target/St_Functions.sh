@@ -412,7 +412,7 @@ function uart_test_tty {
     # Compare and check if echo test message was received.
     sleep 1
     
-    if grep -a "${EchoTestMessage}" "echo_on_serial_${tty1}.txt"
+    if grep -a "${EchoTestMessage}" "echo_on_serial_${tty1}.txt" > /dev/null
     then
         debug_print "${LogPrefix} Echo succeed on ${tty1}" "${LogFile}"
         return "${ERR_OK}"
