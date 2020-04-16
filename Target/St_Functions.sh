@@ -181,6 +181,24 @@ function blacklist_mcb_pci {
 }
 
 ############################################################################
+# Obtain carrier board for given M-Module name
+# It is assumed that following system.dsc format for CARRIER BOARD is used:
+# BOARD_NAME = STRING <board>
+#
+# parameters:
+# $1      m-module name
+function obtain_m_module_carrier_name {
+    local ModuleName=${1}
+    nawk -v mname="${ModuleName} {" '{
+    if(index($0,mname)!=0)
+            valid=1
+    if(index($0,"}")!=0)
+            valid=0
+    if(valid==1)
+            print
+    }' ../../system.dsc | grep "BOARD_NAME" | awk '{print $4}'
+}
+############################################################################
 # Obtain device list from chameleon device, If there are several same boards
 # number of board have to specified (default the first board is taken)
 #
@@ -365,7 +383,7 @@ function uart_test_tty {
     sleep 1
     # Listen on port in background
 
-    if ! run_as_root cat "/dev/${tty1}" > "echo_on_serial_${tty1}.txt" &
+    if ! run_as_root $(cat /dev/${tty1} > echo_on_serial_${tty1}.txt &)
     then
         debug_print "${LogPrefix} Could not cat on ${tty1} in background" "${LogFile}"
     fi

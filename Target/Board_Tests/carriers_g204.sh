@@ -132,7 +132,7 @@ function carrier_g204_m35n_test {
 function carrier_g204_m36n_description {
     local ModuleNo="1"
     local ModuleLogPath=${2}
-    carrier_g204_TMP_description "m36_${ModuleNo}" "${ModuleLogPath}"
+    carrier_g204_TMP_description "m36n_${ModuleNo}" "${ModuleLogPath}"
 }
 
 ############################################################################
@@ -151,7 +151,7 @@ function carrier_g204_m36n_test {
     run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                      -id "${TestCaseId}"\
                                      -os "${OsNameKernel}"\
-                                     -dname "m36"\
+                                     -dname "m36n"\
                                      -dno "1"
     return $?
 }
