@@ -196,7 +196,7 @@ function obtain_m_module_carrier_name {
             valid=0
     if(valid==1)
             print
-    }' ../../system.dsc.dsc | grep "BOARD_NAME" | awk '{print $4}'
+    }' ../../system.dsc | grep "BOARD_NAME" | awk '{print $4}'
 }
 ############################################################################
 # Obtain device list from chameleon device, If there are several same boards
