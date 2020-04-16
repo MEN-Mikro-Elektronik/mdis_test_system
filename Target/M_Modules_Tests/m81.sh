@@ -59,16 +59,18 @@ function m81_test {
     fi
 
     # Kill bacground processess m27_simp
-    m27_simp_PID=$(ps aux | grep m27_simp | awk 'NR==1 {print $2}')
+    m27_simp_PID=$(pgrep m27_simp)
     sleep 25
 
     if ! run_as_root kill -9 "${m27_simp_PID}"
     then
-        debug_print "${LogPrefix} Could not kill m27_simp" "${LogFile}"
+        debug_print "${LogPrefix} Could not kill m27_simp PID: ${m27_simp_PID}" "${LogFile}"
     fi
 
-    local Result
-    Result=$(compare_m27_simp_values "${LogFile}" "${LogPrefix}" "${ModuleNo}")
+    local Result="${ERR_VALUE}"
+    compare_m27_simp_values "${LogFile}" "${LogPrefix}" "${ModuleNo}"
+    Result=$?
+    debug_print "${LogPrefix} compare_m27_simp_values result: ${Result}" "${LogFile}"
     return "${Result}"
 }
 
@@ -95,10 +97,10 @@ function compare_m27_simp_values {
     local ModuleNo=${3}
 
     debug_print "${LogPrefix} compare_m27_simp_values " "${LogFile}"
-    grep "^set all channels alternately (1,0,1,..)" m27_simp_m81_${ModuleNo}.log > /dev/null && \
-    grep "^read all channels" m27_simp_m81_${ModuleNo}.log > /dev/null && \
-    grep "^channel:   00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15" m27_simp_m81_${ModuleNo}.log > /dev/null && \
-    grep "^read data:  S  R  S  R  S  R  S  R  S  R  S  R  S  R  S  R" m27_simp_m81_${ModuleNo}.log > /dev/null && \
+    grep "^set all channels alternately (1,0,1,..)" m27_simp_m81_"${ModuleNo}".log > /dev/null && \
+    grep "^read all channels" m27_simp_m81_"${ModuleNo}".log > /dev/null && \
+    grep "^channel:   00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15" m27_simp_m81_"${ModuleNo}".log > /dev/null && \
+    grep "^read data:  S  R  S  R  S  R  S  R  S  R  S  R  S  R  S  R" m27_simp_m81_"${ModuleNo}".log > /dev/null && \
     if [ $? -ne 0 ]; then
         debug_print "${LogPrefix} Invalid log output, ERROR" "${LogFile}"
         return "${ERR_VALUE}"
