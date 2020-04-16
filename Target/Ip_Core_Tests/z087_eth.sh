@@ -85,7 +85,7 @@ function eth_test {
     local EthList
 
     GwDefault="$(ip route list | grep "^default" | head --lines=1)"
-    debug_print "${LogPrefix} Default gateway: ${GwDefault}""${LogFile}"
+    debug_print "${LogPrefix} Default gateway: ${GwDefault}" "${LogFile}"
     GwCurrent=${GwDefault}
     GwIp="$(echo "${GwDefault}" | grep --perl-regexp --only-matching "via\s+[\d\.]+" | grep --perl-regexp --only-matching "[\d\.]+")"
     debug_print "${LogPrefix}  Default gateway IP address: ${GwIp}" "${LogFile}"
