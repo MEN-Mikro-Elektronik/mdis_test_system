@@ -39,25 +39,22 @@ function m36n_description {
 # run m36n test
 #
 # parameters:
-# $1    TestCaseLogName
+# $1    LogFile
 # $2    LogPrefix
 # $3    M-Module number
 # $4    Test case name
 function m36n_test {
-    local TestCaseLogName=${1}
+    local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
     local TestCaseName=${4}
     local RelayOutput="${IN_0_ENABLE}"
 
-    echo "${LogPrefix} Step1:" | tee -a "${TestCaseLogName}" 2>&1
-    m_module_x_test "${TestCaseLogName}" "${TestCaseName}" "${RelayOutput}" "m36n" "${ModuleNo}" "" "${LogPrefix}"
+    debug_print "${LogPrefix} Step1:" "${LogFile}"
+    m_module_x_test "${LogFile}" "${TestCaseName}" "${RelayOutput}" "m36n" "${ModuleNo}" "" "${LogPrefix}"
     CmdResult=$?
-    if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-        Step1="${CmdResult}"
-    fi
 
-    if [ "${Step1}" = "${ERR_OK}" ]; then
+    if [ "${CmdResult}" == "${ERR_OK}" ]; then
         return "${ERR_OK}"
     else
         return "${ERR_VALUE}"
@@ -67,43 +64,41 @@ function m36n_test {
 # compare_m36_simp_values,
 # 
 # parameters:
-# $1    TestCaseLogName
+# $1    LogFile
 # $2    LogPrefix
 # $3    M-Module number
 function compare_m36_simp_values {
-    local TestCaseLogName=${1}
+    local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
 
-    echo "${LogPrefix} compare_m36_simp_values"
+    debug_print "${LogPrefix} compare_m36_simp_values" "${LogFile}"
 
     local ValueChannelStateConnected
     local ValueChannelStateDisconnected
-    ValueChannelStateConnected=$(cat m36n_${ModuleNo}_simp_output_connected.txt | awk NR==6'{print $4}')
-    ValueChannelStateDisconnected=$(cat m36n_${ModuleNo}_simp_output_disconnected.txt | awk NR==6'{print $4}')
+    ValueChannelStateConnected=$(< m36n_"${ModuleNo}"_simp_output_connected.txt awk NR==6'{print $4}')
+    ValueChannelStateDisconnected=$(< m36n_"${ModuleNo}"_simp_output_disconnected.txt awk NR==6'{print $4}')
 
-    echo "${LogPrefix} ValueChannelStateConnected: ${ValueChannelStateConnected}"
-    echo "${LogPrefix} ValueChannelStateDisconnected: ${ValueChannelStateDisconnected}"
+    debug_print "${LogPrefix} ValueChannelStateConnected: ${ValueChannelStateConnected}" "${LogFile}"
+    debug_print "${LogPrefix} ValueChannelStateDisconnected: ${ValueChannelStateDisconnected}" "${LogFile}"
 
     # replace '.' with ','
     #ValueChannelStateConnected=$(echo ${ValueChannelStateConnected} | sed 's/\./,/')
     #ValueChannelStateDisconnected=$(echo ${ValueChannelStateDisconnected} | sed 's/\./,/')
 
-    echo "${LogPrefix} ValueChannelStateConnected: ${ValueChannelStateConnected} V"
-    echo "${LogPrefix} ValueChannelStateDisconnected: ${ValueChannelStateDisconnected} V"
+    debug_print "${LogPrefix} ValueChannelStateConnected: ${ValueChannelStateConnected} V" "${LogFile}"
+    debug_print "${LogPrefix} ValueChannelStateDisconnected: ${ValueChannelStateDisconnected} V" "${LogFile}"
 
     local ValueLow="0.2"
     local ValueHigh="9.8"
 
     if (( $(echo "${ValueChannelStateDisconnected} > ${ValueLow}" |bc -l) )); then
-        echo "${LogPrefix} ValueChannelStateConnected is not ~ 0 "\
-          | tee -a "${TestCaseLogName}" 2>&1
+        debug_print "${LogPrefix} ValueChannelStateConnected is not ~ 0 " "${LogFile}"
         return "${ERR_VALUE}"
     fi
 
     if (( $(echo "${ValueChannelStateConnected} < ${ValueHigh}" |bc -l) )); then
-        echo "${LogPrefix} ValueChannelStateConnected is not ~ 10 Volts "\
-          | tee -a "${TestCaseLogName}" 2>&1
+        debug_print "${LogPrefix} ValueChannelStateConnected is not ~ 10 Volts " "${LogFile}"
         return "${ERR_VALUE}"
     fi
 
