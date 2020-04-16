@@ -21,7 +21,7 @@ function m72_description {
     echo "    2.Run example/verification program:"
     echo "      m72_out m72_${ModuleNo} and allow it to run couple second; save the command output"
     echo "    3.Run example/verification program:"
-    echo "      m72_single m72_"${ModuleNo}" and save the command output"
+    echo "      m72_single m72_${ModuleNo} and save the command output"
     echo "    4.Verify if m72_single command output is valid - does not contain errors"
     echo "      The last line of counter should be != 000000"
     echo "PURPOSE:"
@@ -68,16 +68,16 @@ function m72_test {
     # Count changes for a while
     sleep 10
 
-    M72_Out_PID=$(ps aux | grep m72_single | awk 'NR==1 {print $2}')
-    M72_Single_PID=$(ps aux | grep m72_out | awk 'NR==1 {print $2}')
+    M72_Out_PID=$(pgrep m72_single)
+    M72_Single_PID=$(pgrep m72_out)
 
     # Kill background processes
-    if ! run_as_root kill -9 "${M72_Out_PID}"
+    if ! run_as_root kill -9 "${M72_Out_PID}" > /dev/null 2>&1
     then
         debug_print "${LogPrefix} Could not kill m72_out" "${LogFile}"
     fi
 
-    if ! run_as_root kill -9 "${M72_Single_PID}"
+    if ! run_as_root kill -9 "${M72_Single_PID}" > /dev/null 2>&1
     then
         debug_print "${LogPrefix} Could not kill m72_single" "${LogFile}"
     fi

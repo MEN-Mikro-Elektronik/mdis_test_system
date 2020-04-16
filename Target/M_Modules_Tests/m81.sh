@@ -53,7 +53,7 @@ function m81_test {
 
     # Run m27_simp test
     debug_print "${LogPrefix} Step2: run m27_simp m81_${ModuleNo}" "${LogFile}"
-    if ! run_as_root $(m27_simp m81_${ModuleNo} > m27_simp_m81_${ModuleNo}.log &)
+    if ! run_as_root $(m27_simp m81_"${ModuleNo}" > m27_simp_m81_"${ModuleNo}".log &)
     then
         debug_print "${LogPrefix} Could not run m27_simp " "${LogFile}"
     fi
@@ -62,9 +62,12 @@ function m81_test {
     m27_simp_PID=$(pgrep m27_simp)
     sleep 25
 
-    if ! run_as_root kill -9 "${m27_simp_PID}"
+    if ! run_as_root kill -9 "${m27_simp_PID}" > /dev/null 2>&1
     then
-        debug_print "${LogPrefix} Could not kill m27_simp PID: ${m27_simp_PID}" "${LogFile}"
+        if pgrep m27_simp
+        then
+            debug_print "${LogPrefix} Could not kill m27_simp PID: ${m27_simp_PID}" "${LogFile}"
+        fi
     fi
 
     local Result="${ERR_VALUE}"
