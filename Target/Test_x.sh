@@ -235,7 +235,7 @@ case "${TestTypeDev}" in
     c)
         print "${LogPrefix} Carrier board with M-Module test: ${DeviceName}" "${TestCaseLogName}"
         debug_print "${LogPrefix} \"${TestFunc} ${ModuleName} ${ModuleNo} ${TestCaseId} ${TestCaseMainDir}/${TestCaseName} ${TestOs}\"" "${TestCaseLogName}"
-        "${TestFunc}" "${TestCaseId}" "${TestCaseMainDir}/${TestCaseName}" "${TestOs}"
+        "${TestFunc}" "${ModuleName}" "${ModuleNo}" "${TestCaseId}" "${TestCaseMainDir}/${TestCaseName}" "${TestOs}"
         CmdResult=$?
         if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
             TestCaseResult="${CmdResult}"
