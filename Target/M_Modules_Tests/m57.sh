@@ -54,7 +54,7 @@ function m57_test {
 
     # Run profidp_simp
     debug_print "${LogPrefix} Step2: run profidp_simp m57_${ModuleNo}" "${LogFile}"
-    if ! run_as_root profidp_simp m57_"${ModuleNo}" < <(sleep 2; echo -ne '\n') > profidp_simp.log
+    if ! run_as_root profidp_simp m57_"${ModuleNo}" < <(echo "${MenPcPassword}"; sleep 2; echo -ne '\n') > profidp_simp.log
     then
         debug_print "${LogPrefix} Could not run profidp_simp " "${LogFile}"
     fi
