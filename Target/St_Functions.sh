@@ -113,7 +113,7 @@ function run_test_case_module {
         return "${ERR_VALUE}"
     fi
 
-    get_test_case_id "${Module}" "${CarrierBoard}")
+    get_test_case_id "${Module}" "${CarrierBoard}"
     TestCaseId=$?
     echo "TestCaseId: ${TestCaseId}"
 
