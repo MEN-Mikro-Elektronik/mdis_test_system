@@ -10,8 +10,8 @@ function get_test_case_id {
     local CarrierBoard=${2}
 
     local TestCaseId="0"
-    local baseG204Id="200"
-    local baseF205Id="300"
+    local baseG204Id=200
+    local baseF205Id=300
     local baseId="0"
 
     if [ "${CarrierBoard}" = "G204" ]
@@ -125,9 +125,9 @@ function run_test_case_module {
 
     if [ "${CarrierBoard}" = "G204" ]
     then
-        run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "carrier_G204_TPL" -module "${Module}" -moduleno "${ModuleNo}"
+        run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "carrier_g204_TPL" -module "${Module}" -moduleno "${ModuleNo}"
     else
-        run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "carrier_F205_TPL" -module "${Module}" -moduleno "${ModuleNo}"
+        run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "carrier_f205_TPL" -module "${Module}" -moduleno "${ModuleNo}"
     fi
 }
 ############################################################################
