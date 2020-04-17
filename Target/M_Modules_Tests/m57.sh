@@ -54,7 +54,8 @@ function m57_test {
 
     # Run profidp_simp
     debug_print "${LogPrefix} Step2: run profidp_simp m57_${ModuleNo}" "${LogFile}"
-    if ! run_as_root profidp_simp m57_"${ModuleNo}" < <(echo "${MenPcPassword}"; sleep 2; echo -ne '\n') > profidp_simp.log
+    sudo -S --prompt=$'\r' profidp_simp m57_"${ModuleNo}" < <(echo "${MenPcPassword}"; sleep 2; echo -ne '\n') > profidp_simp.log
+    if [ $? -ne 0 ]
     then
         debug_print "${LogPrefix} Could not run profidp_simp " "${LogFile}"
     fi
