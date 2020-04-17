@@ -39,19 +39,19 @@ function m66_description {
 # run 66 test
 #
 # parameters:
-# $1    TestCaseLogName
+# $1    LogFile
 # $2    LogPrefix
 # $3    M-Module number
 # $4    Test Case Name
 function m66_test {
-    local TestCaseLogName=${1}
+    local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
     local TestCaseName=${4}
     local RelayOutput="${IN_0_ENABLE}"
 
-    echo "${LogPrefix} Step1:" | tee -a "${TestCaseLogName}" 2>&1
-    m_module_x_test "${TestCaseLogName}" "${TestCaseName}" "${RelayOutput}" "m66" "${ModuleNo}" "" "${LogPrefix}"
+    debug_print "${LogPrefix} Step1:" "${LogFile}"
+    m_module_x_test "${LogFile}" "${TestCaseName}" "${RelayOutput}" "m66" "${ModuleNo}" "" "${LogPrefix}"
     CmdResult=$?
 
     if [ "${CmdResult}" == "${ERR_OK}" ]; then
@@ -65,11 +65,11 @@ function m66_test {
 # compare_m66_simp_values
 #
 # parameters:
-# $1    TestCaseLogName
+# $1    LogFile
 # $2    LogPrefix
 # $3    M-Module number
 function compare_m66_simp_values {
-    local TestCaseLogName=${1}
+    local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
 
@@ -83,10 +83,10 @@ function compare_m66_simp_values {
     if [ "${IndexCnt}" -ne 0 ]; then
         for i in $(seq $((IndexOffset)) $((IndexCnt+IndexOffset-1)))
         do
-            CheckValueConnectedWrite=$(cat m66_"${ModuleNo}"_simp_output_connected.txt | awk NR==${i}'{print $4}') 
-            CheckValueConnectedRead=$(cat m66_"${ModuleNo}"_simp_output_connected.txt | awk NR==${i}'{print $9}')
+            CheckValueConnectedWrite=$(< m66_"${ModuleNo}"_simp_output_connected.txt awk -v line="${i}" 'NR==line {print $4}') 
+            CheckValueConnectedRead=$(< m66_"${ModuleNo}"_simp_output_connected.txt awk -v line="${i}" 'NR==line {print $9}')
             if [ "${CheckValueConnectedWrite}" != "${CheckValueConnectedRead}" ]; then
-                echo "${LogPrefix} read values are not equal line: ${i}" | tee -a "${TestCaseLogName}" 2>&1
+                debug_print "${LogPrefix} read values are not equal line: ${i}" "${LogFile}"
                 return "${ERR_VALUE}"
             fi
         done
@@ -95,9 +95,9 @@ function compare_m66_simp_values {
     if [ "${IndexCnt}" -ne 0 ]; then
         for i in $(seq $((IndexOffset)) $((IndexCnt+IndexOffset-1)))
         do
-            CheckValueConnectedRead=$(cat m66_"${ModuleNo}"_simp_output_disconnected.txt | awk NR==${i}'{print $9}')
+            CheckValueConnectedRead=$(< m66_"${ModuleNo}"_simp_output_disconnected.txt awk -v line="${i}" 'NR==line {print $9}')
             if [ "${CheckValueConnectedRead}" != "1" ]; then
-                echo "${LogPrefix} read values are not equal to 1 line: ${i}" | tee -a "${TestCaseLogName}" 2>&1
+                debug_print "${LogPrefix} read values are not equal to 1 line: ${i}" "${LogFile}"
                 return "${ERR_VALUE}"
             fi
         done

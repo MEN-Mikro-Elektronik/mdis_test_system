@@ -37,40 +37,37 @@ function m37_description {
 # run m37 test
 #
 # parameters:
-# $1    TestCaseLogName
+# $1    LogFile
 # $2    LogPrefix
 # $3    M-Module number
 function m37_test {
-    local TestCaseLogName=${1}
+    local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
 
-    echo "${LogPrefix} Step1: modprobe men_ll_m37" | tee -a "${TestCaseLogName}" 2>&1
-    if ! echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_ll_m37
+    debug_print "${LogPrefix} Step1: modprobe men_ll_m37" "${LogFile}"
+    if ! run_as_root modprobe men_ll_m37
     then
-        echo "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m37"\
-         | tee -a "${TestCaseLogName}" 
+        debug_print "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m37" "${LogFile}" 
         return "${ERR_VALUE}"
     fi
 
     # Run m37_simp
-    echo "${LogPrefix} Step2: run m37_simp m37_${ModuleNo}" | tee -a "${TestCaseLogName}" 2>&1
-    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' m37_simp m37_"${ModuleNo}" 0 > m37_simp.log
-    if [ $? -ne 0 ]; then
-      echo "${LogPrefix} Could not run m37_simp "\
-        | tee -a "${TestCaseLogName}" 2>&1
+    debug_print "${LogPrefix} Step2: run m37_simp m37_${ModuleNo}" "${LogFile}"
+    if ! run_as_root m37_simp m37_"${ModuleNo}" 0 > m37_simp.log
+    then
+      debug_print "${LogPrefix} Could not run m37_simp " "${LogFile}"
     fi
 
-    echo "${LogPrefix} Step3: check for errors" | tee -a "${TestCaseLogName}" 2>&1
-    grep "^M_open(\" m37_${ModuleNo} \")" m37_simp.log && \
-    grep "^channel number      : 0" m37_simp.log && \
-    grep "^number of channels  : 4" m37_simp.log && \
-    grep "^set channel 0 to -10.0V" m37_simp.log && \
-    grep "^set channel 0 to +9.99..V" m37_simp.log && \
-    grep "^M_close" m37_simp.log
+    debug_print "${LogPrefix} Step3: check for errors" "${LogFile}"
+    grep "^M_open(\" m37_${ModuleNo} \")" m37_simp.log > /dev/null && \
+    grep "^channel number      : 0" m37_simp.log > /dev/null && \
+    grep "^number of channels  : 4" m37_simp.log > /dev/null && \
+    grep "^set channel 0 to -10.0V" m37_simp.log > /dev/null && \
+    grep "^set channel 0 to +9.99..V" m37_simp.log > /dev/null && \
+    grep "^M_close" m37_simp.log > /dev/null
     if [ $? -ne 0 ]; then 
-        echo "${LogPrefix} Invalid log output, ERROR"\
-          | tee -a "${TestCaseLogName}" 2>&1
+        debug_print "${LogPrefix} Invalid log output, ERROR" "${LogFile}"
         return "${ERR_VALUE}"
     fi 
 

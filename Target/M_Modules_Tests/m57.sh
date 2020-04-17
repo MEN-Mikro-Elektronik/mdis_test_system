@@ -37,46 +37,43 @@ function m57_description {
 # run m57 test
 #
 # parameters:
-# $1    TestCaseLogName
+# $1    LogFile
 # $2    LogPrefix
 # $3    M-Module number
 function m57_test {
-    local TestCaseLogName=${1}
+    local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
 
-    echo "${LogPrefix} Step1: modprobe men_ll_profidp" | tee -a "${TestCaseLogName}" 2>&1
-    if ! echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_ll_profidp
+    debug_print "${LogPrefix} Step1: modprobe men_ll_profidp" "${LogFile}"
+    if ! run_as_root modprobe men_ll_profidp
     then
-        echo "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_profidp"\
-          | tee -a "${TestCaseLogName}" 
+        debug_print "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_profidp" "${LogFile}" 
         return "${ERR_VALUE}"
     fi
 
     # Run profidp_simp
-    echo "${LogPrefix} Step2: run profidp_simp m57_${ModuleNo}" | tee -a "${TestCaseLogName}" 2>&1
-    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' profidp_simp m57_"${ModuleNo}" < <(sleep 2; echo -ne '\n') > profidp_simp.log
-    if [ $? -ne 0 ]; then
-        echo "${LogPrefix} Could not run profidp_simp "\
-          | tee -a "${TestCaseLogName}" 2>&1
+    debug_print "${LogPrefix} Step2: run profidp_simp m57_${ModuleNo}" "${LogFile}"
+    if ! run_as_root profidp_simp m57_"${ModuleNo}" < <(sleep 2; echo -ne '\n') > profidp_simp.log
+    then
+        debug_print "${LogPrefix} Could not run profidp_simp " "${LogFile}"
     fi
 
-    echo "${LogPrefix} Step3: check for errors" | tee -a "${TestCaseLogName}" 2>&1
-    grep "^M_open" profidp_simp.log && \
-    grep "^Start Profibus protocol stack" profidp_simp.log && \
-    grep "^Get FMB_FM2_EVENT reason" profidp_simp.log && \
-    grep "^FMB_FM2_EVENT reason" profidp_simp.log && \
-    grep "^Get Slave Diag" profidp_simp.log && \
-    grep "station_status_1 = 01" profidp_simp.log && \
-    grep "station_status_2 = 00" profidp_simp.log && \
-    grep "station_status_3 = 00" profidp_simp.log && \
-    grep "master_add = ff" profidp_simp.log && \
-    grep "ident_number = 0000" profidp_simp.log && \
-    grep "Stop Profibus protocol stack" profidp_simp.log && \
-    grep "^M_close" profidp_simp.log
+    debug_print "${LogPrefix} Step3: check for errors" "${LogFile}"
+    grep "^M_open" profidp_simp.log > /dev/null && \
+    grep "^Start Profibus protocol stack" profidp_simp.log > /dev/null && \
+    grep "^Get FMB_FM2_EVENT reason" profidp_simp.log > /dev/null && \
+    grep "^FMB_FM2_EVENT reason" profidp_simp.log > /dev/null && \
+    grep "^Get Slave Diag" profidp_simp.log > /dev/null && \
+    grep "station_status_1 = 01" profidp_simp.log > /dev/null && \
+    grep "station_status_2 = 00" profidp_simp.log > /dev/null && \
+    grep "station_status_3 = 00" profidp_simp.log > /dev/null && \
+    grep "master_add = ff" profidp_simp.log > /dev/null && \
+    grep "ident_number = 0000" profidp_simp.log > /dev/null && \
+    grep "Stop Profibus protocol stack" profidp_simp.log > /dev/null && \
+    grep "^M_close" profidp_simp.log > /dev/null
     if [ $? -ne 0 ]; then 
-        echo "${LogPrefix} Invalid log output, ERROR"\
-          | tee -a "${TestCaseLogName}" 2>&1
+        debug_print "${LogPrefix} Invalid log output, ERROR" "${LogFile}"
         return "${ERR_VALUE}"
     fi 
 

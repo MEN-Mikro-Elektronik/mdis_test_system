@@ -37,39 +37,36 @@ function m58_description {
 # run m58 test
 #
 # parameters:
-# $1    TestCaseLogName
+# $1    LogFile
 # $2    LogPrefix
 # $3    M-Module number
 function m58_test {
-    local TestCaseLogName=${1}
+    local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
 
-    echo "${LogPrefix} Step1: modprobe men_ll_m58" | tee -a "${TestCaseLogName}" 2>&1
-    if ! echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_ll_m58
+    debug_print "${LogPrefix} Step1: modprobe men_ll_m58" "${LogFile}"
+    if ! run_as_root modprobe men_ll_m58
     then
-        echo "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m58"\
-         | tee -a "${TestCaseLogName}" 
+        debug_print "${LogPrefix} ERR_VALUE: could not modprobe men_ll_m58" "${LogFile}"
         return "${ERR_VALUE}"
     fi
 
     # Run m58_simp
-    echo "${LogPrefix} Step2: run m58_simp m58_${ModuleNo}" | tee -a "${TestCaseLogName}" 2>&1
-    echo "${MenPcPassword}" | sudo -S --prompt=$'\r' m58_simp m58_"${ModuleNo}" < <(echo -ne '\n') > m58_simp.log
-    if [ $? -ne 0 ]; then
-        echo "${LogPrefix} Could not run m58_simp "\
-          | tee -a "${TestCaseLogName}" 2>&1
+    debug_print "${LogPrefix} Step2: run m58_simp m58_${ModuleNo}" "${LogFile}"
+    if ! run_as_root m58_simp m58_"${ModuleNo}" < <(echo -ne '\n') > m58_simp.log
+    then
+        debug_print "${LogPrefix} Could not run m58_simp " "${LogFile}"
     fi
 
-    echo "${LogPrefix} Step3: check for errors" | tee -a "${TestCaseLogName}" 2>&1
-    grep "^open m58_${ModuleNo}" m58_simp.log && \
-    grep "^channel 2: write 0x22 = 0010 0010" m58_simp.log && \
-    grep "^channel 3: write 0x44 = 0100 0100" m58_simp.log && \
-    grep "^success." m58_simp.log && \
-    grep "^close device" m58_simp.log
+    debug_print "${LogPrefix} Step3: check for errors" "${LogFile}"
+    grep "^open m58_${ModuleNo}" m58_simp.log > /dev/null && \
+    grep "^channel 2: write 0x22 = 0010 0010" m58_simp.log > /dev/null && \
+    grep "^channel 3: write 0x44 = 0100 0100" m58_simp.log > /dev/null && \
+    grep "^success." m58_simp.log > /dev/null && \
+    grep "^close device" m58_simp.log > /dev/null
     if [ $? -ne 0 ]; then 
-        echo "${LogPrefix} Invalid log output, ERROR"\
-          | tee -a "${TestCaseLogName}" 2>&1
+        debug_print "${LogPrefix} Invalid log output, ERROR" "${LogFile}"
         return "${ERR_VALUE}"
     fi 
 

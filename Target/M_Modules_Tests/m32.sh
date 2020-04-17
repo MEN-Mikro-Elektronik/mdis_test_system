@@ -54,8 +54,8 @@ function m32_test {
 
     # Run m31_simp
     debug_print "${LogPrefix} Step2: run m31_simp m32_${ModuleNo}" "${LogFile}"
-    run_as_root m31_simp m32_"${ModuleNo}" > m31_simp.log
-    if [ $? -ne 0 ]; then
+    if ! run_as_root m31_simp m32_"${ModuleNo}" > m31_simp.log
+    then
         debug_print "${LogPrefix} Could not run m31_simp " "${LogFile}"
     fi
 
