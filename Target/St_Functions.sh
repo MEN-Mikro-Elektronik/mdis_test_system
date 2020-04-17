@@ -113,11 +113,15 @@ function run_test_case_module {
         return "${ERR_VALUE}"
     fi
 
-    TestCaseId=$(get_test_case_id "${Module}" "${CarrierBoard}")
+    get_test_case_id "${Module}" "${CarrierBoard}")
+    TestCaseId=$?
+    echo "TestCaseId: ${TestCaseId}"
+
     if [ "${TestCaseId}" = "9999" ]
     then
         return "${ERR_VALUE}"
     fi
+
 
     if [ "${CarrierBoard}" = "G204" ]
     then

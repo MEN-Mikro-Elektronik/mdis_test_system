@@ -292,6 +292,7 @@ if [ "${TestCaseResult}" -eq "${ERR_OK}" ]; then
 else
     TestCaseResult="FAIL"
 fi
+
 case "${TestTypeDev}" in
     c)
         "${TestDescription}" "${ModuleName}" "${ModuleNo}" "${TestCaseLogName}" >> "${ResultsSummaryTmp}"
@@ -301,6 +302,7 @@ case "${TestTypeDev}" in
     f);&
     g)
         "${TestDescription}" "${DeviceNo}" "${TestCaseLogName}" >> "${ResultsSummaryTmp}"
+        ;;
     *)
         ;;
 esac
