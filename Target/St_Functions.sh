@@ -321,7 +321,7 @@ function obtain_chameleon_table {
     local BoardCnt=0
     local BoardMaxSlot=8
 
-    debug_print "${LogPrefix} obtain_tty_number_list_from_board" "${LogFile}"
+    debug_print "${LogPrefix} obtain_chameleon_table" "${LogFile}"
     for i in $(seq 0 ${BoardMaxSlot}); do
         if run_as_root /opt/menlinux/BIN/fpga_load "${VenID}" "${DevID}" "${SubVenID}" "${i}" -t > /dev/null 2>&1
         then
@@ -449,6 +449,10 @@ function obtain_tty_number_list_from_board {
             debug_print "${LogPrefix} UART ${j} addr saved" "${LogFile}"
             UartBrdNr[${UartCnt}]=${i}
             UartNr[${UartCnt}]=$(grep -i "${UartAddr}" "UART_devices_dump.txt" | awk '{print $1}' | egrep -o '^[^:]+')
+            if [ "${UartNr[${UartCnt}]}" = "" ]
+            then
+                return ${ERR_VALUE}
+            fi
             UartCnt=$((UartCnt+1))
         done
     done

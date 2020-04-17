@@ -54,17 +54,16 @@ function m47_test {
 
     # Run m47_simp
     debug_print "${LogPrefix} Step2: run m47_simp m47_${ModuleNo}" "${LogFile}"
-
     if ! run_as_root m47_simp m47_"${ModuleNo}" > m47_simp.log
     then
         debug_print "${LogPrefix} Could not run m47_simp " "${LogFile}"
     fi
 
+    # Do not check read value
     debug_print "${LogPrefix} Step3: check for errors" "${LogFile}"
     grep "^ Device name: m47_${ModuleNo}" m47_simp.log > /dev/null && \
     grep "^ Channel: 0" m47_simp.log > /dev/null && \
     grep "^M_open" m47_simp.log > /dev/null && \
-    grep "^Read value = 00000000" m47_simp.log > /dev/null && \
     grep "^M_close" m47_simp.log > /dev/null
     if [ $? -ne 0 ]; then
         debug_print "${LogPrefix} Invalid log output, ERROR" "${LogFile}"
