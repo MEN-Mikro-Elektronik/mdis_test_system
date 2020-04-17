@@ -90,7 +90,27 @@ while test $# -gt 0 ; do
                 DeviceNo="$1"
                 shift
             else
-                echo "No mezz cham dev file specified"
+                echo "No device number specified"
+                exit 1
+            fi
+            ;;
+        -module)
+            shift
+            if test $# -gt 0; then
+                ModuleName="$1"
+                shift
+            else
+                echo "No module name specified"
+                exit 1
+            fi
+            ;;
+        -moduleno)
+            shift
+            if test $# -gt 0; then
+                ModuleNo="$1"
+                shift
+            else
+                echo "No module number specified"
                 exit 1
             fi
             ;;
@@ -214,7 +234,7 @@ debug_print "${LogPrefix} Run function:" "${TestCaseLogName}"
 case "${TestTypeDev}" in
     c)
         print "${LogPrefix} Carrier board with M-Module test: ${DeviceName}" "${TestCaseLogName}"
-        debug_print "${LogPrefix} \"${TestFunc} ${TestCaseId} ${TestCaseMainDir}/${TestCaseName} ${TestOs}\"" "${TestCaseLogName}"
+        debug_print "${LogPrefix} \"${TestFunc} ${ModuleName} ${ModuleNo} ${TestCaseId} ${TestCaseMainDir}/${TestCaseName} ${TestOs}\"" "${TestCaseLogName}"
         "${TestFunc}" "${TestCaseId}" "${TestCaseMainDir}/${TestCaseName}" "${TestOs}"
         CmdResult=$?
         if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
@@ -272,8 +292,18 @@ if [ "${TestCaseResult}" -eq "${ERR_OK}" ]; then
 else
     TestCaseResult="FAIL"
 fi
-
-"${TestDescription}" "${DeviceNo}" "${TestCaseLogName}" >> "${ResultsSummaryTmp}"
+case "${TestTypeDev}" in
+    c)
+        "${TestDescription}" "${ModuleName}" "${ModuleNo}" "${TestCaseLogName}" >> "${ResultsSummaryTmp}"
+        ;;
+    m);&
+    z);&
+    f);&
+    g)
+        "${TestDescription}" "${DeviceNo}" "${TestCaseLogName}" >> "${ResultsSummaryTmp}"
+    *)
+        ;;
+esac
 
 if [ ${PrintTerminalResults} -eq "1" ]; then
     echo "${LogPrefix} Test_Result: ${TestCaseResult}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1

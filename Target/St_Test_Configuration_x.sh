@@ -133,11 +133,15 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             run_test_case "${TestId}" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
         1)
-            run_test_case "0100" "${TestSummaryDirectory}" "${OsNameKernel}" # F215 board test
-            run_test_case "0104" "${TestSummaryDirectory}" "${OsNameKernel}" # G215 board test
-            run_test_case "0200" "${TestSummaryDirectory}" "${OsNameKernel}" # M65 @ G204
-            run_test_case "0202" "${TestSummaryDirectory}" "${OsNameKernel}" # M35N @ G204
-            run_test_case "0300" "${TestSummaryDirectory}" "${OsNameKernel}" # M33 & M47 @ F205
+            run_test_case_board "0100" "${TestSummaryDirectory}" "${OsNameKernel}" # F215 board test
+            run_test_case_board "0104" "${TestSummaryDirectory}" "${OsNameKernel}" # G215 board test
+            run_test_case_module "m65" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case_module "m35n" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case_module "m33" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case_module "m47" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            #run_test_case "0200" "${TestSummaryDirectory}" "${OsNameKernel}" # M65 @ G204
+            #run_test_case "0202" "${TestSummaryDirectory}" "${OsNameKernel}" # M35N @ G204
+            #run_test_case "0300" "${TestSummaryDirectory}" "${OsNameKernel}" # M33 & M47 @ F205
             ;;
         2)
             run_test_case "0102" "${TestSummaryDirectory}" "${OsNameKernel}" # F614 @ F23P
