@@ -62,7 +62,7 @@ MenBoxPcIpAddr="10.1.1.78"
 INPUT_SWITCH_TIMEOUT=10 #seconds
 
 # Credentials, address, and command to download Git repository with Test Cases source
-GitTestSourcesBranch="jpe-dev-02_02_v1"
+GitTestSourcesBranch="jpe-dev-02_02"
 GitTestSourcesCmd="git clone -b ${GitTestSourcesBranch} https://github.com/MEN-Mikro-Elektronik/mdis_test_system.git"
 
 # Credentials, address, and command to download Git repository with 13MD05-90 sources
@@ -187,5 +187,7 @@ GrubOsesBL51E=("0" \
         "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)" \
         )
 
+VERBOSE_LEVEL=1
+TEST_SETUP=2
 VERBOSE_LEVEL=1
 TEST_SETUP=2
