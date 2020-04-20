@@ -7,13 +7,150 @@ source "${MyDir}"/Relay_Functions.sh
 # This script contains all common functions that are used by test cases
 
 ############################################################################
+# get m-module test case id
+#
+# parameters:
+# $1     Module name
+# $2     Carrier name
+function get_test_case_id {
+    local Module=${1}
+    local CarrierBoard=${2}
+
+    local TestCaseId="9999"
+    local baseG204Id=200
+    local baseF205Id=300
+    local baseId="0"
+
+    if [ "${CarrierBoard}" = "G204" ]
+    then
+        baseId=${baseG204Id}
+    elif [ "${CarrierBoard}" = "F205" ]
+    then
+        baseId=${baseF205Id}
+    else
+        echo "${TestCaseId}"
+        return
+    fi
+
+    case "${Module}" in
+        m11)
+            TestCaseId=$((baseId+1))
+            ;;
+        m31)
+            TestCaseId=$((baseId+2))
+            ;;
+        m32)
+            TestCaseId=$((baseId+3))
+            ;;
+        m33)
+            TestCaseId=$((baseId+4))
+            ;;
+        m35n)
+            TestCaseId=$((baseId+5))
+            ;;
+        m36n)
+            TestCaseId=$((baseId+6))
+            ;;
+        m37)
+            TestCaseId=$((baseId+7))
+            ;;
+        m43)
+            TestCaseId=$((baseId+8))
+            ;;
+        m47)
+            TestCaseId=$((baseId+9))
+            ;;
+        m57)
+            TestCaseId=$((baseId+10))
+            ;;
+        m58)
+            TestCaseId=$((baseId+11))
+            ;;
+        m62)
+            TestCaseId=$((baseId+12))
+            ;;
+        m65n)
+            TestCaseId=$((baseId+13))
+            ;;
+        m66)
+            TestCaseId=$((baseId+14))
+            ;;
+        m72)
+            TestCaseId=$((baseId+15))
+            ;;
+        m77)
+            TestCaseId=$((baseId+16))
+            ;;
+        m81)
+            TestCaseId=$((baseId+17))
+            ;;
+        m82)
+            TestCaseId=$((baseId+18))
+            ;;
+        m99)
+            TestCaseId=$((baseId+19))
+            ;;
+        m199)
+            TestCaseId=$((baseId+20))
+            ;;
+        *)
+            TestCaseId="9999"
+            ;;
+    esac
+
+echo "${TestCaseId}"
+}
+
+############################################################################
+# run_test_case_module specified by user
+#
+# parameters:
+# $1     Module name
+# $2     Carrier name
+# $3     Module number
+function run_test_case_module {
+    local Module=${1}
+    local CarrierBoard=${2}
+    local ModuleNo=${3}
+    local TestSummaryDirectory=${4}
+    local OsNameKernel=${5}
+    local OptionalParam=${6}
+    local TestCaseId="0"
+
+    if [ "${CarrierBoard}" = "G204" ]
+    then
+        echo "Board G204"
+    elif [ "${CarrierBoard}" = "F205" ]
+    then
+        echo "Board F205"
+    else
+        echo "Board undefined"
+        return "${ERR_VALUE}"
+    fi
+
+    TestCaseId=$(get_test_case_id "${Module}" "${CarrierBoard}")
+    echo "TestCaseId: ${TestCaseId}"
+
+    if [ "${TestCaseId}" = "9999" ]
+    then
+        return "${ERR_VALUE}"
+    fi
+
+    if [ "${CarrierBoard}" = "G204" ]
+    then
+        run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "carrier_g204_TPL" -module "${Module}" -moduleno "${ModuleNo}"
+    else
+        run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "carrier_f205_TPL" -module "${Module}" -moduleno "${ModuleNo}"
+    fi
+}
+############################################################################
 # run_test_case specified by user
 #
 # parameters:
 # $1     Test case id
 # $2     Test case summary directory
 # $3     OS kernel no
-function run_test_case {
+function run_test_case_board {
     local TestCaseId="${1}"
     local TestSummaryDirectory="${2}"
     local OsNameKernel="${3}"

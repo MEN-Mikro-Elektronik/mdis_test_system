@@ -49,33 +49,20 @@ TEST_CASES_MAP["0101"]="f223"
 TEST_CASES_MAP["0102"]="f614"
 TEST_CASES_MAP["0103"]="g229"
 TEST_CASES_MAP["0104"]="g215"
-TEST_CASES_MAP["0200"]="carrier_g204_m65n"
-TEST_CASES_MAP["0201"]="carrier_g204_m33"
-TEST_CASES_MAP["0202"]="carrier_g204_m35n"
-TEST_CASES_MAP["0203"]="carrier_g204_m81"
-TEST_CASES_MAP["0204"]="carrier_g204_m72"
-TEST_CASES_MAP["0205"]="carrier_g204_m77n"
-TEST_CASES_MAP["0206"]="carrier_g204_m36n"
-TEST_CASES_MAP["0300"]="carrier_f205_m47_m33"
-TEST_CASES_MAP["0301"]="carrier_f205_m57"
-TEST_CASES_MAP["0302"]="carrier_f205_m37_m62"
-TEST_CASES_MAP["0303"]="carrier_f205_m32_m58"
-TEST_CASES_MAP["0304"]="carrier_f205_m66_m31"
-TEST_CASES_MAP["0305"]="carrier_f205_m43_m11"
 
 # Address of Target that will be tested
-MenPcIpAddr="10.1.1.103"
+MenPcIpAddr="192.168.1.21"
 
 # Credentials for Pc that will be tested - required by ssh connection and sudo cmds
 MenPcLogin="men"
 MenPcPassword="men"
 
 # Address of device that will be changing status of inputs in tested device 
-MenBoxPcIpAddr="10.1.1.78"
+MenBoxPcIpAddr="192.168.1.14"
 INPUT_SWITCH_TIMEOUT=10 #seconds
 
 # Credentials, address, and command to download Git repository with Test Cases source
-GitTestSourcesBranch="jpe-dev-02_02"
+GitTestSourcesBranch="jpe-dev_02_02_v1"
 GitTestSourcesCmd="git clone -b ${GitTestSourcesBranch} https://github.com/MEN-Mikro-Elektronik/mdis_test_system.git"
 
 # Credentials, address, and command to download Git repository with 13MD05-90 sources
@@ -96,13 +83,13 @@ GitMdisCommitSha=""
 #               |--Commit_xxxx
 #               `--Commit_xxxx
 #
-MainTestDirectoryPath="/media/tests"
+MainTestDirectoryPath="/home/men/TEST/tests"
 MdisSourcesDirectoryName="13MD05-90" 
 TestSourcesDirectoryName="mdis_test_system"
 MainTestDirectoryName="MDIS_Test"
 MdisResultsDirectoryName="Results"
 # optional - used for proprietary drivers
-MdisExternalDirectoryPath="/media/tests/MDIS_External_Sources"
+MdisExternalDirectoryPath="/home/men/TEST/MDIS_External_Sources"
 
 MdisResultsDirectoryPath="${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisResultsDirectoryName}"
 GitTestCommonDirPath="${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}/Common"
@@ -199,3 +186,4 @@ GrubOsesBL51E=("0" \
         "Debian GNU/Linux, with Linux 4.19.0-6-686-pae (on /dev/sda18)" \
         "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)" \
         )
+
