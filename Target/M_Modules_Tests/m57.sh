@@ -55,13 +55,13 @@ function m57_test {
 
     # Run profidp_simp
     debug_print "${LogPrefix} Step2: run profidp_simp m57_${ModuleNo}" "${LogFile}"
-    if ! run_as_root (profidp_simp m57_"${ModuleNo}" > profidp_simp.log &)
+    if ! run_as_root $(profidp_simp m57_"${ModuleNo}" > profidp_simp.log &)
     then
         debug_print "${LogPrefix} Could not run profidp_simp " "${LogFile}"
     fi
 
     # Kill bacground processess profidp_simp
-    profidp_simp_PID=$(pgrep profi_simp)
+    profidp_simp_PID=$(pgrep profidp_simp)
     sleep 25
     if ! run_as_root kill -9 "${profidp_simp_PID}" > /dev/null 2>&1
     then
