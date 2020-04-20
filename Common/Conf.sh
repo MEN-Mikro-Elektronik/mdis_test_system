@@ -49,6 +49,7 @@ TEST_CASES_MAP["0101"]="f223"
 TEST_CASES_MAP["0102"]="f614"
 TEST_CASES_MAP["0103"]="g229"
 TEST_CASES_MAP["0104"]="g215"
+TEST_CASES_MAP["0105"]="f206"
 
 # Address of Target that will be tested
 MenPcIpAddr="192.168.1.21"
