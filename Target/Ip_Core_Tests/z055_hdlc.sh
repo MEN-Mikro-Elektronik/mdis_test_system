@@ -57,9 +57,10 @@ function z055_hdlc_test {
 
     debug_print "${LogPrefix} Add proper .mak into main Makefile" "${LogFile}"
     z055_hdlc_mak_fix "${LogFile}" "${LogPrefix}"
+    debug_print "${LogPrefix} z055_hdlc_mak_fix applied, move on.." "${LogFile}"
 
     # establish ppp connection between Z055_HDLC interfaces
-    if ! run_as_root $("${StartScript}" &)
+    if ! run_as_root "${StartScript}" > /dev/null
     then
         debug_print "${LogPrefix} Could not run start-ppp-two-ports.sh" "${LogFile}"
     fi
@@ -80,7 +81,7 @@ function z055_hdlc_test {
     z055_hdlc_compare_ppp_stats
 
     # stop ppp connection
-    if ! run_as_root "${StopScript}"
+    if ! run_as_root "${StopScript}" > /dev/null
     then
         debug_print "${LogPrefix}stop-ppp failed" "${LogFile}"
     fi
@@ -97,7 +98,7 @@ function z055_hdlc_test {
     fi
 
     # unload z055_hdlc driver
-    if ! run_as_root "${UnloadDrv}"
+    if ! run_as_root "${UnloadDrv}" > /dev/null
     then
         debug_print "${LogPrefix} unload-drivers failed" "${LogFile}"
     fi
