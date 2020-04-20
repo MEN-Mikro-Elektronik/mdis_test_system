@@ -44,6 +44,7 @@ function m57_test {
     local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
+    local profidp_simp_PID
 
     debug_print "${LogPrefix} Step1: modprobe men_ll_profidp" "${LogFile}"
     if ! run_as_root modprobe men_ll_profidp
@@ -54,10 +55,20 @@ function m57_test {
 
     # Run profidp_simp
     debug_print "${LogPrefix} Step2: run profidp_simp m57_${ModuleNo}" "${LogFile}"
-    sudo -S --prompt=$'\r' profidp_simp m57_"${ModuleNo}" < <(echo "${MenPcPassword}"; sleep 2; echo -ne '\n') > profidp_simp.log
-    if [ $? -ne 0 ]
+    if ! run_as_root (profidp_simp m57_"${ModuleNo}" > profidp_simp.log &)
     then
         debug_print "${LogPrefix} Could not run profidp_simp " "${LogFile}"
+    fi
+
+    # Kill bacground processess profidp_simp
+    profidp_simp_PID=$(pgrep profi_simp)
+    sleep 25
+    if ! run_as_root kill -9 "${profidp_simp_PID}" > /dev/null 2>&1
+    then
+        if pgrep profidp_simp
+        then
+            debug_print "${LogPrefix} Could not kill profidp_simp PID: ${profidp_simp_PID}" "${LogFile}"
+        fi
     fi
 
     debug_print "${LogPrefix} Step3: check for errors" "${LogFile}"
