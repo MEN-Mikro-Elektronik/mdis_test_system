@@ -66,16 +66,16 @@ function z055_hdlc_test {
     fi
 
     # ping response is not required
-    debug_print "${LogPrefix} run_as_root ping -I ppp0 -c 20 -i 0.1 -s 1400 &" "${LogFile}"
-    debug_print "${LogPrefix} run_as_root ping -I ppp1 -c 20 -i 0.2 -s 1400" "${LogFile}"
-    run_as_root ping -I ppp0 -c 20 -i 0.1 -s 1400 &
-    run_as_root ping -I ppp1 -c 20 -i 0.2 -s 1400
+    debug_print "${LogPrefix} run_as_root ping -I ppp0 -c 20 -i 0.1 -s 1400 8.8.8.8 &" "${LogFile}"
+    debug_print "${LogPrefix} run_as_root ping -I ppp1 -c 20 -i 0.2 -s 1400 8.8.8.8" "${LogFile}"
+    run_as_root $(ping -I ppp0 -c 5 -i 0.1 -s 1400 8.8.8.8 &)
+    run_as_root ping -I ppp1 -c 5 -i 0.2 -s 1400 8.8.8.8
 
     # ping response is not required
-    debug_print "${LogPrefix} run_as_root ping -I ppp0 -c 20 -i 0.3 -s 65000 &" "${LogFile}"
-    debug_print "${LogPrefix} run_as_root ping -I ppp1 -c 20 -i 0.3 -s 65000" "${LogFile}"
-    run_as_root ping -I ppp0 -c 20 -i 0.3 -s 65000 &
-    run_as_root ping -I ppp1 -c 20 -i 0.3 -s 65000
+    debug_print "${LogPrefix} run_as_root ping -I ppp0 -c 20 -i 0.3 -s 65000 8.8.8.8&" "${LogFile}"
+    debug_print "${LogPrefix} run_as_root ping -I ppp1 -c 20 -i 0.3 -s 65000 8.8.8.8" "${LogFile}"
+    run_as_root $(ping -I ppp0 -c 5 -i 0.3 -s 65000 8.8.8.8 &)
+    run_as_root ping -I ppp1 -c 5 -i 0.3 -s 65000 8.8.8.8
 
     # compare ifconfig stats for ppp0 and ppp1
     z055_hdlc_compare_ppp_stats
