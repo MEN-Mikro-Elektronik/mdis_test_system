@@ -340,6 +340,8 @@ function reboot_and_wait {
     while true; do
         if ping -c 1 -W 2 "${MenPcIpAddr}"
         then
+            echo "Waiting for ${MenPcIpAddr} to fully start..."
+            sleep 60
             Return=0
             break
         else

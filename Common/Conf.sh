@@ -186,8 +186,3 @@ GrubOsesBL51E=("0" \
         "Debian GNU/Linux, with Linux 4.19.0-6-686-pae (on /dev/sda18)" \
         "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)" \
         )
-
-VERBOSE_LEVEL=1
-TEST_SETUP=2
-VERBOSE_LEVEL=1
-TEST_SETUP=2
