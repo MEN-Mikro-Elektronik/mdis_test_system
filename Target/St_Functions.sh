@@ -5,11 +5,18 @@ source "${MyDir}"/Mdis_Functions.sh
 source "${MyDir}"/Relay_Functions.sh
 
 # This script contains all common functions that are used by test cases
+
+############################################################################
+# get m-module test case id
+#
+# parameters:
+# $1     Module name
+# $2     Carrier name
 function get_test_case_id {
     local Module=${1}
     local CarrierBoard=${2}
 
-    local TestCaseId="0"
+    local TestCaseId="9999"
     local baseG204Id=200
     local baseF205Id=300
     local baseId="0"
@@ -21,7 +28,8 @@ function get_test_case_id {
     then
         baseId=${baseF205Id}
     else
-        return ${ERR_VALUE}
+        echo "${TestCaseId}"
+        return
     fi
 
     case "${Module}" in
@@ -90,9 +98,16 @@ function get_test_case_id {
             ;;
     esac
 
-return "${TestCaseId}"
+echo "${TestCaseId}"
 }
 
+############################################################################
+# run_test_case_module specified by user
+#
+# parameters:
+# $1     Module name
+# $2     Carrier name
+# $3     Module number
 function run_test_case_module {
     local Module=${1}
     local CarrierBoard=${2}
@@ -113,15 +128,13 @@ function run_test_case_module {
         return "${ERR_VALUE}"
     fi
 
-    get_test_case_id "${Module}" "${CarrierBoard}"
-    TestCaseId=$?
+    TestCaseId=$(get_test_case_id "${Module}" "${CarrierBoard}")
     echo "TestCaseId: ${TestCaseId}"
 
     if [ "${TestCaseId}" = "9999" ]
     then
         return "${ERR_VALUE}"
     fi
-
 
     if [ "${CarrierBoard}" = "G204" ]
     then
