@@ -144,21 +144,30 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             #run_test_case "0300" "${TestSummaryDirectory}" "${OsNameKernel}" # M33 & M47 @ F205
             ;;
         2)
-            run_test_case "0102" "${TestSummaryDirectory}" "${OsNameKernel}" # F614 @ F23P
-            run_test_case "0101" "${TestSummaryDirectory}" "${OsNameKernel}" # F223
-            run_test_case "0305" "${TestSummaryDirectory}" "${OsNameKernel}" # M43N & M11 @ F205
-            run_test_case "0304" "${TestSummaryDirectory}" "${OsNameKernel}" # M66 & M31 @ F205
-            run_test_case "0303" "${TestSummaryDirectory}" "${OsNameKernel}" # M32 & M58 @ F205
-            run_test_case "0302" "${TestSummaryDirectory}" "${OsNameKernel}" # M37N & M62N @ F205
-            run_test_case "0301" "${TestSummaryDirectory}" "${OsNameKernel}" # M57 @ F205
+            run_test_case_board "0102" "${TestSummaryDirectory}" "${OsNameKernel}" # F614 @ F23P
+            run_test_case_board "0101" "${TestSummaryDirectory}" "${OsNameKernel}" # F223
+            run_test_case_module "m43n" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case_module "m11" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case_module "m66" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case_module "m31" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case_module "m32" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case_module "m58" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case_module "m37n" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case_module "m62n" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case_module "m57" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            #run_test_case "0305" "${TestSummaryDirectory}" "${OsNameKernel}" # M43N & M11 @ F205
+            #run_test_case "0304" "${TestSummaryDirectory}" "${OsNameKernel}" # M66 & M31 @ F205
+            #run_test_case "0303" "${TestSummaryDirectory}" "${OsNameKernel}" # M32 & M58 @ F205
+            #run_test_case "0302" "${TestSummaryDirectory}" "${OsNameKernel}" # M37N & M62N @ F205
+            #run_test_case "0301" "${TestSummaryDirectory}" "${OsNameKernel}" # M57 @ F205
             ;;
         3)
-            run_test_case "0205" "${TestSummaryDirectory}" "${OsNameKernel}" # M77N @ G204
-            run_test_case "0206" "${TestSummaryDirectory}" "${OsNameKernel}" # M36N @ G204
+            run_test_case_module "m77n" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case_module "m36n" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
         4)
-            run_test_case "0203" "${TestSummaryDirectory}" "${OsNameKernel}" # M81 @ G204
-            run_test_case "0204" "${TestSummaryDirectory}" "${OsNameKernel}" # M72 @ G204
+            run_test_case_module "m81" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case_module "m72" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
         5)
             #echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_BL51E_Test.sh" "${TestSummaryDirectory}"
