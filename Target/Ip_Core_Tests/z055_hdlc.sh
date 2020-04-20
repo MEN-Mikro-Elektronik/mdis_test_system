@@ -51,9 +51,9 @@ function z055_hdlc_test {
     local LogFile=${1}
     local LogPrefix=${2}
 
-    local StartScript="${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}/DRIVERS/Z055_HDLC/start-ppp-two-ports.sh"
-    local StopScript="${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}/DRIVERS/Z055_HDLC/stop-ppp.sh"
-    local UnloadDrv="${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}/DRIVERS/Z055_HDLC/unload-drivers.sh"
+    local StartScript="${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}/13Z055-90/DRIVERS/Z055_HDLC/start-ppp-two-ports.sh"
+    local StopScript="${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}/13Z055-90/Z055_HDLC/stop-ppp.sh"
+    local UnloadDrv="${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}/13Z055-90/Z055_HDLC/unload-drivers.sh"
 
     debug_print "${LogPrefix} Add proper .mak into main Makefile" "${LogFile}"
     z055_hdlc_mak_fix "${LogFile}" "${LogPrefix}"
