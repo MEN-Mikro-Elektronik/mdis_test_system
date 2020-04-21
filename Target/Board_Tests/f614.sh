@@ -13,6 +13,7 @@ source "${MyDir}/Ip_Core_Tests/z087_eth.sh"
 function f614_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
+    local LongDescription=${3}
     echo "--------------------------------F614 Test Case--------------------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that at this point all necessary drivers have been build and"
@@ -27,6 +28,11 @@ function f614_description {
     echo "    SUCCESS if ip-cores tests on F614 are passed."
     echo "    FAIL otherwise"
     echo ""
+
+    if [ ! -z "${LongDescription}" ]
+    then
+        z087_eth_description
+    fi
 }
 
 ############################################################################

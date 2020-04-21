@@ -15,6 +15,7 @@ source "${MyDir}/Ip_Core_Tests/z025_uart.sh"
 function f215_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
+    local LongDescription=${3}
     echo "--------------------------------F215 Test Case--------------------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that at this point all necessary drivers have been build and"
@@ -29,6 +30,13 @@ function f215_description {
     echo "    SUCCESS if ip-cores tests on F215 are passed."
     echo "    FAIL otherwise"
     echo ""
+
+    if [ ! -z "${LongDescription}" ]
+    then
+        z029_can_description
+        z034_z037_gpio_description
+        z025_uart_description
+    fi
 }
 
 ############################################################################

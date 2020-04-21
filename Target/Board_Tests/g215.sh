@@ -15,12 +15,14 @@ source "${MyDir}/Ip_Core_Tests/z025_uart.sh"
 function g215_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
+    local LongDescription=${3}
     echo "--------------------------------G215 Test Case--------------------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
     echo "DESCRIPTION:"
-    echo "    g215_${ModuleNo}"
+    echo "    g215 ${ModuleNo} Interfaces Test"
+    echo "    Run tests for devices: z025_uart, z029_can, z034_z037_gpio"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"
@@ -28,6 +30,13 @@ function g215_description {
     echo "    For more detailed information please see corresponding log files in test"
     echo "    case repository"
     echo "    To see error codes definition please check Conf.sh"
+
+    if [ ! -z "${LongDescription}" ]
+    then
+        z029_can_description
+        z034_z037_gpio_description
+        z025_uart_description
+    fi
 }
 
 ############################################################################

@@ -32,8 +32,11 @@ function mdis_test_usage {
     echo "        0 - default (only general information is written into terminal)"
     echo "        1 - verbose output"
     echo ""
-    echo "    --print-tests"
+    echo "    --print-tests-list"
     echo "        Print list of all possible test cases with brief description"
+    echo ""
+    echo "    --print-test-brief=ID"
+    echo "        Print brief test case description"
     echo ""
     echo "    --run-test=ID"
     echo "        Run specified test (default on all available OS-es)"
@@ -45,9 +48,49 @@ function mdis_test_usage {
     echo "        Print this help"
 }
 
-function print_test {
-    # Add brief test case description
-    for K in "${!TEST_CASES_MAP[@]}"; do echo "${K}: ${TEST_CASES_MAP[${K}]}"; done
+function print_test_list {
+    create_test_cases_map
+    for K in "${!TEST_CASES_MAP[@]}"
+    do 
+        echo "[${K}]: ${TEST_CASES_MAP[${K}]}"
+    done | sort -n -k3
+}
+
+function print_test_brief {
+    local TestId="${1}"
+    create_test_cases_map
+    if [ -z "${TEST_CASES_MAP[${TestId}]}" ]
+    then
+        echo "Invalid Test ID"
+        exit
+    fi
+    TestPath=$(realpath ../../Target)
+    if [ ! -d "${TestPath}" ]
+    then
+        echo "Dir ${TestPath} does not exists"
+        exit
+    fi
+
+    echo ""
+    if [ "${TestId}" -lt "200" ]
+    then
+        Board=$(echo "${TEST_CASES_MAP[${TestId}]}")
+        source ${TestPath}/Board_Tests/${Board}.sh
+        ${Board}_description "" "" "long_description"
+    
+    elif [ "${TestId}" -lt "300" ]
+    then
+        Module=$(echo "${TEST_CASES_MAP[${TestId}]}" | sed 's/carrier_g204_//')
+        source ${TestPath}/M_Modules_Tests/${Module}.sh
+        echo "M-module ${Module}_x test on carrier G204"
+        ${Module}_description
+    elif [ "${TestId}" -le "400" ]
+    then
+        Module=$(echo "${TEST_CASES_MAP[${TestId}]}" | sed 's/carrier_f205_//')
+        source ${TestPath}/M_Modules_Tests/${Module}.sh
+        echo "M-module ${Module}_x test on carrier F205"
+        ${Module}_description
+    fi
 }
 
 VERBOSE_LEVEL="0"
@@ -71,8 +114,13 @@ while test $# -gt 0 ; do
             VERBOSE_LEVEL="$(echo "$1" | sed -e 's/^[^=]*=//g')"
             shift
             ;;
-        --print-tests)
-            print_test
+        --print-test-list)
+            print_test_list
+            exit 0
+            ;;
+        --print-test-brief*)
+            TEST_ID="$(echo "$1" | sed -e 's/^[^=]*=//g')"
+            print_test_brief "${TEST_ID}"
             exit 0
             ;;
         --run-test*)
@@ -200,6 +248,7 @@ function runTests {
 }
 
 # MAIN start here
+create_test_cases_map
 if [ "${RUN_INSTANTLY}" == "1" ]; then
     ssh-keygen -R "${MenPcIpAddr}"
     # Check if devices are available

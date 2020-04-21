@@ -13,6 +13,7 @@ source "${MyDir}/Ip_Core_Tests/z055_hdlc.sh"
 function f206_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
+    local LongDescription=${3}
     echo "--------------------------------F206 Test Case--------------------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that at this point all necessary drivers have been build and"
@@ -26,6 +27,11 @@ function f206_description {
     echo "    SUCCESS if ip-cores tests on F206 are passed."
     echo "    FAIL otherwise"
     echo ""
+
+    if [ ! -z "${LongDescription}" ]
+    then
+        z055_hdlc_description
+    fi
 }
 
 ############################################################################
