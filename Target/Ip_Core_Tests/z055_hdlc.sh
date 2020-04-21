@@ -50,43 +50,59 @@ function z055_hdlc_description {
 function z055_hdlc_test {
     local LogFile=${1}
     local LogPrefix=${2}
-    local VenID=${3}
-    local DevID=${4}
-    local SubVenID=${5}
-    local BoardInSystem=${6}
 
-    # load driver and establish ppp connection between Z055_HDLC interfaces
-    ${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}/DRIVERS/Z055_HDLC/start-ppp-two-ports.sh &
-    PPP_script_PID=$!
+    local StartScript="${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}/13Z055-90/DRIVERS/Z055_HDLC/start-ppp-two-ports.sh"
+    local StopScript="${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}/13Z055-90/DRIVERS/Z055_HDLC/stop-ppp.sh"
+    local UnloadDrv="${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}/13Z055-90/DRIVERS/Z055_HDLC/unload-drivers.sh"
+
+    debug_print "${LogPrefix} Add proper .mak into main Makefile" "${LogFile}"
+    z055_hdlc_mak_fix "${LogFile}" "${LogPrefix}"
+    debug_print "${LogPrefix} z055_hdlc_mak_fix applied, move on.." "${LogFile}"
+
+    # establish ppp connection between Z055_HDLC interfaces
+    if ! run_as_root "${StartScript}" > /dev/null 2>&1
+    then
+        debug_print "${LogPrefix} Could not run start-ppp-two-ports.sh" "${LogFile}"
+    fi
+
+    sleep 5
+    # ping response is not required
+    debug_print "${LogPrefix} ping ppp0 -c 20 -i 0.05 -s 1400 8.8.8.8" "${LogFile}"
+    run_as_root ping -I ppp0 -c 20 -i 0.05 -s 1400 8.8.8.8 > /dev/null
+    debug_print "${LogPrefix} ping -I ppp1 -c 10 -i 0.1 -s 1400 8.8.8.8" "${LogFile}"
+    run_as_root ping -I ppp1 -c 10 -i 0.1 -s 1400 8.8.8.8 > /dev/null
 
     # ping response is not required
-    ping -I ppp0 -c 20 -i 0.1 -s 1400 &
-    ping -I ppp1 -c 20 -i 0.2 -s 1400
+    debug_print "${LogPrefix} ping -I ppp0 -c 16 -i 0.3 -s 65000 8.8.8.8" "${LogFile}"
+    run_as_root ping -I ppp0 -c 16 -i 0.3 -s 65000 8.8.8.8 > /dev/null
+    debug_print "${LogPrefix} ping -I ppp1 -c 16 -i 0.3 -s 65000 8.8.8.8" "${LogFile}"
+    run_as_root ping -I ppp1 -c 17 -i 0.3 -s 65000 8.8.8.8 > /dev/null
 
+    sleep 2
     # compare ifconfig stats for ppp0 and ppp1
     z055_hdlc_compare_ppp_stats
-    if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-        debug_print "${LogPrefix} ppp stats failed, err: ${CmdResult}" "${LogFile}"
-        return "${CmdResult}"
+    Result=$?
+
+    # stop ppp connectiona
+    if ! run_as_root "${StopScript}" > /dev/null
+    then
+        debug_print "${LogPrefix}stop-ppp failed" "${LogFile}"
     fi
 
-    # stop ppp connection
-    ${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}/DRIVERS/Z055_HDLC/stop-ppp.sh
-    if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-        debug_print "${LogPrefix} ppp stats failed, err: ${CmdResult}" "${LogFile}"
-        return "${CmdResult}"
-    fi
+    # wait to close ppp connection
+    sleep 5
 
     # unload z055_hdlc driver
-    ${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}/DRIVERS/Z055_HDLC/unload-drivers.sh
-        if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-        debug_print "${LogPrefix} ppp stats failed, err: ${CmdResult}" "${LogFile}"
-        return "${CmdResult}"
+    if ! run_as_root "${UnloadDrv}" > /dev/null
+    then
+        LoadedZ055=$(lsmod | grep -c "men_lx_z055")
+        if [ "${LoadedZ055}" -gt "0" ]; then 
+            debug_print "${LogPrefix} unload-drivers failed" "${LogFile}"
+        fi
     fi
 
-    return ${ERR_OK}
+    return ${Result}
 }
-
 
 ############################################################################
 # compare ppp stats
@@ -96,5 +112,94 @@ function z055_hdlc_test {
 # $2    Log prefix
 function z055_hdlc_compare_ppp_stats {
     debug_print "${LogPrefix} z055_hdlc_compare_ppp_stats" "${LogFile}"
-    echo ""
+    local BytesTXPPP0="0"
+    local BytesRXPPP0="0"
+    local BytesTXPPP1="0"
+    local BytesRXPPP1="0"
+    local ErrorTXPPP0="0"
+    local ErrorRXPPP0="0"
+    local ErrorTXPPP1="0"
+    local ErrorRXPPP1="0"
+
+    ifconfig ppp0 > ppp0.log
+    ifconfig ppp1 > ppp1.log
+
+    BytesTXPPP0=$(ifconfig ppp0 | grep "TX packets" | awk '{print $5}')
+    BytesTXPPP1=$(ifconfig ppp1 | grep "TX packets" | awk '{print $5}')
+    BytesRXPPP0=$(ifconfig ppp0 | grep "RX packets" | awk '{print $5}')
+    BytesRXPPP1=$(ifconfig ppp1 | grep "RX packets" | awk '{print $5}')
+
+    ErrorTXPPP0=$(ifconfig ppp0 | grep "TX errors" | awk '{print $3}')
+    ErrorRXPPP0=$(ifconfig ppp0 | grep "RX errors" | awk '{print $3}')
+    ErrorTXPPP1=$(ifconfig ppp1 | grep "TX errors" | awk '{print $3}')
+    ErrorRXPPP1=$(ifconfig ppp1 | grep "RX errors" | awk '{print $3}')
+
+    debug_print "${LogPrefix} BytesTXPPP0: ${BytesTXPPP0}" "${LogFile}"
+    debug_print "${LogPrefix} BytesTXPPP1: ${BytesTXPPP1}" "${LogFile}"
+    debug_print "${LogPrefix} BytesRXPPP0: ${BytesRXPPP0}" "${LogFile}"
+    debug_print "${LogPrefix} BytesRXPPP1: ${BytesRXPPP1}" "${LogFile}"
+
+    debug_print "${LogPrefix} ErrorTXPPP0: ${ErrorTXPPP0}" "${LogFile}"
+    debug_print "${LogPrefix} ErrorRXPPP0: ${ErrorRXPPP0}" "${LogFile}"
+    debug_print "${LogPrefix} ErrorTXPPP1: ${ErrorTXPPP1}" "${LogFile}"
+    debug_print "${LogPrefix} ErrorRXPPP1: ${ErrorRXPPP1}" "${LogFile}"
+
+    if [ "${BytesTXPPP0}" -lt "1000000" ] || [ "${BytesTXPPP1}" -lt "1000000" ]
+    then
+        debug_print "${LogPrefix} No enought bytes transmitted..." "${LogFile}"
+        return "${ERR_VALUE}"
+    fi
+
+    if [ "${BytesTXPPP0}" = "${BytesRXPPP1}" ] &&
+       [ "${BytesTXPPP1}" = "${BytesRXPPP0}" ] &&
+       [ "${ErrorTXPPP0}" = "0" ] &&
+       [ "${ErrorRXPPP0}" = "0" ] &&
+       [ "${ErrorTXPPP1}" = "0" ] &&
+       [ "${ErrorRXPPP1}" = "0" ]
+    then
+        return "${ERR_OK}"
+    else
+        return "${ERR_VALUE}"
+    fi
+}
+
+############################################################################
+# Add required .mak into Makefile
+#
+# parameters:
+function z055_hdlc_mak_fix {
+    local LogFile=${1}
+    local LogPrefix=${2}
+    local CurrentPath=$PWD
+
+    debug_print "${LogPrefix} z055_hdlc_mak_fix" "${LogFile}"
+    debug_print "${LogPrefix} Current Path:" "${LogFile}"
+    debug_print "${CurrentPath}" "${LogFile}"
+
+    cd ../.. || exit "${ERR_NOEXIST}"
+    Z055_NATIVE_DRIVER="DRIVERS/Z055_HDLC/DRIVER/driver.mak"
+    Z055_NATIVE_TOOL="DRIVERS/Z055_HDLC/TOOLS/Z055_HDLC_UTIL/program.mak"
+
+    NativeDriverCnt=$(grep -c 'ALL_NATIVE_DRIVERS = \\' Makefile)
+    if [ "${NativeDriverCnt}" -eq "0" ]
+    then
+        sed -i 's/'"ALL_NATIVE_DRIVERS =.*"'/& \\/' Makefile
+        sed -i '/'"ALL_NATIVE_DRIVERS =.*"'/a '"\    \ ${Z055_NATIVE_DRIVER} \\\\"'' Makefile
+    elif [ "${NativeDriverCnt}" -eq "1" ]
+    then
+        sed -i '/'"ALL_NATIVE_DRIVERS =.*"'/a '"\    \ ${Z055_NATIVE_DRIVER} \\\\"'' Makefile
+    fi
+
+    NativeToolCnt=$(grep -c 'ALL_NATIVE_TOOLS = \\' Makefile)
+    if [ "${NativeToolCnt}" -eq "0" ]
+    then
+        sed -i 's/'"ALL_NATIVE_TOOLS =.*"'/& \\/' Makefile
+        sed -i '/'"ALL_NATIVE_TOOLS =.*"'/a '"\    \ ${Z055_NATIVE_TOOL}"'' Makefile
+    elif [ "${NativeToolCnt}" -eq "1" ]
+    then
+        sed -i '/'"ALL_NATIVE_DRIVERS =.*"'/a '"\    \ ${Z055_NATIVE_TOOL} \\\\"'' Makefile
+    fi
+
+    make_install "${LogPrefix}"
+    cd "${CurrentPath}" || exit "${ERR_NOEXIST}"
 }
