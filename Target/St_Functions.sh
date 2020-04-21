@@ -14,27 +14,29 @@ source "${MyDir}"/Relay_Functions.sh
 # $2     TestSummaryDirectory
 # $3     OsNameKernel
 function run_test_case_id {
-    local TestId=${1}
+    local TestCaseId=${1}
     local TestSummaryDirectory=${2}
     local OsNameKernel=${3}
+    echo "run_test_case_id: ${TestCaseId}"
 
-    if [ -z "${TEST_CASES_MAP[${TestId}]}" ]
+    create_test_cases_map
+    if [ -z "${TEST_CASES_MAP[${TestCaseId}]}" ]
     then
         echo "Invalid Test ID"
         exit
     fi
 
-    if [ "${TestId}" -lt "200" ]
+    if [ "${TestCaseId}" -lt "200" ]
     then
-        Board=$(echo "${TEST_CASES_MAP[${TestId}]}")
-        run_test_case_board "${TestId}" "${TestSummaryDirectory}" "${OsNameKernel}"
+        Board=$(echo "${TEST_CASES_MAP[${TestCaseId}]}")
+        run_test_case_board "${TestCaseId}" "${TestSummaryDirectory}" "${OsNameKernel}"
     elif [ "${TestId}" -lt "300" ]
     then
-        Module=$(echo "${TEST_CASES_MAP[${TestId}]}" | sed 's/carrier_g204_//')
+        Module=$(echo "${TEST_CASES_MAP[${TestCaseId}]}" | sed 's/carrier_g204_//')
         run_test_case_module "${Module}" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
     elif [ "${TestId}" -le "400" ]
     then
-        Module=$(echo "${TEST_CASES_MAP[${TestId}]}" | sed 's/carrier_f205_//')
+        Module=$(echo "${TEST_CASES_MAP[${TestCaseId}]}" | sed 's/carrier_f205_//')
         run_test_case_module "${Module}" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
     fi
 }
