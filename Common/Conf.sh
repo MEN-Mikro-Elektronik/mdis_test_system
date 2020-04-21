@@ -43,6 +43,14 @@ IN_2_DISABLE=202        # change input 2 to disable (with BL51 stands for RELAY 
 IN_3_DISABLE=203        # change input 3 to disable (with BL51 stands for RELAY 2) 
 IN_4_DISABLE=204        # change input 4 to disable
 
+declare -A TEST_CASES_MAP
+TEST_CASES_MAP["100"]="f215"
+TEST_CASES_MAP["101"]="f223"
+TEST_CASES_MAP["102"]="f614"
+TEST_CASES_MAP["103"]="g229"
+TEST_CASES_MAP["104"]="g215"
+TEST_CASES_MAP["105"]="f206"
+
 # Address of Target that will be tested
 MenPcIpAddr="192.168.1.21"
 
@@ -179,16 +187,7 @@ GrubOsesBL51E=("0" \
         "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)" \
         )
 
-declare -A TEST_CASES_MAP
-
 function create_test_cases_map {
-    TEST_CASES_MAP["100"]="f215"
-    TEST_CASES_MAP["101"]="f223"
-    TEST_CASES_MAP["102"]="f614"
-    TEST_CASES_MAP["103"]="g229"
-    TEST_CASES_MAP["104"]="g215"
-    TEST_CASES_MAP["105"]="f206"
-
     TestPath=$(realpath ../../Target)
     if [ ! -d "${TestPath}" ]
     then
