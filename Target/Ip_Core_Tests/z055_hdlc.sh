@@ -52,58 +52,56 @@ function z055_hdlc_test {
     local LogPrefix=${2}
 
     local StartScript="${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}/13Z055-90/DRIVERS/Z055_HDLC/start-ppp-two-ports.sh"
-    local StopScript="${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}/13Z055-90/Z055_HDLC/stop-ppp.sh"
-    local UnloadDrv="${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}/13Z055-90/Z055_HDLC/unload-drivers.sh"
+    local StopScript="${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}/13Z055-90/DRIVERS/Z055_HDLC/stop-ppp.sh"
+    local UnloadDrv="${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}/13Z055-90/DRIVERS/Z055_HDLC/unload-drivers.sh"
 
     debug_print "${LogPrefix} Add proper .mak into main Makefile" "${LogFile}"
     z055_hdlc_mak_fix "${LogFile}" "${LogPrefix}"
     debug_print "${LogPrefix} z055_hdlc_mak_fix applied, move on.." "${LogFile}"
 
     # establish ppp connection between Z055_HDLC interfaces
-    if ! run_as_root "${StartScript}" > /dev/null
+    if ! run_as_root "${StartScript}" > /dev/null 2>&1
     then
         debug_print "${LogPrefix} Could not run start-ppp-two-ports.sh" "${LogFile}"
     fi
 
+    sleep 5
     # ping response is not required
-    debug_print "${LogPrefix} run_as_root ping -I ppp0 -c 20 -i 0.1 -s 1400 8.8.8.8 &" "${LogFile}"
-    debug_print "${LogPrefix} run_as_root ping -I ppp1 -c 20 -i 0.2 -s 1400 8.8.8.8" "${LogFile}"
-    run_as_root $(ping -I ppp0 -c 5 -i 0.1 -s 1400 8.8.8.8 &)
-    run_as_root ping -I ppp1 -c 5 -i 0.2 -s 1400 8.8.8.8
+    debug_print "${LogPrefix} ping ppp0 -c 20 -i 0.05 -s 1400 8.8.8.8" "${LogFile}"
+    run_as_root ping -I ppp0 -c 20 -i 0.05 -s 1400 8.8.8.8 > /dev/null
+    debug_print "${LogPrefix} ping -I ppp1 -c 10 -i 0.1 -s 1400 8.8.8.8" "${LogFile}"
+    run_as_root ping -I ppp1 -c 10 -i 0.1 -s 1400 8.8.8.8 > /dev/null
 
     # ping response is not required
-    debug_print "${LogPrefix} run_as_root ping -I ppp0 -c 20 -i 0.3 -s 65000 8.8.8.8&" "${LogFile}"
-    debug_print "${LogPrefix} run_as_root ping -I ppp1 -c 20 -i 0.3 -s 65000 8.8.8.8" "${LogFile}"
-    run_as_root $(ping -I ppp0 -c 5 -i 0.3 -s 65000 8.8.8.8 &)
-    run_as_root ping -I ppp1 -c 5 -i 0.3 -s 65000 8.8.8.8
+    debug_print "${LogPrefix} ping -I ppp0 -c 16 -i 0.3 -s 65000 8.8.8.8" "${LogFile}"
+    run_as_root ping -I ppp0 -c 16 -i 0.3 -s 65000 8.8.8.8 > /dev/null
+    debug_print "${LogPrefix} ping -I ppp1 -c 16 -i 0.3 -s 65000 8.8.8.8" "${LogFile}"
+    run_as_root ping -I ppp1 -c 17 -i 0.3 -s 65000 8.8.8.8 > /dev/null
 
+    sleep 2
     # compare ifconfig stats for ppp0 and ppp1
     z055_hdlc_compare_ppp_stats
+    Result=$?
 
-    # stop ppp connection
+    # stop ppp connectiona
     if ! run_as_root "${StopScript}" > /dev/null
     then
         debug_print "${LogPrefix}stop-ppp failed" "${LogFile}"
     fi
 
-    # Kill bacground process start-ppp-two-ports.sh if exists
-    ppp_two_ports_PID=$(pgrep start-ppp-two-ports.sh)
-
-    if ! run_as_root kill -9 "${ppp_two_ports_PID}" > /dev/null 2>&1
-    then
-        if pgrep start-ppp-two-ports.sh
-        then
-            debug_print "${LogPrefix} Could not kill start-ppp-two-ports PID: ${ppp_two_ports_PID}" "${LogFile}"
-        fi
-    fi
+    # wait to close ppp connection
+    sleep 5
 
     # unload z055_hdlc driver
     if ! run_as_root "${UnloadDrv}" > /dev/null
     then
-        debug_print "${LogPrefix} unload-drivers failed" "${LogFile}"
+        LoadedZ055=$(lsmod | grep -c "men_lx_z055")
+        if [ "${LoadedZ055}" -gt "0" ]; then 
+            debug_print "${LogPrefix} unload-drivers failed" "${LogFile}"
+        fi
     fi
 
-    return "${ERR_VALUE}"
+    return ${Result}
 }
 
 ############################################################################
@@ -146,7 +144,23 @@ function z055_hdlc_compare_ppp_stats {
     debug_print "${LogPrefix} ErrorTXPPP1: ${ErrorTXPPP1}" "${LogFile}"
     debug_print "${LogPrefix} ErrorRXPPP1: ${ErrorRXPPP1}" "${LogFile}"
 
-    return "${ERR_VALUE}"
+    if [ "${BytesTXPPP0}" -lt "1000000" ] || [ "${BytesTXPPP1}" -lt "1000000" ]
+    then
+        debug_print "${LogPrefix} No enought bytes transmitted..." "${LogFile}"
+        return "${ERR_VALUE}"
+    fi
+
+    if [ "${BytesTXPPP0}" = "${BytesRXPPP1}" ] &&
+       [ "${BytesTXPPP1}" = "${BytesRXPPP0}" ] &&
+       [ "${ErrorTXPPP0}" = "0" ] &&
+       [ "${ErrorRXPPP0}" = "0" ] &&
+       [ "${ErrorTXPPP1}" = "0" ] &&
+       [ "${ErrorRXPPP1}" = "0" ]
+    then
+        return "${ERR_OK}"
+    else
+        return "${ERR_VALUE}"
+    fi
 }
 
 ############################################################################
