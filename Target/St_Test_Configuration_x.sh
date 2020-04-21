@@ -130,7 +130,7 @@ run_as_root dmesg --clear
 echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
     case "${TEST_SETUP}" in
         0)
-            run_test_case "${TestId}" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case_id "${TestId}" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
         1)
             #run_test_case_board "100" "${TestSummaryDirectory}" "${OsNameKernel}" # F215 board test
