@@ -2,23 +2,60 @@
 MyDir="$(dirname "$0")"
 source "${MyDir}/../../Common/Conf.sh"
 
-declare -A TEST_RESULT_OS
-# List of available OS-es
-TEST_RESULT_OS["1"]="Ubuntu16046415045generici686"
-TEST_RESULT_OS["2"]="Ubuntu18043415060generici686"
-# others... 
+ResultPath="${1}"
+ResultTestSetup=""
 
-declare -a TEST_RESULT_OS_1=(_ _ _ _ _)
-declare -a TEST_RESULT_OS_2=(_ _ _ _ _)
-declare -a TEST_RESULT_OS_3=(_ _ _ _ _)
-declare -a TEST_RESULT_OS_4=(_ _ _ _ _)
-declare -a TEST_RESULT_OS_5=(_ _ _ _ _)
-# others... 
+### @brief script usage --help
+function mdis_report_usage {
+    echo "Mdis_Report.sh - tool generate MDIS results"
+    echo ""
+    echo "USAGE"
+    echo "    Mdis_Report.sh -h | --help"
+    echo "    Mdis_Report.sh <RESULT_PATH> [--test-setup=SETUP]"
+    echo ""
+    echo "OPTIONS"
+    echo "    RESULT_PATH"
+    echo "        Path to Mdis_Test result directory"
+    echo ""
+    echo "    --test-setup=SETUP"
+    echo "        Print results for specified test setup"
+    echo ""
+    echo "    -h, --help"
+    echo "        Print this help"
+}
+case "${ResultPath}" in
+        -h|--help)
+            mdis_report_usage
+            exit 0
+            ;;
+esac
 
-rm results.txt
-touch results.txt
-echo "Id|Description(firstline)|Instruction|OS|" >> results.txt
-echo "|Purpose|[Reference] (last line)||1|2|3|4|5|others..." >> results.txt
+if [ ! -d "${ResultPath}" ]; then
+    echo "Invalid result path"
+    exit 1
+fi
+
+shift
+
+# read parameters
+while test $# -gt 0 ; do
+    case "$1" in
+        -h|--help)
+            mdis_report_usage
+            exit 0
+            ;;
+        --test-setup*)
+            ResultTestSetup="$(echo "$1" | sed -e 's/^[^=]*=//g')"
+            shift
+            ;;
+        *)
+            echo "No valid parameters"
+            break
+            ;;
+        esac
+
+done
+
 
 function set_result_os {
     local TestSetup=${1}
@@ -31,21 +68,39 @@ function set_result_os {
         TEST_RESULT_OS_1["${TestSetup}"]="${Result}"
     elif [ "${OSName}" = "${TEST_RESULT_OS[2]}" ]; then
         TEST_RESULT_OS_2["${TestSetup}"]="${Result}"
+    elif [ "${OSName}" = "${TEST_RESULT_OS[3]}" ]; then
+        TEST_RESULT_OS_3["${TestSetup}"]="${Result}"
     else
         echo "OS NOT SPECIFIED"
         exit 1
     fi
 }
 
-function print_test {
+function print_results {
+    local ResultPath="${1}"
+    local ResultTestSetup="${2}"
+    local ResultOperatingSystem="${3}"
     local OSCnt=0
     local OSNo=0
-    # Add brief test case description
+
+    rm results.txt
+    touch results.txt
+
+    create_test_cases_map
+    if [ -z "${ResultTestSetup}" ]; then
+        echo "Id|Description(firstline)|Instruction|OS" >> results.txt
+        echo "|Purpose|[Reference] (last line)||1|2|3|4|5| Test Setup" >> results.txt
+    else
+        echo "Id|Description(firstline)|Instruction|OS|Test Setup" >> results.txt
+        echo "|Purpose|[Reference] (last line)||${ResultTestSetup}" >> results.txt
+        ResultTestSetup=$((ResultTestSetup-1))
+    fi
+    echo "|||" >> results.txt
+
     for K in "${!TEST_CASES_MAP[@]}"
     do
-        #sort -rn -k3
         # Obtain results directory
-        find "$(pwd)" -name "${K}.tmp" > "${K}_file_list.log"
+        find "${ResultPath}" -name "${K}.tmp" > "${K}_file_list.log"
         OSCnt=0
         OSNo=$(< "${K}_file_list.log" wc -l)
         while IFS= read -r file
@@ -59,20 +114,58 @@ function print_test {
             TEST_OS_FULL=$(grep "Test_Os" "${file}" | awk '{print $3}' | awk '{$1=$1};1')
             TEST_SETUP=$(grep "Test_Setup" "${file}" | awk '{print $3}' | awk '{$1=$1};1')
             TEST_RESULTS=$(grep "Test_Result" "${file}" | awk '{print $2 $3}' | awk '{$1=$1};1')
-            TEST_RESULTS=$(if echo "${TEST_RESULTS}" | grep "SUCCESS" > /dev/null; then echo "S"; else echo "F"; fi)
+            if [ -z "${ResultTestSetup}" ]; then
+                TEST_RESULTS=$(if echo "${TEST_RESULTS}" | grep "SUCCESS" > /dev/null; then echo "S"; else echo "F"; fi)
+            else
+                TEST_RESULTS=$(if echo "${TEST_RESULTS}" | grep "SUCCESS" > /dev/null; then echo "SUCCESS"; else echo "FAIL"; fi)
+            fi
             TEST_CMD0="Mdis_Test.sh --run-test=${TEST_ID}"
             TEST_FNC_DESCRIPTION="${TEST_CASES_MAP[${K}]}_test()"
             set_result_os "${TEST_SETUP}" "${TEST_OS_FULL}" "${TEST_RESULTS}"
-            if [ "${OSCnt}" -eq "${OSNo}" ]; then
-              echo -e "${TEST_ID}|${TEST_DESCRIPTION_SHORT}|${TEST_CMD0}|${TEST_RESULT_OS["1"]}|${TEST_RESULT_OS_1[0]}|${TEST_RESULT_OS_1[1]}|${TEST_RESULT_OS_1[2]}|${TEST_RESULT_OS_1[3]}|${TEST_RESULT_OS_1[4]}|${TEST_RESULT_OS_1[5]}" >> results.txt
-              echo -e "|${TEST_PURPOSE0}|${TEST_FNC_DESCRIPTION}|${TEST_RESULT_OS["2"]}|${TEST_RESULT_OS_2[0]}|${TEST_RESULT_OS_2[1]}|${TEST_RESULT_OS_2[2]}|${TEST_RESULT_OS_2[3]}|${TEST_RESULT_OS_2[4]}|${TEST_RESULT_OS_2[5]}" >> results.txt
-              echo -e "|${TEST_PURPOSE1}||${TEST_RESULT_OS["3"]}|${TEST_RESULT_OS_3[0]}|${TEST_RESULT_OS_3[1]}|${TEST_RESULT_OS_3[2]}|${TEST_RESULT_OS_3[3]}|${TEST_RESULT_OS_3[4]}|${TEST_RESULT_OS_3[5]}" >> results.txt
+            rm "${TEST_ID}"_results.txt > /dev/null 2>&1
+            if [ -z "${ResultTestSetup}" ]; then
+                if [ "${OSCnt}" -eq "${OSNo}" ]; then
+                  echo -e "${TEST_ID}|${TEST_DESCRIPTION_SHORT}|${TEST_CMD0}|${TEST_RESULT_OS["1"]}|${TEST_RESULT_OS_1[0]}|${TEST_RESULT_OS_1[1]}|${TEST_RESULT_OS_1[2]}|${TEST_RESULT_OS_1[3]}|${TEST_RESULT_OS_1[4]}|${TEST_RESULT_OS_1[5]}" >> "${TEST_ID}"_results.txt
+                  echo -e "|${TEST_PURPOSE0}|${TEST_FNC_DESCRIPTION}|${TEST_RESULT_OS["2"]}|${TEST_RESULT_OS_2[0]}|${TEST_RESULT_OS_2[1]}|${TEST_RESULT_OS_2[2]}|${TEST_RESULT_OS_2[3]}|${TEST_RESULT_OS_2[4]}|${TEST_RESULT_OS_2[5]}" >> "${TEST_ID}"_results.txt
+                  echo -e "|${TEST_PURPOSE1}||${TEST_RESULT_OS["3"]}|${TEST_RESULT_OS_3[0]}|${TEST_RESULT_OS_3[1]}|${TEST_RESULT_OS_3[2]}|${TEST_RESULT_OS_3[3]}|${TEST_RESULT_OS_3[4]}|${TEST_RESULT_OS_3[5]}" >> "${TEST_ID}"_results.txt
+                fi
+            else
+                if [ "${OSCnt}" -eq "${OSNo}" ]; then
+                  echo -e "${TEST_ID}|${TEST_DESCRIPTION_SHORT}|${TEST_CMD0}|${TEST_RESULT_OS["1"]}|${TEST_RESULT_OS_1[${ResultTestSetup}]}" >> "${TEST_ID}"_results.txt
+                  echo -e "|${TEST_PURPOSE0}|${TEST_FNC_DESCRIPTION}|${TEST_RESULT_OS["2"]}|${TEST_RESULT_OS_2[${ResultTestSetup}]}" >> "${TEST_ID}"_results.txt
+                  echo -e "|${TEST_PURPOSE1}||${TEST_RESULT_OS["3"]}|${TEST_RESULT_OS_3[${ResultTestSetup}]}" >> "${TEST_ID}"_results.txt
+                fi
             fi
-            echo "|||" >> results.txt
-        done < "${K}_file_list.log"
+        done < "${K}_file_list.log" 
     rm "${K}_file_list.log"
-    done
-}
+    done | sort -n -k3
 
-print_test
-column -n results.txt -t -s "|"
+    while IFS= read -r -d '' ResultFile
+    do
+        echo "${ResultFile}" >> results_file_list.txt
+    done <  <(find . -name "*_results.txt" -print0)
+
+    sort -n -k3 -o results_file_list.txt  results_file_list.txt
+
+    while read -r ResultFileList; do
+        cat "${ResultFileList}" >> results.txt
+        echo "|||" >> results.txt
+    done <results_file_list.txt
+
+    rm results_file_list.txt
+
+    column -n results.txt -t -s "|"
+}
+# MAIN starts here
+declare -A TEST_RESULT_OS
+# List of available OS-es
+TEST_RESULT_OS["1"]="Ubuntu16046415045generici686"
+TEST_RESULT_OS["2"]="Ubuntu18043415060generici686"
+TEST_RESULT_OS["3"]="Ubuntu1804453028genericx8664"
+
+declare -a TEST_RESULT_OS_1=(_ _ _ _ _)
+declare -a TEST_RESULT_OS_2=(_ _ _ _ _)
+declare -a TEST_RESULT_OS_3=(_ _ _ _ _)
+# others... 
+print_results "${ResultPath}" "${ResultTestSetup}"
+
