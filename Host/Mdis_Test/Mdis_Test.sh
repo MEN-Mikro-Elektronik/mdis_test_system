@@ -159,7 +159,7 @@ case ${TEST_SETUP} in
         GrubOses=( "${GrubOsesG25A[@]}" )
         ;;
     5)
-        GrubOses=( "${GrubOsesBL51E[@]}" )
+        GrubOses=( "${GrubOsesF23P[@]}" )
         ;;
     6)
         GrubOses=( "${GrubOsesG25A[@]}" )

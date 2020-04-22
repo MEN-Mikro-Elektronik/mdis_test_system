@@ -171,7 +171,9 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             run_test_case_module "m72" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
         5)
-            #echo "${1}" | sudo -S --prompt=$'\r' "${MyDir}/ST_xxxx_BL51E_Test.sh" "${TestSummaryDirectory}"
+            run_test_case_module "m82" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case_module "m99" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case_module "m199" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
         6)
             ;;
