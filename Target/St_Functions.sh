@@ -7,98 +7,43 @@ source "${MyDir}"/Relay_Functions.sh
 # This script contains all common functions that are used by test cases
 
 ############################################################################
-# get m-module test case id
+# run_test_case_id specified by user
 #
 # parameters:
-# $1     Module name
-# $2     Carrier name
-function get_test_case_id {
-    local Module=${1}
-    local CarrierBoard=${2}
+# $1     Test Id
+# $2     TestSummaryDirectory
+# $3     OsNameKernel
+function run_test_case_id {
+    local TestCaseId=${1}
+    local TestSummaryDirectory=${2}
+    local OsNameKernel=${3}
+    local Board=""
+    local Module=""
+    echo "run_test_case_id: ${TestCaseId}"
 
-    local TestCaseId="9999"
-    local baseG204Id=200
-    local baseF205Id=300
-    local baseId="0"
+    create_test_cases_map "Target"
 
-    if [ "${CarrierBoard}" = "G204" ]
+    if [ -z "${TEST_CASES_MAP[${TestCaseId}]}" ]
     then
-        baseId=${baseG204Id}
-    elif [ "${CarrierBoard}" = "F205" ]
-    then
-        baseId=${baseF205Id}
-    else
-        echo "${TestCaseId}"
-        return
+        echo "Invalid Test ID"
+        exit
     fi
 
-    case "${Module}" in
-        m11)
-            TestCaseId=$((baseId+1))
-            ;;
-        m31)
-            TestCaseId=$((baseId+2))
-            ;;
-        m32)
-            TestCaseId=$((baseId+3))
-            ;;
-        m33)
-            TestCaseId=$((baseId+4))
-            ;;
-        m35n)
-            TestCaseId=$((baseId+5))
-            ;;
-        m36n)
-            TestCaseId=$((baseId+6))
-            ;;
-        m37)
-            TestCaseId=$((baseId+7))
-            ;;
-        m43)
-            TestCaseId=$((baseId+8))
-            ;;
-        m47)
-            TestCaseId=$((baseId+9))
-            ;;
-        m57)
-            TestCaseId=$((baseId+10))
-            ;;
-        m58)
-            TestCaseId=$((baseId+11))
-            ;;
-        m62)
-            TestCaseId=$((baseId+12))
-            ;;
-        m65n)
-            TestCaseId=$((baseId+13))
-            ;;
-        m66)
-            TestCaseId=$((baseId+14))
-            ;;
-        m72)
-            TestCaseId=$((baseId+15))
-            ;;
-        m77)
-            TestCaseId=$((baseId+16))
-            ;;
-        m81)
-            TestCaseId=$((baseId+17))
-            ;;
-        m82)
-            TestCaseId=$((baseId+18))
-            ;;
-        m99)
-            TestCaseId=$((baseId+19))
-            ;;
-        m199)
-            TestCaseId=$((baseId+20))
-            ;;
-        *)
-            TestCaseId="9999"
-            ;;
-    esac
-
-echo "${TestCaseId}"
+    if [ "${TestCaseId}" -lt "200" ]
+    then
+        Board=$(echo "${TEST_CASES_MAP[${TestCaseId}]}")
+        run_test_case_board "${TestCaseId}" "${TestSummaryDirectory}" "${OsNameKernel}"
+    elif [ "${TestCaseId}" -lt "300" ]
+    then
+        Module=$(echo "${TEST_CASES_MAP[${TestCaseId}]}" | sed 's/carrier_g204_//')
+        echo "Module: ${Module}"
+        run_test_case_module "${Module}" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+    elif [ "${TestCaseId}" -le "400" ]
+    then
+        Module=$(echo "${TEST_CASES_MAP[${TestCaseId}]}" | sed 's/carrier_f205_//')
+        echo "Module: ${Module}"
+        run_test_case_module "${Module}" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+    fi
 }
 
 ############################################################################

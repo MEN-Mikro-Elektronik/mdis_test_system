@@ -14,6 +14,7 @@ source "${MyDir}/Ip_Core_Tests/z029_can.sh"
 function g229_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
+    local LongDescription=${3}
     echo "--------------------------------G229 Test Case--------------------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that at this point all necessary drivers have been build and"
@@ -27,6 +28,12 @@ function g229_description {
     echo "    SUCCESS if ip-cores tests on G229 are passed."
     echo "    FAIL otherwise"
     echo ""
+
+    if [ ! -z "${LongDescription}" ]
+    then
+        z001_smb_description
+        z029_can_description
+    fi
 }
 
 ############################################################################

@@ -10,14 +10,14 @@ source "${MyDir}/../St_Functions.sh"
 # $1    Module name
 # $2    Module log path
 function carrier_g204_TPL_description {
-    local Module="${1}"
+    local Module="${1}"a
     local ModuleNo="${2}"
     local ModuleLogPath="${3}"
-    echo "---------G204 ${Module}_${ModuleNo} Test Case-------------------"
+    echo "--------------------------G204 ${Module}_${ModuleNo} Test Case-------------------"
     echo "PREREQUISITES:"
     echo "    M-module ${Module}_${ModuleNo} is plugged into G204"
     echo "DESCRIPTION:"
-    echo "    G204 ${Module}_${ModuleNo} test(s)"
+    echo "    M-module ${Module}_${ModuleNo} is test on G204 carrier"
     echo "PURPOSE:"
     echo "    Check if M-module on G204 is working correctly"
     echo "RESULTS"

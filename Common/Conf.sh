@@ -44,12 +44,12 @@ IN_3_DISABLE=203        # change input 3 to disable (with BL51 stands for RELAY 
 IN_4_DISABLE=204        # change input 4 to disable
 
 declare -A TEST_CASES_MAP
-TEST_CASES_MAP["0100"]="f215"
-TEST_CASES_MAP["0101"]="f223"
-TEST_CASES_MAP["0102"]="f614"
-TEST_CASES_MAP["0103"]="g229"
-TEST_CASES_MAP["0104"]="g215"
-TEST_CASES_MAP["0105"]="f206"
+TEST_CASES_MAP["100"]="f215"
+TEST_CASES_MAP["101"]="f223"
+TEST_CASES_MAP["102"]="f614"
+TEST_CASES_MAP["103"]="g229"
+TEST_CASES_MAP["104"]="g215"
+TEST_CASES_MAP["105"]="f206"
 
 # Address of Target that will be tested
 MenPcIpAddr="10.1.1.103"
@@ -184,6 +184,132 @@ GrubOsesBL51E=("0" \
         "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda15)" \
         "Ubuntu 18.04.3 LTS (18.04) (on /dev/sda16)" \
         "Ubuntu, with Linux 5.0.0-23-generic (on /dev/sda17)" \
-        "Debian GNU/Linux, with Linux 4.19.0-6-686-pae (on /dev/sda18)" \
         "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)" \
         )
+
+function create_test_cases_map {
+    local IsTarget="${1}"
+    local TestPath=""
+    local TestCaseId=""
+    local Module=""
+
+    if [ ! -z "${IsTarget}" ]
+    then
+        TestPath=$(realpath "${GitTestTargetDirPath}")
+    else
+        TestPath=$(realpath ../../Target)
+    fi
+
+    if [ ! -d "${TestPath}" ]
+    then
+        echo "Dir ${TestPath} does not exists"
+        exit
+    fi
+
+    # All supported m-modules can be found in directory Target/M_Modules_Tests
+    # loop through G204 carrier board
+    for Module in $(ls -l ${TestPath}/M_Modules_Tests/ | awk '{print $9}' | sed 's/.sh//'); do
+        TestCaseId=$(get_test_case_id "${Module}" "G204")
+        TEST_CASES_MAP["${TestCaseId}"]="carrier_g204_${Module}"
+    done
+    # loop through F205 carrier board
+    for Module in $(ls -l ${TestPath}/M_Modules_Tests/ | awk '{print $9}' | sed 's/.sh//'); do
+        TestCaseId=$(get_test_case_id "${Module}" "F205")
+        TEST_CASES_MAP["${TestCaseId}"]="carrier_f205_${Module}"
+    done
+}
+
+############################################################################
+# get m-module test case id
+#
+# parameters:
+# $1     Module name
+# $2     Carrier name
+function get_test_case_id {
+    local Module=${1}
+    local CarrierBoard=${2}
+
+    local TestCaseId="9999"
+    local baseG204Id=200
+    local baseF205Id=300
+    local baseId="0"
+
+    if [ "${CarrierBoard}" = "G204" ]
+    then
+        baseId=${baseG204Id}
+    elif [ "${CarrierBoard}" = "F205" ]
+    then
+        baseId=${baseF205Id}
+    else
+        echo "${TestCaseId}"
+        return
+    fi
+
+    case "${Module}" in
+        m11)
+            TestCaseId=$((baseId+1))
+            ;;
+        m31)
+            TestCaseId=$((baseId+2))
+            ;;
+        m32)
+            TestCaseId=$((baseId+3))
+            ;;
+        m33)
+            TestCaseId=$((baseId+4))
+            ;;
+        m35n)
+            TestCaseId=$((baseId+5))
+            ;;
+        m36n)
+            TestCaseId=$((baseId+6))
+            ;;
+        m37)
+            TestCaseId=$((baseId+7))
+            ;;
+        m43)
+            TestCaseId=$((baseId+8))
+            ;;
+        m47)
+            TestCaseId=$((baseId+9))
+            ;;
+        m57)
+            TestCaseId=$((baseId+10))
+            ;;
+        m58)
+            TestCaseId=$((baseId+11))
+            ;;
+        m62)
+            TestCaseId=$((baseId+12))
+            ;;
+        m65n)
+            TestCaseId=$((baseId+13))
+            ;;
+        m66)
+            TestCaseId=$((baseId+14))
+            ;;
+        m72)
+            TestCaseId=$((baseId+15))
+            ;;
+        m77)
+            TestCaseId=$((baseId+16))
+            ;;
+        m81)
+            TestCaseId=$((baseId+17))
+            ;;
+        m82)
+            TestCaseId=$((baseId+18))
+            ;;
+        m99)
+            TestCaseId=$((baseId+19))
+            ;;
+        m199)
+            TestCaseId=$((baseId+20))
+            ;;
+        *)
+            TestCaseId="9999"
+            ;;
+    esac
+
+echo "${TestCaseId}"
+}
