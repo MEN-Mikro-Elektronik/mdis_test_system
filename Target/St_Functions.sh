@@ -35,13 +35,15 @@ function run_test_case_id {
     then
         Board=$(echo "${TEST_CASES_MAP[${TestCaseId}]}")
         run_test_case_board "${TestCaseId}" "${TestSummaryDirectory}" "${OsNameKernel}"
-    elif [ "${TestId}" -lt "300" ]
+    elif [ "${TestCaseId}" -lt "300" ]
     then
         Module=$(echo "${TEST_CASES_MAP[${TestCaseId}]}" | sed 's/carrier_g204_//')
+        echo "Module: ${Module}"
         run_test_case_module "${Module}" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
-    elif [ "${TestId}" -le "400" ]
+    elif [ "${TestCaseId}" -le "400" ]
     then
         Module=$(echo "${TEST_CASES_MAP[${TestCaseId}]}" | sed 's/carrier_f205_//')
+        echo "Module: ${Module}"
         run_test_case_module "${Module}" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
     fi
 }
