@@ -210,7 +210,7 @@ function create_test_cases_map {
     # loop through G204 carrier board
     for Module in $(ls -l ${TestPath}/M_Modules_Tests/ | awk '{print $9}' | sed 's/.sh//'); do
         TestCaseId=$(get_test_case_id "${Module}" "G204")
-        TEST_CASES_MAP["${TestCaseId}"]="carrier_g204_${module}"
+        TEST_CASES_MAP["${TestCaseId}"]="carrier_g204_${Module}"
     done
     # loop through F205 carrier board
     for Module in $(ls -l ${TestPath}/M_Modules_Tests/ | awk '{print $9}' | sed 's/.sh//'); do
