@@ -19,7 +19,7 @@ function run_test_case_id {
     local OsNameKernel=${3}
     echo "run_test_case_id: ${TestCaseId}"
 
-    create_test_cases_map
+    create_test_cases_map "Target"
     for K in "${!TEST_CASES_MAP[@]}"
     do 
         echo "[${K}]: ${TEST_CASES_MAP[${K}]}"
