@@ -176,7 +176,7 @@ MdisTestBackgroundPID=0
 
 trap cleanOnExit SIGINT SIGTERM
 function cleanOnExit() {
-    echo "** cleanOnExit"
+    echo "** cleanOnExit - signal"
     echo "MdisTestBackgroundPID: ${MdisTestBackgroundPID}"
     if [ ${MdisTestBackgroundPID} -ne 0 ]; then
         # Kill process
