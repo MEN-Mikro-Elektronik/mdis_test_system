@@ -188,7 +188,7 @@ GrubOsesBL51E=("0" \
         )
 
 function create_test_cases_map {
-    TestPath=$(realpath ../../Target)
+    TestPath=$(realpath "${GitTestTargetDirPath}")
     if [ ! -d "${TestPath}" ]
     then
         echo "Dir ${TestPath} does not exists"
@@ -302,7 +302,3 @@ function get_test_case_id {
 
 echo "${TestCaseId}"
 }
-VERBOSE_LEVEL=1
-TEST_SETUP=1
-VERBOSE_LEVEL=0
-TEST_SETUP=0

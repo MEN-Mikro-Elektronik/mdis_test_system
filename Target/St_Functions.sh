@@ -20,6 +20,11 @@ function run_test_case_id {
     echo "run_test_case_id: ${TestCaseId}"
 
     create_test_cases_map
+    for K in "${!TEST_CASES_MAP[@]}"
+    do 
+        echo "[${K}]: ${TEST_CASES_MAP[${K}]}"
+    done | sort -n -k3
+
     if [ -z "${TEST_CASES_MAP[${TestCaseId}]}" ]
     then
         echo "Invalid Test ID"
