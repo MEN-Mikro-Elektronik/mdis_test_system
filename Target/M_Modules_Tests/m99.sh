@@ -59,20 +59,9 @@ function m99_test {
         debug_print "${LogPrefix} Could not run m99_latency " "${LogFile}"
     fi
 
-#    # Kill bacground processess m99_latency
-#    m99_latency_PID=$(pgrep m99_latency)
-#    sleep 10
-#    if ! run_as_root kill -9 "${m99_latency_PID}" > /dev/null 2>&1
-#    then
-#        if pgrep m99_latency
-#        then
-#            debug_print "${LogPrefix} Could not kill m99_latency PID: ${m99_latency_PID}" "${LogFile}"
-#        fi
-#    fi
-
     debug_print "${LogPrefix} Step3: check for errors" "${LogFile}"
     grep "^generating interrupts: timerval=250" m99_latency.log > /dev/null && \
-    grep "^[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+\([[:space:]]+[0-9]+[[:space:]]+\)[[:space:]]+\|[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+\([[:space:]]+[0-9]+[[:space:]]+" m99_latency.log > /dev/null
+    grep "^[[:space:]]*[0-9]\+[[:space:]]*[0-9]\+[[:space:]]*[0-9]\+[[:space:]]*([[:space:]]*[0-9]\+[[:space:]]*)[[:space:]]*|[[:space:]]*[0-9]\+[[:space:]]*[0-9]\+[[:space:]]*[0-9]\+[[:space:]]*([[:space:]]*[0-9]\+[[:space:]]*)" m99_latency.log > /dev/null
     if [ $? -ne 0 ]; then 
         debug_print "${LogPrefix} Invalid log output, ERROR" "${LogFile}"
         return "${ERR_VALUE}"
