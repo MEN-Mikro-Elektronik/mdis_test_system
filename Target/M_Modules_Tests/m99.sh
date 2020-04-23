@@ -54,7 +54,7 @@ function m99_test {
 
     # Run m99_latency
     debug_print "${LogPrefix} Step2: run m99_latency m99_${ModuleNo}" "${LogFile}"
-    if ! run_as_root bash -c 'm99_latency m99_1 < <(sleep 10; echo "") > m99_latency.log)'
+    if ! run_as_root bash -c 'm99_latency m99_1 < <(sleep 10; echo "") > m99_latency.log'
     then
         debug_print "${LogPrefix} Could not run m99_latency " "${LogFile}"
     fi
