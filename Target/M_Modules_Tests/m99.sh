@@ -54,21 +54,21 @@ function m99_test {
 
     # Run m99_latency
     debug_print "${LogPrefix} Step2: run m99_latency m99_${ModuleNo}" "${LogFile}"
-    if ! run_as_root $(m99_latency m99_"${ModuleNo}" > m99_latency.log &)
+    if ! run_as_root bash -c "m99_latency m99_"${ModuleNo}" < <(sleep 10; echo "") > m99_latency.log)"
     then
         debug_print "${LogPrefix} Could not run m99_latency " "${LogFile}"
     fi
 
-    # Kill bacground processess m99_latency
-    m99_latency_PID=$(pgrep m99_latency)
-    sleep 10
-    if ! run_as_root kill -9 "${m99_latency_PID}" > /dev/null 2>&1
-    then
-        if pgrep m99_latency
-        then
-            debug_print "${LogPrefix} Could not kill m99_latency PID: ${m99_latency_PID}" "${LogFile}"
-        fi
-    fi
+#    # Kill bacground processess m99_latency
+#    m99_latency_PID=$(pgrep m99_latency)
+#    sleep 10
+#    if ! run_as_root kill -9 "${m99_latency_PID}" > /dev/null 2>&1
+#    then
+#        if pgrep m99_latency
+#        then
+#            debug_print "${LogPrefix} Could not kill m99_latency PID: ${m99_latency_PID}" "${LogFile}"
+#        fi
+#    fi
 
     debug_print "${LogPrefix} Step3: check for errors" "${LogFile}"
     grep "^generating interrupts: timerval=250" m99_latency.log > /dev/null && \
