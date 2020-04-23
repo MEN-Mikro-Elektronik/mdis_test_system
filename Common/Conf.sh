@@ -44,6 +44,7 @@ IN_3_DISABLE=203        # change input 3 to disable (with BL51 stands for RELAY 
 IN_4_DISABLE=204        # change input 4 to disable
 
 declare -A TEST_CASES_MAP
+TEST_CASES_MAP["1"]="b_smb2"
 TEST_CASES_MAP["100"]="f215"
 TEST_CASES_MAP["101"]="f223"
 TEST_CASES_MAP["102"]="f614"

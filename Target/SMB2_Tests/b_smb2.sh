@@ -17,7 +17,7 @@ function b_smb2_description {
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
     echo "DESCRIPTION:"
-    echo "    Run SMB2 tests - supports only G025A03 CPU Board"
+    echo "    Run SMB2 tests - this test supports only G025A03 CPU Board"
     echo "PURPOSE:"
     echo "    Check access to SMB devices via the MDIS SMB2 API"
     echo "REQUIREMENT_ID:"

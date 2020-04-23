@@ -140,9 +140,6 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             run_test_case_module "m35n" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_module "m33" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_module "m47" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
-            #run_test_case "0200" "${TestSummaryDirectory}" "${OsNameKernel}" # M65 @ G204
-            #run_test_case "0202" "${TestSummaryDirectory}" "${OsNameKernel}" # M35N @ G204
-            #run_test_case "0300" "${TestSummaryDirectory}" "${OsNameKernel}" # M33 & M47 @ F205
             ;;
         2)
             run_test_case_board "102" "${TestSummaryDirectory}" "${OsNameKernel}" # F614 @ F23P
@@ -167,6 +164,7 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             run_test_case_module "m36n" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
         4)
+            run_test_case_board "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ G25A03
             run_test_case_module "m81" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_module "m72" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
