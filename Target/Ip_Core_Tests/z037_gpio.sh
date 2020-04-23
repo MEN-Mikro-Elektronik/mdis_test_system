@@ -4,15 +4,15 @@ source "${MyDir}/../../Common/Conf.sh"
 source "${MyDir}/../St_Functions.sh"
 
 ############################################################################
-# z034_z037_gpio_description
+# z037_gpio_description
 #
 # parameters:
 # $1    Module number
 # $2    Module log path
-function z034_z037_gpio_description {
+function z037_gpio_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
-    echo "-------------------------Ip Core z034/z037 GPIO Test Case---------------------"
+    echo "-------------------------Ip Core 16Z037_GPIO Test Case---------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that all necessary drivers have been build and are"
     echo "    available in the system"
@@ -20,16 +20,19 @@ function z034_z037_gpio_description {
     echo "    1.Read chameleon table from board"
     echo "    2.Load m-module drivers: modprobe men_ll_z17"
     echo "    3.Find GPIO devices on board"
-    echo "    4.Run z17_simp on devices available on board"
-    echo "      -LED(s) blinking is not verified"
+    echo "    4.Check if there is 16Z037_GPIO"
+    echo "    5.Run z17_simp on device 16Z037_GPIO"
+    echo "    6.Check the results - result log shall contain no errors or warnings"
+    echo "      Device was opened and closed succesfully"
     echo "      -To confirm that GPIO is working correctly z17_simp is running twice"
     echo "        First run - input 0V"
     echo "        Second run - input 12V"
     echo "        Relay is changing input automatically and return values are validated"
-    echo "    5.Check the results - result log shall contain no errors or warnings"
     echo "PURPOSE:"
-    echo "    Check if ip core z034/z037 with men_ll_z17 driver is working"
+    echo "    Check if ip core z037 with men_ll_z17 driver is working"
     echo "    correctly"
+    echo "REQUIREMENT_ID:"
+    echo "    MEN_13MD05-90_SA_1440"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"
@@ -51,7 +54,7 @@ function z034_z037_gpio_description {
 # $5    Board subvendor id
 # $6    Board number in system
 # $7    Optional parameter - test type (optional)
-function z034_z037_gpio_test {
+function z037_gpio_test {
     local LogFile=${1}
     local LogPrefix=${2}
     local VenID=${3}
@@ -70,26 +73,29 @@ function z034_z037_gpio_test {
         return "${ERR_MODPROBE}"
     else
         GpioNumber=$(grep -c "^gpio" "${MezzChamDevName}")
-        if [ "${GpioNumber}" -ne "2" ]; then
-            debug_print "${LogPrefix} There are ${GpioNumber} GPIO interfaces" "${LogFile}"
-        else
-            gpio1=$(grep "^gpio" "${MezzChamDevName}" | awk NR==1'{print $1}')
-            gpio2=$(grep "^gpio" "${MezzChamDevName}" | awk NR==2'{print $1}')
-        fi
+        debug_print "${LogPrefix} There are ${GpioNumber} GPIO interfaces on ${MezzChamDevName}" "${LogFile}"
 
-        # Test GPIO write (leds) - result not checked
-        gpio_led "${LogFile}" "${LogPrefix}" "${gpio1}" "${RelayOutput}"
-
-        # Test GPIO read
-        if ! gpio_read "${LogFile}" "${LogPrefix}" "${gpio2}" "${RelayOutput}"
-        then
-            debug_print "${LogPrefix} gpio_test on ${gpio2} err: ${CmdResult}" "${LogFile}"
-            return "${ERR_VALUE}"
-        else
-            debug_print "${LogPrefix} gpio_test on ${gpio2} success" "${LogFile}"
-        fi
+        # Find 16Z037_GPIO, check only first available device on mezzaine and exit!
+        for i in $(seq 1 ${GpioNumber})
+        do
+            Gpio=$(grep "^gpio" "${MezzChamDevName}" | awk NR==${i}'{print $1}')
+            GpioWizModel=$(obtain_device_wiz_model "${Gpio}")
+            debug_print "${LogPrefix} Gpio ${Gpio} is type: ${GpioWizModel}" "${LogFile}"
+            if [ "${GpioWizModel}" = "16Z037_GPIO" ]
+            then
+                # Test GPIO read
+                if ! gpio_read "${LogFile}" "${LogPrefix}" "${Gpio}" "${RelayOutput}"
+                then
+                    debug_print "${LogPrefix} gpio_test on ${Gpio} error" "${LogFile}"
+                    return "${ERR_VALUE}"
+                else
+                    debug_print "${LogPrefix} gpio_test on ${Gpio} success" "${LogFile}"
+                    return "${ERR_OK}"
+                fi
+            fi
+        done
     fi
-    return "${ERR_OK}"
+    return "${ERR_VALUE}"
 }
 
 ############################################################################
@@ -155,27 +161,3 @@ function gpio_read {
 
     return "${ERR_OK}"
 }
-
-############################################################################
-# Function checks if GPIO is working correctly - write
-#
-# parameters:
-# $1    Log file
-# $2    Log prefix
-# $3    DeviceName
-function gpio_led {
-    local LogFile=${1}
-    local LogPrefix=${2}
-    local DeviceName=${3}
-
-    debug_print "${LogPrefix} change LED(s)" "${LogFile}"
-
-    # Test LEDS -- This cannot be checked automatically yet
-    if ! run_as_root z17_simp "${DeviceName}" >> "z17_simp_${DeviceName}.txt" 2>&1
-    then
-        debug_print "${LogPrefix} ERR_RUN :could not run z17_simp ${DeviceName}" "${LogFile}"
-        return "${ERR_VALUE}"
-    fi
-    return "${ERR_OK}"
-}
-
