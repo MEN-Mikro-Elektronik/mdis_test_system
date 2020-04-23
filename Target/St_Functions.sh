@@ -151,7 +151,7 @@ function debug_print {
 # $2     Log file name
 function print_requirements {
     local TestCase=${1}
-    local Reg=""
+    local Req=""
     local ReqCnt=1
     while [ "${Req}" != "INVALID" ]
     do  
