@@ -4,7 +4,7 @@ source "${MyDir}/../../Common/Conf.sh"
 source "${MyDir}/../St_Functions.sh"
 source "${MyDir}/Ip_Core_Tests/z029_can.sh"
 source "${MyDir}/Ip_Core_Tests/z034_z037_gpio.sh"
-source "${MyDir}/Ip_Core_Tests/z025_uart.sh"
+source "${MyDir}/Ip_Core_Tests/z125_uart.sh"
 
 ############################################################################
 # board f215 test
@@ -22,7 +22,7 @@ function f215_description {
     echo "    are available in the system"
     echo "DESCRIPTION:"
     echo "    F215_${ModuleNo} Interfaces Test"
-    echo "    Run tests for devices: z025_uart, z029_can, z034_z037_gpio"
+    echo "    Run tests for devices: z125_uart, z029_can, z034_z037_gpio"
     echo "PURPOSE:"
     echo "    Check if all interfaces of F215 board are detected and are working"
     echo "    correctly"
@@ -35,7 +35,7 @@ function f215_description {
     then
         z029_can_description
         z034_z037_gpio_description
-        z025_uart_description
+        z125_uart_description
     fi
 }
 
@@ -74,7 +74,7 @@ function f215_test {
             run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
-                                             -dname "z025_uart"\
+                                             -dname "z125_uart"\
                                              -venid "${VenID}"\
                                              -devid "${DevID}"\
                                              -subvenid "${SubVenID}"\
