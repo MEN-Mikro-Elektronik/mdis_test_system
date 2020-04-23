@@ -144,6 +144,29 @@ function debug_print {
 }
 
 ############################################################################
+# Print requirements from test case description
+#
+# parameters:
+# $1     Msg to print/log
+# $2     Log file name
+function print_requirements {
+    local TestCase=${1}
+    local Reg=""
+    local ReqCnt=1
+    while [ "${Req}" != "INVALID" ]
+    do  
+        ReqCnt=$((ReqCnt+1))
+        Reg=$("${TestCase}" | grep -A 10 "REQUIREMENT_ID:" | awk NR==${ReqCnt} | tr -d ' ')
+        if [ "${Reg}" != "RESULTS" ] && [ "${Reg}" != "" ]
+        then
+            echo "    ${Reg}"
+        else
+            Req="INVALID"
+        fi
+    done 
+}
+
+############################################################################
 # Check if tested device belongs to board specified in the test case
 #
 # parameters:
