@@ -21,6 +21,8 @@ function carrier_f205_TPL_description {
     echo "    F205 ${ModuleName}_${ModuleNo} Interface Test"
     echo "PURPOSE:"
     echo "    Check if M-modules on F205 is working correctly"
+    echo "REQUIREMENT_ID:"
+    echo "    MEN_13MD05-90_SA_1720"
     echo "RESULTS"
     echo "    SUCCESS if m-modules tests are passed."
     echo "    FAIL otherwise"

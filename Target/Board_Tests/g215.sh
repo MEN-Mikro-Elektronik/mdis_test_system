@@ -27,6 +27,8 @@ function g215_description {
     echo "PURPOSE:"
     echo "    Check if all interfaces of G215 board are detected and are working"
     echo "    correctly"
+    echo "REQUIREMENT_ID:"
+    echo "    MEN_13MD05-90_SA_1320"
     echo "RESULTS"
     echo "    SUCCESS if ip-cores tests on F215 are passed."
     echo "    FAIL otherwise"

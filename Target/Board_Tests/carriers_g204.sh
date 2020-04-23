@@ -20,6 +20,8 @@ function carrier_g204_TPL_description {
     echo "    M-module ${Module}_${ModuleNo} is test on G204 carrier"
     echo "PURPOSE:"
     echo "    Check if M-module on G204 is working correctly"
+    echo "REQUIREMENT_ID:"
+    echo "    MEN_13MD05-90_SA_1730"
     echo "RESULTS"
     echo "    SUCCESS if all m-modules(s) tests are passed."
     echo "    FAIL otherwise"

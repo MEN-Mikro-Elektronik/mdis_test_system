@@ -26,6 +26,8 @@ function m36n_description {
     echo "    5.Output values of m36_simp commands should differ"
     echo "PURPOSE:"
     echo "    Check if M-module m36 is working correctly"
+    echo "REQUIREMENT_ID:"
+    echo "    MEN_13MD05-90_SA_1840"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"

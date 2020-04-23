@@ -23,6 +23,8 @@ function m99_description {
     echo "    3.Verify if m99_latency command output is valid - does not contain errors"
     echo "PURPOSE:"
     echo "    Check if M-module m99 is working correctly"
+    echo "REQUIREMENT_ID:"
+    echo "    MEN_13MD05-90_SA_1950"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"
