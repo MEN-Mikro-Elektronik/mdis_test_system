@@ -54,7 +54,7 @@ function g215_test {
     local TestCaseId="${1}"
     local TestSummaryDirectory="${2}"
     local OsNameKernel="${3}"
-    local TestCaseLogName=${4}
+    local LogFile=${4}
     local LogPrefix=${5}
     local BoardInSystem=${6}
 
