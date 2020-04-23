@@ -4,6 +4,7 @@ source "${MyDir}/../../Common/Conf.sh"
 source "${MyDir}/../St_Functions.sh"
 source "${MyDir}/Ip_Core_Tests/z001_smb.sh"
 source "${MyDir}/Ip_Core_Tests/z029_can.sh"
+source "${MyDir}/Ip_Core_Tests/z127_gpio.sh"
 
 ############################################################################
 # board g229 test
@@ -20,10 +21,11 @@ function g229_description {
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
     echo "DESCRIPTION:"
-    echo "    Run tests on g229_${ModuleNo} for ip cores:"
-    echo "      - Z001 (smb test)"
-    echo "      - Z029 (can test)"
-    echo "      - Z135 (hsuart test)"
+    echo "    G229 Interfaces Test"
+    echo "    Run tests for devices: z001_smb, z029_can, z127_gpio, z135_hsuart"
+    echo "PURPOSE:"
+    echo "    Check if all interfaces of G215 board are detected and are working"
+    echo "    correctly"
     echo "RESULTS"
     echo "    SUCCESS if ip-cores tests on G229 are passed."
     echo "    FAIL otherwise"
@@ -33,6 +35,8 @@ function g229_description {
     then
         z001_smb_description
         z029_can_description
+        z127_gpio_description
+        #z135_hsuart_description
     fi
 }
 
@@ -40,14 +44,17 @@ function g229_description {
 # run board g229 test
 #
 # parameters:
-# $1    TestCaseLogName
-# $2    LogPrefix
-# $3    M-Module number
+# $1    Test case ID
+# $2    Test summary directory
+# $3    Os kernel
+# $4    Log file
+# $5    Log prefix
+# $6    Board number
 function g229_test {
     local TestCaseId="${1}"
     local TestSummaryDirectory="${2}"
     local OsNameKernel="${3}"
-    local TestCaseLogName=${4}
+    local LogFile=${4}
     local LogPrefix=${5}
     local BoardInSystem=${6}
 
@@ -65,7 +72,7 @@ function g229_test {
     while ${MachineRun}; do
         case "${MachineState}" in
         smb_test)
-            echo "${LogPrefix} Smb test" | tee -a "${TestCaseLogName}" 2>&1
+            debug_print "${LogPrefix} Smb test" "${LogFile}"
             run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
@@ -79,7 +86,7 @@ function g229_test {
             MachineState="can_test"
             ;;
         can_test)
-            echo "${LogPrefix} Run CAN test" | tee -a "${TestCaseLogName}" 2>&1
+            debug_print "${LogPrefix} Run CAN test" "${LogFile}"
             run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
@@ -90,10 +97,24 @@ function g229_test {
                                              -tspec "${CanTest}"\
                                              -dno "1"
             CanTestResult=$?
+            MachineState="gpio_z034_test"
+            ;;
+        gpio_z127_test)
+            debug_print "${LogPrefix} Run GPIO z127 test" "${LogFile}"
+            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+                                             -id "${TestCaseId}"\
+                                             -os "${OsNameKernel}"\
+                                             -dname "z127_gpio"\
+                                             -venid "${VenID}"\
+                                             -devid "${DevID}"\
+                                             -subvenid "${SubVenID}"\
+                                             -tspec "dummy"\
+                                             -dno "1"
+            GpioZ127TestResult=$?
             MachineState="uart_test"
             ;;
         uart_test)
-            echo "${LogPrefix} Run HSUART test" | tee -a "${TestCaseLogName}" 2>&1
+            debug_print "${LogPrefix} Run HSUART test" "${LogFile}"
             #run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
             #                                 -id "${TestCaseId}"\
             #                                 -os "${OsNameKernel}"\
@@ -108,17 +129,17 @@ function g229_test {
             ;;
         Break)
             # Clean after Test Case
-            echo "${LogPrefix} Break State" | tee --a "${TestCaseLogName}"
+            debug_print "${LogPrefix} Break State" "${LogFile}"
             MachineRun=false
             ;;
         *)
-            echo "${LogPrefix} State is not set, start with smb_test" | tee -a "${TestCaseLogName}"
+            debug_print "${LogPrefix} State is not set, start with smb_test" "${LogFile}"
             MachineState="smb_test"
             ;;
         esac
     done
 
-    if [ "${CanTestResult}" = "${ERR_OK}" ] && [ "${SmbTestResult}" = "${ERR_OK}" ] && [ "${UartTestResult}" = "${ERR_OK}" ]; then
+    if [ "${CanTestResult}" = "${ERR_OK}" ] && [ "${SmbTestResult}" = "${ERR_OK}" ] && [ "${GpioZ127TestResult}" = "${ERR_OK}" ] && [ "${UartTestResult}" = "${ERR_OK}" ]; then
         return "${ERR_OK}"
     else
         return "${ERR_VALUE}"

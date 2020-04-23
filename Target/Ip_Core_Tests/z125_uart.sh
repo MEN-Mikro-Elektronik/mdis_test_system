@@ -4,15 +4,15 @@ source "${MyDir}/../../Common/Conf.sh"
 source "${MyDir}/../St_Functions.sh"
 
 ############################################################################
-# z025_uart test description
+# z125_uart test description
 #
 # parameters:
 # $1    Module number
 # $2    Module log path
-function z025_uart_description {
+function z125_uart_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
-    echo "---------------------------Ip Core z025 UART----------------------------------"
+    echo "---------------------------Ip Core z125 UART----------------------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that all necessary drivers have been build and are"
     echo "    available in the system"
@@ -24,8 +24,10 @@ function z025_uart_description {
     echo "    4.If 2 UART interfaces are available on board perform loopback test"
     echo "    5.Check if both UART interfaces send and received data properly"
     echo "PURPOSE:"
-    echo "    Check if ip core z025 with men_mdis_kernel men_lx_z25 drivers is working"
+    echo "    Check if ip core z125 with men_mdis_kernel men_lx_z25 drivers is working"
     echo "    correctly"
+    echo "REQUIREMENT_ID:"
+    echo "    MEN_13MD05-90_SA_1470"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"
@@ -47,7 +49,7 @@ function z025_uart_description {
 # $5    Board subvendor id
 # $6    Board number in system
 # $7    UART interfaces on board (optional)
-function z025_uart_test {
+function z125_uart_test {
     local LogFile=${1}
     local LogPrefix=${2}
     local VenID=${3}
@@ -60,9 +62,9 @@ function z025_uart_test {
 
     # Debian workaround. Could not dump chameleon table when
     # men_lx_z25 is loaded
-    unload_z025_driver "${LogFile}" "${LogPrefix}"
+    unload_z125_driver "${LogFile}" "${LogPrefix}"
     obtain_chameleon_table "${VenID}" "${DevID}" "${SubVenID}" "${ChamTableDumpFile}" "${BoardInSystem}" "${LogFile}" "${LogPrefix}"
-    load_z025_driver "${LogFile}" "${LogPrefix}"
+    load_z125_driver "${LogFile}" "${LogPrefix}"
     CmdResult=$?
     if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
         debug_print "${LogPrefix} load_z025_driver failed, err: ${CmdResult}" "${LogFile}"
@@ -91,7 +93,7 @@ function z025_uart_test {
 # parameters:
 # $1    Log file
 # $2    Log prefix
-function load_z025_driver {
+function load_z125_driver {
     local LogFile=${1}
     local LogPrefix=${2}
     local CmdResult=${ERR_UNDEFINED}
@@ -121,7 +123,7 @@ function load_z025_driver {
 # parameters:
 # $1    Log file
 # $2    Log prefix
-function unload_z025_driver {
+function unload_z125_driver {
     local LogFile=${1}
     local LogPrefix=${2}
     ## DEBIAN workaround -- on DEBIAN chameleon table disapears when module men_lx_z25 is loaded

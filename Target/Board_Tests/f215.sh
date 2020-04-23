@@ -3,8 +3,9 @@ MyDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${MyDir}/../../Common/Conf.sh"
 source "${MyDir}/../St_Functions.sh"
 source "${MyDir}/Ip_Core_Tests/z029_can.sh"
-source "${MyDir}/Ip_Core_Tests/z034_z037_gpio.sh"
-source "${MyDir}/Ip_Core_Tests/z025_uart.sh"
+source "${MyDir}/Ip_Core_Tests/z034_gpio.sh"
+source "${MyDir}/Ip_Core_Tests/z037_gpio.sh"
+source "${MyDir}/Ip_Core_Tests/z125_uart.sh"
 
 ############################################################################
 # board f215 test
@@ -22,7 +23,7 @@ function f215_description {
     echo "    are available in the system"
     echo "DESCRIPTION:"
     echo "    F215_${ModuleNo} Interfaces Test"
-    echo "    Run tests for devices: z025_uart, z029_can, z034_z037_gpio"
+    echo "    Run tests for devices: z125_uart, z029_can, z034_gpio, z037_gpio"
     echo "PURPOSE:"
     echo "    Check if all interfaces of F215 board are detected and are working"
     echo "    correctly"
@@ -34,8 +35,9 @@ function f215_description {
     if [ ! -z "${LongDescription}" ]
     then
         z029_can_description
-        z034_z037_gpio_description
-        z025_uart_description
+        z034_gpio_description
+        z037_gpio_description
+        z125_uart_description
     fi
 }
 
@@ -74,7 +76,7 @@ function f215_test {
             run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
-                                             -dname "z025_uart"\
+                                             -dname "z125_uart"\
                                              -venid "${VenID}"\
                                              -devid "${DevID}"\
                                              -subvenid "${SubVenID}"\
@@ -95,20 +97,34 @@ function f215_test {
                                              -tspec "${CanTest}"\
                                              -dno "1"
             CanTestResult=$?
-            MachineState="gpio_test"
+            MachineState="gpio_z034_test"
             ;;
-        gpio_test)
-            debug_print "${LogPrefix} Run GPIO test" "${LogFile}"
+        gpio_z034_test)
+            debug_print "${LogPrefix} Run GPIO z034 test" "${LogFile}"
             run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
-                                             -dname "z034_z037_gpio"\
+                                             -dname "z034_gpio"\
                                              -venid "${VenID}"\
                                              -devid "${DevID}"\
                                              -subvenid "${SubVenID}"\
                                              -tspec "dummy"\
                                              -dno "1"
-            GpioTestResult=$?
+            GpioZ034TestResult=$?
+            MachineState="gpio_z037_test"
+            ;;
+        gpio_z037_test)
+            debug_print "${LogPrefix} Run GPIO z037 test" "${LogFile}"
+            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+                                             -id "${TestCaseId}"\
+                                             -os "${OsNameKernel}"\
+                                             -dname "z037_gpio"\
+                                             -venid "${VenID}"\
+                                             -devid "${DevID}"\
+                                             -subvenid "${SubVenID}"\
+                                             -tspec "dummy"\
+                                             -dno "1"
+            GpioZ037TestResult=$?
             MachineState="Break"
             ;;
         Break) 
@@ -123,7 +139,7 @@ function f215_test {
         esac
     done
 
-    if [ "${UartTestResult}" = "${ERR_OK}" ] && [ "${CanTestResult}" = "${ERR_OK}" ] && [ "${GpioTestResult}" = "${ERR_OK}" ]; then
+    if [ "${UartTestResult}" = "${ERR_OK}" ] && [ "${CanTestResult}" = "${ERR_OK}" ] && [ "${GpioZ034TestResult}" = "${ERR_OK}" ] && [ "${GpioZ037TestResult}" = "${ERR_OK}" ]; then
         return "${ERR_OK}"
     else
         return "${ERR_VALUE}"

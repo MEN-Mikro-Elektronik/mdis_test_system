@@ -28,6 +28,8 @@ function z087_eth_description {
     echo "PURPOSE:"
     echo "    Check if ip core z087 with men_lx_z77 driver is working"
     echo "    correctly"
+    echo "REQUIREMENT_ID:"
+    echo "    MEN_13MD05-90_SA_1460"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"

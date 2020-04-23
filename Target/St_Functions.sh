@@ -263,6 +263,25 @@ function blacklist_mcb_pci {
 }
 
 ############################################################################
+# Obtain _WIZ_MODEL for given device name
+# It is assumed that following system.dsc format for WIZ_MODEL is used:
+# _WIZ_MODEL = STRING 16Z034_GPIO
+#
+# parameters:
+# $1      m-module name
+function obtain_device_wiz_model {
+    local DeviceName=${1}
+    nawk -v mname="${DeviceName} {" '{
+    if(index($0,mname)!=0)
+            valid=1
+    if(index($0,"}")!=0)
+            valid=0
+    if(valid==1)
+            print
+    }' ../../system.dsc | grep "_WIZ_MODEL" | awk '{print $4}'
+}
+
+############################################################################
 # Obtain carrier board for given M-Module name
 # It is assumed that following system.dsc format for CARRIER BOARD is used:
 # BOARD_NAME = STRING <board>
