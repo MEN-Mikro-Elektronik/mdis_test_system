@@ -81,15 +81,15 @@ function print_test_brief {
     elif [ "${TestId}" -lt "300" ]
     then
         Module=$(echo "${TEST_CASES_MAP[${TestId}]}" | sed 's/carrier_g204_//')
+        source ${TestPath}/Board_Tests/carriers_g204.sh
         source ${TestPath}/M_Modules_Tests/${Module}.sh
-        echo "M-module ${Module}_x test on carrier G204"
-        ${Module}_description
+        carrier_g204_TPL_description "${Module}" "<x>" "long_description"
     elif [ "${TestId}" -le "400" ]
     then
         Module=$(echo "${TEST_CASES_MAP[${TestId}]}" | sed 's/carrier_f205_//')
+        source ${TestPath}/Board_Tests/carriers_f205.sh
         source ${TestPath}/M_Modules_Tests/${Module}.sh
-        echo "M-module ${Module}_x test on carrier F205"
-        ${Module}_description
+        carrier_f205_TPL_description "${Module}" "<x>" "long_description"
     fi
 }
 

@@ -29,6 +29,7 @@ source "${MyDir}"/Board_Tests/g229.sh
 source "${MyDir}"/Board_Tests/f223.sh
 source "${MyDir}"/Board_Tests/carriers_f205.sh
 source "${MyDir}"/Board_Tests/carriers_g204.sh
+source "${MyDir}"/SMB2_Tests/b_smb2.sh
 
 CurrDir=$(pwd)
 

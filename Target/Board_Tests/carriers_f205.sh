@@ -13,20 +13,30 @@ source "${MyDir}/../St_Functions.sh"
 function carrier_f205_TPL_description {
     local ModuleName=${1}
     local ModuleNo=${2}
-    local ModuleLogPath=${3}
-    echo "--------F205 ${ModuleName}_${ModuleNo} Test Case---"
+    local LongDescription="${3}"
+
+    echo "--------------------------------F205 ${ModuleName}_${ModuleNo} Test Case---------------"
     echo "PREREQUISITES:"
     echo "    M-module ${ModuleName}_${ModuleNo} is plugged into F205"
     echo "DESCRIPTION:"
     echo "    F205 ${ModuleName}_${ModuleNo} Interface Test"
     echo "PURPOSE:"
-    echo "    Check if M-modules on F205 is working correctly"
+    echo "    Check if M-module on F205 is working correctly"
     echo "REQUIREMENT_ID:"
     echo "    MEN_13MD05-90_SA_1720"
     print_requirements "${Module}_description"
     echo "RESULTS"
     echo "    SUCCESS if m-modules tests are passed."
     echo "    FAIL otherwise"
+    echo "RESULTS"
+    echo "    SUCCESS if ip-cores tests on F215 are passed."
+    echo "    FAIL otherwise"
+    echo ""
+
+    if [ ! -z "${LongDescription}" ]
+    then
+        "${Module}_description"
+    fi
 }
 
 ############################################################################
