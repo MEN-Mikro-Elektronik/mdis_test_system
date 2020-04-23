@@ -4,7 +4,7 @@ source "${MyDir}/../../Common/Conf.sh"
 source "${MyDir}/../St_Functions.sh"
 
 ############################################################################
-# z025_uart test description
+# z055_uart test description
 #
 # parameters:
 # $1    Module number
@@ -26,6 +26,8 @@ function z055_hdlc_description {
     echo "      - compare ppp0 tx data with ppp0 rx data (shall be the same)"
     echo "PURPOSE:"
     echo "    Check if ip core z055_hdlc is working correctly"
+    echo "REQUIREMENT_ID:"
+    echo "    MEN_13MD05-90_SA_1445"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"

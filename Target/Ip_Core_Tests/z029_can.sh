@@ -30,6 +30,8 @@ function z029_can_description {
     echo "PURPOSE:"
     echo "    Check if ip core z029 with men_ll_z15 driver is working"
     echo "    correctly"
+    echo "REQUIREMENT_ID:"
+    echo "    MEN_13MD05-90_SA_1420"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"

@@ -26,6 +26,8 @@ function z001_smb_description {
     echo "    7.Check if data read from EEPROM is equal to data written"
     echo "PURPOSE:"
     echo "    Check if ip core z001 with men_lx_z001 driver is working correctly"
+    echo "REQUIREMENT_ID:"
+    echo "    MEN_13MD05-90_SA_1400"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"
