@@ -19,6 +19,8 @@ source "${MyDir}"/M_Modules_Tests/m72.sh
 source "${MyDir}"/M_Modules_Tests/m77.sh
 source "${MyDir}"/M_Modules_Tests/m81.sh
 source "${MyDir}"/M_Modules_Tests/m82.sh
+source "${MyDir}"/M_Modules_Tests/m99.sh
+source "${MyDir}"/M_Modules_Tests/m199.sh
 source "${MyDir}"/Board_Tests/f215.sh
 source "${MyDir}"/Board_Tests/f206.sh
 source "${MyDir}"/Board_Tests/f614.sh
