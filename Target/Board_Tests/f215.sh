@@ -28,6 +28,8 @@ function f215_description {
     echo "    Check if all interfaces of F215 board are detected and are working"
     echo "    correctly"
     echo "REQUIREMENT_ID:"
+    print_env_requirements
+    arch_requirement "pci"
     echo "    MEN_13MD05-90_SA_1300"
     print_requirements "z029_can_description"
     print_requirements "z034_gpio_description"

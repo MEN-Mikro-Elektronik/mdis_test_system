@@ -84,7 +84,7 @@ function print_test_brief {
         source ${TestPath}/Board_Tests/carriers_g204.sh
         source ${TestPath}/M_Modules_Tests/${Module}.sh
         carrier_g204_TPL_description "${Module}" "<x>" "long_description"
-    elif [ "${TestId}" -le "400" ]
+    elif [ "${TestId}" -lt "400" ]
     then
         Module=$(echo "${TEST_CASES_MAP[${TestId}]}" | sed 's/carrier_f205_//')
         source ${TestPath}/Board_Tests/carriers_f205.sh

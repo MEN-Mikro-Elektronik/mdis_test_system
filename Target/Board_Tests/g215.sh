@@ -28,6 +28,8 @@ function g215_description {
     echo "    Check if all interfaces of G215 board are detected and are working"
     echo "    correctly"
     echo "REQUIREMENT_ID:"
+    print_env_requirements
+    arch_requirement "pci"
     echo "    MEN_13MD05-90_SA_1320"
     print_requirements "z029_can_description"
     print_requirements "z034_gpio_description"
@@ -36,6 +38,7 @@ function g215_description {
     echo "RESULTS"
     echo "    SUCCESS if ip-cores tests on F215 are passed."
     echo "    FAIL otherwise"
+    echo ""
 
     if [ ! -z "${LongDescription}" ]
     then

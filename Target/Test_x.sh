@@ -299,7 +299,7 @@ fi
 
 case "${TestTypeDev}" in
     c)
-        "${TestDescription}" "${ModuleName}" "${ModuleNo}" "${TestCaseLogName}" >> "${ResultsSummaryTmp}"
+        "${TestDescription}" "${ModuleName}" "${ModuleNo}" "" >> "${ResultsSummaryTmp}"
         ;;
     m);&
     z);&
@@ -311,19 +311,15 @@ case "${TestTypeDev}" in
         ;;
 esac
 
-#TestReq=$(grep --no-filename -A 1 "REQUIREMENT_ID:" "${ResultsSummaryTmp}" | awk NR==2 | tr -d ' ')
-
 if [ ${PrintTerminalResults} -eq "1" ]; then
     echo "${LogPrefix} Test_Result: ${TestCaseResult}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
     echo "${LogPrefix} Test_ID: ${TestCaseId}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
-    #echo "${LogPrefix} Test_Requirement: ${TestReq}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
     echo "${LogPrefix} Test_Setup: ${TEST_SETUP}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
     echo "${LogPrefix} Test_Os: ${TestOs}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
 else
     echo "${LogPrefix} Test_Result for ${TestCaseName}: ${TestCaseResult}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
     echo "${LogPrefix} Test_Result: ${TestCaseResult}" | tee -a "${TestCaseLogName}" >> "${ResultsSummaryTmp}" 2>&1
     echo "${LogPrefix} Test_ID: ${TestCaseId}" | tee -a "${TestCaseLogName}" >> "${ResultsSummaryTmp}" 2>&1
-    #echo "${LogPrefix} Test_Requirement: ${TestReq}" | tee -a "${TestCaseLogName}" >> "${ResultsSummaryTmp}" 2>&1
     echo "${LogPrefix} Test_Setup: ${TEST_SETUP}" | tee -a "${TestCaseLogName}" >> "${ResultsSummaryTmp}" 2>&1
     echo "${LogPrefix} Test_Os: ${TestOs}" |  tee -a "${TestCaseLogName}" >> "${ResultsSummaryTmp}" 2>&1
 fi

@@ -8,28 +8,26 @@ source "${MyDir}/../St_Functions.sh"
 #
 # parameters:
 # $1    Module name
-# $2    Module number
-# $3    Module log path
+# $2    Module No
+# $3    Print dependent m-module test description flag
 function carrier_f205_TPL_description {
-    local ModuleName=${1}
-    local ModuleNo=${2}
+    local Module="${1}"
+    local ModuleNo="${2}"
     local LongDescription="${3}"
 
     echo "--------------------------------F205 ${ModuleName}_${ModuleNo} Test Case---------------"
     echo "PREREQUISITES:"
     echo "    M-module ${ModuleName}_${ModuleNo} is plugged into F205"
     echo "DESCRIPTION:"
-    echo "    F205 ${ModuleName}_${ModuleNo} Interface Test"
+    echo "    M-module ${Module}_${ModuleNo} test on F205 carrier"
     echo "PURPOSE:"
     echo "    Check if M-module on F205 is working correctly"
     echo "REQUIREMENT_ID:"
+    print_env_requirements
     echo "    MEN_13MD05-90_SA_1720"
     print_requirements "${Module}_description"
     echo "RESULTS"
     echo "    SUCCESS if m-modules tests are passed."
-    echo "    FAIL otherwise"
-    echo "RESULTS"
-    echo "    SUCCESS if ip-cores tests on F215 are passed."
     echo "    FAIL otherwise"
     echo ""
 

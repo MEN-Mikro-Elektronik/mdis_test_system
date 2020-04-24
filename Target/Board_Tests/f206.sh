@@ -23,6 +23,9 @@ function f206_description {
     echo "    Run tests for devices: z055_hdlc"
     echo "PURPOSE:"
     echo "    Check if all interfaces of z055_hdlc ip-core are working correctly"
+    echo "REQUIREMENT_ID:"
+    print_env_requirements
+    print_requirements "z055_hdlc_description"
     echo "RESULTS"
     echo "    SUCCESS if ip-cores tests on F206 are passed."
     echo "    FAIL otherwise"
