@@ -18,6 +18,7 @@ declare -a TEST_RESULT_OS_1=(_ _ _ _ _)
 declare -a TEST_RESULT_OS_2=(_ _ _ _ _)
 declare -a TEST_RESULT_OS_3=(_ _ _ _ _)
 declare -a TEST_RESULT_OS_4=(_ _ _ _ _)
+declare -a TEST_RESULTS_GROUP=("TEST_RESULT_OS_1" "TEST_RESULT_OS_2" "TEST_RESULT_OS_3" "TEST_RESULT_OS_4")
 
 ### @brief script usage --help
 function mdis_report_usage {
@@ -104,7 +105,8 @@ function print_requirements {
         else
             Req="INVALID"
         fi
-    done 
+    done
+    echo "$((ReqCnt-1))"
 }
 
 function print_results {
@@ -127,7 +129,7 @@ function print_results {
         ResultTestSetup=$((ResultTestSetup-1))
     fi
     echo "|||" >> results.txt
-
+    #($(echo "${ids[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
     for K in "${!TEST_CASES_MAP[@]}"
     do
         # Obtain results directory
@@ -144,13 +146,8 @@ function print_results {
             TEST_PURPOSE1=$(if ! echo "${TEST_PURPOSE1}" | grep "RESULT" > /dev/null; then echo "${TEST_PURPOSE1}"; fi)
             TEST_ID=$(grep "Test_ID" "${file}" | awk '{print $3}' | awk '{$1=$1};1')
             TEST_OS_FULL=$(grep "Test_Os" "${file}" | awk '{print $3}' | awk '{$1=$1};1')
-            print_requirements "${file}"
-            TEST_REQ0=${TEST_REQ[0]}
-            TEST_REQ1=${TEST_REQ[1]}
-            TEST_REQ2=${TEST_REQ[2]}
-            TEST_REQ3=${TEST_REQ[3]}
-            TEST_REQ4=${TEST_REQ[4]}
-            TEST_REQ5=${TEST_REQ[5]}
+            print_requirements "${file}" > /dev/null
+            ReqCnt="$(print_requirements "${file}")"
             TEST_SETUP=$(grep "Test_Setup" "${file}" | awk '{print $3}' | awk '{$1=$1};1')
             TEST_RESULTS=$(grep "Test_Result" "${file}" | awk '{print $2 $3}' | awk '{$1=$1};1')
             if [ -z "${ResultTestSetup}" ]; then
@@ -165,26 +162,43 @@ function print_results {
             rm "${TEST_ID}"_results.txt > /dev/null 2>&1
             if [ -z "${ResultTestSetup}" ]; then
                 if [ "${OSCnt}" -eq "${OSNo}" ]; then
-                  echo -e "${TEST_ID}|${TEST_REQ0}|${TEST_DESCRIPTION_SHORT}|${TEST_CMD0}|${TEST_RESULT_OS["1"]}|${TEST_RESULT_OS_1[0]}|${TEST_RESULT_OS_1[1]}|${TEST_RESULT_OS_1[2]}|${TEST_RESULT_OS_1[3]}|${TEST_RESULT_OS_1[4]}|${TEST_RESULT_OS_1[5]}" >> "${TEST_ID}"_results.txt
-                  echo -e "|${TEST_REQ1}|${TEST_PURPOSE0}|${TEST_DSC}|${TEST_RESULT_OS["2"]}|${TEST_RESULT_OS_2[0]}|${TEST_RESULT_OS_2[1]}|${TEST_RESULT_OS_2[2]}|${TEST_RESULT_OS_2[3]}|${TEST_RESULT_OS_2[4]}|${TEST_RESULT_OS_2[5]}" >> "${TEST_ID}"_results.txt
-                  echo -e "|${TEST_REQ2}|${TEST_PURPOSE1}||${TEST_RESULT_OS["3"]}|${TEST_RESULT_OS_3[0]}|${TEST_RESULT_OS_3[1]}|${TEST_RESULT_OS_3[2]}|${TEST_RESULT_OS_3[3]}|${TEST_RESULT_OS_3[4]}|${TEST_RESULT_OS_3[5]}" >> "${TEST_ID}"_results.txt
-                  echo -e "|${TEST_REQ3}|||${TEST_RESULT_OS["4"]}|${TEST_RESULT_OS_4[0]}|${TEST_RESULT_OS_4[1]}|${TEST_RESULT_OS_4[2]}|${TEST_RESULT_OS_4[3]}|${TEST_RESULT_OS_4[4]}|${TEST_RESULT_OS_4[5]}" >> "${TEST_ID}"_results.txt
-                  echo -e "|${TEST_REQ4}|||${TEST_RESULT_OS["5"]}|${TEST_RESULT_OS_5[0]}|${TEST_RESULT_OS_5[1]}|${TEST_RESULT_OS_5[2]}|${TEST_RESULT_OS_5[3]}|${TEST_RESULT_OS_5[4]}|${TEST_RESULT_OS_5[5]}" >> "${TEST_ID}"_results.txt
+                    echo -e "${TEST_ID}|${TEST_REQ0}|${TEST_DESCRIPTION_SHORT}|${TEST_CMD0}|${TEST_RESULT_OS["1"]}|${TEST_RESULT_OS_1[0]}|${TEST_RESULT_OS_1[1]}|${TEST_RESULT_OS_1[2]}|${TEST_RESULT_OS_1[3]}|${TEST_RESULT_OS_1[4]}|${TEST_RESULT_OS_1[5]}" >> "${TEST_ID}"_results.txt
+                    echo -e "|${TEST_REQ1}|${TEST_PURPOSE0}|${TEST_DSC}|${TEST_RESULT_OS["2"]}|${TEST_RESULT_OS_2[0]}|${TEST_RESULT_OS_2[1]}|${TEST_RESULT_OS_2[2]}|${TEST_RESULT_OS_2[3]}|${TEST_RESULT_OS_2[4]}|${TEST_RESULT_OS_2[5]}" >> "${TEST_ID}"_results.txt
+                     echo -e "|${TEST_REQ2}|${TEST_PURPOSE1}||${TEST_RESULT_OS["3"]}|${TEST_RESULT_OS_3[0]}|${TEST_RESULT_OS_3[1]}|${TEST_RESULT_OS_3[2]}|${TEST_RESULT_OS_3[3]}|${TEST_RESULT_OS_3[4]}|${TEST_RESULT_OS_3[5]}" >> "${TEST_ID}"_results.txt
+                    echo -e "|${TEST_REQ3}|||${TEST_RESULT_OS["4"]}|${TEST_RESULT_OS_4[0]}|${TEST_RESULT_OS_4[1]}|${TEST_RESULT_OS_4[2]}|${TEST_RESULT_OS_4[3]}|${TEST_RESULT_OS_4[4]}|${TEST_RESULT_OS_4[5]}" >> "${TEST_ID}"_results.txt
+                    echo -e "|${TEST_REQ4}|||${TEST_RESULT_OS["5"]}|${TEST_RESULT_OS_5[0]}|${TEST_RESULT_OS_5[1]}|${TEST_RESULT_OS_5[2]}|${TEST_RESULT_OS_5[3]}|${TEST_RESULT_OS_5[4]}|${TEST_RESULT_OS_5[5]}" >> "${TEST_ID}"_results.txt
                 fi
             else
                 if [ "${OSCnt}" -eq "${OSNo}" ]; then
-                  echo -e "${TEST_ID}|${TEST_REQ0}|${TEST_DESCRIPTION_SHORT}|${TEST_CMD0}|${TEST_RESULT_OS["1"]}|${TEST_RESULT_OS_1[${ResultTestSetup}]}" >> "${TEST_ID}"_results.txt
-                  echo -e "|${TEST_REQ1}|${TEST_PURPOSE0}|${TEST_DSC}|${TEST_RESULT_OS["2"]}|${TEST_RESULT_OS_2[${ResultTestSetup}]}" >> "${TEST_ID}"_results.txt
-                  echo -e "|${TEST_REQ2}|${TEST_PURPOSE1}||${TEST_RESULT_OS["3"]}|${TEST_RESULT_OS_3[${ResultTestSetup}]}" >> "${TEST_ID}"_results.txt
-                  echo -e "|${TEST_REQ3}|||${TEST_RESULT_OS["4"]}|${TEST_RESULT_OS_4[${ResultTestSetup}]}" >> "${TEST_ID}"_results.txt
-                  echo -e "|${TEST_REQ4}|||${TEST_RESULT_OS["5"]}|${TEST_RESULT_OS_5[${ResultTestSetup}]}" >> "${TEST_ID}"_results.txt
+                    local LineCntLoop=0
+                    local LineCnt=0
+                    # At least 3 lines per test cases are printed
+                    echo -e "${TEST_ID}|${TEST_REQ["0"]}|${TEST_DESCRIPTION_SHORT}|${TEST_CMD0}|${TEST_RESULT_OS["1"]}|${TEST_RESULT_OS_1[${ResultTestSetup}]}" >> "${TEST_ID}"_results.txt
+                    echo -e "|${TEST_REQ["1"]}|${TEST_PURPOSE0}|${TEST_DSC}|${TEST_RESULT_OS["2"]}|${TEST_RESULT_OS_2[${ResultTestSetup}]}" >> "${TEST_ID}"_results.txt
+                    echo -e "|${TEST_REQ["2"]}|${TEST_PURPOSE1}||${TEST_RESULT_OS["3"]}|${TEST_RESULT_OS_3[${ResultTestSetup}]}" >> "${TEST_ID}"_results.txt
+                    # loop through all test Requirements / all operating system
+                    ReqCnt=$((ReqCnt))
+                    OSCnt=$((OSCnt))
+                    if [ "${ReqCnt}" -lt "${OSCnt}" ]; then
+                        LineCnt=$((OSCnt))
+                    else
+                        LineCnt=$((ReqCnt))
+                    fi
+                    if [ "${LineCnt}" -gt 3 ]; then
+                        LineCntLoop=$((LineCnt-3))
+                        for i in $(seq 1 ${LineCntLoop})
+                        do
+                            local GroupArrayIdx=$((i+3))
+                            local RealArrayName="TEST_RESULT_OS_${GroupArrayIdx}"
+                            local RealArrayIdx="${ResultTestSetup}"
+                            local RealArrayValue=${RealArrayName}[RealArrayIdx]
+                            echo -e "|${TEST_REQ["$((i+3))"]}|||${TEST_RESULT_OS[$((i+3))]}|${!RealArrayValue}" >> "${TEST_ID}"_results.txt
+                        done
+                    fi
                 fi
             fi
-            TEST_REQ[0]=""
-            TEST_REQ[1]=""
-            TEST_REQ[2]=""
-            TEST_REQ[3]=""
-            TEST_REQ[4]=""
+            # Empty requirements array
+            unset TEST_REQ
         done < "${K}_file_list.log" 
     rm "${K}_file_list.log"
     done | sort -n -k3
