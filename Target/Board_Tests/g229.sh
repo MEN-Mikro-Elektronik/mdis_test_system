@@ -38,7 +38,7 @@ function g229_description {
         z001_smb_description
         z029_can_description
         z127_gpio_description
-        #z135_hsuart_description
+        z135_hsuart_description
     fi
 }
 
@@ -113,20 +113,20 @@ function g229_test {
                                              -tspec "dummy"\
                                              -dno "1"
             GpioZ127TestResult=$?
-            MachineState="uart_test"
+            MachineState="hsuart_test"
             ;;
-        uart_test)
+        hsuart_test)
             debug_print "${LogPrefix} Run HSUART test" "${LogFile}"
-            #run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
-            #                                 -id "${TestCaseId}"\
-            #                                 -os "${OsNameKernel}"\
-            #                                 -dname "z029_can"\
-            #                                 -venid "${VenID}"\
-            #                                 -devid "${DevID}"\
-            #                                 -subvenid "${SubVenID}"\
-            #                                 -tspec "${CanTest}"\
-            #                                 -dno "1"
-            UartTestResult=${ERR_NOEXIST}
+            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+                                             -id "${TestCaseId}"\
+                                             -os "${OsNameKernel}"\
+                                             -dname "z135_hsuart"\
+                                             -venid "${VenID}"\
+                                             -devid "${DevID}"\
+                                             -subvenid "${SubVenID}"\
+                                             -tspec "${CanTest}"\
+                                             -dno "1"
+            UartTestResult=$?
             MachineState="Break"
             ;;
         Break)

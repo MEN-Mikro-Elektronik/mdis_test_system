@@ -4,31 +4,28 @@ source "${MyDir}/../../Common/Conf.sh"
 source "${MyDir}/../St_Functions.sh"
 
 ############################################################################
-# z127_gpio_description
+# z135_uart_description
 #
 # parameters:
 # $1    Module number
 # $2    Module log path
-function z127_gpio_description {
+function z135_uart_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
-    echo "-------------------------Ip Core 16Z127_GPIO Test Case---------------------"
+    echo "-------------------------Ip Core 16Z135_UART Test Case---------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that all necessary drivers have been build and are"
     echo "    available in the system"
+    echo "    Used driver: DRIVERS/13Z135/driver.mak"
     echo "DESCRIPTION:"
     echo "    1.Read chameleon table from board"
-    echo "    2.Load m-module drivers: modprobe men_ll_z17_z127"
-    echo "    3.Find GPIO devices on board"
-    echo "    4.Check if there is 16Z127_GPIO"
-    echo "    5.Run z17_simp on device 16Z127_GPIO"
-    echo "    6.Check results - result log shall contain no errors or warnings"
-    echo "      Device was opened and closed succesfully"
+    echo "    2.Load m-module drivers: modprobe men_lx_z135"
+    echo "    3.Check if there are HSUART(s) available in /dev/*"
     echo "PURPOSE:"
-    echo "    Check if ip core z127 with men_ll_z17_z127 driver is loaded correctly,"
-    echo "    and z17_simp can be run on withouth errors on device"
+    echo "    Check if men_lx_z135 driver is loaded correctly,"
+    echo "    and new uart devices appears "
     echo "REQUIREMENT_ID:"
-    echo "    MEN_13MD05-90_SA_1480"
+    echo "    MEN_13MD05-90_SA_1490"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"
@@ -50,7 +47,7 @@ function z127_gpio_description {
 # $5    Board subvendor id
 # $6    Board number in system
 # $7    Optional parameter - test type (optional)
-function z127_gpio_test {
+function z135_uart_test {
     local LogFile=${1}
     local LogPrefix=${2}
     local VenID=${3}
@@ -63,26 +60,12 @@ function z127_gpio_test {
     MezzChamDevName="MezzChamDevName.txt"
     obtain_device_list_chameleon_device "${VenID}" "${DevID}" "${SubVenID}" "${MezzChamDevName}" "${BoardInSystem}" "${LogFile}" "${LogPrefix}"
 
-    if ! run_as_root modprobe men_ll_z17_z127
+    if ! run_as_root modprobe men_lx_z135
     then
-        debug_print "${LogPrefix} ERR_MODPROBE :could not modprobe men_ll_z17_z127" "${LogFile}"
+        debug_print "${LogPrefix} ERR_MODPROBE :could not modprobe men_lx_z135" "${LogFile}"
         return "${ERR_MODPROBE}"
-    else
-        GpioNumber=$(grep -c "^gpio" "${MezzChamDevName}")
-        debug_print "${LogPrefix} There are ${GpioNumber} GPIO interfaces on ${MezzChamDevName}" "${LogFile}"
+    fi
 
-        # Find 16Z127_GPIO, check only first available device on mezzaine and exit!
-        for i in $(seq 1 ${GpioNumber})
-        do
-            Gpio=$(grep "^gpio" "${MezzChamDevName}" | awk NR==${i}'{print $1}')
-            GpioWizModel=$(obtain_device_wiz_model "${Gpio}")
-            debug_print "${LogPrefix} Gpio ${Gpio} is type: ${GpioWizModel}" "${LogFile}"
-            if [ "${GpioWizModel}" = "16Z127_GPIO" ]
-            then
-                debug_print "${LogPrefix} Test not availaible !!!!" "${LogFile}"
-                return "${ERR_VALUE}"
-            fi
-        done
     fi
     return "${ERR_VALUE}"
 }

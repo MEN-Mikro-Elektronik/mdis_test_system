@@ -133,11 +133,10 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             run_test_case_id "${TestId}" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
         1)
-            #run_test_case_board "100" "${TestSummaryDirectory}" "${OsNameKernel}" # F215 board test
+            run_test_case_board "100" "${TestSummaryDirectory}" "${OsNameKernel}" # F215 board test
             run_test_case_board "104" "${TestSummaryDirectory}" "${OsNameKernel}" # G215 board test
-            run_test_case_board "105" "${TestSummaryDirectory}" "${OsNameKernel}" # F206 board
             run_test_case_module "m65n" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
-            run_test_case_module "m35n" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case_module "m77n" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_module "m33" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_module "m47" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
@@ -153,23 +152,21 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             run_test_case_module "m37n" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_module "m62n" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_module "m57" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
-            #run_test_case "0305" "${TestSummaryDirectory}" "${OsNameKernel}" # M43N & M11 @ F205
-            #run_test_case "0304" "${TestSummaryDirectory}" "${OsNameKernel}" # M66 & M31 @ F205
-            #run_test_case "0303" "${TestSummaryDirectory}" "${OsNameKernel}" # M32 & M58 @ F205
-            #run_test_case "0302" "${TestSummaryDirectory}" "${OsNameKernel}" # M37N & M62N @ F205
-            #run_test_case "0301" "${TestSummaryDirectory}" "${OsNameKernel}" # M57 @ F205
             ;;
         3)
-            run_test_case_module "m77n" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case_module "m35n" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_module "m36n" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
         4)
             run_test_case_board "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ G25A03
+            run_test_case_board "103" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_module "m81" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_module "m72" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
         5)
+            run_test_case_board "105" "${TestSummaryDirectory}" "${OsNameKernel}" # F206 board with Z055 HDLC core
             run_test_case_module "m82" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            #run_test_case_module "m82" "G204" "2" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_module "m99" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_module "m199" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
