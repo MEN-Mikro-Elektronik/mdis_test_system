@@ -26,6 +26,8 @@ function m65n_description {
     echo "      errors (find line 'TEST RESULT: 0 errors)"
     echo "PURPOSE:"
     echo "    Check if M-module m65n is working correctly"
+    echo "REQUIREMENT_ID:"
+    echo "    MEN_13MD05-90_SA_1910"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"

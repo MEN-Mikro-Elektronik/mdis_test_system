@@ -8,21 +8,33 @@ source "${MyDir}/../St_Functions.sh"
 #
 # parameters:
 # $1    Module name
-# $2    Module log path
+# $2    Module No
+# $3    Print dependent m-module test description flag
 function carrier_g204_TPL_description {
-    local Module="${1}"a
+    local Module="${1}"
     local ModuleNo="${2}"
-    local ModuleLogPath="${3}"
-    echo "--------------------------G204 ${Module}_${ModuleNo} Test Case-------------------"
+    local LongDescription="${3}"
+
+    echo "--------------------------------G204 ${Module}_${ModuleNo} Test Case-------------------"
     echo "PREREQUISITES:"
     echo "    M-module ${Module}_${ModuleNo} is plugged into G204"
     echo "DESCRIPTION:"
-    echo "    M-module ${Module}_${ModuleNo} is test on G204 carrier"
+    echo "    M-module ${Module}_${ModuleNo} test on G204 carrier"
     echo "PURPOSE:"
     echo "    Check if M-module on G204 is working correctly"
+    echo "REQUIREMENT_ID:"
+    print_env_requirements
+    echo "    MEN_13MD05-90_SA_1730"
+    print_requirements "${Module}_description"
     echo "RESULTS"
     echo "    SUCCESS if all m-modules(s) tests are passed."
     echo "    FAIL otherwise"
+    echo ""
+
+    if [ ! -z "${LongDescription}" ]
+    then
+        "${Module}_description"
+    fi
 }
 
 ############################################################################

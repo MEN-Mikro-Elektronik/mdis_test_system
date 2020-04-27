@@ -27,6 +27,8 @@ function m77_description {
     echo "    8.Verify if test message appears on port /dev/ttyD1"
     echo "PURPOSE:"
     echo "    Check if M-module m77 is working correctly"
+    echo "REQUIREMENT_ID:"
+    echo "    MEN_13MD05-90_SA_1927"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"

@@ -24,6 +24,8 @@ function m37_description {
     echo "      Device was opened and closed succesfully"
     echo "PURPOSE:"
     echo "    Check if M-module m37 is working correctly"
+    echo "REQUIREMENT_ID:"
+    echo "    MEN_13MD05-90_SA_1850"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"

@@ -3,6 +3,7 @@ MyDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${MyDir}"/../Common/Conf.sh
 source "${MyDir}"/Mdis_Functions.sh
 source "${MyDir}"/Relay_Functions.sh
+source "${MyDir}"/Environment_Requirements.sh
 
 # This script contains all common functions that are used by test cases
 
@@ -141,6 +142,90 @@ function debug_print {
     if [ "${VERBOSE_LEVEL}" -ge "1" ]; then
         echo "${Msg}" | tee -a "${LogFile}" 2>&1
     fi
+}
+
+############################################################################
+# Print requirements from test case description
+#
+# parameters:
+# $1     TestCase name
+function print_requirements {
+    local TestCase=${1}
+    local Req=""
+    local ReqCnt=1
+    while [ "${Req}" != "INVALID" ]
+    do  
+        ReqCnt=$((ReqCnt+1))
+        Req=$("${TestCase}" | grep -A 10 "REQUIREMENT_ID:" | awk NR==${ReqCnt} | tr -d ' ')
+        if [ "${Req}" != "RESULTS" ] && [ "${Req}" != "" ]
+        then
+            echo "    ${Req}"
+        else
+            Req="INVALID"
+        fi
+    done 
+}
+
+############################################################################
+# Print environment requirements (OS, CPU, Kernel, Arch)
+#
+# parameters:
+# none
+function print_env_requirements {
+    local CPU=""
+    local OS=""
+    local Kernel=""
+    local ArchSpec""
+
+    CPU=$(obtain_device_wiz_model "cpu")
+
+    if echo "${CPU}" | grep -i "f23p" > /dev/null
+    then
+        cpu_requirement "f23p"
+    elif echo "${CPU}" | grep -i "f26" > /dev/null
+    then
+        cpu_requirement "f26"
+    elif echo "${CPU}" | grep -i "g23" > /dev/null
+    then
+        cpu_requirement "g23"
+    elif echo "${CPU}" | grep -i "g25a" > /dev/null
+    then
+        cpu_requirement "g25a"
+    elif echo "${CPU}" | grep -i "cb70" > /dev/null
+    then
+        cpu_requirement "cb70"
+    elif echo "${CPU}" | grep -i "a25" > /dev/null
+    then
+        cpu_requirement "a25"
+    fi
+
+    OS=$(hostnamectl | grep "Operating System" | awk '{ print $3 $4 }')
+    if echo "${OS}" | grep -i "ubuntu" > /dev/null
+    then
+        os_requirement "ubuntu"
+    elif echo "${OS}" | grep -i "centos" > /dev/null
+    then
+        os_requirement "centos"
+    elif echo "${OS}" | grep -i "debian" > /dev/null
+    then
+        os_requirement "debian"
+    fi
+
+    Kernel=$(uname -r)
+    if echo "${Kernel}" | grep -i "^3.16" > /dev/null ||
+       echo "${Kernel}" | grep -i "^4.4" > /dev/null ||
+       echo "${Kernel}" | grep -i "^4.9" > /dev/null ||
+       echo "${Kernel}" | grep -i "^4.14" > /dev/null ||
+       echo "${Kernel}" | grep -i "^4.19" > /dev/null ||
+       echo "${Kernel}" | grep -i "^5.4" > /dev/null
+    then
+        kernel_requirement "lts"
+    elif echo "${Kernel}" | grep -i "^5.5" > /dev/null ||
+         echo "${Kernel}" | grep -i "^5.6"> /dev/null
+    then
+        kernel_requirement "latest"
+    fi
+
 }
 
 ############################################################################

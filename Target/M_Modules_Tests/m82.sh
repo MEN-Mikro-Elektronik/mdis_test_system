@@ -26,6 +26,8 @@ function m82_description {
     echo "    5.Output values of m82_simp commands should differ"
     echo "PURPOSE:"
     echo "    Check if M-module m82 is working correctly"
+    echo "REQUIREMENT_ID:"
+    echo "    MEN_13MD05-90_SA_1940"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"
