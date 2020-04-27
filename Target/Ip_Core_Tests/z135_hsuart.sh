@@ -66,6 +66,5 @@ function z135_uart_test {
         return "${ERR_MODPROBE}"
     fi
 
-    fi
     return "${ERR_VALUE}"
 }
