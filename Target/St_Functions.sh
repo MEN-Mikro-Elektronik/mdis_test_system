@@ -363,7 +363,7 @@ function obtain_device_wiz_model {
     then
         PathSystemDsc=$(realpath ../../system.dsc)
     else
-        PathSystemDsc="${TestSummaryDirectory}"
+        PathSystemDsc="${TestSummaryDirectory}/system.dsc"
     fi
     nawk -v mname="${DeviceName} {" '{
     if(index($0,mname)!=0)

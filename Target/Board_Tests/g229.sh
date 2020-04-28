@@ -5,7 +5,7 @@ source "${MyDir}/../St_Functions.sh"
 source "${MyDir}/Ip_Core_Tests/z001_smb.sh"
 #source "${MyDir}/Ip_Core_Tests/z029_can.sh"
 source "${MyDir}/Ip_Core_Tests/z127_gpio.sh"
-source "${MyDir}/Ip_Core_Tests/z135_gpio.sh"
+source "${MyDir}/Ip_Core_Tests/z135_hsuart.sh"
 
 ############################################################################
 # board g229 test
