@@ -56,8 +56,8 @@ function b_smb2_test {
         case ${MachineState} in
             Step1)
                 debug_print "${LogPrefix} Run step @1" "${LogFile}"
-                run_as_root modprobe men_mdis_kernel
-                if [ $? -ne 0 ]; then
+                if ! run_as_root  modprobe men_mdis_kernel
+                then
                     debug_print "${LogPrefix}  ERR_MODPROBE: could not modprobe men_mdis_kernel" "${LogFile}"
                     TestCaseStep1=${ERR_MODPROBE}
                     MachineState="Break"
@@ -68,8 +68,8 @@ function b_smb2_test {
                 ;;
             Step2)
                 debug_print "Run step @2" "${LogFile}"
-                run_as_root modprobe i2c_i801
-                if [ $? -ne 0 ]; then
+                if ! run_as_root  modprobe i2c_i801
+                then
                     debug_print "${LogPrefix}  ERR_MODPROBE: could not modprobe i2c_i801" "${LogFile}"
                     TestCaseStep2=${ERR_MODPROBE}
                     MachineState="Break"
@@ -81,7 +81,7 @@ function b_smb2_test {
             Step3)
                 debug_print "${LogPrefix} Run step @3" "${LogFile}"
                 run_as_root smb2_boardident "${DevName}" > "smb2_boardident.log"
-                run_as_root grep "HW-Name[[:space:]]\+=[[:space:]]\+${BoardName}" "smb2_boardident.log"
+                run_as_root grep "HW-Name[[:space:]]\+=[[:space:]]\+${BoardName}" "smb2_boardident.log" > /dev/null
                 CmdResult=$?
                 if [ ${CmdResult} -ne 0 ]; then
                     debug_print "${LogPrefix}  ERR_VALUE: \"${BoardName}\" not found with smb2_boardident" "${LogFile}"
@@ -94,7 +94,6 @@ function b_smb2_test {
                 ;;
             Break) # Clean after Test Case
                 debug_print "${LogPrefix} Break State" "${LogFile}"
-                run_test_case_common_end_actions "${LogFile}" "${TestCaseName}"
                 MachineRun=false
                 ;;
             *)

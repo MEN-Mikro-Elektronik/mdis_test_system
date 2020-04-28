@@ -119,22 +119,16 @@ function mdis_prepare {
 function run_test_case_common_end_actions {
     local TestCaseLogName="${1}"
     local TestCaseName="${2}"
-    local LogPrefix="${3} "
+    local LogPrefix="${3}"
 
     # remove unnecessary files
     if ! clean_test_case_files
     then
-        echo "${LogPrefix}clean_test_case_files error"
+        debug_print "${LogPrefix} clean_test_case_files error" "${TestCaseLogName}"
         return "${ERR_VALUE}"
     fi
 
-    # Remove loaded men_* modules from OS
-    #rmmod_all_men_modules
-    #CmdResult=$?
-    #if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-    #        echo "could not rmmod_all_men_modules" 
-    #fi
-    echo "${LogPrefix}case ${TestCaseName} finished" | tee -a "${TestCaseLogName}" 2>&1
+    debug_print "${LogPrefix} case ${TestCaseName} finished" "${TestCaseLogName}"
 
     return "${ERR_OK}"
 }

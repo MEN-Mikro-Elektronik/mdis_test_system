@@ -298,8 +298,6 @@ else
     TestCaseResult="FAIL"
 fi
 
-print "${LogPrefix} TestCaseMainDir(Test_x): ${TestCaseMainDir}" "${TestCaseLogName}"
-
 case "${TestTypeDev}" in
     c)
         "${TestDescription}" "${ModuleName}" "${ModuleNo}" "${TestCaseMainDir}" "" >> "${ResultsSummaryTmp}"
