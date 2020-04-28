@@ -99,7 +99,7 @@ function g229_test {
                                              -tspec "${CanTest}"\
                                              -dno "1"
             CanTestResult=$?
-            MachineState="gpio_z034_test"
+            MachineState="gpio_z127_test"
             ;;
         gpio_z127_test)
             debug_print "${LogPrefix} Run GPIO z127 test" "${LogFile}"
