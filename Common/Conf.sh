@@ -53,7 +53,7 @@ TEST_CASES_MAP["104"]="g215"
 TEST_CASES_MAP["105"]="f206"
 
 # Address of Target that will be tested
-MenPcIpAddr="10.1.1.103"
+MenPcIpAddr="10.1.1.75"
 
 # Credentials for Pc that will be tested - required by ssh connection and sudo cmds
 MenPcLogin="men"
@@ -64,7 +64,7 @@ MenBoxPcIpAddr="10.1.1.78"
 INPUT_SWITCH_TIMEOUT=10 #seconds
 
 # Credentials, address, and command to download Git repository with Test Cases source
-GitTestSourcesBranch="jpe-dev-02_02"
+GitTestSourcesBranch="jpe-dev_02_02_v1"
 GitTestSourcesCmd="git clone -b ${GitTestSourcesBranch} https://github.com/MEN-Mikro-Elektronik/mdis_test_system.git"
 
 # Credentials, address, and command to download Git repository with 13MD05-90 sources
