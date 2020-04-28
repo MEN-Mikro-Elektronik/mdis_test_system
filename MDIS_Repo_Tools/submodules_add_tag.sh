@@ -4,7 +4,7 @@
 ### @remark This script should be run in 13MD05-90 git repository main directory
 
 
-declare -r TAG_MSG="Tag created for MDIS release 13MD05-90_02_01"
+declare -r TAG_MSG="Tag created for MDIS release 13MD05-90_02_02"
 
 
 function get_ynq_answer() {

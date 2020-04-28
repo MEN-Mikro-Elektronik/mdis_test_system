@@ -1,7 +1,7 @@
 # MDIS test system
 This is description of the automated test system for MDIS.
 
-mdis_test_system repository provides scripts to easily test behaviour of MEN hardware/software on different operating systems and kernels for tests setups specified for mdis release 13MD05-90_02_01. 
+mdis_test_system repository provides scripts to easily test behaviour of MEN hardware/software on different operating systems and kernels for tests setups specified for mdis release 13MD05-90_02_02. 
 
 Shortened functional test usage description:
 1. Prepare and configure OS-es on external drive, that can be connected to MEN CPU boards
