@@ -9,7 +9,7 @@ source "${MyDir}/../St_Functions.sh"
 # parameters:
 # $1    Module number
 # $2    Module log path
-function z135_uart_description {
+function z135_hsuart_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
     echo "-------------------------Ip Core 16Z135_UART Test Case---------------------"
@@ -47,7 +47,7 @@ function z135_uart_description {
 # $5    Board subvendor id
 # $6    Board number in system
 # $7    Optional parameter - test type (optional)
-function z135_uart_test {
+function z135_hsuart_test {
     local LogFile=${1}
     local LogPrefix=${2}
     local VenID=${3}
