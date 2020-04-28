@@ -13,7 +13,8 @@ source "${MyDir}/Ip_Core_Tests/z055_hdlc.sh"
 function f206_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
-    local LongDescription=${3}
+    local TestSummaryDirectory="${3}"
+    local LongDescription="${4}"
     echo "--------------------------------F206 Test Case--------------------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that at this point all necessary drivers have been build and"
@@ -24,7 +25,8 @@ function f206_description {
     echo "PURPOSE:"
     echo "    Check if all interfaces of z055_hdlc ip-core are working correctly"
     echo "REQUIREMENT_ID:"
-    print_env_requirements
+    print_env_requirements "${TestSummaryDirectory}"
+    arch_requirement "pci"
     print_requirements "z055_hdlc_description"
     echo "RESULTS"
     echo "    SUCCESS if ip-cores tests on F206 are passed."

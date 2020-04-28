@@ -13,7 +13,8 @@ source "${MyDir}/Ip_Core_Tests/z087_eth.sh"
 function f614_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
-    local LongDescription=${3}
+    local TestSummaryDirectory="${3}"
+    local LongDescription="${4}"
     echo "--------------------------------F614 Test Case--------------------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that at this point all necessary drivers have been build and"
@@ -24,6 +25,9 @@ function f614_description {
     echo "PURPOSE:"
     echo "    Check if interfaces of F614 board are detected and are working"
     echo "    correctly"
+    echo "REQUIREMENT_ID:"
+    print_env_requirements "${TestSummaryDirectory}"
+    print_requirements "z087_eth_description"
     echo "RESULTS"
     echo "    SUCCESS if ip-cores tests on F614 are passed."
     echo "    FAIL otherwise"

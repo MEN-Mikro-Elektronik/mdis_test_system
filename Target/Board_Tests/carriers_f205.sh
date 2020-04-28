@@ -15,7 +15,6 @@ function carrier_f205_TPL_description {
     local ModuleNo="${2}"
     local TestSummaryDirectory="${3}"
     local LongDescription="${4}"
-
     echo "--------------------------------F205 ${ModuleName}_${ModuleNo} Test Case---------------"
     echo "PREREQUISITES:"
     echo "    M-module ${ModuleName}_${ModuleNo} is plugged into F205"
@@ -25,6 +24,7 @@ function carrier_f205_TPL_description {
     echo "    Check if M-module on F205 is working correctly"
     echo "REQUIREMENT_ID:"
     print_env_requirements "${TestSummaryDirectory}"
+    arch_requirement "pci"
     echo "    MEN_13MD05-90_SA_1720"
     print_requirements "${Module}_description"
     echo "RESULTS"

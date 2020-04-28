@@ -16,7 +16,8 @@ source "${MyDir}/Ip_Core_Tests/z125_uart.sh"
 function f215_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
-    local LongDescription=${3}
+    local TestSummaryDirectory="${3}"
+    local LongDescription="${4}"
     echo "--------------------------------F215 Test Case--------------------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that at this point all necessary drivers have been build and"
@@ -28,7 +29,7 @@ function f215_description {
     echo "    Check if all interfaces of F215 board are detected and are working"
     echo "    correctly"
     echo "REQUIREMENT_ID:"
-    print_env_requirements
+    print_env_requirements "${TestSummaryDirectory}"
     arch_requirement "pci"
     echo "    MEN_13MD05-90_SA_1300"
     print_requirements "z029_can_description"

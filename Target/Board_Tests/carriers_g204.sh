@@ -15,7 +15,6 @@ function carrier_g204_TPL_description {
     local ModuleNo="${2}"
     local TestSummaryDirectory="${3}"
     local LongDescription="${4}"
-
     echo "--------------------------------G204 ${Module}_${ModuleNo} Test Case-------------------"
     echo "PREREQUISITES:"
     echo "    M-module ${Module}_${ModuleNo} is plugged into G204"
@@ -25,6 +24,7 @@ function carrier_g204_TPL_description {
     echo "    Check if M-module on G204 is working correctly"
     echo "REQUIREMENT_ID:"
     print_env_requirements "${TestSummaryDirectory}"
+    arch_requirement "pci"
     echo "    MEN_13MD05-90_SA_1730"
     print_requirements "${Module}_description"
     echo "RESULTS"

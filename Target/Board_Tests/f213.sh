@@ -12,12 +12,18 @@ source "${MyDir}/../St_Functions.sh"
 function f213_description {
     local moduleNo=${1}
     local moduleLogPath=${2}
+    local TestSummaryDirectory="${3}"
+    local LongDescription="${4}"
     echo "--------------------------------F213 Test Case--------------------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
     echo "DESCRIPTION:"
     echo "    NOT TESTED"
+    echo "PURPOSE:"
+    echo "    "
+    echo "REQUIREMENT_ID:"
+    print_env_requirements "${TestSummaryDirectory}"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"
     echo "    If \"FAIL\", please check test case log file:"

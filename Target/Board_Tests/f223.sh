@@ -12,6 +12,8 @@ source "${MyDir}/../St_Functions.sh"
 function f223_description {
     local moduleNo=${1}
     local moduleLogPath=${2}
+    local TestSummaryDirectory="${3}"
+    local LongDescription="${4}"
     echo "--------------------------------F223 Test Case--------------------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that at this point all necessary drivers have been build and"
@@ -21,6 +23,8 @@ function f223_description {
     echo "PURPOSE:"
     echo "    Check if F223 board is detected and is working correctly"
     echo "REQUIREMENT_ID:"
+    print_env_requirements "${TestSummaryDirectory}"
+    arch_requirement "pci"
     echo "    MEN_13MD05-90_SA_1310"
     echo "RESULTS"
     echo "    SUCCESS / FAIL"

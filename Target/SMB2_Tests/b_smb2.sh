@@ -12,6 +12,8 @@ source "${MyDir}/../St_Functions.sh"
 function b_smb2_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
+    local TestSummaryDirectory="${3}"
+    local LongDescription="${4}"
     echo "--------------------------------SMB2 Test Case--------------------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that at this point all necessary drivers have been build and"
@@ -21,6 +23,7 @@ function b_smb2_description {
     echo "PURPOSE:"
     echo "    Check access to SMB devices via the MDIS SMB2 API"
     echo "REQUIREMENT_ID:"
+    print_env_requirements "${TestSummaryDirectory}"
     echo "    MEN_13MD05-90_SA_1600"
     echo "RESULTS"
     echo "    SUCCESS if test is passed without error(s) warning(s)"
