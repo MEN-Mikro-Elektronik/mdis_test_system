@@ -365,7 +365,7 @@ function obtain_device_wiz_model {
     else
         PathSystemDsc="${TestSummaryDirectory}/system.dsc"
     fi
-    nawk -v mname="${DeviceName} {" '{
+    awk -v mname="${DeviceName} {" '{
     if(index($0,mname)!=0)
             valid=1
     if(index($0,"}")!=0)
@@ -384,7 +384,7 @@ function obtain_device_wiz_model {
 # $1      m-module name
 function obtain_m_module_carrier_name {
     local ModuleName=${1}
-    nawk -v mname="${ModuleName} {" '{
+    awk -v mname="${ModuleName} {" '{
     if(index($0,mname)!=0)
             valid=1
     if(index($0,"}")!=0)
