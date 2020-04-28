@@ -21,6 +21,8 @@ function z135_hsuart_description {
     echo "    1.Read chameleon table from board"
     echo "    2.Load m-module drivers: modprobe men_lx_z135"
     echo "    3.Check if there are HSUART(s) available in /dev/*"
+    echo "    9.Check results - driver shall be loaded successfully,"
+    echo "      In /dev/* five ttyHSU* HSUART(s) are available"
     echo "PURPOSE:"
     echo "    Check if men_lx_z135 driver is loaded correctly,"
     echo "    and new uart devices appears "
@@ -64,6 +66,14 @@ function z135_hsuart_test {
     then
         debug_print "${LogPrefix} ERR_MODPROBE :could not modprobe men_lx_z135" "${LogFile}"
         return "${ERR_MODPROBE}"
+    fi
+
+    CntHSUART=$(ls -l /dev/ttyHSU* | wc -l)
+    debug_print "${LogPrefix} CntHSUART: ${CntHSUART}" "${LogFile}"
+
+    if [ "${CntHSUART}" -eq 5 ]
+    then
+        return "${ERR_OK}"
     fi
 
     return "${ERR_VALUE}"
