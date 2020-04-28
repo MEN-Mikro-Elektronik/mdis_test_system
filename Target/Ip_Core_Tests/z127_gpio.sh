@@ -137,7 +137,7 @@ function gpio_led_z127 {
     #Port 15...0: 15 14 13 12 11 10 09 08 07 06 05 04 03 02 01 00
     #State      :  0  0  0  0  0  0  1  1  1  1  1  1  1  1  1  1
     State0=$(grep "State" z127_out_read_0.log | awk NR==1'{print $9 $10 $11 $12 $13 $14 $15 $16 $17 $18}')
-    State1=$(grep "State" z127_out_read_0.log | awk NR==1'{print $9 $10 $11 $12 $13 $14 $15 $16 $17 $18}')
+    State1=$(grep "State" z127_out_read_1.log | awk NR==1'{print $9 $10 $11 $12 $13 $14 $15 $16 $17 $18}')
     debug_print "${LogPrefix} State0: ${State0}" "${LogFile}"
     debug_print "${LogPrefix} State1: ${State1}" "${LogFile}"
     if [ "${State0}" = "0000000000" ] && [ "${State1}" = "1111111111" ]
