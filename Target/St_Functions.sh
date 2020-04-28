@@ -172,12 +172,13 @@ function print_requirements {
 # parameters:
 # none
 function print_env_requirements {
+    local TestSummaryDirectory="${1}"
     local CPU=""
     local OS=""
     local Kernel=""
     local ArchSpec""
 
-    CPU=$(obtain_device_wiz_model "cpu")
+    CPU=$(obtain_device_wiz_model "cpu" "${TestSummaryDirectory}")
 
     if echo "${CPU}" | grep -i "f23p" > /dev/null
     then
@@ -356,6 +357,14 @@ function blacklist_mcb_pci {
 # $1      m-module name
 function obtain_device_wiz_model {
     local DeviceName=${1}
+    local TestSummaryDirectory="${2}"
+    local PathSystemDsc=""
+    if [ -z "${TestSummaryDirectory}" ]
+    then
+        PathSystemDsc=$(realpath ../../system.dsc)
+    else
+        PathSystemDsc="${TestSummaryDirectory}"
+    fi
     nawk -v mname="${DeviceName} {" '{
     if(index($0,mname)!=0)
             valid=1
@@ -363,7 +372,7 @@ function obtain_device_wiz_model {
             valid=0
     if(valid==1)
             print
-    }' ../../system.dsc | grep "_WIZ_MODEL" | awk '{print $4}'
+    }' "${PathSystemDsc}" | grep "_WIZ_MODEL" | awk '{print $4}'
 }
 
 ############################################################################

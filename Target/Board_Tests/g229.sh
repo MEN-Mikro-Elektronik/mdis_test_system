@@ -3,8 +3,9 @@ MyDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${MyDir}/../../Common/Conf.sh"
 source "${MyDir}/../St_Functions.sh"
 source "${MyDir}/Ip_Core_Tests/z001_smb.sh"
-source "${MyDir}/Ip_Core_Tests/z029_can.sh"
+#source "${MyDir}/Ip_Core_Tests/z029_can.sh"
 source "${MyDir}/Ip_Core_Tests/z127_gpio.sh"
+source "${MyDir}/Ip_Core_Tests/z135_gpio.sh"
 
 ############################################################################
 # board g229 test
@@ -15,14 +16,15 @@ source "${MyDir}/Ip_Core_Tests/z127_gpio.sh"
 function g229_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
-    local LongDescription=${3}
+    local TestSummaryDirectory="${3}"
+    local LongDescription=${4}
     echo "--------------------------------G229 Test Case--------------------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
     echo "DESCRIPTION:"
     echo "    G229 Interfaces Test"
-    echo "    Run tests for devices: z001_smb, z029_can, z127_gpio, z135_hsuart"
+    echo "    Run tests for devices: z001_smb, z127_gpio, z135_hsuart"
     echo "PURPOSE:"
     echo "    Check if all interfaces of G215 board are detected and are working"
     echo "    correctly"
@@ -36,7 +38,7 @@ function g229_description {
     if [ ! -z "${LongDescription}" ]
     then
         z001_smb_description
-        z029_can_description
+        #z029_can_description
         z127_gpio_description
         z135_hsuart_description
     fi
@@ -85,22 +87,22 @@ function g229_test {
                                              -tspec "${CanTest}"\
                                              -dno "1"
             SmbTestResult=$?
-            MachineState="can_test"
-            ;;
-        can_test)
-            debug_print "${LogPrefix} Run CAN test" "${LogFile}"
-            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
-                                             -id "${TestCaseId}"\
-                                             -os "${OsNameKernel}"\
-                                             -dname "z029_can"\
-                                             -venid "${VenID}"\
-                                             -devid "${DevID}"\
-                                             -subvenid "${SubVenID}"\
-                                             -tspec "${CanTest}"\
-                                             -dno "1"
-            CanTestResult=$?
             MachineState="gpio_z127_test"
             ;;
+        # can_test)
+        #    debug_print "${LogPrefix} Run CAN test" "${LogFile}"
+        #    run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+        #                                     -id "${TestCaseId}"\
+        #                                     -os "${OsNameKernel}"\
+        #                                     -dname "z029_can"\
+        #                                     -venid "${VenID}"\
+        #                                     -devid "${DevID}"\
+        #                                     -subvenid "${SubVenID}"\
+        #                                     -tspec "${CanTest}"\
+        #                                     -dno "1"
+        #    CanTestResult=$?
+        #    MachineState="gpio_z127_test"
+        #    ;;
         gpio_z127_test)
             debug_print "${LogPrefix} Run GPIO z127 test" "${LogFile}"
             run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\

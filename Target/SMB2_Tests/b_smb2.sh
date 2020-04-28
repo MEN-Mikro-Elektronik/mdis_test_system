@@ -36,9 +36,12 @@ function b_smb2_description {
 # $2    Log prefix
 # $3    M-Module number
 function b_smb2_test {
-    local LogFile=${1}
-    local LogPrefix=${2}
-    local ModuleNo=${3}
+    local TestCaseId="${1}"
+    local TestSummaryDirectory="${2}"
+    local OsNameKernel="${3}"
+    local LogFile=${4}
+    local LogPrefix=${5}
+    local BoardInSystem=${6}
 
     MachineState="Step1"
     MachineRun=true
@@ -49,7 +52,7 @@ function b_smb2_test {
     while ${MachineRun}; do
         case ${MachineState} in
             Step1)
-                debug_print "Run step @1" "${LogFile}"
+                debug_print "${LogPrefix} Run step @1" "${LogFile}"
                 run_as_root modprobe men_mdis_kernel
                 if [ $? -ne 0 ]; then
                     debug_print "${LogPrefix}  ERR_MODPROBE: could not modprobe men_mdis_kernel" "${LogFile}"
@@ -73,7 +76,7 @@ function b_smb2_test {
                 fi
                 ;;
             Step3)
-                debug_print "Run step @3" "${LogFile}"
+                debug_print "${LogPrefix} Run step @3" "${LogFile}"
                 run_as_root smb2_boardident "${DevName}" > "smb2_boardident.log"
                 run_as_root grep "HW-Name[[:space:]]\+=[[:space:]]\+${BoardName}" "smb2_boardident.log"
                 CmdResult=$?
@@ -87,12 +90,12 @@ function b_smb2_test {
                 fi
                 ;;
             Break) # Clean after Test Case
-                debug_print "Break State" "${LogFile}"
+                debug_print "${LogPrefix} Break State" "${LogFile}"
                 run_test_case_common_end_actions "${LogFile}" "${TestCaseName}"
                 MachineRun=false
                 ;;
             *)
-                debug_print "State is not set, start with Step1" "${LogFile}"
+                debug_print "${LogPrefix} State is not set, start with Step1" "${LogFile}"
                 MachineState="Step1"
                 ;;
         esac

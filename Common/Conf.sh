@@ -315,3 +315,9 @@ function get_test_case_id {
 
 echo "${TestCaseId}"
 }
+VERBOSE_LEVEL=1
+TEST_SETUP=0
+VERBOSE_LEVEL=1
+TEST_SETUP=4
+VERBOSE_LEVEL=1
+TEST_SETUP=4

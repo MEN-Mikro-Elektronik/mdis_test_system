@@ -13,7 +13,8 @@ source "${MyDir}/../St_Functions.sh"
 function carrier_f205_TPL_description {
     local Module="${1}"
     local ModuleNo="${2}"
-    local LongDescription="${3}"
+    local TestSummaryDirectory="${3}"
+    local LongDescription="${4}"
 
     echo "--------------------------------F205 ${ModuleName}_${ModuleNo} Test Case---------------"
     echo "PREREQUISITES:"
@@ -23,7 +24,7 @@ function carrier_f205_TPL_description {
     echo "PURPOSE:"
     echo "    Check if M-module on F205 is working correctly"
     echo "REQUIREMENT_ID:"
-    print_env_requirements
+    print_env_requirements "${TestSummaryDirectory}"
     echo "    MEN_13MD05-90_SA_1720"
     print_requirements "${Module}_description"
     echo "RESULTS"

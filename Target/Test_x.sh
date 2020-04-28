@@ -274,6 +274,7 @@ case "${TestTypeDev}" in
         ResultsSummaryTmp="${TestCaseId}_${DeviceName}.tmp"
         PrintTerminalResults="0"
         ;;
+    b);&
     f);&
     g)
         print "${LogPrefix} Board test: ${DeviceName}" "${TestCaseLogName}"
@@ -297,15 +298,18 @@ else
     TestCaseResult="FAIL"
 fi
 
+print "${LogPrefix} TestCaseMainDir(Test_x): ${TestCaseMainDir}" "${TestCaseLogName}"
+
 case "${TestTypeDev}" in
     c)
-        "${TestDescription}" "${ModuleName}" "${ModuleNo}" "" >> "${ResultsSummaryTmp}"
+        "${TestDescription}" "${ModuleName}" "${ModuleNo}" "${TestCaseMainDir}" "" >> "${ResultsSummaryTmp}"
         ;;
     m);&
     z);&
+    b);&
     f);&
     g)
-        "${TestDescription}" "${DeviceNo}" "${TestCaseLogName}" >> "${ResultsSummaryTmp}"
+        "${TestDescription}" "${DeviceNo}" "${TestCaseLogName}" "${TestCaseMainDir}" >> "${ResultsSummaryTmp}"
         ;;
     *)
         ;;
