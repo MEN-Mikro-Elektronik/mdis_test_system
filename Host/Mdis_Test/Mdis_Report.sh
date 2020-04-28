@@ -12,7 +12,7 @@ declare -A TEST_RESULT_OS
 TEST_RESULT_OS["1"]="Ubuntu16046415045generici686"
 TEST_RESULT_OS["2"]="Ubuntu18043415060generici686"
 TEST_RESULT_OS["3"]="Ubuntu1804453028genericx8664"
-TEST_RESULT_OS["4"]="Ubuntu2000"
+TEST_RESULT_OS["4"]="Ubuntu1804453046genericx8664"
 
 declare -a TEST_RESULT_OS_1=(_ _ _ _ _)
 declare -a TEST_RESULT_OS_2=(_ _ _ _ _)
@@ -85,6 +85,8 @@ function set_result_os {
         TEST_RESULT_OS_2["${TestSetup}"]="${Result}"
     elif [ "${OSName}" = "${TEST_RESULT_OS[3]}" ]; then
         TEST_RESULT_OS_3["${TestSetup}"]="${Result}"
+    elif [ "${OSName}" = "${TEST_RESULT_OS[4]}" ]; then
+        TEST_RESULT_OS_4["${TestSetup}"]="${Result}"
     else
         echo "OS NOT SPECIFIED"
         exit 1

@@ -67,7 +67,7 @@ function b_smb2_test {
                 fi
                 ;;
             Step2)
-                debug_print "Run step @2" "${LogFile}"
+                debug_print "${LogPrefix} Run step @2" "${LogFile}"
                 if ! run_as_root  modprobe i2c_i801
                 then
                     debug_print "${LogPrefix}  ERR_MODPROBE: could not modprobe i2c_i801" "${LogFile}"
