@@ -97,7 +97,7 @@ function smb_test_lx_z001 {
     run_as_root i2cdump -y "${SMBUS_ID}" "${ReadAddress}" > "i2c_bus_dump_before.log"
 
     
-    if ! < "i2c_bus_dump_before.log" grep "${BoardName}"
+    if ! < "i2c_bus_dump_before.log" grep "${BoardName}" > /dev/null
     then
         debug_print "${LogPrefix} ERR_VALUE: i2cdump failed for ${SMBUS_ID}" "${LogFile}"
         if ! run_as_root rmmod men_lx_z001
@@ -128,7 +128,6 @@ function smb_test_lx_z001 {
         return "${ERR_VALUE}"
     fi
 
-    
     if ! run_as_root rmmod men_lx_z001
     then
         debug_print "${LogPrefix} ERR_RMMOD: could not rmmod men_lx_z001" "${LogFile}"
