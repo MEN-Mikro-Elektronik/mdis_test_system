@@ -98,10 +98,11 @@ function run_test_case_module {
 # $3     OS kernel no
 function run_test_case_board {
     local TestCaseId="${1}"
-    local TestSummaryDirectory="${2}"
-    local OsNameKernel="${3}"
+    local DeviceNo="${2}"
+    local TestSummaryDirectory="${3}"
+    local OsNameKernel="${4}"
     if [ "${TEST_CASES_MAP[${TestCaseId}]+_}" ]; then
-        run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "${TEST_CASES_MAP[${TestCaseId}]}"
+        run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "${TEST_CASES_MAP[${TestCaseId}]}" -dno "${DeviceNo}"
     else
         echo "Test case not found"
     fi

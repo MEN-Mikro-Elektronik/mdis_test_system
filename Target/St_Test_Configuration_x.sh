@@ -133,8 +133,8 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             run_test_case_id "${TestId}" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
         1)
-            run_test_case_board "100" "${TestSummaryDirectory}" "${OsNameKernel}" # F215 board test
-            run_test_case_board "104" "${TestSummaryDirectory}" "${OsNameKernel}" # G215 board test
+            run_test_case_board "100" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # F215 board test
+            run_test_case_board "104" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # G215 board test
             run_test_case_module "m65n" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_module "m77n" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_module "m33" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
@@ -158,15 +158,15 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             run_test_case_module "m36n" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
         4)
-            run_test_case_board "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ G25A03
-            run_test_case_board "103" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ G25A03
+            run_test_case_board "103" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_module "m81" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_module "m72" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
         5)
-            run_test_case_board "105" "${TestSummaryDirectory}" "${OsNameKernel}" # F206 board with Z055 HDLC core
+            run_test_case_board "105" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # F206 board with Z055 HDLC core
             run_test_case_module "m82" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
-            #run_test_case_module "m82" "G204" "2" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case_module "m82" "G204" "2" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_module "m99" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_module "m199" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;

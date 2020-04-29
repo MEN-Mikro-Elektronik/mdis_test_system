@@ -182,6 +182,11 @@ then
     exit "${ERR_NOEXIST}"
 fi
 
+if [ -z "${DeviceNo}" ] && [ ! -z "${ModuleNo}" ]
+then
+    DeviceNo="${ModuleNo}"
+fi
+
 FunctionExists=$(type -t "${TestDescription}")
 if [ "${FunctionExists}" != "function" ]
 then
@@ -203,11 +208,11 @@ TestTypeDev=$(echo "${DeviceName}" | head -c1)
 case "${TestTypeDev}" in
     m);&
     z)
-        TestCaseName="${ScriptName%.*}_${TestCaseId}_${DeviceName}_Test_Case"
+        TestCaseName="${ScriptName%.*}_${TestCaseId}_${DeviceName}_${DeviceNo}_Test_Case"
         TestCaseLogName="${ScriptName%.*}_${DeviceName}_log.txt"
         ;;
     *)
-        TestCaseName="${ScriptName%.*}_${TestCaseId}_Test_Case"
+        TestCaseName="${ScriptName%.*}_${TestCaseId}_${DeviceName}_${DeviceNo}__Test_Case"
         TestCaseLogName="${ScriptName%.*}_log.txt"
         ;;
 esac
@@ -318,12 +323,14 @@ if [ ${PrintTerminalResults} -eq "1" ]; then
     echo "${LogPrefix} Test_ID: ${TestCaseId}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
     echo "${LogPrefix} Test_Setup: ${TEST_SETUP}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
     echo "${LogPrefix} Test_Os: ${TestOs}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
+    echo "${LogPrefix} Test_Instance: ${DeviceNo}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
 else
     echo "${LogPrefix} Test_Result for ${TestCaseName}: ${TestCaseResult}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
     echo "${LogPrefix} Test_Result: ${TestCaseResult}" | tee -a "${TestCaseLogName}" >> "${ResultsSummaryTmp}" 2>&1
     echo "${LogPrefix} Test_ID: ${TestCaseId}" | tee -a "${TestCaseLogName}" >> "${ResultsSummaryTmp}" 2>&1
     echo "${LogPrefix} Test_Setup: ${TEST_SETUP}" | tee -a "${TestCaseLogName}" >> "${ResultsSummaryTmp}" 2>&1
     echo "${LogPrefix} Test_Os: ${TestOs}" |  tee -a "${TestCaseLogName}" >> "${ResultsSummaryTmp}" 2>&1
+    echo "${LogPrefix} Test_Instance: ${DeviceNo}" |  tee -a "${TestCaseLogName}" >> "${ResultsSummaryTmp}" 2>&1
 fi
 
 # move to previous directory
