@@ -76,5 +76,76 @@ function z135_hsuart_test {
         return "${ERR_OK}"
     fi
 
-    return "${ERR_VALUE}"
+    uart_test_lx_z135 "${LogFile}" "${LogPrefix}" "1" "3"
+    CmdResult=$?
+    if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+        debug_print "${LogPrefix} uart_test_lx_z135 failed, err: ${CmdResult}" "${LogFile}"
+    fi
+
+    return "${CmdResult}"
+}
+
+############################################################################
+# Test RS422 with men_lx_z135 IpCore 
+# 
+# parameters:
+# $1    Log file
+# $2    Log prefix
+# $3    First UART device
+# $4    Second UART device
+function uart_test_lx_z135 {
+    local LogFile=${1}
+    local LogPrefix=${2}
+    local tty0="ttyHSU${3}"
+    local tty1="ttyHSU${4}"
+
+    if ! run_as_root stty -F "/dev/${tty0}" 9600
+    then
+        debug_print "${LogPrefix} Could not stty -F on /dev/${tty0}" "${LogFile}"
+    fi
+    sleep 1
+    if ! run_as_root stty -F "/dev/${tty1}" 9600
+    then
+        debug_print "${LogPrefix} Could not stty -F on /dev/${tty1}" "${LogFile}"
+    fi
+    sleep 1
+
+    if ! uart_test_tty "${tty1}" "${tty0}" "${LogPrefix}" "${LogFile}"
+    then
+        debug_print "${LogPrefix}  ERR_VALUE: ${tty1} with ${tty0}" "${LogFile}"
+        return "${ERR_VALUE}"
+    fi
+
+    sleep 1
+    if ! run_as_root rmmod men_lx_z135
+    then
+        debug_print "${LogPrefix}  ERR_VALUE: could not rmmod m" "${LogFile}"
+        return "${ERR_VALUE}"
+    fi
+
+    if ! run_as_root modprobe men_lx_z135
+    then
+        debug_print "${LogPrefix}  ERR_VALUE: could not  modprobe men_lx_z135" "${LogFile}"
+        return "${ERR_VALUE}"
+    fi
+    sleep 1
+
+    if ! run_as_root stty -F "/dev/${tty0}" 9600
+    then
+        debug_print "${LogPrefix} Could not stty -F on /dev/${tty0}" "${LogFile}"
+    fi
+    sleep 1
+    if ! run_as_root stty -F "/dev/${tty1}" 9600
+    then
+        debug_print "${LogPrefix} Could not stty -F on /dev/${tty1}" "${LogFile}"
+    fi
+    sleep 1
+
+    if ! uart_test_tty "${tty0}" "${tty1}" "${LogPrefix}" "${LogFile}"
+    then
+        debug_print "${LogPrefix}  ERR_VALUE: ${tty0} with ${tty1}" "${LogFile}"
+        return "${ERR_VALUE}"
+    fi
+
+    return "${ERR_OK}"
 }
