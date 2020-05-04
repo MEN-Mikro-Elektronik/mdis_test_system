@@ -59,9 +59,6 @@ function z135_hsuart_test {
     local TestType=${7}
     local RelayOutput=${IN_0_ENABLE}
 
-    MezzChamDevName="MezzChamDevName.txt"
-    obtain_device_list_chameleon_device "${VenID}" "${DevID}" "${SubVenID}" "${MezzChamDevName}" "${BoardInSystem}" "${LogFile}" "${LogPrefix}"
-
     if ! run_as_root modprobe men_lx_z135
     then
         debug_print "${LogPrefix} ERR_MODPROBE :could not modprobe men_lx_z135" "${LogFile}"
