@@ -32,7 +32,7 @@ function mdis_test_usage {
     echo "        0 - default (only general information is written into terminal)"
     echo "        1 - verbose output"
     echo ""
-    echo "    --print-tests-list"
+    echo "    --print-test-list"
     echo "        Print list of all possible test cases with brief description"
     echo ""
     echo "    --print-test-brief=ID"
@@ -50,10 +50,16 @@ function mdis_test_usage {
 
 function print_test_list {
     create_test_cases_map
+    echo "" > /tmp/test_cases_list.txt
     for K in "${!TEST_CASES_MAP[@]}"
     do 
-        echo "[${K}]: ${TEST_CASES_MAP[${K}]}"
-    done | sort -n -k3
+        ID=$(printf "%04d\n" ${K})
+        echo -e "${ID}\t ${TEST_CASES_MAP[${K}]}\t./MDIS_Test --print-test-brief=${K}" >> /tmp/test_cases_list.txt
+    done
+
+    sort -n -k3 -o /tmp/test_cases_list.txt  /tmp/test_cases_list.txt
+    echo -e "ID\t Description\t Instruction, purpose\n$(</tmp/test_cases_list.txt)" > /tmp/test_cases_list.txt
+    column -n /tmp/test_cases_list.txt -ts $'\t'
 }
 
 function print_test_brief {
