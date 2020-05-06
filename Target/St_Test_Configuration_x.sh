@@ -190,5 +190,10 @@ echo "Create Test Results summary for TEST_SETUP ${TEST_SETUP}"
 cd "${TestSummaryDirectory}" || exit "${ERR_NOEXIST}"
 
 SystemInfo="$(uname -a)"
+GCCInfo="$(gcc --version)"
+
+echo "${SystemInfo}" > System_info.txt
+echo "${GCCInfo}" >> System_info.txt
+
 find . -type f -name "${ResultsFileLogName}.tmp" -exec cat {} + > "${ResultsFileLogName}"
 sed -i "1i${SystemInfo}" "${ResultsFileLogName}"
