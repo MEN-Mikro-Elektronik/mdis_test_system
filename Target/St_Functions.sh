@@ -157,7 +157,7 @@ function print_requirements {
     while [ "${Req}" != "INVALID" ]
     do  
         ReqCnt=$((ReqCnt+1))
-        Req=$("${TestCase}" | grep -A 10 "REQUIREMENT_ID:" | awk NR==${ReqCnt} | tr -d ' ')
+        Req=$("${TestCase}" | grep -A 10 "UPPER_REQUIREMENT_ID:" | awk NR==${ReqCnt} | tr -d ' ')
         if [ "${Req}" != "RESULTS" ] && [ "${Req}" != "" ]
         then
             echo "    ${Req}"
