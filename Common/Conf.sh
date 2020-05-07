@@ -45,12 +45,19 @@ IN_4_DISABLE=204        # change input 4 to disable
 
 declare -A TEST_CASES_MAP
 TEST_CASES_MAP["1"]="b_smb2"
+TEST_CASES_MAP["2"]="b_smb2_eetemp"
+TEST_CASES_MAP["3"]="b_smb2_led"
+TEST_CASES_MAP["4"]="b_smb2_pci"
+TEST_CASES_MAP["5"]="b_smb2_poe"
 TEST_CASES_MAP["100"]="f215"
 TEST_CASES_MAP["101"]="f223"
 TEST_CASES_MAP["102"]="f614"
 TEST_CASES_MAP["103"]="g229"
 TEST_CASES_MAP["104"]="g215"
 TEST_CASES_MAP["105"]="f206"
+TEST_CASES_MAP["500"]="bl50"
+TEST_CASES_MAP["501"]="bl51"
+TEST_CASES_MAP["502"]="bl70"
 
 # Address of Target that will be tested
 MenPcIpAddr="10.1.1.156"

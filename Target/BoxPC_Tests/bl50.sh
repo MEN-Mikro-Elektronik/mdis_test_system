@@ -22,6 +22,7 @@ function bl50_boxpc_description {
     echo "    are available in the system"
     echo "DESCRIPTION:"
     echo "    Run tests on BL50:"
+    echo "       SMB2 read boardident"
     echo "       SMB2 read temperature"
     echo "       SMB2 power over ethernet (register read,write)"
     echo "       SMB2 enable/disable pci extension card (register read,write)"
@@ -59,7 +60,6 @@ function bl50_boxpc_test {
         case "${MachineState}" in
         can_test)
             print_debug "${LogPrefix} Run CAN test" "${LogFile}"
-
             CanTestResult=${ERR_VALUE}
             MachineState="Break"
             ;;

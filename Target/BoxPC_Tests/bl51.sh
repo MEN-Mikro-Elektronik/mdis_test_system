@@ -20,6 +20,7 @@ function bl51_boxpc_description {
     echo "    are available in the system"
     echo "DESCRIPTION:"
     echo "    Run tests on BL51 for ip cores:"
+    echo "       SMB2 read boardident"
     echo "       SMB2 read temperature"
     echo "       Z029 (can test)"
     echo "RESULTS"
