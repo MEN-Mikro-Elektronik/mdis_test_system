@@ -3,24 +3,28 @@ MyDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${MyDir}/../../Common/Conf.sh"
 source "${MyDir}/../St_Functions.sh"
 source "${MyDir}/SMB2_Tests/b_smb2_eetemp.sh"
+source "${MyDir}/SMB2_Tests/b_smb2_pci.sh"
+source "${MyDir}/SMB2_Tests/b_smb2_poe.sh"
 source "${MyDir}/Ip_Core_Tests/z029_can.sh"
 
 ############################################################################
-# Box PC BL51 description
+# Box PC BL50 description
 #
 # parameters:
 # $1    Module number
 # $2    Module log path 
-function bl51_boxpc_description {
+function bl50_boxpc_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
-    echo "--------------------------BL51 BoxPC Test Case--------------------------------"
+    echo "--------------------------BL50 BoxPC Test Case--------------------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
     echo "DESCRIPTION:"
-    echo "    Run tests on BL51 for ip cores:"
+    echo "    Run tests on BL50:"
     echo "       SMB2 read temperature"
+    echo "       SMB2 power over ethernet (register read,write)"
+    echo "       SMB2 enable/disable pci extension card (register read,write)"
     echo "       Z029 (can test)"
     echo "RESULTS"
     echo "    SUCCESS if ip-cores tests on BL51 are passed."
@@ -29,11 +33,11 @@ function bl51_boxpc_description {
 }
 
 ############################################################################
-# Box PC BL51  test
+# Box PC BL50  test
 #
 # parameters:
 #
-function bl51_boxpc_test {
+function bl50_boxpc_test {
     local TestCaseId="${1}"
     local TestSummaryDirectory="${2}"
     local OsNameKernel="${3}"
@@ -55,18 +59,7 @@ function bl51_boxpc_test {
         case "${MachineState}" in
         can_test)
             print_debug "${LogPrefix} Run CAN test" "${LogFile}"
-            #New can test function should be added to handle
-            #can_test_ll_z15_loopback2 ${TestCaseLogName} "can_1"
-            #
-            #run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
-            #                                 -id "${TestCaseId}"\
-            #                                 -os "${OsNameKernel}"\
-            #                                 -dname "z029_can"\
-            #                                 -venid "${VenID}"\
-            #                                 -devid "${DevID}"\
-            #                                 -subvenid "${SubVenID}"\
-            #                                 -tspec "${CanTest}"\
-            #                                 -dno "1"
+
             CanTestResult=${ERR_VALUE}
             MachineState="Break"
             ;;
