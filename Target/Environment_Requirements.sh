@@ -170,7 +170,7 @@ function arch_requirement {
     esac
 }
 
-function cpu_requirement{
+function cpu_requirement {
     local cpu=${1}
     case "${cpu}" in
         f23p)

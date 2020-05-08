@@ -55,9 +55,9 @@ TEST_CASES_MAP["102"]="f614"
 TEST_CASES_MAP["103"]="g229"
 TEST_CASES_MAP["104"]="g215"
 TEST_CASES_MAP["105"]="f206"
-TEST_CASES_MAP["500"]="bl50"
-TEST_CASES_MAP["501"]="bl51"
-TEST_CASES_MAP["502"]="bl70"
+TEST_CASES_MAP["500"]="bl50_boxpc"
+TEST_CASES_MAP["501"]="bl51_boxpc"
+TEST_CASES_MAP["502"]="bl70_boxpc"
 
 # Address of Target that will be tested
 MenPcIpAddr="10.1.1.89"
