@@ -177,14 +177,12 @@ case ${TEST_SETUP} in
         ;;
     8)
         GrubOses=( "${GrubOsesBL50[@]}" )
-        exit 1
         ;;
     9)
         GrubOses=( "${GrubOsesBL51E[@]}" )
         ;;
     10)
         GrubOses=( "${GrubOsesBL70[@]}" )
-        exit 1
         ;;
     *)
         echo "TEST SETUP IS NOT SET"
