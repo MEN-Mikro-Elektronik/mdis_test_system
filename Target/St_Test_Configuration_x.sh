@@ -175,15 +175,27 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
         7)
             ;;
         8)
+            run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL50
+            run_test_case_board "2" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL50
+            run_test_case_board "3" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL50
+            run_test_case_board "4" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL50
+            run_test_case_board "5" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL50
+            run_test_case_board "500" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # BL50 fpga ip core tests
             ;;
         9)
+            run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL51
+            run_test_case_board "2" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL51
+            run_test_case_board "3" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL51
+            run_test_case_board "4" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL51
+            run_test_case_board "5" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL51
+            run_test_case_board "501" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # BL51 fpga ip core tests
             ;;
         10)
-            run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL70
-            run_test_case_board "2" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL70
-            run_test_case_board "3" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL70
-            run_test_case_board "4" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL70
-            run_test_case_board "5" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL70
+            #run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL70
+            #run_test_case_board "2" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL70
+            #run_test_case_board "3" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL70
+            #run_test_case_board "4" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL70
+            #run_test_case_board "5" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL70
             run_test_case_board "502" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # BL70 fpga ip core tests
             ;;
         *)
