@@ -422,7 +422,7 @@ function obtain_device_list_chameleon_device {
 
     debug_print "${LogPrefix} obtain_device_list_chameleon_device" "${LogFile}"
 
-    if [ "${VenID}" = "sc24_fpga"]; then
+    if [ "${VenID}" = "sc24_fpga" ]; then
         # Check how many devices are present in system.dsc
         local DeviceNr
         DeviceNr=$(grep -c "{" ../../system.dsc)
@@ -444,7 +444,7 @@ function obtain_device_list_chameleon_device {
         return
     fi
 
-    if [ "${VenID}" = "sc31_fpga"]; then
+    if [ "${VenID}" = "sc31_fpga" ]; then
         # Check how many devices are present in system.dsc
         local DeviceNr
         DeviceNr=$(grep -c "{" ../../system.dsc)
