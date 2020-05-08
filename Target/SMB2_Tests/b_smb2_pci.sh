@@ -100,6 +100,7 @@ function b_smb2_pci_test {
                 ;;
             Step4)
                 debug_print "${LogPrefix} Run step @4" "${LogFile}"
+                sleep 3
                 if lsusb -d 0403:6001 > lsusb_disabled.log; then
                     debug_print "${LogPrefix}  PCIe has not been disabled" "${LogFile}"
                     TestCaseStep4=${ERR_VALUE}
