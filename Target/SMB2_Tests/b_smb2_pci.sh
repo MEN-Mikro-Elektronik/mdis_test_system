@@ -19,10 +19,11 @@ function b_smb2_pci_description {
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
     echo "DESCRIPTION:"
-    echo "    1.Get HW name to configure proper device address"
-    echo "    2.Disable PCIe slot"
-    echo "    3.Check if PCIe slot has been disabled"
-    echo "    4.Enable PCIe slot"
+    echo "    1.Load drivers: modprobe men_mdis_kernel"
+    echo "    2.Get HW name to configure proper device address"
+    echo "    3.Disable PCIe slot"
+    echo "    4.Check if PCIe slot has been disabled"
+    echo "    5.Enable PCIe slot"
     echo "PURPOSE:"
     echo "    Check if PCIe slot disabling is working"
     echo "REQUIREMENT_ID:"
@@ -58,6 +59,18 @@ function b_smb2_pci_test {
         case ${MachineState} in
             Step1)
                 debug_print "${LogPrefix} Run step @1" "${LogFile}"
+                if ! run_as_root modprobe men_ll_profidp
+                then
+                    debug_print "${LogPrefix}  ERR_MODPROBE: could not modprobe men_mdis_kernel" "${LogFile}" 
+                    TestCaseStep1=${ERR_MODPROBE}
+                    MachineState="Break"
+                else
+                    TestCaseStep1=${ERR_OK}
+                    MachineState="Step2"
+                fi
+                ;;
+            Step2)
+                debug_print "${LogPrefix} Run step @2" "${LogFile}"
                 HwName="$(run_as_root smb2_boardident "${DevName}" | grep "HW-Name[[:space:]]\+=")"
                 if [[ "${HwName}" =~ [[:space:]]*HW-Name[[:space:]]+=[[:space:]]+([A-Za-z0-9]+).* ]]; then
                     HwName="${BASH_REMATCH[1]}"
@@ -66,29 +79,18 @@ function b_smb2_pci_test {
                        "S24") DeviceAddress="0x42";;
                        *) DeviceAddress="0x42";;
                     esac
-                    TestCaseStep1=${ERR_OK}
-                    MachineState="Step2"
-                else
-                    debug_print "${LogPrefix}  ERR_VALUE: HW-Name not found with smb2_boardident" "${LogFile}"
-                    TestCaseStep1=${ERR_VALUE}
-                    MachineState="Break"
-                fi
-                ;;
-            Step2)
-                debug_print "${LogPrefix} Run step @2" "${LogFile}"
-                if ! run_as_root smb2_ctrl smb2_1 -a=${DeviceAddress} wb -d=0x00 > "smb2_crtl_disable.log"; then
-                    debug_print "${LogPrefix}  ERR_VALUE: Could not disable PCIe with smb2_ctrl" "${LogFile}"
-                    TestCaseStep2=${ERR_VALUE}
-                    MachineState="Break"
-                else
                     TestCaseStep2=${ERR_OK}
                     MachineState="Step3"
+                else
+                    debug_print "${LogPrefix}  ERR_VALUE: HW-Name not found with smb2_boardident" "${LogFile}"
+                    TestCaseStep2=${ERR_VALUE}
+                    MachineState="Break"
                 fi
                 ;;
             Step3)
                 debug_print "${LogPrefix} Run step @3" "${LogFile}"
-                if lsubs -d 0403:6001 > lsusb_disabled.log; then
-                    debug_print "${LogPrefix}  PCIe has not been disabled" "${LogFile}"
+                if ! run_as_root smb2_ctrl smb2_1 -a=${DeviceAddress} wb -d=0x00 > "smb2_crtl_disable.log"; then
+                    debug_print "${LogPrefix}  ERR_VALUE: Could not disable PCIe with smb2_ctrl" "${LogFile}"
                     TestCaseStep3=${ERR_VALUE}
                     MachineState="Break"
                 else
@@ -98,12 +100,23 @@ function b_smb2_pci_test {
                 ;;
             Step4)
                 debug_print "${LogPrefix} Run step @4" "${LogFile}"
-                if ! run_as_root smb2_ctrl smb2_1 -a=${DeviceAddress} wb -d=0xff > "smb2_crtl_enable.log"; then
-                    debug_print "${LogPrefix}  Could not enable PCIe with smb2_ctrl" "${LogFile}"
+                if lsubs -d 0403:6001 > lsusb_disabled.log; then
+                    debug_print "${LogPrefix}  PCIe has not been disabled" "${LogFile}"
                     TestCaseStep4=${ERR_VALUE}
                     MachineState="Break"
                 else
                     TestCaseStep4=${ERR_OK}
+                    MachineState="Step5"
+                fi
+                ;;
+            Step5)
+                debug_print "${LogPrefix} Run step @5" "${LogFile}"
+                if ! run_as_root smb2_ctrl smb2_1 -a=${DeviceAddress} wb -d=0xff > "smb2_crtl_enable.log"; then
+                    debug_print "${LogPrefix}  Could not enable PCIe with smb2_ctrl" "${LogFile}"
+                    TestCaseStep5=${ERR_VALUE}
+                    MachineState="Break"
+                else
+                    TestCaseStep5=${ERR_OK}
                     MachineState="Break"
                 fi
                 ;;
@@ -119,7 +132,8 @@ function b_smb2_pci_test {
     done
 
     if [ "${TestCaseStep1}" = "${ERR_OK}" ] && [ "${TestCaseStep2}" = "${ERR_OK}" ] &&\
-       [ "${TestCaseStep3}" = "${ERR_OK}" ] && [ "${TestCaseStep4}" = "${ERR_OK}" ]; then
+       [ "${TestCaseStep3}" = "${ERR_OK}" ] && [ "${TestCaseStep4}" = "${ERR_OK}" ] &&\
+       [ "${TestCaseStep5}" = "${ERR_OK}" ]; then
         return "${ERR_OK}"
     else
         return "${ERR_VALUE}"
