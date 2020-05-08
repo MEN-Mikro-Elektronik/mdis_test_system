@@ -22,10 +22,6 @@ function bl50_boxpc_description {
     echo "    are available in the system"
     echo "DESCRIPTION:"
     echo "    Run tests on BL50:"
-    echo "       SMB2 read boardident"
-    echo "       SMB2 read temperature"
-    echo "       SMB2 power over ethernet (register read,write)"
-    echo "       SMB2 enable/disable pci extension card (register read,write)"
     echo "       Z029 (can test)"
     echo "RESULTS"
     echo "    SUCCESS if ip-cores tests on BL51 are passed."
@@ -46,8 +42,8 @@ function bl50_boxpc_test {
     local LogPrefix=${5}
     local BoardInSystem=${6}
 
-    # Board in this Test Case always have
-    VenID=""
+    # FPGA chameleon table identifier
+    VenID="sc24_fpga"
     DevID=""
     SubVenID=""
 
@@ -59,8 +55,17 @@ function bl50_boxpc_test {
     while ${MachineRun}; do
         case "${MachineState}" in
         can_test)
-            print_debug "${LogPrefix} Run CAN test" "${LogFile}"
-            CanTestResult=${ERR_VALUE}
+            debug_print "${LogPrefix} Run CAN test" "${LogFile}"
+            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+                                             -id "${TestCaseId}"\
+                                             -os "${OsNameKernel}"\
+                                             -dname "z029_can"\
+                                             -venid "${VenID}"\
+                                             -devid "${DevID}"\
+                                             -subvenid "${SubVenID}"\
+                                             -tspec "${CanTest}"\
+                                             -dno "1"
+            CanTestResult=$?
             MachineState="Break"
             ;;
         Break)

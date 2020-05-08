@@ -20,8 +20,6 @@ function bl51_boxpc_description {
     echo "    are available in the system"
     echo "DESCRIPTION:"
     echo "    Run tests on BL51 for ip cores:"
-    echo "       SMB2 read boardident"
-    echo "       SMB2 read temperature"
     echo "       Z029 (can test)"
     echo "RESULTS"
     echo "    SUCCESS if ip-cores tests on BL51 are passed."
@@ -43,7 +41,7 @@ function bl51_boxpc_test {
     local BoardInSystem=${6}
 
     # Board in this Test Case always have
-    VenID=""
+    VenID="sc31_fpga"
     DevID=""
     SubVenID=""
 
@@ -55,20 +53,17 @@ function bl51_boxpc_test {
     while ${MachineRun}; do
         case "${MachineState}" in
         can_test)
-            print_debug "${LogPrefix} Run CAN test" "${LogFile}"
-            #New can test function should be added to handle
-            #can_test_ll_z15_loopback2 ${TestCaseLogName} "can_1"
-            #
-            #run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
-            #                                 -id "${TestCaseId}"\
-            #                                 -os "${OsNameKernel}"\
-            #                                 -dname "z029_can"\
-            #                                 -venid "${VenID}"\
-            #                                 -devid "${DevID}"\
-            #                                 -subvenid "${SubVenID}"\
-            #                                 -tspec "${CanTest}"\
-            #                                 -dno "1"
-            CanTestResult=${ERR_VALUE}
+            debug_print "${LogPrefix} Run CAN test" "${LogFile}"
+            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+                                             -id "${TestCaseId}"\
+                                             -os "${OsNameKernel}"\
+                                             -dname "z029_can"\
+                                             -venid "${VenID}"\
+                                             -devid "${DevID}"\
+                                             -subvenid "${SubVenID}"\
+                                             -tspec "${CanTest}"\
+                                             -dno "1"
+            CanTestResult=$?
             MachineState="Break"
             ;;
         Break)

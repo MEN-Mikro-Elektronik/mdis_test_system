@@ -421,6 +421,51 @@ function obtain_device_list_chameleon_device {
     local DevNr=0
 
     debug_print "${LogPrefix} obtain_device_list_chameleon_device" "${LogFile}"
+
+    if [ "${VenID}" = "sc24_fpga"]; then
+        # Check how many devices are present in system.dsc
+        local DeviceNr
+        DeviceNr=$(grep -c "{" ../../system.dsc)
+
+        # Create file with devices description on mezzaine chameleon board
+        touch "${FileWithResults}"
+        for i in $(seq 1 "${DeviceNr}"); do
+            #Check if device belongs to choosen chameleon board
+            local DevToCheck
+            DevToCheck=$(grep "{" ../../system.dsc  | awk NR=="${i}"'{print $1}')
+            if [ "${DevToCheck}" != "sc24_fpga" ]; then
+                if sed -n "/${DevToCheck}/,/}/p" ../../system.dsc  | grep "sc24_fpga" > /dev/null 2>&1
+                then
+                    debug_print "${LogPrefix}  Device: ${DevToCheck} belongs to sc24_fpga" "${LogFile}"
+                    echo "${DevToCheck}" >> "${FileWithResults}"
+                fi
+            fi
+        done
+        return
+    fi
+
+    if [ "${VenID}" = "sc31_fpga"]; then
+        # Check how many devices are present in system.dsc
+        local DeviceNr
+        DeviceNr=$(grep -c "{" ../../system.dsc)
+
+        # Create file with devices description on mezzaine chameleon board
+        touch "${FileWithResults}"
+        for i in $(seq 1 "${DeviceNr}"); do
+            #Check if device belongs to choosen chameleon board
+            local DevToCheck
+            DevToCheck=$(grep "{" ../../system.dsc  | awk NR=="${i}"'{print $1}')
+            if [ "${DevToCheck}" != "sc31_fpga" ]; then
+                if sed -n "/${DevToCheck}/,/}/p" ../../system.dsc  | grep "sc31_fpga" > /dev/null 2>&1
+                then
+                    debug_print "${LogPrefix}  Device: ${DevToCheck} belongs to sc31_fpga" "${LogFile}"
+                    echo "${DevToCheck}" >> "${FileWithResults}"
+                fi
+            fi
+        done
+        return
+    fi
+
     # Check how many boards are present
     BoardsCnt=$(run_as_root /opt/menlinux/BIN/fpga_load -s | grep -c "${VenID} * ${DevID} * ${SubVenID}")
     debug_print "${LogPrefix} There are: ${BoardsCnt} mezzaine ${VenID} ${DevID} ${SubVenID} board(s) in the system" "${LogFile}"

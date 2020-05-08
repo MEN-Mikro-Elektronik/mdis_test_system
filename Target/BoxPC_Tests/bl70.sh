@@ -23,10 +23,8 @@ function bl70_boxpc_description {
     echo "    are available in the system"
     echo "DESCRIPTION:"
     echo "    Run tests on BL70:"
-    echo "       SMB2 read board ident"
-    echo "       SMB2 read temperature"
-    echo "       SMB2 enable/disable pci extension card (register read,write)"
     echo "       Z029 (can test)"
+    echo "       UART test"
     echo "RESULTS"
     echo "    SUCCESS if ip-cores tests on BL51 are passed."
     echo "    FAIL otherwise"
@@ -46,8 +44,8 @@ function bl70_boxpc_test {
     local LogPrefix=${5}
     local BoardInSystem=${6}
 
-    # Board in this Test Case always have
-    VenID=""
+    # FPGA chameleon table identifier
+    VenID="sc24_fpga"
     DevID=""
     SubVenID=""
 
@@ -58,27 +56,23 @@ function bl70_boxpc_test {
 
     while ${MachineRun}; do
         case "${MachineState}" in
-        board_ident_test)
-            debug_print "${LogPrefix} Read board ident" "${LogFile}"
-            MachineState="Break"
-            ;;
-        temperature_test)
-            debug_print "${LogPrefix} Read board temperature" "${LogFile}"
-            MachineState="Break"
-            ;;
-        pci_test)
-            debug_print "${LogPrefix} Enable and disable pci card" "${LogFile}"
-            PciTestResult=$?
-            MachineState="Break"
-            ;;
-        led_test)
-            debug_print "${LogPrefix} Turn on/off LEDs" "${LogFile}"
-            LedTestResult=$?
-            MachineState="Break"
-            ;;
         can_test)
             debug_print "${LogPrefix} Run CAN test" "${LogFile}"
+            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+                                             -id "${TestCaseId}"\
+                                             -os "${OsNameKernel}"\
+                                             -dname "z029_can"\
+                                             -venid "${VenID}"\
+                                             -devid "${DevID}"\
+                                             -subvenid "${SubVenID}"\
+                                             -tspec "${CanTest}"\
+                                             -dno "1"
             CanTestResult=$?
+            MachineState="Break"
+            ;;
+        uart_test)
+            debug_print "${LogPrefix} Run UART RS232 X2 adapter test " "${LogFile}"
+            UartTestResult=${ERR_VALUE}
             MachineState="Break"
             ;;
         Break)
@@ -93,7 +87,7 @@ function bl70_boxpc_test {
         esac
     done
 
-    if [ "${BoardIdentTestResult}" = "${ERR_OK}" ] && [ "${TemperatureTestResult}" = "${ERR_OK}" ] && [ "${PciTestResult}" = "${ERR_OK}" ] && [ "${LedTestResult}" = "${ERR_OK}" ] && [ "${CanTestResult}" = "${ERR_OK}" ]; then
+    if [ "${CanTestResult}" = "${ERR_OK}" ] && [ "${UartTestResult}" = "${ERR_OK}" ]; then
         return "${ERR_OK}"
     else
         return "${ERR_VALUE}"
