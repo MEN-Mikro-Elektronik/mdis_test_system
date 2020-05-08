@@ -54,8 +54,6 @@ function b_smb2_pci_test {
 
     DevName="smb2_1"    # smb device name (e.g. smb2_1)
 
-    debug_print "${LogPrefix} b_smb2_pci_test" "${LogFile}"
-
     while ${MachineRun}; do
         case ${MachineState} in
             Step1)
