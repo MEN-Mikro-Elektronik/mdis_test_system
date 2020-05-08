@@ -59,7 +59,7 @@ function b_smb2_pci_test {
         case ${MachineState} in
             Step1)
                 debug_print "${LogPrefix} Run step @1" "${LogFile}"
-                if ! run_as_root modprobe men_ll_profidp
+                if ! run_as_root modprobe men_mdis_kernel
                 then
                     debug_print "${LogPrefix}  ERR_MODPROBE: could not modprobe men_mdis_kernel" "${LogFile}" 
                     TestCaseStep1=${ERR_MODPROBE}
