@@ -75,10 +75,11 @@ function b_smb2_pci_test {
                 if [[ "${HwName}" =~ [[:space:]]*HW-Name[[:space:]]+=[[:space:]]+([A-Za-z0-9]+).* ]]; then
                     HwName="${BASH_REMATCH[1]}"
                     case "${HwName}" in
-                       "S25") DeviceAddress="0x40";;
-                       "S24") DeviceAddress="0x42";;
+                       "SC25") DeviceAddress="0x40";;
+                       "SC24") DeviceAddress="0x42";;
                        *) DeviceAddress="0x42";;
                     esac
+                    debug_print "${LogPrefix} Using device address: ${DeviceAddress}" "${LogFile}"
                     TestCaseStep2=${ERR_OK}
                     MachineState="Step3"
                 else
