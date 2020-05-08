@@ -48,6 +48,7 @@ function bl70_boxpc_test {
     VenID="sc24_fpga"
     DevID=""
     SubVenID=""
+    UartDevice="ttyS1"  # device under /dev/*"
 
     CanTest="loopback_single"
     MachineState="can_test"
@@ -68,11 +69,20 @@ function bl70_boxpc_test {
                                              -tspec "${CanTest}"\
                                              -dno "1"
             CanTestResult=$?
-            MachineState="Break"
+            MachineState="uart_test"
             ;;
         uart_test)
-            debug_print "${LogPrefix} Run UART RS232 X2 adapter test " "${LogFile}"
-            UartTestResult=${ERR_VALUE}
+            debug_print "${LogPrefix} Run UART test" "${LogFile}"
+            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+                                             -id "${TestCaseId}"\
+                                             -os "${OsNameKernel}"\
+                                             -dname "z125_uart"\
+                                             -venid "${VenID}"\
+                                             -devid "${DevID}"\
+                                             -subvenid "${SubVenID}"\
+                                             -tspec "${UartDevice}"\
+                                             -dno "1"
+            UartTestResult=$?
             MachineState="Break"
             ;;
         Break)
@@ -82,7 +92,7 @@ function bl70_boxpc_test {
             ;;
         *)
             debug_print "${LogPrefix} State is not set, start with can_test" "${LogFile}"
-            MachineState="board_ident_test"
+            MachineState="can_test"
             ;;
         esac
     done

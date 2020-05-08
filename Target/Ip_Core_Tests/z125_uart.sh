@@ -60,6 +60,17 @@ function z125_uart_test {
     local UartNoList="UART_board_tty_numbers.txt"
     local ChamTableDumpFile="Chameleon_table_${VenID}_${DevID}_${SubVenID}_${BoardInSystem}.log"
 
+    if [ "${VenID}" = "sc24_fpga" ] || [ "${VenID}" = "sc31_fpga" ]; then
+        debug_print "${LogPrefix} BoxPC UART test on device /dev/${UartNo}" "${LogFile}"
+        load_z125_driver "${LogFile}" "${LogPrefix}"
+        if ! uart_test_tty "${UartNo}" "${UartNo}" "${LogPrefix}" "${LogFile}"
+        then
+            debug_print "${LogPrefix}  ERR_VALUE: loopback fail on ${UartNo}" "${LogFile}"
+            return "${ERR_VALUE}"
+        fi
+        return ${ERR_OK}
+    fi
+
     # Debian workaround. Could not dump chameleon table when
     # men_lx_z25 is loaded
     unload_z125_driver "${LogFile}" "${LogPrefix}"

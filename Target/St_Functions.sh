@@ -521,7 +521,7 @@ function obtain_device_list_chameleon_device {
     # Check how many devices are present in system.dsc
     local DeviceNr
     DeviceNr=$(grep -c "{" ../../system.dsc)
-    
+
     # Create file with devices description on mezzaine chameleon board
     touch "${FileWithResults}"
 
