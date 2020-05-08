@@ -60,7 +60,7 @@ TEST_CASES_MAP["501"]="bl51"
 TEST_CASES_MAP["502"]="bl70"
 
 # Address of Target that will be tested
-MenPcIpAddr="10.1.1.156"
+MenPcIpAddr="10.1.1.89"
 
 # Credentials for Pc that will be tested - required by ssh connection and sudo cmds
 MenPcLogin="men"
