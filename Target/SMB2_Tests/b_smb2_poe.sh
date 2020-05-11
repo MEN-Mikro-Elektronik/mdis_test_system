@@ -79,9 +79,8 @@ function b_smb2_poe_test {
                 ;;
             Step3)
                 debug_print "${LogPrefix} Run step @3" "${LogFile}"
-                sleep 3
-                if ! grep "^state: 1  1  1  1" smb2_poe_set.log; then
-                    debug_print "${LogPrefix}  ERR_VALUE: POE has not been enabled" "${LogFile}"
+                if ! run_as_root smb2_poe smb2_1 -g > "smb2_poe_enabled.log"; then
+                    debug_print "${LogPrefix}  ERR_VALUE: Could not get POE state" "${LogFile}"
                     TestCaseStep3=${ERR_VALUE}
                     MachineState="Break"
                 else
@@ -91,8 +90,8 @@ function b_smb2_poe_test {
                 ;;
             Step4)
                 debug_print "${LogPrefix} Run step @4" "${LogFile}"
-                if ! run_as_root smb2_poe smb2_1 -c > "smb2_poe_clear.log"; then
-                    debug_print "${LogPrefix}  Could not clear POE state" "${LogFile}"
+                if ! grep "^state: 1  1  1  1" smb2_poe_enabled.log; then
+                    debug_print "${LogPrefix}  ERR_VALUE: POE has not been enabled" "${LogFile}"
                     TestCaseStep4=${ERR_VALUE}
                     MachineState="Break"
                 else
@@ -102,13 +101,34 @@ function b_smb2_poe_test {
                 ;;
             Step5)
                 debug_print "${LogPrefix} Run step @5" "${LogFile}"
-                sleep 3
-                if ! grep "^state: 0  0  0  0" smb2_poe_clear.log; then
-                    debug_print "${LogPrefix}  ERR_VALUE: POE has not been diabled" "${LogFile}"
+                if ! run_as_root smb2_poe smb2_1 -c > "smb2_poe_clear.log"; then
+                    debug_print "${LogPrefix}  Could not clear POE state" "${LogFile}"
                     TestCaseStep5=${ERR_VALUE}
                     MachineState="Break"
                 else
                     TestCaseStep5=${ERR_OK}
+                    MachineState="Step6"
+                fi
+                ;;
+            Step6)
+                debug_print "${LogPrefix} Run step @6" "${LogFile}"
+                if ! run_as_root smb2_poe smb2_1 -g > "smb2_poe_disabled.log"; then
+                    debug_print "${LogPrefix}  ERR_VALUE: Could not get POE state" "${LogFile}"
+                    TestCaseStep6=${ERR_VALUE}
+                    MachineState="Break"
+                else
+                    TestCaseStep6=${ERR_OK}
+                    MachineState="Step7"
+                fi
+                ;;
+            Step7)
+                debug_print "${LogPrefix} Run step @7" "${LogFile}"
+                if ! grep "^state: 0  0  0  0" smb2_poe_disabled.log; then
+                    debug_print "${LogPrefix}  ERR_VALUE: POE has not been diabled" "${LogFile}"
+                    TestCaseStep7=${ERR_VALUE}
+                    MachineState="Break"
+                else
+                    TestCaseStep7=${ERR_OK}
                     MachineState="Break"
                 fi
                 ;;
@@ -125,7 +145,8 @@ function b_smb2_poe_test {
 
     if [ "${TestCaseStep1}" = "${ERR_OK}" ] && [ "${TestCaseStep2}" = "${ERR_OK}" ] &&\
        [ "${TestCaseStep3}" = "${ERR_OK}" ] && [ "${TestCaseStep4}" = "${ERR_OK}" ] &&\
-       [ "${TestCaseStep5}" = "${ERR_OK}" ]; then
+       [ "${TestCaseStep5}" = "${ERR_OK}" ] && [ "${TestCaseStep6}" = "${ERR_OK}" ] &&\
+       [ "${TestCaseStep7}" = "${ERR_OK}" ]; then
         return "${ERR_OK}"
     else
         return "${ERR_VALUE}"
