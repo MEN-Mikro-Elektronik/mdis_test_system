@@ -71,14 +71,9 @@ function b_smb2_eetemp_test {
                 ;;
             Step2)
                 debug_print "${LogPrefix} Run step @2" "${LogFile}"
-                if ! run_as_root smb2_eetemp "${DevName}" > smb2_eetemp.log; then
-                    debug_print "${LogPrefix}  ERR_VALUE: Could not get temperature with smb2_eetemp" "${LogFile}"
-                    TestCaseStep2=${ERR_VALUE}
-                    MachineState="Break"
-                else
-                    TestCaseStep2=${ERR_OK}
-                    MachineState="Step3"
-                fi
+                run_as_root smb2_eetemp "${DevName}" > smb2_eetemp.log
+                TestCaseStep2=${ERR_OK}
+                MachineState="Step3"
                 ;;
             Step3)
                 debug_print "${LogPrefix} Run step @3" "${LogFile}"
