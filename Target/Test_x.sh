@@ -29,9 +29,9 @@ source "${MyDir}"/Board_Tests/g229.sh
 source "${MyDir}"/Board_Tests/f223.sh
 source "${MyDir}"/Board_Tests/carriers_f205.sh
 source "${MyDir}"/Board_Tests/carriers_g204.sh
-source "${MyDir}"/BoxPC_Tests/bl50.sh
-source "${MyDir}"/BoxPC_Tests/bl51.sh
-source "${MyDir}"/BoxPC_Tests/bl70.sh
+source "${MyDir}"/BoxPC_Tests/bl50_boxpc.sh
+source "${MyDir}"/BoxPC_Tests/bl51_boxpc.sh
+source "${MyDir}"/BoxPC_Tests/bl70_boxpc.sh
 source "${MyDir}"/SMB2_Tests/b_smb2.sh
 source "${MyDir}"/SMB2_Tests/b_smb2_eetemp.sh
 source "${MyDir}"/SMB2_Tests/b_smb2_led.sh

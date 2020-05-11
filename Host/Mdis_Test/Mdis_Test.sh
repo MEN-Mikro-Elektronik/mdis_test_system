@@ -78,24 +78,33 @@ function print_test_brief {
     fi
 
     echo ""
-    if [ "${TestId}" -lt "200" ]
+    if [ "${TestId}" -lt "100" ]
+    then
+        Board=$(echo "${TEST_CASES_MAP[${TestId}]}")
+        source ${TestPath}/SMB2_Tests/${Board}.sh
+        ${Board}_description "" "" "" "long_description"
+    elif [ "${TestId}" -lt "200" ]
     then
         Board=$(echo "${TEST_CASES_MAP[${TestId}]}")
         source ${TestPath}/Board_Tests/${Board}.sh
-        ${Board}_description "" "" "long_description"
-    
+        ${Board}_description "" "" "" "long_description"
     elif [ "${TestId}" -lt "300" ]
     then
         Module=$(echo "${TEST_CASES_MAP[${TestId}]}" | sed 's/carrier_g204_//')
         source ${TestPath}/Board_Tests/carriers_g204.sh
         source ${TestPath}/M_Modules_Tests/${Module}.sh
-        carrier_g204_TPL_description "${Module}" "<x>" "long_description"
+        carrier_g204_TPL_description "${Module}" "<x>" "" "long_description"
     elif [ "${TestId}" -lt "400" ]
     then
         Module=$(echo "${TEST_CASES_MAP[${TestId}]}" | sed 's/carrier_f205_//')
         source ${TestPath}/Board_Tests/carriers_f205.sh
         source ${TestPath}/M_Modules_Tests/${Module}.sh
-        carrier_f205_TPL_description "${Module}" "<x>" "long_description"
+        carrier_f205_TPL_description "${Module}" "<x>" "" "long_description"
+    elif [ "${TestId}" -lt "600" ]
+    then
+        Board=$(echo "${TEST_CASES_MAP[${TestId}]}")
+        source ${TestPath}/BoxPC_Tests/${Board}.sh
+        ${Board}_description "" "" "" "long_description"
     fi
 }
 

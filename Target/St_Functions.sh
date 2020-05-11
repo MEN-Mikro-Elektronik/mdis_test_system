@@ -179,55 +179,57 @@ function print_env_requirements {
     local Kernel=""
     local ArchSpec""
 
-    OS=$(hostnamectl | grep "Operating System" | awk '{ print $3 $4 }')
-    if echo "${OS}" | grep -i "ubuntu" > /dev/null
+    if [ ! -z "${TestSummaryDirectory}" ]
     then
-        os_requirement "ubuntu"
-    elif echo "${OS}" | grep -i "centos" > /dev/null
-    then
-        os_requirement "centos"
-    elif echo "${OS}" | grep -i "debian" > /dev/null
-    then
-        os_requirement "debian"
+        OS=$(hostnamectl | grep "Operating System" | awk '{ print $3 $4 }')
+        if echo "${OS}" | grep -i "ubuntu" > /dev/null
+        then
+            os_requirement "ubuntu"
+        elif echo "${OS}" | grep -i "centos" > /dev/null
+        then
+            os_requirement "centos"
+        elif echo "${OS}" | grep -i "debian" > /dev/null
+        then
+            os_requirement "debian"
+        fi
+
+        Kernel=$(uname -r)
+        if echo "${Kernel}" | grep -i "^3.16" > /dev/null ||
+           echo "${Kernel}" | grep -i "^4.4" > /dev/null ||
+           echo "${Kernel}" | grep -i "^4.9" > /dev/null ||
+           echo "${Kernel}" | grep -i "^4.14" > /dev/null ||
+           echo "${Kernel}" | grep -i "^4.19" > /dev/null ||
+           echo "${Kernel}" | grep -i "^5.4" > /dev/null
+        then
+            kernel_requirement "lts"
+        elif echo "${Kernel}" | grep -i "^5.5" > /dev/null ||
+             echo "${Kernel}" | grep -i "^5.6"> /dev/null
+        then
+            kernel_requirement "latest"
+        fi
+
+        CPU=$(obtain_device_wiz_model "cpu" "${TestSummaryDirectory}")
+
+        if echo "${CPU}" | grep -i "f23p" > /dev/null
+        then
+            cpu_requirement "f23p"
+        elif echo "${CPU}" | grep -i "f26" > /dev/null
+        then
+            cpu_requirement "f26"
+        elif echo "${CPU}" | grep -i "g23" > /dev/null
+        then
+            cpu_requirement "g23"
+        elif echo "${CPU}" | grep -i "g25a" > /dev/null
+        then
+            cpu_requirement "g25a"
+        elif echo "${CPU}" | grep -i "cb70" > /dev/null
+        then
+            cpu_requirement "cb70"
+        elif echo "${CPU}" | grep -i "a25" > /dev/null
+        then
+            cpu_requirement "a25"
+        fi
     fi
-
-    Kernel=$(uname -r)
-    if echo "${Kernel}" | grep -i "^3.16" > /dev/null ||
-       echo "${Kernel}" | grep -i "^4.4" > /dev/null ||
-       echo "${Kernel}" | grep -i "^4.9" > /dev/null ||
-       echo "${Kernel}" | grep -i "^4.14" > /dev/null ||
-       echo "${Kernel}" | grep -i "^4.19" > /dev/null ||
-       echo "${Kernel}" | grep -i "^5.4" > /dev/null
-    then
-        kernel_requirement "lts"
-    elif echo "${Kernel}" | grep -i "^5.5" > /dev/null ||
-         echo "${Kernel}" | grep -i "^5.6"> /dev/null
-    then
-        kernel_requirement "latest"
-    fi
-
-    CPU=$(obtain_device_wiz_model "cpu" "${TestSummaryDirectory}")
-
-    if echo "${CPU}" | grep -i "f23p" > /dev/null
-    then
-        cpu_requirement "f23p"
-    elif echo "${CPU}" | grep -i "f26" > /dev/null
-    then
-        cpu_requirement "f26"
-    elif echo "${CPU}" | grep -i "g23" > /dev/null
-    then
-        cpu_requirement "g23"
-    elif echo "${CPU}" | grep -i "g25a" > /dev/null
-    then
-        cpu_requirement "g25a"
-    elif echo "${CPU}" | grep -i "cb70" > /dev/null
-    then
-        cpu_requirement "cb70"
-    elif echo "${CPU}" | grep -i "a25" > /dev/null
-    then
-        cpu_requirement "a25"
-    fi
-
 }
 
 ############################################################################
