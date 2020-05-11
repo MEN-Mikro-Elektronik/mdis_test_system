@@ -19,9 +19,13 @@ function b_smb2_poe_description {
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
     echo "DESCRIPTION:"
-    echo ""
+    echo "    1.Load drivers: modprobe men_mdis_kernel"
+    echo "    2.Enable POE"
+    echo "    3.Check if POE has been enabled"
+    echo "    4.Disable POE"
+    echo "    5.Check if POE has beed disabled"
     echo "PURPOSE:"
-    echo ""
+    echo "    Check if POE enabling is working"
     echo "UPPER_REQUIREMENT_ID:"
     print_env_requirements "${TestSummaryDirectory}"
     echo "    MEN_13MD0590_SWR_1950"
@@ -48,4 +52,82 @@ function b_smb2_poe_test {
     local LogPrefix=${5}
     local BoardInSystem=${6}
 
+    while ${MachineRun}; do
+        case ${MachineState} in
+            Step1)
+                debug_print "${LogPrefix} Run step @1" "${LogFile}"
+                if ! run_as_root modprobe men_mdis_kernel
+                then
+                    debug_print "${LogPrefix}  ERR_MODPROBE: could not modprobe men_mdis_kernel" "${LogFile}" 
+                    TestCaseStep1=${ERR_MODPROBE}
+                    MachineState="Break"
+                else
+                    TestCaseStep1=${ERR_OK}
+                    MachineState="Step2"
+                fi
+                ;;
+            Step2)
+                debug_print "${LogPrefix} Run step @2" "${LogFile}"
+                if ! run_as_root smb2_poe smb2_1 -s > "smb2_poe_set.log"; then
+                    debug_print "${LogPrefix}  ERR_VALUE: Could not set POE state" "${LogFile}"
+                    TestCaseStep2=${ERR_VALUE}
+                    MachineState="Break"
+                else
+                    TestCaseStep2=${ERR_OK}
+                    MachineState="Step3"
+                fi
+                ;;
+            Step3)
+                debug_print "${LogPrefix} Run step @3" "${LogFile}"
+                sleep 3
+                if ! grep "^state: 1  1  1  1" smb2_poe_set.log; then
+                    debug_print "${LogPrefix}  ERR_VALUE: POE has not been enabled" "${LogFile}"
+                    TestCaseStep3=${ERR_VALUE}
+                    MachineState="Break"
+                else
+                    TestCaseStep3=${ERR_OK}
+                    MachineState="Step4"
+                fi
+                ;;
+            Step4)
+                debug_print "${LogPrefix} Run step @4" "${LogFile}"
+                if ! run_as_root smb2_poe smb2_1 -c > "smb2_poe_clear.log"; then
+                    debug_print "${LogPrefix}  Could not clear POE state" "${LogFile}"
+                    TestCaseStep4=${ERR_VALUE}
+                    MachineState="Break"
+                else
+                    TestCaseStep4=${ERR_OK}
+                    MachineState="Step5"
+                fi
+                ;;
+            Step5)
+                debug_print "${LogPrefix} Run step @5" "${LogFile}"
+                sleep 3
+                if ! grep "^state: 0  0  0  0" smb2_poe_clear.log; then
+                    debug_print "${LogPrefix}  ERR_VALUE: POE has not been diabled" "${LogFile}"
+                    TestCaseStep5=${ERR_VALUE}
+                    MachineState="Break"
+                else
+                    TestCaseStep5=${ERR_OK}
+                    MachineState="Break"
+                fi
+                ;;
+            Break) # Clean after Test Case
+                debug_print "${LogPrefix} Break State" "${LogFile}"
+                MachineRun=false
+                ;;
+            *)
+                debug_print "${LogPrefix} State is not set, start with Step1" "${LogFile}"
+                MachineState="Step1"
+                ;;
+        esac
+    done
+
+    if [ "${TestCaseStep1}" = "${ERR_OK}" ] && [ "${TestCaseStep2}" = "${ERR_OK}" ] &&\
+       [ "${TestCaseStep3}" = "${ERR_OK}" ] && [ "${TestCaseStep4}" = "${ERR_OK}" ] &&\
+       [ "${TestCaseStep5}" = "${ERR_OK}" ]; then
+        return "${ERR_OK}"
+    else
+        return "${ERR_VALUE}"
+    fi
 }
