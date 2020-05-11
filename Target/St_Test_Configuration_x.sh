@@ -192,7 +192,7 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             ;;
         10)
             #run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL70
-            #run_test_case_board "2" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL70
+            run_test_case_board "2" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL70
             #run_test_case_board "3" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL70
             run_test_case_board "4" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL70
             #run_test_case_board "5" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL70
