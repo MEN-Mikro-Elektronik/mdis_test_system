@@ -7,6 +7,7 @@ source "${MyDir}/SMB2_Tests/b_smb2_eetemp.sh"
 source "${MyDir}/SMB2_Tests/b_smb2_pci.sh"
 source "${MyDir}/SMB2_Tests/b_smb2_led.sh"
 source "${MyDir}/Ip_Core_Tests/z029_can.sh"
+source "${MyDir}/Ip_Core_Tests/z125_uart.sh"
 
 ############################################################################
 # Box PC BL70 description
@@ -25,8 +26,18 @@ function bl70_boxpc_description {
     echo "    Run tests on BL70:"
     echo "       Z029 (can test)"
     echo "       UART test"
+    echo "PURPOSE:"
+    echo "    Check if all interfaces of BoxPC are detected and are working"
+    echo "    correctly"
+    echo "UPPER_REQUIREMENT_ID:"
+    print_env_requirements "${TestSummaryDirectory}"
+    echo "    MEN_13MD0590_SWR_0850"
+    print_requirements "z029_can_description"
+    print_requirements "z125_uart_description"
+    #echo "REQUIREMENT_ID:"
+    #echo "    MEN_13MD05-90_SA_1070"
     echo "RESULTS"
-    echo "    SUCCESS if ip-cores tests on BL51 are passed."
+    echo "    SUCCESS if ip-cores tests on BL70 are passed."
     echo "    FAIL otherwise"
     echo ""
 }
