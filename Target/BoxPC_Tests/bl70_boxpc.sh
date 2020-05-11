@@ -2,46 +2,60 @@
 MyDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${MyDir}/../../Common/Conf.sh"
 source "${MyDir}/../St_Functions.sh"
+source "${MyDir}/SMB2_Tests/b_smb2.sh"
 source "${MyDir}/SMB2_Tests/b_smb2_eetemp.sh"
+source "${MyDir}/SMB2_Tests/b_smb2_pci.sh"
+source "${MyDir}/SMB2_Tests/b_smb2_led.sh"
 source "${MyDir}/Ip_Core_Tests/z029_can.sh"
+source "${MyDir}/Ip_Core_Tests/z125_uart.sh"
 
 ############################################################################
-# Box PC BL51 description
+# Box PC BL70 description
 #
 # parameters:
 # $1    Module number
 # $2    Module log path 
-function bl51_boxpc_description {
+function bl70_boxpc_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
-    echo "--------------------------BL51 BoxPC Test Case--------------------------------"
+    local TestSummaryDirectory="${3}"
+    local LongDescription="${4}"
+    echo "--------------------------BL70 BoxPC Test Case--------------------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
     echo "DESCRIPTION:"
-    echo "    Run tests on BL51 for ip cores:"
+    echo "    Run tests on BL70:"
     echo "       Z029 (can test)"
+    echo "       UART test"
     echo "PURPOSE:"
     echo "    Check if all interfaces of BoxPC are detected and are working"
     echo "    correctly"
     echo "UPPER_REQUIREMENT_ID:"
     print_env_requirements "${TestSummaryDirectory}"
-    echo "    MEN_13MD0590_SWR_0870"
+    echo "    MEN_13MD0590_SWR_0850"
     print_requirements "z029_can_description"
+    print_requirements "z125_uart_description"
     #echo "REQUIREMENT_ID:"
-    #echo "    MEN_13MD05-90_SA_1080"
+    #echo "    MEN_13MD05-90_SA_1070"
     echo "RESULTS"
-    echo "    SUCCESS if ip-cores tests on BL51 are passed."
+    echo "    SUCCESS if ip-cores tests on BL70 are passed."
     echo "    FAIL otherwise"
     echo ""
+
+    if [ ! -z "${LongDescription}" ]
+    then
+        z029_can_description
+        z125_uart_description
+    fi
 }
 
 ############################################################################
-# Box PC BL51  test
+# Box PC BL70  test
 #
 # parameters:
 #
-function bl51_boxpc_test {
+function bl70_boxpc_test {
     local TestCaseId="${1}"
     local TestSummaryDirectory="${2}"
     local OsNameKernel="${3}"
@@ -49,10 +63,11 @@ function bl51_boxpc_test {
     local LogPrefix=${5}
     local BoardInSystem=${6}
 
-    # Board in this Test Case always have
-    VenID="sc31_fpga"
+    # FPGA chameleon table identifier
+    VenID="sc24_fpga"
     DevID=""
     SubVenID=""
+    UartDevice="ttyS1"  # device under /dev/*"
 
     CanTest="loopback_single"
     MachineState="can_test"
@@ -73,21 +88,35 @@ function bl51_boxpc_test {
                                              -tspec "${CanTest}"\
                                              -dno "1"
             CanTestResult=$?
+            MachineState="uart_test"
+            ;;
+        uart_test)
+            debug_print "${LogPrefix} Run UART test" "${LogFile}"
+            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+                                             -id "${TestCaseId}"\
+                                             -os "${OsNameKernel}"\
+                                             -dname "z125_uart"\
+                                             -venid "${VenID}"\
+                                             -devid "${DevID}"\
+                                             -subvenid "${SubVenID}"\
+                                             -tspec "${UartDevice}"\
+                                             -dno "1"
+            UartTestResult=$?
             MachineState="Break"
             ;;
         Break)
             # Clean after Test Case
-            print_debug "${LogPrefix} Break State" "${LogFile}"
+            debug_print "${LogPrefix} Break State" "${LogFile}"
             MachineRun=false
             ;;
         *)
-            print_debug "${LogPrefix} State is not set, start with can_test" "${LogFile}"
+            debug_print "${LogPrefix} State is not set, start with can_test" "${LogFile}"
             MachineState="can_test"
             ;;
         esac
     done
 
-    if [ "${CanTestResult}" = "${ERR_OK}" ]; then
+    if [ "${CanTestResult}" = "${ERR_OK}" ] && [ "${UartTestResult}" = "${ERR_OK}" ]; then
         return "${ERR_OK}"
     else
         return "${ERR_VALUE}"
