@@ -118,7 +118,7 @@ function b_smb2_led_test {
                 ;;
             Step5)
                 debug_print "${LogPrefix} Run step @5" "${LogFile}"
-                if ! grep "0xf0" "smb2_crtl_isenabled.log"; then
+                if ! grep "^f0\$" "smb2_crtl_isenabled.log"; then
                     debug_print "${LogPrefix}  ERR_VALUE: LEDs have not been enabled" "${LogFile}"
                     TestCaseStep5=${ERR_VALUE}
                     MachineState="Break"
@@ -152,7 +152,7 @@ function b_smb2_led_test {
                 ;;
             Step8)
                 debug_print "${LogPrefix} Run step @8" "${LogFile}"
-                if ! grep "0xf0" "smb2_crtl_isdisabled.log"; then
+                if ! grep "^ff\$" "smb2_crtl_isdisabled.log"; then
                     debug_print "${LogPrefix}  ERR_VALUE: LEDs have not been disabled" "${LogFile}"
                     TestCaseStep8=${ERR_VALUE}
                     MachineState="Break"
