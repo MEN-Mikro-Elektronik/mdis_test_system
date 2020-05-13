@@ -135,7 +135,7 @@ function b_smb2_led_test {
                     MachineState="Break"
                 else
                     TestCaseStep6=${ERR_OK}
-                    MachineState="Step6"
+                    MachineState="Step7"
                 fi
                 ;;
             Step7)
