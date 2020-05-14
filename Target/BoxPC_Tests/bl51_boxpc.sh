@@ -23,6 +23,9 @@ function bl51_boxpc_description {
     echo "DESCRIPTION:"
     echo "    Run tests on BL51 for ip cores:"
     echo "       Z029 (can test)"
+    echo "    Run UART loopback tests on interfaces:"
+    echo "       RS422/485"
+    echo "       RS232 (SA-adapter on X12)"
     echo "PURPOSE:"
     echo "    Check if all interfaces of BoxPC are detected and are working"
     echo "    correctly"
@@ -60,11 +63,15 @@ function bl51_boxpc_test {
     VenID="sc31_fpga"
     DevID=""
     SubVenID=""
+    UartDevice0="ttyS2"  # RS422/485 
+    UartDevice1="ttyS3"  # RS232 on X12
 
     CanTest="loopback_single"
     MachineState="can_test"
     MachineRun=true
     CanTestResult=${ERR_VALUE}
+    UartTestResult0=${ERR_VALUE}
+    UartTestResult1=${ERR_VALUE}
 
     while ${MachineRun}; do
         case "${MachineState}" in
@@ -80,6 +87,34 @@ function bl51_boxpc_test {
                                              -tspec "${CanTest}"\
                                              -dno "1"
             CanTestResult=$?
+            MachineState="uart_test0"
+            ;;
+        uart_test0)
+            debug_print "${LogPrefix} Run UART RS422/485 test" "${LogFile}"
+            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+                                             -id "${TestCaseId}"\
+                                             -os "${OsNameKernel}"\
+                                             -dname "z125_uart"\
+                                             -venid "${VenID}"\
+                                             -devid "${DevID}"\
+                                             -subvenid "${SubVenID}"\
+                                             -tspec "${UartDevice0}"\
+                                             -dno "1"
+            UartTestResult0=$?
+            MachineState="uart_test1"
+            ;;
+        uart_test1)
+            debug_print "${LogPrefix} Run UART RS232 test" "${LogFile}"
+            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+                                             -id "${TestCaseId}"\
+                                             -os "${OsNameKernel}"\
+                                             -dname "z125_uart"\
+                                             -venid "${VenID}"\
+                                             -devid "${DevID}"\
+                                             -subvenid "${SubVenID}"\
+                                             -tspec "${UartDevice1}"\
+                                             -dno "1"
+            UartTestResult1=$?
             MachineState="Break"
             ;;
         Break)
@@ -94,7 +129,7 @@ function bl51_boxpc_test {
         esac
     done
 
-    if [ "${CanTestResult}" = "${ERR_OK}" ]; then
+    if [ "${CanTestResult}" = "${ERR_OK}" ] && [ "${UartTestResult0}" = "${ERR_OK}" ] && [ "${UartTestResult1}" = "${ERR_OK}" ]; then
         return "${ERR_OK}"
     else
         return "${ERR_VALUE}"
