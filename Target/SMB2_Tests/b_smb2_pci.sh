@@ -53,6 +53,8 @@ function b_smb2_pci_test {
     local BoardInSystem=${6}
     local DeviceAddress
     local HwName
+    local PCIeOn
+    local PCIeOff
 
     MachineState="Step1"
     MachineRun=true
@@ -79,9 +81,21 @@ function b_smb2_pci_test {
                 if [[ "${HwName}" =~ [[:space:]]*HW-Name[[:space:]]+=[[:space:]]+([A-Za-z0-9]+).* ]]; then
                     HwName="${BASH_REMATCH[1]}"
                     case "${HwName}" in
-                       "SC25") DeviceAddress="0x40";;
-                       "SC24") DeviceAddress="0x42";;
-                       *) DeviceAddress="0x42";;
+                        "SC25")
+                            DeviceAddress="0x40"
+                            PCIeOn="0xff"
+                            PCIeOff="0x7f"
+                            ;;
+                        "SC24")
+                            DeviceAddress="0x42"
+                            PCIeOn="0xff"
+                            PCIeOff="0xf0"
+                            ;;
+                        *)
+                            DeviceAddress="0x42"
+                            PCIeOn="0xff"
+                            PCIeOff="0xf0"
+                            ;;
                     esac
                     debug_print "${LogPrefix} Using device address: ${DeviceAddress}" "${LogFile}"
                     TestCaseStep2=${ERR_OK}
@@ -94,7 +108,7 @@ function b_smb2_pci_test {
                 ;;
             Step3)
                 debug_print "${LogPrefix} Run step @3" "${LogFile}"
-                if ! run_as_root smb2_ctrl smb2_1 -a=${DeviceAddress} wb -d=0x7f > "smb2_crtl_disable.log"; then
+                if ! run_as_root smb2_ctrl smb2_1 -a=${DeviceAddress} wb -d=${PCIeOff} > "smb2_crtl_disable.log"; then
                     debug_print "${LogPrefix}  ERR_VALUE: Could not disable PCIe with smb2_ctrl" "${LogFile}"
                     TestCaseStep3=${ERR_VALUE}
                     MachineState="Break"
@@ -117,7 +131,7 @@ function b_smb2_pci_test {
                 ;;
             Step5)
                 debug_print "${LogPrefix} Run step @5" "${LogFile}"
-                if ! run_as_root smb2_ctrl smb2_1 -a=${DeviceAddress} wb -d=0xff > "smb2_crtl_enable.log"; then
+                if ! run_as_root smb2_ctrl smb2_1 -a=${DeviceAddress} wb -d=${PCIeOn} > "smb2_crtl_enable.log"; then
                     debug_print "${LogPrefix}  Could not enable PCIe with smb2_ctrl" "${LogFile}"
                     TestCaseStep5=${ERR_VALUE}
                     MachineState="Break"
