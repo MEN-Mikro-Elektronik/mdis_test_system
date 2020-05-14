@@ -5,6 +5,7 @@ source "${MyDir}/../St_Functions.sh"
 source "${MyDir}/SMB2_Tests/b_smb2.sh"
 source "${MyDir}/SMB2_Tests/b_smb2_eetemp.sh"
 source "${MyDir}/SMB2_Tests/b_smb2_pci.sh"
+source "${MyDir}/SMB2_Tests/b_smb2_poe.sh"
 source "${MyDir}/SMB2_Tests/b_smb2_led.sh"
 source "${MyDir}/Ip_Core_Tests/z029_can.sh"
 source "${MyDir}/Ip_Core_Tests/z125_uart.sh"
@@ -35,7 +36,6 @@ function bl70_boxpc_description {
     print_env_requirements "${TestSummaryDirectory}"
     echo "    MEN_13MD0590_SWR_0850"
     print_requirements "z029_can_description"
-    print_requirements "z125_uart_description"
     #echo "REQUIREMENT_ID:"
     #echo "    MEN_13MD05-90_SA_1070"
     echo "RESULTS"
@@ -46,7 +46,6 @@ function bl70_boxpc_description {
     if [ ! -z "${LongDescription}" ]
     then
         z029_can_description
-        z125_uart_description
     fi
 }
 
