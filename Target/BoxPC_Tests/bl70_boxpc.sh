@@ -2,7 +2,6 @@
 MyDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${MyDir}/../../Common/Conf.sh"
 source "${MyDir}/../St_Functions.sh"
-source "${MyDir}/SMB2_Tests/b_smb2.sh"
 source "${MyDir}/SMB2_Tests/b_smb2_eetemp.sh"
 source "${MyDir}/SMB2_Tests/b_smb2_pci.sh"
 source "${MyDir}/SMB2_Tests/b_smb2_poe.sh"
