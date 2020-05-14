@@ -94,7 +94,7 @@ function b_smb2_pci_test {
                 ;;
             Step3)
                 debug_print "${LogPrefix} Run step @3" "${LogFile}"
-                if ! run_as_root smb2_ctrl smb2_1 -a=${DeviceAddress} wb -d=0x00 > "smb2_crtl_disable.log"; then
+                if ! run_as_root smb2_ctrl smb2_1 -a=${DeviceAddress} wb -d=0x7f > "smb2_crtl_disable.log"; then
                     debug_print "${LogPrefix}  ERR_VALUE: Could not disable PCIe with smb2_ctrl" "${LogFile}"
                     TestCaseStep3=${ERR_VALUE}
                     MachineState="Break"

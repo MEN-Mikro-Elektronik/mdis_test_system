@@ -64,7 +64,6 @@ function z125_uart_test {
 
     if [ "${VenID}" = "sc24_fpga" ] || [ "${VenID}" = "sc31_fpga" ]; then
         debug_print "${LogPrefix} BoxPC UART test on device /dev/${UartNo}" "${LogFile}"
-        load_z125_driver "${LogFile}" "${LogPrefix}"
         if ! uart_test_tty "${UartNo}" "${UartNo}" "${LogPrefix}" "${LogFile}"
         then
             debug_print "${LogPrefix}  ERR_VALUE: loopback fail on ${UartNo}" "${LogFile}"
