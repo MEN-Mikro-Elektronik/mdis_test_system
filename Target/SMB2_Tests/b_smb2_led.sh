@@ -54,6 +54,8 @@ function b_smb2_led_test {
     local BoardInSystem=${6}
     local DeviceAddress
     local HwName
+    local LEDsOn
+    local LEDsOff
 
     MachineState="Step1"
     MachineRun=true
@@ -80,9 +82,21 @@ function b_smb2_led_test {
                 if [[ "${HwName}" =~ [[:space:]]*HW-Name[[:space:]]+=[[:space:]]+([A-Za-z0-9]+).* ]]; then
                     HwName="${BASH_REMATCH[1]}"
                     case "${HwName}" in
-                       "SC25") DeviceAddress="0x40";;
-                       "SC24") DeviceAddress="0x42";;
-                       *) DeviceAddress="0x42";;
+                       "SC25")
+                           DeviceAddress="0x40"
+                           LEDsOn="f0"
+                           LEDsOff="ff"
+                           ;;
+                       "SC24")
+                           DeviceAddress="0x40"
+                           LEDsOn="00"
+                           LEDsOff="ff"
+                           ;;
+                       *)
+                           DeviceAddress="0x40"
+                           LEDsOn="00"
+                           LEDsOff="ff"
+                           ;;
                     esac
                     debug_print "${LogPrefix} Using device address: ${DeviceAddress}" "${LogFile}"
                     TestCaseStep2=${ERR_OK}
@@ -95,7 +109,7 @@ function b_smb2_led_test {
                 ;;
             Step3)
                 debug_print "${LogPrefix} Run step @3" "${LogFile}"
-                if ! run_as_root smb2_ctrl smb2_1 -a=${DeviceAddress} wb -d=0xf0 > "smb2_crtl_enable.log"; then
+                if ! run_as_root smb2_ctrl smb2_1 -a=${DeviceAddress} wb -d=0x${LEDsOn} > "smb2_crtl_enable.log"; then
                     debug_print "${LogPrefix}  ERR_VALUE: Could not enable LEDs" "${LogFile}"
                     TestCaseStep3=${ERR_VALUE}
                     MachineState="Break"
@@ -118,7 +132,7 @@ function b_smb2_led_test {
                 ;;
             Step5)
                 debug_print "${LogPrefix} Run step @5" "${LogFile}"
-                if ! grep "^f0\$" "smb2_crtl_isenabled.log"; then
+                if ! grep "^${LEDsOn}\$" "smb2_crtl_isenabled.log"; then
                     debug_print "${LogPrefix}  ERR_VALUE: LEDs have not been enabled" "${LogFile}"
                     TestCaseStep5=${ERR_VALUE}
                     MachineState="Break"
@@ -129,7 +143,7 @@ function b_smb2_led_test {
                 ;;
             Step6)
                 debug_print "${LogPrefix} Run step @6" "${LogFile}"
-                if ! run_as_root smb2_ctrl smb2_1 -a=${DeviceAddress} wb -d=0xff > "smb2_crtl_disable.log"; then
+                if ! run_as_root smb2_ctrl smb2_1 -a=${DeviceAddress} wb -d=0x${LEDsOff} > "smb2_crtl_disable.log"; then
                     debug_print "${LogPrefix}  ERR_VALUE: Could not disable LEDs" "${LogFile}"
                     TestCaseStep6=${ERR_VALUE}
                     MachineState="Break"
@@ -152,7 +166,7 @@ function b_smb2_led_test {
                 ;;
             Step8)
                 debug_print "${LogPrefix} Run step @8" "${LogFile}"
-                if ! grep "^ff\$" "smb2_crtl_isdisabled.log"; then
+                if ! grep "^${LEDsOff}\$" "smb2_crtl_isdisabled.log"; then
                     debug_print "${LogPrefix}  ERR_VALUE: LEDs have not been disabled" "${LogFile}"
                     TestCaseStep8=${ERR_VALUE}
                     MachineState="Break"
