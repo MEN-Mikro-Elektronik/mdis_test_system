@@ -55,6 +55,7 @@ function b_smb2_pci_test {
     local HwName
     local PCIeOn
     local PCIeOff
+    local DevCount
 
     MachineState="Step1"
     MachineRun=true
@@ -85,16 +86,19 @@ function b_smb2_pci_test {
                             DeviceAddress="0x40"
                             PCIeOn="0xff"
                             PCIeOff="0x7f"
+                            DevCount="0"
                             ;;
                         "SC24")
                             DeviceAddress="0x42"
                             PCIeOn="0xff"
                             PCIeOff="0xf0"
+                            DevCount="1"
                             ;;
                         *)
                             DeviceAddress="0x42"
                             PCIeOn="0xff"
                             PCIeOff="0xf0"
+                            DevCount="1"
                             ;;
                     esac
                     debug_print "${LogPrefix} Using device address: ${DeviceAddress}" "${LogFile}"
@@ -120,7 +124,8 @@ function b_smb2_pci_test {
             Step4)
                 debug_print "${LogPrefix} Run step @4" "${LogFile}"
                 sleep 3
-                if lsusb -d 0403:6001 > lsusb_disabled.log; then
+                lsusb -d 0403:6001 > lsusb_disabled.log
+                if [ "$(cat lsusb_disabled.log | wc -l)" != "${DevCount}" ] ; then
                     debug_print "${LogPrefix}  ERR_VALUE: PCIe has not been disabled" "${LogFile}"
                     TestCaseStep4=${ERR_VALUE}
                     MachineState="Break"
