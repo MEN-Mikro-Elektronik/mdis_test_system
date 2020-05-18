@@ -46,7 +46,8 @@ function b_smb2_test {
     local OsNameKernel="${3}"
     local LogFile=${4}
     local LogPrefix=${5}
-    local BoardName=${6}
+    local BoardInSystem=${6}
+    local BoardName=${7}
 
     MachineState="Step1"
     MachineRun=true
