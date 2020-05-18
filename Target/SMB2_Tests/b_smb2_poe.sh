@@ -52,6 +52,9 @@ function b_smb2_poe_test {
     local LogPrefix=${5}
     local BoardInSystem=${6}
 
+    MachineState="Step1"
+    MachineRun=true
+
     while ${MachineRun}; do
         case ${MachineState} in
             Step1)
