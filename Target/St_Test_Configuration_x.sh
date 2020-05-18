@@ -182,7 +182,7 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             run_test_case_board "500" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # BL50 fpga ip core tests
             ;;
         9)
-            run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" "SC24" # SMB2_TEST @ BL51
+            run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" "SC31-01" # SMB2_TEST @ BL51
             run_test_case_board "2" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL51
             run_test_case_board "3" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL51
             run_test_case_board "4" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL51
