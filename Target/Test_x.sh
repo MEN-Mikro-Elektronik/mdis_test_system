@@ -166,6 +166,7 @@ while test $# -gt 0 ; do
             fi
             ;;
         -bname)
+            shift
             if test $# -gt 0; then
                 BoardName="$1"
                 shift
