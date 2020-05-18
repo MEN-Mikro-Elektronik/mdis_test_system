@@ -46,13 +46,13 @@ function b_smb2_test {
     local OsNameKernel="${3}"
     local LogFile=${4}
     local LogPrefix=${5}
-    local BoardInSystem=${6}
+    local BoardName=${6}
 
     MachineState="Step1"
     MachineRun=true
 
     DevName="smb2_1"    # smb device name (e.g. smb2_1)
-    BoardName="G025A03" # board name (e.g. G025A03)
+    #BoardName="G025A03" # board name (e.g. G025A03)
 
     while ${MachineRun}; do
         case ${MachineState} in

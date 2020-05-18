@@ -165,6 +165,15 @@ while test $# -gt 0 ; do
                 exit 1
             fi
             ;;
+        -bname)
+            if test $# -gt 0; then
+                BoardName="$1"
+                shift
+            else
+                echo "No board name specified"
+                exit 1
+            fi
+            ;;
         *)
             break
             ;;
@@ -291,7 +300,7 @@ case "${TestTypeDev}" in
     g)
         print "${LogPrefix} Board test: ${DeviceName}" "${TestCaseLogName}"
         debug_print "${LogPrefix} \"${TestFunc} ${TestCaseId} ${TestCaseMainDir}/${TestCaseName} ${TestOs} ${TestCaseLogName} ${LogPrefix} ${DevicesFile} ${DeviceNo}\"" "${TestCaseLogName}"
-        "${TestFunc}" "${TestCaseId}" "${TestCaseMainDir}/${TestCaseName}" "${TestOs}" "${TestCaseLogName}" "${LogPrefix}" "${DeviceNo}"
+        "${TestFunc}" "${TestCaseId}" "${TestCaseMainDir}/${TestCaseName}" "${TestOs}" "${TestCaseLogName}" "${LogPrefix}" "${DeviceNo}" "${BoardName}"
         CmdResult=$?
         if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
             TestCaseResult="${CmdResult}"
