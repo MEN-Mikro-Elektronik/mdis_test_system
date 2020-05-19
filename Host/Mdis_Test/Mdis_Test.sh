@@ -177,8 +177,7 @@ case ${TEST_SETUP} in
         GrubOses=( "${GrubOsesF23P[@]}" )
         ;;
     6)
-        echo "No OSes specified for CB70"
-        exit 1
+        GrubOses=( "${GrubOsesCB70[@]}" )
         ;;
     7)
         echo "No OSes specified for A25"

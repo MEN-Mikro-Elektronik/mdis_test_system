@@ -171,6 +171,8 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             run_test_case_module "m199" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
         6)
+            run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" "CB70-00" # SMB2_TEST @ CB70
+            run_test_case_board "2" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ CB70
             ;;
         7)
             ;;
@@ -195,10 +197,6 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             run_test_case_board "4" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL70
             run_test_case_board "5" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL70
             run_test_case_board "502" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # BL70 fpga ip core tests
-            ;;
-        11)
-            run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" "CB70-00" # SMB2_TEST @ CB70
-            run_test_case_board "2" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ CB70
             ;;
         *)
             echo "TEST SETUP OR TEST ID IS NOT SET PROPERLY"
