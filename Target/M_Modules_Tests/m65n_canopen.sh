@@ -54,42 +54,42 @@ function m65n_canopen_test {
     local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
-    local pattern="\
-Set SDO-Timeout value to 0bb8\
-Set signal PDO via event\
-\
+    local pattern="
+Set SDO-Timeout value to 0bb8
+Set signal PDO via event
+
 Get SDO-Timeout value = 00000bb8\
 Get signal PDO via event = 00000001\
 \
-Starting CANopen stack ... \
-success\
-Performing SDO write ...\
-Access to Ind. 0x6200, Sub. 001 of local OD\
-\
-Reading all events of driver's event queue:\
+Starting CANopen stack ... 
+success
+Performing SDO write ...
+Access to Ind. 0x6200, Sub. 001 of local OD
+
+Reading all events of driver's event queue:
 Waiting for driver signal\
-\
- Event Tag = 0x5a\
- Event Data[0] = 0x00\
- Event Data[1] = 0x00\
- Event Data[2] = 0x00\
- Event Data[3] = 0x00\
-\
-Performing SDO read ...\
-Reading all events of driver's event queue:\
-waiting for signal form driver\
-\
- Event Tag = 0x5b\
- Event Data[0] = 0x00\
- Event Data[1] = 0x00\
- Event Data[2] = 0x00\
- Event Data[3] = 0x00\
-\
-SDO read value form node-Id 000 of Ind 0x1400 Sub 001\
-Value = 00000278\
-\
-Shutdown CAN stack\
-\
+
+ Event Tag = 0x5a
+ Event Data[0] = 0x00
+ Event Data[1] = 0x00
+ Event Data[2] = 0x00
+ Event Data[3] = 0x00
+
+Performing SDO read ...
+Reading all events of driver's event queue:
+waiting for signal form driver
+
+ Event Tag = 0x5b
+ Event Data[0] = 0x00
+ Event Data[1] = 0x00
+ Event Data[2] = 0x00
+ Event Data[3] = 0x00
+
+SDO read value form node-Id 000 of Ind 0x1400 Sub 001
+Value = 00000278
+
+Shutdown CAN stack
+
 Program finished"
 
     debug_print "${LogPrefix} Step1: modprobe men_ll_canopen" "${LogFile}"
@@ -107,7 +107,7 @@ Program finished"
     fi
 
     debug_print "${LogPrefix} Step3: check for errors" "${LogFile}"
-    if ! diff -q <(echo "${pattern}") <(cat canopen_signal_a.log) 
+    if ! diff <(echo "${pattern}") <(cat canopen_signal_a.log) 
     then
         debug_print "${LogPrefix} Invalid log output, ERROR" "${LogFile}"
         return "${ERR_VALUE}"
@@ -121,7 +121,7 @@ Program finished"
     fi
 
     debug_print "${LogPrefix} Step5: check for errors" "${LogFile}"
-    if ! diff -q <(echo "${pattern}") <(cat canopen_signal_b.log)
+    if ! diff <(echo "${pattern}") <(cat canopen_signal_b.log)
     then
         debug_print "${LogPrefix} Invalid log output, ERROR" "${LogFile}"
         return "${ERR_VALUE}"
