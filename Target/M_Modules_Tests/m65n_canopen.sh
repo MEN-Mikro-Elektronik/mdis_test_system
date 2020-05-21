@@ -107,7 +107,7 @@ Program finished"
     fi
 
     debug_print "${LogPrefix} Step3: check for errors" "${LogFile}"
-    if ! diff <(echo "${pattern}") <(cat "canopen_signal_a.log") canopen_signal_a.log
+    if ! diff -q <(echo "${pattern}") <(cat canopen_signal_a.log) 
     then
         debug_print "${LogPrefix} Invalid log output, ERROR" "${LogFile}"
         return "${ERR_VALUE}"
@@ -121,7 +121,7 @@ Program finished"
     fi
 
     debug_print "${LogPrefix} Step5: check for errors" "${LogFile}"
-    if ! diff <(echo "${pattern}") <(cat "canopen_signal_b.log") canopen_signal_b.log
+    if ! diff -q <(echo "${pattern}") <(cat canopen_signal_b.log)
     then
         debug_print "${LogPrefix} Invalid log output, ERROR" "${LogFile}"
         return "${ERR_VALUE}"
