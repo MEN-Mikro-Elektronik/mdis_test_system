@@ -58,16 +58,16 @@ function m65n_canopen_test {
 Set SDO-Timeout value to 0bb8
 Set signal PDO via event
 
-Get SDO-Timeout value = 00000bb8\
-Get signal PDO via event = 00000001\
-\
+Get SDO-Timeout value = 00000bb8
+Get signal PDO via event = 00000001
+
 Starting CANopen stack ... 
 success
 Performing SDO write ...
 Access to Ind. 0x6200, Sub. 001 of local OD
 
 Reading all events of driver's event queue:
-Waiting for driver signal\
+Waiting for driver signal
 
  Event Tag = 0x5a
  Event Data[0] = 0x00
