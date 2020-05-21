@@ -342,6 +342,7 @@ function get_test_case_id {
             ;;
         m65n_canopen)
             TestCaseId=$((baseId+21))
+            ;;
         *)
             TestCaseId="9999"
             ;;
