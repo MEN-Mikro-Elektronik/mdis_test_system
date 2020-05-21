@@ -9,7 +9,7 @@ source "${MyDir}/../St_Functions.sh"
 # parameters:
 # $1    Module number
 # $2    Module log path 
-function m65n_description {
+function m65n_canopen_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
     echo "--------------------------------M65N Test Case--------------------------------"

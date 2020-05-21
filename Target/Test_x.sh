@@ -14,6 +14,7 @@ source "${MyDir}"/M_Modules_Tests/m57.sh
 source "${MyDir}"/M_Modules_Tests/m58.sh
 source "${MyDir}"/M_Modules_Tests/m62.sh
 source "${MyDir}"/M_Modules_Tests/m65n.sh
+source "${MyDir}"/M_Modules_Tests/m65n_canopen.sh
 source "${MyDir}"/M_Modules_Tests/m66.sh
 source "${MyDir}"/M_Modules_Tests/m72.sh
 source "${MyDir}"/M_Modules_Tests/m77.sh

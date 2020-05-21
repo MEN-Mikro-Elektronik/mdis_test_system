@@ -60,14 +60,14 @@ TEST_CASES_MAP["501"]="bl51_boxpc"
 TEST_CASES_MAP["502"]="bl70_boxpc"
 
 # Address of Target that will be tested
-MenPcIpAddr="10.1.1.134"
+MenPcIpAddr="10.1.1.153"
 
 # Credentials for Pc that will be tested - required by ssh connection and sudo cmds
 MenPcLogin="men"
 MenPcPassword="men"
 
 # Address of device that will be changing status of inputs in tested device 
-MenBoxPcIpAddr="10.1.1.78"
+MenBoxPcIpAddr="10.1.1.159"
 INPUT_SWITCH_TIMEOUT=10 #seconds
 
 # Credentials, address, and command to download Git repository with Test Cases source
@@ -340,6 +340,8 @@ function get_test_case_id {
         m199)
             TestCaseId=$((baseId+20))
             ;;
+        m65n_canopen)
+            TestCaseId=$((baseId+21))
         *)
             TestCaseId="9999"
             ;;
