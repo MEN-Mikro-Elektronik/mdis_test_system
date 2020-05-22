@@ -50,16 +50,115 @@ function mdis_test_usage {
 
 function print_test_list {
     create_test_cases_map
+    create_test_setup_test_cases_map "1"
+    create_test_setup_test_cases_map "2"
+    create_test_setup_test_cases_map "3"
+    create_test_setup_test_cases_map "4"
+    create_test_setup_test_cases_map "5"
+    create_test_setup_test_cases_map "6"
+    create_test_setup_test_cases_map "7"
+    create_test_setup_test_cases_map "8"
+    create_test_setup_test_cases_map "9"
+    create_test_setup_test_cases_map "10"
+
     echo "" > /tmp/test_cases_list.txt
     for K in "${!TEST_CASES_MAP[@]}"
-    do 
-        ID=$(printf "%04d\n" ${K})
-        echo -e "${ID}\t ${TEST_CASES_MAP[${K}]}\t./MDIS_Test --print-test-brief=${K}" >> /tmp/test_cases_list.txt
+    do
+        local TestSetupList=""
+        ID=$(printf "%d\n" ${K})
+
+        if [ "${TEST_SETUP_1_TEST_CASES[${K}]}" = "true" ]; then
+            TestSetupList+="1,"
+        fi
+        if [ "${TEST_SETUP_2_TEST_CASES[${K}]}" = "true" ]; then
+            TestSetupList+="2,"
+        fi
+        if [ "${TEST_SETUP_3_TEST_CASES[${K}]}" = "true" ]; then
+            TestSetupList+="3,"
+        fi
+        if [ "${TEST_SETUP_4_TEST_CASES[${K}]}" = "true" ]; then
+            TestSetupList+="4,"
+        fi
+        if [ "${TEST_SETUP_5_TEST_CASES[${K}]}" = "true" ]; then
+            TestSetupList+="5,"
+        fi
+        if [ "${TEST_SETUP_6_TEST_CASES[${K}]}" = "true" ]; then
+            TestSetupList+="6,"
+        fi
+        if [ "${TEST_SETUP_7_TEST_CASES[${K}]}" = "true" ]; then
+            TestSetupList+="7,"
+        fi
+        if [ "${TEST_SETUP_8_TEST_CASES[${K}]}" = "true" ]; then
+            TestSetupList+="8,"
+        fi
+        if [ "${TEST_SETUP_9_TEST_CASES[${K}]}" = "true" ]; then
+            TestSetupList+="9,"
+        fi
+        if [ "${TEST_SETUP_10_TEST_CASES[${K}]}" = "true" ]; then
+            TestSetupList+="10,"
+        fi
+        if [ "${TestSetupList}" = "" ]; then
+            TestSetupList+="not used"
+        fi
+        local Purpose=""
+        Purpose=$(print_test_purpose "${ID}")
+        echo -e "${ID}\t ${TEST_CASES_MAP[${K}]}\t ${Purpose}\t ${TestSetupList}" >> /tmp/test_cases_list.txt
     done
 
-    sort -n -k3 -o /tmp/test_cases_list.txt  /tmp/test_cases_list.txt
-    echo -e "ID\t Description\t Instruction, purpose\n$(</tmp/test_cases_list.txt)" > /tmp/test_cases_list.txt
+    sort -n -k1 -o /tmp/test_cases_list.txt  /tmp/test_cases_list.txt
+    echo -e "ID\t Description\t Purpose\t Test Setup\n$(</tmp/test_cases_list.txt)" > /tmp/test_cases_list.txt
     column -n /tmp/test_cases_list.txt -ts $'\t'
+}
+
+function print_test_purpose {
+    local TestId="${1}"
+    local Purpose=""
+    if [ -z "${TEST_CASES_MAP[${TestId}]}" ]
+    then
+        echo "Invalid Test ID"
+        exit
+    fi
+    TestPath=$(realpath ../../Target)
+    if [ ! -d "${TestPath}" ]
+    then
+        echo "Dir ${TestPath} does not exists"
+        exit
+    fi
+
+    if [ "${TestId}" -lt "100" ]
+    then
+        Board=$(echo "${TEST_CASES_MAP[${TestId}]}")
+        source ${TestPath}/SMB2_Tests/${Board}.sh
+        Purpose=$(${Board}_description "" "" "")
+    elif [ "${TestId}" -lt "200" ]
+    then
+        Board=$(echo "${TEST_CASES_MAP[${TestId}]}")
+        source ${TestPath}/Board_Tests/${Board}.sh
+        Purpose=$(${Board}_description "" "" "")
+    elif [ "${TestId}" -lt "300" ]
+    then
+        Module=$(echo "${TEST_CASES_MAP[${TestId}]}" | sed 's/carrier_g204_//')
+        source ${TestPath}/Board_Tests/carriers_g204.sh
+        source ${TestPath}/M_Modules_Tests/${Module}.sh
+        Purpose=$(carrier_g204_TPL_description "${Module}" "<x>" "")
+    elif [ "${TestId}" -lt "400" ]
+    then
+        Module=$(echo "${TEST_CASES_MAP[${TestId}]}" | sed 's/carrier_f205_//')
+        source ${TestPath}/Board_Tests/carriers_f205.sh
+        source ${TestPath}/M_Modules_Tests/${Module}.sh
+        Purpose=$(carrier_f205_TPL_description "${Module}" "<x>" "")
+    elif [ "${TestId}" -lt "600" ]
+    then
+        Board=$(echo "${TEST_CASES_MAP[${TestId}]}")
+        source ${TestPath}/BoxPC_Tests/${Board}.sh
+        Purpose=$(${Board}_description "" "" "")
+    fi
+    Purpose0=$(echo "${Purpose}" | grep "PURPOSE:" -A 2 | awk 'NR==2' | awk '{$1=$1};1' )
+    Purpose1=$(echo "${Purpose}" | grep "PURPOSE:" -A 2 | awk 'NR==3' | awk '{$1=$1};1' )
+    Purpose1=$(if ! echo "${Purpose1}" | grep "REQUIREMENT_ID" > /dev/null; then echo "${Purpose1}"; fi)
+    Purpose1=$(if ! echo "${Purpose1}" | grep "RESULT" > /dev/null; then echo "${Purpose1}"; fi)
+    Purpose="${Purpose0} ${Purpose1}"
+    echo "${Purpose}"
 }
 
 function print_test_brief {
