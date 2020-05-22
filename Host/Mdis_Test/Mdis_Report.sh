@@ -122,9 +122,22 @@ function print_results {
     local ResultOperatingSystem="${3}"
     local OSCnt=0
     local OSNo=0
+    local CommitID="Empty!"
 
     rm results.txt
     touch results.txt
+    echo "Date: 22.05.2020"
+    echo "Tester Name: Konrad Tomasik"
+    echo "CommitId: ${CommitID}"
+
+    echo "Get brief test case description (cmd):"
+    echo "./Mdis_Test.sh --print-test-brief=<Test_Case_ID>"
+    echo ""
+    echo "Run test cases on configured environment!"
+    echo "./Mdis_Test.sh --run-test=<Test_Case_ID>"
+    echo "./Mdis_Test.sh --run-setup=<Test_Setup>                 #On all configured OSes"
+    echo "./Mdis_Test.sh --run-instantly --run-setup=<Test_Setup> #Single OS"
+    echo ""
 
     create_test_cases_map
     if [ -z "${ResultTestSetup}" ]; then
