@@ -41,6 +41,29 @@ function m65n_description {
 }
 
 ############################################################################
+# fix for m65n M-Module if there is canopen driver in system
+#
+# parameters:
+# $1    Log file
+# $2    Log prefix
+function m65n_canopen_fix {
+    local LogFile=${1}
+    local LogPrefix=${2}
+    local CurrentPath=$PWD
+
+    debug_print "${LogPrefix} m65n_canopen_fix" "${LogFile}"
+
+    rm "/opt/menlinux/PACKAGE_DESC/13m06506.xml"
+
+    debug_print "${LogPrefix} Current Path:" "${LogFile}"
+    debug_print "${CurrentPath}" "${LogFile}"
+
+    cd ../..
+    make_install "${LogPrefix}"
+    cd "${CurrentPath}" || exit "${ERR_NOEXIST}"
+}
+
+############################################################################
 # m65n_test
 #
 # parameters:
@@ -51,6 +74,8 @@ function m65n_test {
     local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
+
+    m65n_canopen_fix "${1}" "${2}"
 
     debug_print "${LogPrefix} Step1: modprobe men_ll_icanl2" "${LogFile}"
     if ! run_as_root modprobe men_ll_icanl2
