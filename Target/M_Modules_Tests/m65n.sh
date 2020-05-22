@@ -53,12 +53,23 @@ function m65n_canopen_fix {
 
     debug_print "${LogPrefix} m65n_canopen_fix" "${LogFile}"
 
-    rm "/opt/menlinux/PACKAGE_DESC/13m06506.xml"
-
     debug_print "${LogPrefix} Current Path:" "${LogFile}"
     debug_print "${CurrentPath}" "${LogFile}"
 
     cd ../..
+    sed -i 's/HW_TYPE = STRING CANOPEN/HW_TYPE = STRING ICANL2/' system.dsc
+    sed -i 's/_WIZ_MODEL = STRING M65_COP/_WIZ_MODEL = STRING M65_L2/' system.dsc
+    sed -i 's/CANOPEN\/DRIVER\/COM\/driver.mak/ICANL2\/DRIVER\/COM\/driver.mak/' Makefile
+    sed -i 's/CANOPEN\/EXAMPLE\/CANOPEN_SIMP\/COM\/program.mak/ICANL2\/EXAMPLE\/ICANL2_SIMP\/COM\/program.mak/' Makefile
+    sed -i 's/CANOPEN\/EXAMPLE\/CANOPEN_SIGNAL\/COM\/program.mak/ICANL2\/EXAMPLE\/ICANL2_CYC\/COM\/program.mak/' Makefile
+    sed -i 's/CANOPEN\/EXAMPLE\/CANOPEN_PDO\/COM\/program.mak/ICANL2\/EXAMPLE\/ICANL2_SIGNAL\/COM\/program.mak/' Makefile
+    sed -i 's/CANOPEN\/TOOLS\/CANOPEN_BUS_SCAN\/COM\/program.mak/ICANL2\/TEST\/ICANL2_VERI\/COM\/program.mak/' Makefile
+    sed -i '/CANOPEN\/TEST\/CANOPEN_DESIGN_TEST\/COM\/program.mak/ d' Makefile
+    sed -i '/CANOPEN\/TEST\/CANOPEN_DIOC711_KLIMA\/COM\/program.mak/ d' Makefile
+    sed -i '/CANOPEN\/TEST\/CANOPEN_DIOC711_TEST\/COM\/program.mak/ d' Makefile
+    sed -i '/CANOPEN\/TEST\/CANOPEN_MAX_TEST\/COM\/program.mak/ d' Makefile
+    sed -i '/CANOPEN\/TEST\/CANOPEN_SER_TEST\/COM\/program.mak/ d' Makefile
+    sed -i '/SMB2_SHC\/COM\/library.mak/ a ICANL2_API\/COM\/library.mak \\' Makefile
     make_install "${LogPrefix}"
     cd "${CurrentPath}" || exit "${ERR_NOEXIST}"
 }
