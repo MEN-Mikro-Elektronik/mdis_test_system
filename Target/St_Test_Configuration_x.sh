@@ -224,6 +224,8 @@ GCCInfo="$(gcc --version)"
 echo "${SystemInfo}" > System_info.txt
 echo "${SystemInfoVerbose}" >> System_info.txt
 echo "${GCCInfo}" >> System_info.txt
+echo "${Date}" > Source_info.txt
+echo "${CommitSha}" >> Source_info.txt
 
 find . -type f -name "${ResultsFileLogName}.tmp" -exec cat {} + > "${ResultsFileLogName}"
 sed -i "1i${SystemInfo}" "${ResultsFileLogName}"
