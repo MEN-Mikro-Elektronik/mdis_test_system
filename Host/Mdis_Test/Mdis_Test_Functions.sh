@@ -333,9 +333,8 @@ function grub_set_os {
 function reboot_and_wait {
     local TryCount=0
     local Return=1
-    local ExpOs="$(grub_set_os)"
+    local ExpOs="$(grub_get_os)"
     local ManualBoot=0
-    local Key
     local Setup
 
     for Setup in "${ManualOsBootSetups[@]}"; do
@@ -351,11 +350,7 @@ function reboot_and_wait {
         echo "${ExpOs}"
         echo
         echo "Press <ENTER> to continue..."
-        while read -r -n1 Key; do
-            if [[ "${Key}" == $'\n' ]]; then
-                break;
-            fi
-        done
+        read -r -s
     fi
     echo "Waiting for ${MenPcIpAddr}..."
     if [ "${ManualBoot}" -eq 0 ]; then
