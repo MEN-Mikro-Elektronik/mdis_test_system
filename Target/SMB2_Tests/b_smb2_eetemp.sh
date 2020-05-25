@@ -21,7 +21,7 @@ function b_smb2_eetemp_description {
     echo "DESCRIPTION:"
     echo "    1.Load drivers: modprobe men_mdis_kernel"
     echo "    2.Get board temperature"
-    echo "    3.Check if temeparatue is correct"
+    echo "    3.Check if temeparatue is returned"
     echo "PURPOSE:"
     echo "    Check if board temperature can be read"
     echo "UPPER_REQUIREMENT_ID:"
