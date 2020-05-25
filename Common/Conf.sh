@@ -60,7 +60,7 @@ TEST_CASES_MAP["501"]="bl51_boxpc"
 TEST_CASES_MAP["502"]="bl70_boxpc"
 
 # Address of Target that will be tested
-MenPcIpAddr="10.1.1.153"
+MenPcIpAddr="10.1.1.159"
 
 # Credentials for Pc that will be tested - required by ssh connection and sudo cmds
 MenPcLogin="men"
@@ -75,7 +75,7 @@ GitTestSourcesBranch="jpe-dev-02_02"
 GitTestSourcesCmd="git clone -b ${GitTestSourcesBranch} https://github.com/MEN-Mikro-Elektronik/mdis_test_system.git"
 
 # Credentials, address, and command to download Git repository with 13MD05-90 sources
-GitMdisBranch="jpe-dev"
+GitMdisBranch="release-13MD05-90_02_02"
 GitMdisCmd="git clone --recursive -b ${GitMdisBranch} https://github.com/MEN-Mikro-Elektronik/13MD05-90.git"
 # This is optional if specific commit have to be tested !
 # If Commit sha is not defined, then the most recent commit on branch is used. 
@@ -139,6 +139,9 @@ EchoTestMessage="UART LOOPBACK TEST"
 GrubConfFile=/media/tests/boot.cfg
 # List of OSes to test (GRUB menu entries). The first is the default OS and is
 # not used for tests.
+
+# List of test setups that require manual OS booting
+ManualOsBootSetups=("9")
 
 #F26L
 GrubOsesF26L=("0" \
