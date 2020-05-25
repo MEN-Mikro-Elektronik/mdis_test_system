@@ -352,7 +352,7 @@ function reboot_and_wait {
         echo
         echo "Press <ENTER> to continue..."
         while read -r -n1 Key; do
-            if [[ "${Key} == $'\n' ]]; then
+            if [[ "${Key}" == $'\n' ]]; then
                 break;
             fi
         done
