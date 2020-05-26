@@ -119,11 +119,11 @@ function bl51_boxpc_test {
             ;;
         Break)
             # Clean after Test Case
-            print_debug "${LogPrefix} Break State" "${LogFile}"
+            debug_print "${LogPrefix} Break State" "${LogFile}"
             MachineRun=false
             ;;
         *)
-            print_debug "${LogPrefix} State is not set, start with can_test" "${LogFile}"
+            debug_print "${LogPrefix} State is not set, start with can_test" "${LogFile}"
             MachineState="can_test"
             ;;
         esac
