@@ -247,6 +247,8 @@ while test $# -gt 0 ; do
             ;;
         *)
             echo "No valid parameters"
+            echo "./Mdis_Test.sh --help"
+            exit 0
             break
             ;;
         esac
