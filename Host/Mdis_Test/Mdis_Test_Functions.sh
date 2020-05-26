@@ -340,6 +340,7 @@ function reboot_and_wait {
     for Setup in "${ManualOsBootSetups[@]}"; do
         if [ "${Setup}" == "${TEST_SETUP}" ]; then
             ManualBoot=1
+            break
         fi
     done
 

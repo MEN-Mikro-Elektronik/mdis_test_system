@@ -60,7 +60,7 @@ TEST_CASES_MAP["501"]="bl51_boxpc"
 TEST_CASES_MAP["502"]="bl70_boxpc"
 
 # Address of Target that will be tested
-MenPcIpAddr="10.1.1.159"
+MenPcIpAddr="10.1.1.125"
 
 # Credentials for Pc that will be tested - required by ssh connection and sudo cmds
 MenPcLogin="men"
@@ -141,7 +141,7 @@ GrubConfFile=/media/tests/boot.cfg
 # not used for tests.
 
 # List of test setups that require manual OS booting
-ManualOsBootSetups=("9")
+ManualOsBootSetups=("9" "8")
 
 #F26L
 GrubOsesF26L=("0" \
