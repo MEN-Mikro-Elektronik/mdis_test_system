@@ -10,18 +10,22 @@ declare -a TEST_REQ
 declare -A TEST_RESULT_OS
 
 # List of available OS-es
-TEST_RESULT_OS["1"]="Ubuntu16046415045generici686"
+TEST_RESULT_OS["1"]="Ubuntu1804350023genericx8664"
 TEST_RESULT_OS["2"]="Ubuntu18043415060generici686"
-TEST_RESULT_OS["3"]="Ubuntu1804453028genericx8664"
-TEST_RESULT_OS["4"]="Ubuntu1804453046genericx8664"
-TEST_RESULT_OS["5"]="Ubuntu180424191130419113genericx8664"
+TEST_RESULT_OS["3"]="Ubuntu200454026genericx8664"
+TEST_RESULT_OS["4"]="DebianGNULinux41906amd64x8664"
+TEST_RESULT_OS["5"]="DebianGNULinux41906686paei686"
+TEST_RESULT_OS["6"]="CentOSLinux31001062el7x8664x8664"
+TEST_RESULT_OS["7"]="CentOSLinux4180147el8x8664x8664"
 
 declare -a TEST_RESULT_OS_1=(_ _ _ _ _)
 declare -a TEST_RESULT_OS_2=(_ _ _ _ _)
 declare -a TEST_RESULT_OS_3=(_ _ _ _ _)
 declare -a TEST_RESULT_OS_4=(_ _ _ _ _)
 declare -a TEST_RESULT_OS_5=(_ _ _ _ _)
-declare -a TEST_RESULTS_GROUP=("TEST_RESULT_OS_1" "TEST_RESULT_OS_2" "TEST_RESULT_OS_3" "TEST_RESULT_OS_4" "TEST_RESULT_OS_5")
+declare -a TEST_RESULT_OS_6=(_ _ _ _ _)
+declare -a TEST_RESULT_OS_7=(_ _ _ _ _)
+declare -a TEST_RESULTS_GROUP=("TEST_RESULT_OS_1" "TEST_RESULT_OS_2" "TEST_RESULT_OS_3" "TEST_RESULT_OS_4" "TEST_RESULT_OS_5"  "TEST_RESULT_OS_6" "TEST_RESULT_OS_7")
 
 ### @brief script usage --help
 function mdis_report_usage {
@@ -92,6 +96,10 @@ function set_result_os {
         TEST_RESULT_OS_4["${TestSetup}"]="${Result}"
     elif [ "${OSName}" = "${TEST_RESULT_OS[5]}" ]; then
         TEST_RESULT_OS_5["${TestSetup}"]="${Result}"
+    elif [ "${OSName}" = "${TEST_RESULT_OS[6]}" ]; then
+        TEST_RESULT_OS_6["${TestSetup}"]="${Result}"
+    elif [ "${OSName}" = "${TEST_RESULT_OS[7]}" ]; then
+        TEST_RESULT_OS_7["${TestSetup}"]="${Result}"
     else
         echo "OS NOT SPECIFIED"
         exit 1
@@ -122,13 +130,17 @@ function print_results {
     local ResultOperatingSystem="${3}"
     local OSCnt=0
     local OSNo=0
-    local CommitID="Empty!"
-
+    local TestDate=""
+    local CommitID=""
+    local SourceInfo=""
+    SourceInfo=$(find "${ResultPath}" -name "Source_info.txt" | awk 'NR==1')
+    TestDate=$(cat ${SourceInfo} | awk 'NR==1')
+    CommitID=$(cat ${SourceInfo} | awk 'NR==2')
     rm results.txt
     touch results.txt
-    echo "Date: 22.05.2020"
+    echo "Date: ${TestDate}"
     echo "Tester Name: Konrad Tomasik"
-    echo "CommitId: ${CommitID}"
+    echo "${CommitID}"
 
     echo "Get brief test case description (cmd):"
     echo "./Mdis_Test.sh --print-test-brief=<Test_Case_ID>"
