@@ -260,16 +260,16 @@ echo "TEST_SETUP=${TEST_SETUP}" | tee -a "${MyDir}/../../Common/Conf.sh"
 echo "Test Setup: ${TEST_SETUP}"
 case ${TEST_SETUP} in
     0)
-        GrubOses=( "${GrubOsesF26L[@]}" ) #What oses should be run?
+        GrubOses=( "0" ) #What oses should be run?
         ;;
     1)
-        GrubOses=( "${GrubOsesF23P[@]}" )
+        GrubOses=( "${GrubOsesF26L[@]}" )
         ;;
     2)
-        GrubOses=( "${GrubOsesG23[@]}" )
+        GrubOses=( "${GrubOsesF23P[@]}" )
         ;;
     3)
-        GrubOses=( "${GrubOsesF23P[@]}" )
+        GrubOses=( "${GrubOsesG23[@]}" )
         ;;
     4)
         GrubOses=( "${GrubOsesG25A[@]}" )
@@ -281,8 +281,7 @@ case ${TEST_SETUP} in
         GrubOses=( "${GrubOsesCB70[@]}" )
         ;;
     7)
-        echo "No OSes specified for A25"
-        exit 1
+        GrubOses=( "${GrubOsesA25[@]}" )
         ;;
     8)
         GrubOses=( "${GrubOsesBL50[@]}" )

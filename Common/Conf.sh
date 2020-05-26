@@ -145,10 +145,11 @@ ManualOsBootSetups=("9")
 
 #F26L
 GrubOsesF26L=("0" \
-        "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda14)" \
-        "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda15)" \
         "Ubuntu 18.04.3 LTS (18.04) (on /dev/sda16)" \
         "Ubuntu, with Linux 5.0.0-23-generic (on /dev/sda17)" \
+        "Ubuntu, with Linux 5.4.0-26-generic (on /dev/sda12)" \
+        "CentOS Linux 7 (Core) (on /dev/sda10)" \
+        "CentOS Linux 8 (Core) (on /dev/sda11)" \
         "Debian GNU/Linux, with Linux 4.19.0-6-686-pae (on /dev/sda18)" \
         "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)" \
         )
@@ -163,19 +164,15 @@ GrubOsesF23P=("0" \
         "Debian GNU/Linux, with Linux 4.19.0-6-686-pae (on /dev/sda18)" \
         "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)" \
         )
-#G22
-GrubOsesG22=("0" \
-        )
 #G23
 GrubOsesG23=("0" \
-        "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda14)" \
-        "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda15)" \
         "Ubuntu 18.04.3 LTS (18.04) (on /dev/sda16)" \
         "Ubuntu, with Linux 5.0.0-23-generic (on /dev/sda17)" \
+        "Ubuntu, with Linux 5.4.0-26-generic (on /dev/sda12)" \
+        "CentOS Linux 7 (Core) (on /dev/sda10)" \
+        "CentOS Linux 8 (Core) (on /dev/sda11)" \
         "Debian GNU/Linux, with Linux 4.19.0-6-686-pae (on /dev/sda18)" \
         "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)" \
-        "CentOS Linux 7 (Core) (on /dev/sda6)" \
-        "CentOS Linux 7 (Core) (on /dev/sda9)" \
         )
 #G25A
 GrubOsesG25A=("0" \
@@ -188,28 +185,31 @@ GrubOsesG25A=("0" \
         )
 #BL50
 GrubOsesBL50=("0" \
-        "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda14)" \
-        "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda15)" \
         "Ubuntu 18.04.3 LTS (18.04) (on /dev/sda16)" \
         "Ubuntu, with Linux 5.0.0-23-generic (on /dev/sda17)" \
+        "Ubuntu, with Linux 5.4.0-26-generic (on /dev/sda12)" \
+        "CentOS Linux 7 (Core) (on /dev/sda10)" \
+        "CentOS Linux 8 (Core) (on /dev/sda11)" \
         "Debian GNU/Linux, with Linux 4.19.0-6-686-pae (on /dev/sda18)" \
         "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)" \
         )
 #BL51E
 GrubOsesBL51E=("0" \
-        "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda14)" \
-        "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda15)" \
         "Ubuntu 18.04.3 LTS (18.04) (on /dev/sda16)" \
         "Ubuntu, with Linux 5.0.0-23-generic (on /dev/sda17)" \
+        "Ubuntu, with Linux 5.4.0-26-generic (on /dev/sda12)" \
+        "CentOS Linux 7 (Core) (on /dev/sda10)" \
+        "CentOS Linux 8 (Core) (on /dev/sda11)" \
         "Debian GNU/Linux, with Linux 4.19.0-6-686-pae (on /dev/sda18)" \
         "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)" \
         )
 #BL70
 GrubOsesBL70=("0" \
-        "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda14)" \
-        "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda15)" \
         "Ubuntu 18.04.3 LTS (18.04) (on /dev/sda16)" \
         "Ubuntu, with Linux 5.0.0-23-generic (on /dev/sda17)" \
+        "Ubuntu, with Linux 5.4.0-26-generic (on /dev/sda12)" \
+        "CentOS Linux 7 (Core) (on /dev/sda10)" \
+        "CentOS Linux 8 (Core) (on /dev/sda11)" \
         "Debian GNU/Linux, with Linux 4.19.0-6-686-pae (on /dev/sda18)" \
         "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)" \
         )
@@ -220,6 +220,15 @@ GrubOsesCB70=("0" \
         "Ubuntu, with Linux 5.4.0-26-generic (on /dev/sda12)" \
         "CentOS Linux 7 (Core) (on /dev/sda10)" \
         "CentOS Linux 8 (Core) (on /dev/sda11)" \
+        "Debian GNU/Linux, with Linux 4.19.0-6-686-pae (on /dev/sda18)" \
+        "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)" \
+        )
+#A25
+GrubOsesA25=("0" \
+        "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda14)" \
+        "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda15)" \
+        "Ubuntu 18.04.3 LTS (18.04) (on /dev/sda16)" \
+        "Ubuntu, with Linux 5.0.0-23-generic (on /dev/sda17)" \
         "Debian GNU/Linux, with Linux 4.19.0-6-686-pae (on /dev/sda18)" \
         "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)" \
         )
