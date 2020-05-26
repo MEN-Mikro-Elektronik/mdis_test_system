@@ -26,7 +26,7 @@ function b_smb2_led_description {
     echo "    5.Turn LEDs off"
     echo "    6.Check if LEDs are off"
     echo "PURPOSE:"
-    echo "    Check if user LEDs enabling/disabling is working"
+    echo "    Check if user LEDs can be enabled"
     echo "UPPER_REQUIREMENT_ID:"
     print_env_requirements "${TestSummaryDirectory}"
     echo "    MEN_13MD0590_SWR_1950"
