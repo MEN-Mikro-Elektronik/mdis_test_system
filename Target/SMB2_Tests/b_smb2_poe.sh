@@ -23,7 +23,7 @@ function b_smb2_poe_description {
     echo "    2.Enable POE"
     echo "    3.Check if POE has been enabled"
     echo "    4.Disable POE"
-    echo "    5.Check if POE has beed disabled"
+    echo "    5.Check if POE has been disabled"
     echo "PURPOSE:"
     echo "    Check if POE enabling is working"
     echo "UPPER_REQUIREMENT_ID:"
