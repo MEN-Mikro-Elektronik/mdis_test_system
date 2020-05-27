@@ -141,7 +141,7 @@ GrubConfFile=/media/tests/boot.cfg
 # not used for tests.
 
 # List of test setups that require manual OS booting
-ManualOsBootSetups=("9" "8")
+ManualOsBootSetups=("9" "8" "10")
 
 #F26L
 GrubOsesF26L=("0" \
