@@ -18,6 +18,7 @@ function z087_eth_description {
     echo "    available in the system"
     echo "    ETH interfaces should be plugged into network switch"
     echo "DESCRIPTION:"
+    echo "    Load ip core driver and run simple test programs"
     echo "    1.Read list of available network interfaces"
     echo "    2.Load m-module drivers: modprobe men_lx_z77 phyadr=1,2"
     echo "    3.Read list of available network interfaces and note new ones"

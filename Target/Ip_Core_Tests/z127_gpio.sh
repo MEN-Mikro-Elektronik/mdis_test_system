@@ -17,6 +17,7 @@ function z127_gpio_description {
     echo "    It is assumed that all necessary drivers have been build and are"
     echo "    available in the system"
     echo "DESCRIPTION:"
+    echo "    Load ip core driver and run simple test programs"
     echo "    1.Read chameleon table from board"
     echo "    2.Load m-module drivers: modprobe men_ll_z17_z127"
     echo "    3.Find GPIO devices on board"

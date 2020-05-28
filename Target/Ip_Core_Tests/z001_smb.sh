@@ -17,6 +17,7 @@ function z001_smb_description {
     echo "    It is assumed that all necessary drivers have been build and are"
     echo "    available in the system"
     echo "DESCRIPTION:"
+    echo "    Load ip core driver and run simple test programs"
     echo "    1.List available SMB devices: i2cdetect -y -l"
     echo "    2.Load m-module drivers: modprobe men_lx_z001"
     echo "    3.List available SMB devices and note one with name begining with 16Z001"

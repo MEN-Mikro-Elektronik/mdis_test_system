@@ -20,6 +20,7 @@ function z135_hsuart_description {
     echo "    This test supports z135_hsuart ipcore on G229 board"
     echo "    Connect two uart adapters on G229 with RS422 cable"
     echo "DESCRIPTION:"
+    echo "    Load ip core driver and run simple test programs"
     echo "    1.Load m-module driver: modprobe men_lx_z135"
     echo "    2.Check if there are HSUART(s) available in /dev/*"
     echo "    3.Check results - driver shall be loaded successfully,"

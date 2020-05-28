@@ -18,6 +18,7 @@ function z125_uart_description {
     echo "    available in the system"
     echo "    If there are 2 UARTs on board then they shall be connected with each other"
     echo "DESCRIPTION:"
+    echo "    Load ip core driver and run simple test programs"
     echo "    1.Read chameleon table from board"
     echo "    2.Load m-module drivers: modprobe men_mdis_kernel, men_lx_z25"
     echo "    3.Find UART devices on board"

@@ -18,6 +18,7 @@ function z055_hdlc_description {
     echo "    available in the system"
     echo "    Two HDCL interaces on board are connected with each other"
     echo "DESCRIPTION:"
+    echo "    Load ip core driver and run simple test programs"
     echo "    1.Load driver men_lx_z055"
     echo "    2.Run z055 script to establish ppp connection between interfaces"
     echo "    3.Send ping request over ppp0 and ppp1 interface"

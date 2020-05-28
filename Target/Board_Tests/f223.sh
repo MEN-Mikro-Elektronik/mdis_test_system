@@ -19,6 +19,7 @@ function f223_description {
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
     echo "DESCRIPTION:"
+    echo "    Use pi7c9_gpio_simp to set GPIO port HIGH/LOW"
     echo "    1. Load men_ll_pi7c9_gpio driver"
     echo "    2. Save command pi7c9_gpio_simp -g pi7c0_gpio_1 output"
     echo "    3. Set f223 port state to 1: pi7c9_gpio_simp -s=1 -p=0x01 pi7c0_gpio_1"

@@ -18,6 +18,7 @@ function z029_can_description {
     echo "    available in the system"
     echo "    If there are 2 CAN on board then they shall be connected with each other"
     echo "DESCRIPTION:"
+    echo "    Load ip core driver and run simple test programs"
     echo "    Test type:"
     echo "     - loopback between 2 CAN interfaces on the same board (loopback)"
     echo "     - internal loopback with 1 CAN interface (loopback_single)"
