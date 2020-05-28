@@ -17,6 +17,7 @@ function m81_description {
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
     echo "DESCRIPTION:"
+    echo "    Load module driver and run M-Module example programs"
     echo "    1.Load m-module drivers: modprobe driver men_ll_m27"
     echo "    2.Run m27_simp m81_${ModuleNo}"
     echo "    3.Compare m27_simp results with reference results, verify if m27_simp log"

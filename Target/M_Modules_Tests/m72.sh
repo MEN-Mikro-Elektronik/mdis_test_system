@@ -17,6 +17,7 @@ function m72_description {
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
     echo "DESCRIPTION:"
+    echo "    Load module driver and run M-Module example programs"
     echo "    1.Load m-module drivers: modprobe men_ll_m72"
     echo "    2.Run example/verification program:"
     echo "      m72_out m72_${ModuleNo} and allow it to run couple second; save the command output"

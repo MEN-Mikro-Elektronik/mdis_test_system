@@ -17,6 +17,7 @@ function m37_description {
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
     echo "DESCRIPTION:"
+    echo "    Load module driver and run M-Module example programs"
     echo "    1.Load m-module drivers: modprobe men_ll_m37"
     echo "    2.Run example/verification program:"
     echo "      m37_simp m37_${ModuleNo} and save the command output"

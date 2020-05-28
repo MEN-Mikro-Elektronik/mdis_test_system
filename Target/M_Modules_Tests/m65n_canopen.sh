@@ -18,6 +18,7 @@ function m65n_canopen_description {
     echo "    are available in the system"
     echo "    M65N adapter is plugged into M65N m-module"
     echo "DESCRIPTION:"
+    echo "    Load module driver and run M-Module example programs"
     echo "    1.Load m-module drivers: modprobe men_ll_canopen"
     echo "    2.Run example/verification program:"
     echo "      canopen_signal m65_${ModuleNo}a and save the command output"

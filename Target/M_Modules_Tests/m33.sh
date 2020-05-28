@@ -18,6 +18,7 @@ function m33_description {
     echo "    are available in the system"
     echo "    M33 adapter is plugged into M33 m-module"
     echo "DESCRIPTION:"
+    echo "    Load module driver and run M-Module example programs"
     echo "    1.Load m-module drivers: modprobe men_ll_m33"
     echo "    2.Run example/verification program:"
     echo "      m33_demo m33_${ModuleNo} and save the command output"

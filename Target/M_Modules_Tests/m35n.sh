@@ -19,6 +19,7 @@ function m35n_description {
     echo "    M35n adapter is plugged into m35n m-module"
     echo "    Some m35n adapter banana plugs are connected into relay (0V/12V)"
     echo "DESCRIPTION:"
+    echo "    Load module driver and run M-Module example programs"
     echo "    1.Check values read from m35n"
     echo "      Load m-module drivers: 'modprobe men_ll_m34'"
     echo "      Run command: 'm34_simp m35_${ModuleNo} 14' and save command output"

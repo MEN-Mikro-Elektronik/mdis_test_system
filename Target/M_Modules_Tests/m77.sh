@@ -17,6 +17,7 @@ function m77_description {
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
     echo "DESCRIPTION:"
+    echo "    Load module driver and perform echo test between M-Module interfaces"
     echo "    1.Load mdis kernel driver: modprobe men_mdis_kernel"
     echo "    2.Create mdis device: mdis_createdev -b <carrier>"
     echo "    3.Load m-module drivers: modprobe men_lx_m77 ..."
