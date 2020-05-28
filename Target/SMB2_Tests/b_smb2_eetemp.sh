@@ -19,6 +19,7 @@ function b_smb2_eetemp_description {
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
     echo "DESCRIPTION:"
+    echo "    Run SMB2 eetemp to read board temperature"
     echo "    1.Load drivers: modprobe men_mdis_kernel"
     echo "    2.Get board temperature"
     echo "    3.Check if temeparatue is returned"

@@ -19,6 +19,7 @@ function b_smb2_description {
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
     echo "DESCRIPTION:"
+    echo "    Run SMB2 boardident to read board name"
     echo "    1.Load men_mdis_kernel kernel module"
     echo "    2.Load i2c_i801 kernel module"
     echo "    3.Run program 'smb2_boardident'"

@@ -19,6 +19,7 @@ function b_smb2_poe_description {
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
     echo "DESCRIPTION:"
+    echo "    Write to proper SMB register to eanble/disable POE (power over eth)"
     echo "    1.Load drivers: modprobe men_mdis_kernel"
     echo "    2.Enable POE"
     echo "    3.Check if POE has been enabled"

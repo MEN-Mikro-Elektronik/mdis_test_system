@@ -19,6 +19,7 @@ function b_smb2_led_description {
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
     echo "DESCRIPTION:"
+    echo "    Write to proper SMB register to power on LEDs"
     echo "    1.Load drivers: modprobe men_mdis_kernel"
     echo "    2.Get HW name to configure proper device address"
     echo "    3.Turn LEDs on by writing proper value to SMB register"
