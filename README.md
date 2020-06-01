@@ -4,10 +4,15 @@ This is description of the automated test system for MDIS.
 mdis_test_system repository provides scripts to easily test behaviour of MEN hardware/software on different operating systems and kernels for tests setups specified for mdis release 13MD05-90_02_02. 
 
 Shortened functional test usage description:
-1. Prepare and configure OS-es on external drive, that can be connected to MEN CPU boards
-2. Prepare MEN hardware
+1. Prepare and configure OS-es on external drive (ssd USB 3 drive shall be considered), that can be connected to MEN CPU boards
+2. Prepare MEN hardware (Test setup <1-10> and BOXPC BL51E - if relay is necessary)
 3. Configure test system (please follow "Test script configuration" section)
-4. Run main test script and wait for the results
+4. Run main test script ./Mdis_Test.sh with proper params and wait for the results
+5. Generate results in user friendly format with Mdis_Report.sh script
+
+Please check MDIS test system scheme :
+
+![mdis_test_system_scheme](https://github.com/MEN-Mikro-Elektronik/mdis_test_system/blob/jpe-dev-02_02/Images/mdis_test_system.png)
 
 Shortened compilation test usage:
 1. Download and unzip kernel sources you would like to use (https://www.kernel.org/),
@@ -18,9 +23,9 @@ Please find detailed ussage description in proper sections.
 
 # Functional tests
 To run automated functional tests please prepare below equipment:
-- Target - MEN hardware with proper configuration (Test setup 1-6)
+- Target - MEN hardware in proper configuration - Test setup <1-10>
 - Host - Computer with Linux OS that will run tests on Target
-- Relay - to enable/disable modules inputs (currently MEN Box PC BL51 is used).
+- Relay - to enable/disable modules inputs - MEN Box PC BL51 is used
 
 Functional tests sources consist of directories:
 - Common - common part used by Target, Host (Configuration file)
@@ -88,18 +93,16 @@ Update GRUB configuration:
 ### OSes support and configuration
 Following OSes are supported:
 - Ubuntu
-  - 16.04.6 32-bit
-  - 16.04.6 64-bit
   - 18.04.3 32-bit
   - 18.04.3 64-bit
+  - 20.04 64-bit
 - Debian
   - 10 32-bit
   - 10 64-bit
 - Centos
-  - 7.5 64-bit
-  - 7.6 64-bit
-- Poky
-  - Yocto Sumo
+  - 7 64-bit
+  - 8 64-bit
+
 
 The system should be configured as it is described below. It applies to all OSes (Ubuntu, CentOS etc.). For some of them special action is required.
 
@@ -229,13 +232,6 @@ Most important variables that have to be set in configuration file ```Common/Con
   e.g.:
   ```MenPcIpAddr="192.168.1.100"```
 
-- TestSetup
-
-  Test configuration number
-  
-  e.g.:
-  ```TestSetup="1"```
-
 - MenPcLogin
 
   Username of test user account on test computer
@@ -250,9 +246,9 @@ Most important variables that have to be set in configuration file ```Common/Con
   e.g.:
   ```MenPcPassword="men"```
 
-- MenBoxPcIpAddr
+- MenBoxPcIpAddr (relay)
 
-  IP address of auxiliary Box PC computer
+  IP address of auxiliary Box PC BL51E
   
   e.g.:
   ```MenBoxPcIpAddr="192.168.1.200"```
@@ -369,12 +365,13 @@ Most important variables that have to be set in configuration file ```MDIS_Compi
 The list of kernels used for testing should be placed in ``` MDIS_Compilation_Tests/kernel_list_release_02.txt```
 e.g.:
 ```
-3.16.73
-4.4.193
-4.9.193
-4.14.144
-4.19.73
-5.2.15
+3.16.83
+4.4.221
+4.9.221
+4.14.178
+4.19.120
+5.4.38
+5.5.19
 ```
 
 ## Running compilation tests

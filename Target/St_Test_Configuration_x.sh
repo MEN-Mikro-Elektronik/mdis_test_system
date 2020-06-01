@@ -142,8 +142,8 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             run_test_case_module "m47" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
         2)
-            run_test_case_board "102" "${TestSummaryDirectory}" "${OsNameKernel}" # F614 @ F23P
-            run_test_case_board "101" "${TestSummaryDirectory}" "${OsNameKernel}" # F223
+            run_test_case_board "102" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # F614 @ F23P
+            run_test_case_board "101" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # F223
             run_test_case_module "m43n" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_module "m11" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_module "m66" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
