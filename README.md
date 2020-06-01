@@ -93,18 +93,16 @@ Update GRUB configuration:
 ### OSes support and configuration
 Following OSes are supported:
 - Ubuntu
-  - 16.04.6 32-bit
-  - 16.04.6 64-bit
   - 18.04.3 32-bit
   - 18.04.3 64-bit
+  - 20.04 64-bit
 - Debian
   - 10 32-bit
   - 10 64-bit
 - Centos
-  - 7.5 64-bit
-  - 7.6 64-bit
-- Poky
-  - Yocto Sumo
+  - 7 64-bit
+  - 8 64-bit
+
 
 The system should be configured as it is described below. It applies to all OSes (Ubuntu, CentOS etc.). For some of them special action is required.
 
@@ -234,13 +232,6 @@ Most important variables that have to be set in configuration file ```Common/Con
   e.g.:
   ```MenPcIpAddr="192.168.1.100"```
 
-- TestSetup
-
-  Test configuration number
-  
-  e.g.:
-  ```TestSetup="1"```
-
 - MenPcLogin
 
   Username of test user account on test computer
@@ -255,9 +246,9 @@ Most important variables that have to be set in configuration file ```Common/Con
   e.g.:
   ```MenPcPassword="men"```
 
-- MenBoxPcIpAddr
+- MenBoxPcIpAddr (relay)
 
-  IP address of auxiliary Box PC computer
+  IP address of auxiliary Box PC BL51E
   
   e.g.:
   ```MenBoxPcIpAddr="192.168.1.200"```
@@ -374,12 +365,13 @@ Most important variables that have to be set in configuration file ```MDIS_Compi
 The list of kernels used for testing should be placed in ``` MDIS_Compilation_Tests/kernel_list_release_02.txt```
 e.g.:
 ```
-3.16.73
-4.4.193
-4.9.193
-4.14.144
-4.19.73
-5.2.15
+3.16.83
+4.4.221
+4.9.221
+4.14.178
+4.19.120
+5.4.38
+5.5.19
 ```
 
 ## Running compilation tests
