@@ -68,7 +68,7 @@ function m57_test {
     # Kill bacground processess profidp_simp
     profidp_simp_PID=$(pgrep profidp_simp)
     sleep 25
-    if ! run_as_root kill -9 "${profidp_simp_PID}" > /dev/null 2>&1
+    if ! run_as_root kill -15 "${profidp_simp_PID}" > /dev/null 2>&1
     then
         if pgrep profidp_simp
         then
