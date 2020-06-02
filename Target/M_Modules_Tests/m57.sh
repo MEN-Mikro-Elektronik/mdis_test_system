@@ -89,10 +89,16 @@ function m57_test {
     grep "ident_number = 0000" profidp_simp.log > /dev/null && \
     grep "Stop Profibus protocol stack" profidp_simp.log > /dev/null && \
     grep "^M_close" profidp_simp.log > /dev/null
-    if [ $? -ne 0 ]; then 
+    if [ $? -ne 0 ]; then
         debug_print "${LogPrefix} Invalid log output, ERROR" "${LogFile}"
         return "${ERR_VALUE}"
-    fi 
+    fi
+
+    grep -i "Error" profidp_simp.log > /dev/null
+    if [ $? -eq 0 ]; then
+        debug_print "${LogPrefix} Error in profidp_simp.log, ERROR" "${LogFile}"
+        return "${ERR_VALUE}"
+    fi
 
     return "${ERR_OK}"
 }
