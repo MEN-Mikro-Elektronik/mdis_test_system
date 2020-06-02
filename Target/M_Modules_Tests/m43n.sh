@@ -54,7 +54,7 @@ function m43n_test {
     local RelayOutput="${IN_0_ENABLE}"
 
     debug_print "${LogPrefix} Step1:" "${LogFile}"
-    m_module_x_test "${LogFile}" "${TestCaseName}" "${RelayOutput}" "m43" "${ModuleNo}" "" "${LogPrefix}"
+    m_module_x_test "${LogFile}" "${TestCaseName}" "${RelayOutput}" "m43n" "${ModuleNo}" "" "${LogPrefix}"
     CmdResult=$?
 
     if [ "${CmdResult}" == "${ERR_OK}" ]; then
