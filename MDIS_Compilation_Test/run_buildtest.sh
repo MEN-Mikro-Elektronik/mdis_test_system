@@ -417,7 +417,7 @@ while test $# -gt 0 ; do
                 export CompileShortList="1"
                 echo "Compile only Failed modules"
                 ;;
-                --run-failed)
+        --run-failed)
                 shift
                 export CompileShortList="2"
                 echo "Compile Failed modules"
@@ -517,7 +517,7 @@ if [ -e "Makefile" ]; then
         make clean
 fi
 echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -f Makefile
-echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf /DESC
-echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf /LIB
-echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf /BIN
-echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf /OBJ
+echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf DESC
+echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf LIB
+echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf BIN
+echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf OBJ
