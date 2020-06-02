@@ -1,5 +1,33 @@
 #! /bin/bash
 #
+# Below information about all exit codes that can be used during tests
+# Error code description (common for all test cases and this script):
+ERR_OK=0                #  0 - no error
+ERR_CREATE=1            #  1 - cannot create directory (e.g. no privileges)
+ERR_SCAN=2              #  2 - error during scanning the hardware
+ERR_MAKE=3              #  3 - error during make on MDIS sources
+ERR_INSTALL=4           #  4 - error during install 
+ERR_MODPROBE=5          #  5 - error while loading the driver via 'modprobe' command
+ERR_RMMOD=6             #  6 - error while removing loaded driver via 'rmmod' command 
+ERR_CLEANUP=7           #  7 - could not clean up test case directory
+ERR_CONNECT=8           #  8 - could not connect to external device
+ERR_SWITCH=9            #  9 - could not enable/disable outputs on external device
+ERR_VALUE=10            # 10 - incorrect output value after test
+ERR_NOEXIST=11          # 11 - requested file/param does not exists
+ERR_RUN=12              # 12 - error while running example module program
+ERR_LOCK_EXISTS=13      # 13 - lock file exists
+ERR_LOCK_NO_EXISTS=14   # 14 - lock file not exists
+ERR_LOCK_NO_RESULT=15   # 15 - lock, no result yet
+ERR_LOCK_INVALID=16     # 16 - invalid lock file, wrong Test Case name, wrong value
+ERR_SIMP_ERROR=17       # 17 - error while running module example script 
+ERR_NOT_DEFINED=18      # 18 - error, some variable is not defined
+ERR_DOWNLOAD=19         # 19 - error while downloading the sources
+ERR_CONF=20             # 20 - configuration error
+ERR_DIR_EXISTS=21       # 21 - directory exists
+ERR_DIR_NOT_EXISTS=22   # 22 - directory does not exist
+ERR_WARNING=23          # 23 - warning
+ERR_UNDEFINED=99        # 99 - undefined error
+
 
 # Credentials for Pc that will be tested - required by sudo cmds
 MenPcPassword=""
