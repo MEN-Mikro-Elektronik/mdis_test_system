@@ -9,10 +9,10 @@ source "${MyDir}/../St_Functions.sh"
 # parameters:
 # $1    Module number
 # $2    Module log path 
-function m43_description {
+function m43n_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
-    echo "------------------------------M43 Test Case-----------------------------------"
+    echo "------------------------------M43n Test Case-----------------------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
@@ -46,7 +46,7 @@ function m43_description {
 # $2    Log prefix
 # $3    M-Module number
 # $3    Test Case name
-function m43_test {
+function m43n_test {
     local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
@@ -71,7 +71,7 @@ function m43_test {
 # $1    Log file
 # $2    Log prefix
 # $3    M-Module number
-function compare_m43_simp_values {
+function compare_m43n_simp_values {
     local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
