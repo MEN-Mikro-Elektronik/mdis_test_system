@@ -402,7 +402,7 @@ else
     for ExpectedOs in "${GrubOses[@]}"; do
         ssh-keygen -R "${MenPcIpAddr}"
         # Check if devices are available
-        if ! ping -c 2 "${MenPcIpAddr}"
+        if ! ping -i 5 -c 4  "${MenPcIpAddr}"
         then
             echo "${MenPcIpAddr} is not responding"
             break

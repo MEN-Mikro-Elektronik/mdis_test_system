@@ -9,7 +9,7 @@ source "${MyDir}/../St_Functions.sh"
 # parameters:
 # $1    Module number
 # $2    Module log path 
-function m62_description {
+function m62n_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
     echo "------------------------------M62 Test Case-----------------------------------"
@@ -45,7 +45,7 @@ function m62_description {
 # $1    LogFile
 # $2    LogPrefix
 # $3    M-Module number
-function m62_test {
+function m62n_test {
     local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}

@@ -310,10 +310,10 @@ function get_test_case_id {
         m36n)
             TestCaseId=$((baseId+6))
             ;;
-        m37)
+        m37n)
             TestCaseId=$((baseId+7))
             ;;
-        m43)
+        m43n)
             TestCaseId=$((baseId+8))
             ;;
         m47)
@@ -325,7 +325,7 @@ function get_test_case_id {
         m58)
             TestCaseId=$((baseId+11))
             ;;
-        m62)
+        m62n)
             TestCaseId=$((baseId+12))
             ;;
         m65n)

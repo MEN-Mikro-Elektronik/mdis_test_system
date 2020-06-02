@@ -7,12 +7,12 @@ source "${MyDir}"/M_Modules_Tests/m32.sh
 source "${MyDir}"/M_Modules_Tests/m33.sh
 source "${MyDir}"/M_Modules_Tests/m35n.sh
 source "${MyDir}"/M_Modules_Tests/m36n.sh
-source "${MyDir}"/M_Modules_Tests/m37.sh
-source "${MyDir}"/M_Modules_Tests/m43.sh
+source "${MyDir}"/M_Modules_Tests/m37n.sh
+source "${MyDir}"/M_Modules_Tests/m43n.sh
 source "${MyDir}"/M_Modules_Tests/m47.sh
 source "${MyDir}"/M_Modules_Tests/m57.sh
 source "${MyDir}"/M_Modules_Tests/m58.sh
-source "${MyDir}"/M_Modules_Tests/m62.sh
+source "${MyDir}"/M_Modules_Tests/m62n.sh
 source "${MyDir}"/M_Modules_Tests/m65n.sh
 source "${MyDir}"/M_Modules_Tests/m65n_canopen.sh
 source "${MyDir}"/M_Modules_Tests/m66.sh

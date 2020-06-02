@@ -9,10 +9,10 @@ source "${MyDir}/../St_Functions.sh"
 # parameters:
 # $1    Module number
 # $2    Module log path 
-function m37_description {
+function m37n_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
-    echo "--------------------------------M37 Test Case---------------------------------"
+    echo "--------------------------------M37n Test Case---------------------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
@@ -45,7 +45,7 @@ function m37_description {
 # $1    LogFile
 # $2    LogPrefix
 # $3    M-Module number
-function m37_test {
+function m37n_test {
     local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
