@@ -2,6 +2,7 @@
 #
 
 MyDir="$(dirname "$0")"
+# shellcheck source=./Conf.sh
 source "${MyDir}/Conf.sh"
 
 CurrentDir=$(pwd)
@@ -33,7 +34,7 @@ function create_main_test_directory {
                 echo "${MainTestDirectoryPath}/${MainTestDirectoryName} directory exists"
         fi
 
-        return ${ERR_OK}
+        return "${ERR_OK}"
 }
 
 ############################################################################
@@ -51,13 +52,13 @@ function create_result_directory {
                 Retval=$?
                 if [ ${Retval} -ne 0 ]; then
                         echo "ERR: ${ERR_CREATE} - cannot create directory"
-                        return ${ERR_CREATE}
+                        return "${ERR_CREATE}"
                 fi
         else
                 echo "${MdisResultsDirectoryPath} directory exists"
         fi
 
-        return ${ERR_OK}
+        return "${ERR_OK}"
 }
 
 ############################################################################
@@ -79,10 +80,10 @@ function create_13MD05-90_directory {
                 Retval=$?
                 if [ ${Retval} -ne 0 ]; then
                         echo "ERR: ${ERR_DOWNLOAD} - cannot download MDIS"
-                        return ${ERR_DOWNLOAD}
+                        return "${ERR_DOWNLOAD}"
                 fi
         else
-                cd ${MdisSourcesDirectoryPath}
+                cd "${MdisSourcesDirectoryPath}" || (echo "Could not enter directory \"${MdisSourcesDirectoryPath}\". Quitting!" && exit 1)
                 local CommitId
                 CommitId=$(git log --pretty=format:'%H' -n 1)
                 local GitBranch
@@ -92,19 +93,17 @@ function create_13MD05-90_directory {
                 echo "CommitId: ${CommitId}"
                 echo "Comparision GitBranch: ${GitBranch} with ${GitMdisBranch} "
                 if [ "${GitBranch}" != "${GitMdisBranch}" ]; then
-                        cd .. 
+                        cd ".."
                         rm -rf "${MdisSourcesDirectoryPath}"
-                        download_13MD05_90_repository
-                        if [ $? -ne 0 ]; then
+                        if ! download_13MD05_90_repository; then
                                 echo "ERR: ${ERR_DOWNLOAD} - cannot download MDIS"
-                                return ${ERR_DOWNLOAD}
+                                return "${ERR_DOWNLOAD}"
                         fi
                 else
-                        if [ ! -z "${GitMdisCommitSha}" ]; then 
-                                git reset --hard ${GitMdisCommitSha}
-                                if [ $? -ne 0 ]; then
+                        if [ -n "${GitMdisCommitSha}" ]; then 
+                                if ! git reset --hard ${GitMdisCommitSha}; then
                                         echo "Wrong SHA detected"
-                                        return ${ERR_CONF}
+                                        return "${ERR_CONF}"
                                 fi
                         else
                                 #Go to most current commit 
@@ -112,10 +111,10 @@ function create_13MD05-90_directory {
                                 git submodule init
                                 git submodule update
                         fi
-                        cd .. 
+                        cd ".."
                 fi
         fi
-        return ${ERR_OK}
+        return "${ERR_OK}"
 }
 
 ############################################################################
@@ -128,18 +127,18 @@ function download_13MD05_90_repository {
         Retval=$?
         if [ ${Retval} -ne 0 ]; then
                 echo "ERR: ${ERR_CREATE} - cannot download MDIS"
-                return ${ERR_CREATE}
+                return "${ERR_CREATE}"
         fi
-        cd ${MdisSourcesDirectoryPath}
+        cd "${MdisSourcesDirectoryPath}" || (echo "Could not enter directory \"${MdisSourcesDirectoryPath}\". Quitting!" && exit 1)
         local CommitId
         CommitId=$(git log --pretty=format:'%H' -n 1)
         echo "CommitId: ${CommitId}"
-        if [ ! -z "${GitMdisCommitSha}" ]; then 
+        if [ -n "${GitMdisCommitSha}" ]; then 
                 git reset --hard ${GitMdisCommitSha}
                 Retval=$?
                 if [ ${Retval} -ne 0 ]; then
                         echo "Wrong SHA detected"
-                        return ${ERR_CONF}
+                        return "${ERR_CONF}"
                 fi
         else
                 #Go to most current commit 
@@ -147,8 +146,9 @@ function download_13MD05_90_repository {
                 git submodule init
                 git submodule update
         fi
-        cd ..
-        return ${ERR_OK}
+        # shellcheck disable=SC2103
+        cd ".."
+        return "${ERR_OK}"
 }
 
 ############################################################################
@@ -162,19 +162,14 @@ function install_13MD05_90_sources {
         echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf ${MdisSourcesDirectoryInstallPath}
 
         if [ -d "${MdisSourcesDirectoryPath}" ]; then
-                local CurrentKernel
-                CurrentKernel=$(uname --kernel-release)
-                local SystemName
-                SystemName=$(hostnamectl | grep "Operating System" | awk '{ print $3 }')
-
                 # install sources of MDIS
                 # echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf /opt/menlinux
-                cd ${MdisSourcesDirectoryPath}
+                cd "${MdisSourcesDirectoryPath}" || (echo "Could not enter directory \"${MdisSourcesDirectoryPath}\". Quitting!" && exit 1)
                 echo ${MenPcPassword} | sudo -S --prompt=$'\r' ./INSTALL.sh --path=${MdisSourcesDirectoryInstallPath} --install-only
         else
                 echo "ERR ${ERR_INSTALL} :no sources to install"
                 echo "Make sure that sources are in ${MdisResultsDirectoryPath}" 
-                return ${ERR_INSTALL}
+                return "${ERR_INSTALL}"
         fi
 }
 
@@ -218,7 +213,7 @@ function usage {
 # NOTICE: beware of quotes and the like the might need escaping
 do_or_die()
 {
-    eval $* || exit $?
+    eval "$@" || exit $?
 }
 
 ###############################################################################
@@ -226,14 +221,14 @@ do_or_die()
 #
 function checkout_kernel_version {
   currdir=$(pwd)
-  cd ${TEST_KERNEL_DIR}
+  cd "${TEST_KERNEL_DIR}" || (echo "Could not enter directory \"${TEST_KERNEL_DIR}\". Quitting!" && exit 1)
   # wipe leftovers from previous checked out version by forced checkout
   make clean
   make distclean
   make defconfig
   make prepare
   make scripts
-  cd "${currdir}"
+  cd "${currdir}" || (echo "Could not enter directory \"${currdir}\". Quitting!" && exit 1)
 }
 
 
@@ -247,7 +242,7 @@ function build_mdis {
 
   # build MDIS Project...
   make clean
-  make 2>&1 | tee buildlog_$1.log
+  make 2>&1 | tee "buildlog_$1.log"
 }
 
 
@@ -259,7 +254,7 @@ function print_result {
         local Result=$1
         local KernelVersion=$2
 
-        if [ ${Result} -eq 0 ]; then
+        if [ "${Result}" -eq 0 ]; then
                 echo " --------- Build for ${KernelVersion} succeeded ------------"
         else
                 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
@@ -272,8 +267,10 @@ function print_result {
 
 function automatic_driver_test {
 
-        local GCC_VERSION=$(gcc --version | awk NR==1'{print $4}')
-        local DATE=$(date '+%Y-%m-%d_%H:%M:%S')
+        local GCC_VERSION
+        GCC_VERSION=$(gcc --version | awk NR==1'{print $4}')
+        local DATE
+        DATE=$(date '+%Y-%m-%d_%H:%M:%S')
         local STR_RESULT_DIR="${4}/TestOutput_${1}_GCC_${GCC_VERSION}_${DATE}_${5}"
         local STR_RESULT_FILE="${STR_RESULT_DIR}/TestResults.log"
         local Retval=0
@@ -285,12 +282,12 @@ function automatic_driver_test {
         mkdir "${STR_RESULT_DIR}"
 
         # Check if flag for compilation of failed Makefiles is set 
-        if [ ! -z "${6}" ]; then
+        if [ -n "${6}" ]; then
             if [ "${6}" -eq "1" ]; then
                 # Check if failed Makefiles compilation short list exists
                 if [ -f "${MakefilesCompilationListShort}" ]; then
                     cp "${MakefilesCompilationListShort}" MakefilesList.tmp
-                    MakefilesNumber=$(cat MakefilesList.tmp | wc -l)
+                    MakefilesNumber=$(wc -l <MakefilesList.tmp)
                 else
                     echo "There is no short list of makefiles: ${MakefilesCompilationListShort}"
                     return 1
@@ -301,7 +298,7 @@ function automatic_driver_test {
                     cp "${1}_${MakefilesCompilationListFailed}" "${1}_${MakefilesCompilationListFailed}.bak"
                     cp "${1}_${MakefilesCompilationListFailed}" MakefilesList.tmp
                     echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm "${1}_${MakefilesCompilationListFailed}"
-                    MakefilesNumber=$(cat MakefilesList.tmp | wc -l)
+                    MakefilesNumber=$(wc -l <MakefilesList.tmp)
                 else
                     echo "There is no list of failed Makefiles"
                     return 1
@@ -313,10 +310,10 @@ function automatic_driver_test {
         else
             # Check list of all available Makefiles in Makefiles directory
             # Save list into temporary file
-            cd Makefiles/
-            ls -l | awk '{ print $9 }' | grep Makefile > ../MakefilesList.tmp
-            MakefilesNumber=$(cat ../MakefilesList.tmp | wc -l)
-            cd ..
+            cd "Makefiles/" || (echo "Could not enter directory \"Makefiles/\". Quitting!" && exit 1)
+            find . -maxdepth 1 -type f -printf '%P\n' | grep Makefile > ../MakefilesList.tmp
+            MakefilesNumber=$(wc -l <../MakefilesList.tmp)
+            cd ".."
             if [ -f "${1}_${MakefilesCompilationListFailed}" ]
             then
                 cp "${1}_${MakefilesCompilationListFailed}" "${MakefilesCompilationListFailed}.bak"
@@ -358,7 +355,7 @@ function automatic_driver_test {
                         Retval=$?
                         if [ ${Retval} -eq 0 ]
                         then 
-                                cat "${STR_RESULT_DIR}/${Makefile}.log" | grep warning: >/dev/null
+                                > "${STR_RESULT_DIR}/${Makefile}.log" grep warning: >/dev/null
                                 Retval=$?
                                 if [ ${Retval} -eq 0 ]
                                 then 
@@ -454,30 +451,29 @@ create_main_test_directory
 Retval=$?
 if [ ${Retval} -ne 0 ]; then
         echo "ERR: create_main_test_directory"
-        exit ${ERR_CONF}
+        exit "${ERR_CONF}"
 fi
 
-cd ${LinuxKernelsDirectoryPath}
+cd "${LinuxKernelsDirectoryPath}" || (echo "Could not enter directory \"${LinuxKernelsDirectoryPath}\". Quitting!" && exit 1)
 
-LinuxKernelNameInit=$(head -n 1 ${CurrentDir}/kernel_list_release_02.txt)
+LinuxKernelNameInit=$(head -n 1 "${CurrentDir}/kernel_list_release_02.txt")
 
-ln -sfn linux-${LinuxKernelNameInit} linux
+ln -sfn "linux-${LinuxKernelNameInit}" linux
 
-cd ${MdisMainDirectoryPath}
+cd "${MdisMainDirectoryPath}" || (echo "Could not enter directory \"${MdisMainDirectoryPath}\". Quitting!" && exit 1)
 
 create_result_directory
 CmdResult=$?
 
 if [[ ${CmdResult} -ne ${ERR_OK} ]]; then
         echo "ERR: create_result_directory"
-        exit ${ERR_CONF}
+        exit "${ERR_CONF}"
 fi
 
 if [ "${DownloadMDIS}" == "1" ] ; then
-        create_13MD05-90_directory
-        if [ $? -ne 0 ]; then
+        if ! create_13MD05-90_directory; then
                 echo "ERR: create_13MD05-90_directory"
-                exit ${ERR_CONF}
+                exit "${ERR_CONF}"
         fi
 fi
 
@@ -485,33 +481,34 @@ fi
 install_13MD05_90_sources
 
 # Go to directory where this script is located 
-cd ${CurrentDir}
+cd "${CurrentDir}" || (echo "Could not enter directory \"${CurrentDir}\". Quitting!" && exit 1)
 
 # Compiling Makefiles ... 
 if [ "${BuildAllKernelGcc}" == "1" ] || [ "${CompileShortList}" == "1" ] || [ "${CompileShortList}" == "2" ]; then
-        while read kern_version
+        while read -r kern_version
         do
-                currdir=`pwd`
-                cd "${TEST_KERNEL_DIR}"
-                cd ..
+                currdir="$(pwd)"
+                cd "${TEST_KERNEL_DIR}" || (echo "Could not enter directory \"${TEST_KERNEL_DIR}\". Quitting!" && exit 1)
+                # shellcheck disable=SC2103
+                cd ".."
                 rm linux
                 ln -sfn "linux-${kern_version}" linux
-                cd "${currdir}"
+                cd "${currdir}" || (echo "Could not enter directory \"${currdir}\". Quitting!" && exit 1)
 
-                checkout_kernel_version ${kern_version}
+                checkout_kernel_version "${kern_version}"
                 echo " ============================================================"
                 echo " ==     building MDIS project using kernel ${kern_version}      "
                 echo " ============================================================"
                 echo " ============================dbg============================="
-                automatic_driver_test ${kern_version} ${MEN_LIN_DIR} ${TEST_KERNEL_DIR} ${MdisResultsDirectoryPath} "dbg" ${CompileShortList}
+                automatic_driver_test "${kern_version}" ${MEN_LIN_DIR} ${TEST_KERNEL_DIR} ${MdisResultsDirectoryPath} "dbg" ${CompileShortList}
                 echo " ============================nodbg==========================="
-                automatic_driver_test ${kern_version} ${MEN_LIN_DIR} ${TEST_KERNEL_DIR} ${MdisResultsDirectoryPath} "nodbg" ${CompileShortList} 
+                automatic_driver_test "${kern_version}" ${MEN_LIN_DIR} ${TEST_KERNEL_DIR} ${MdisResultsDirectoryPath} "nodbg" ${CompileShortList} 
                 Retval=$?
                 if [ ${Retval} -ne 0 ]; then
                         echo "ERR: automatic_driver_test"
                 fi
                 
-                print_result $? ${kern_version}
+                print_result $? "${kern_version}"
 
         done < kernel_list_release_02.txt
 fi
