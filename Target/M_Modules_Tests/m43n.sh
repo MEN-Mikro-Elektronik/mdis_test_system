@@ -81,7 +81,7 @@ function compare_m43n_simp_values {
     local EndLine
     DeviceOpened=$(grep -ic "Device m43_${ModuleNo} opened" m43_"${ModuleNo}"_simp_output_connected.txt)
     DeviceClosed=$(grep -ic "Device m43_${ModuleNo} closed" m43_"${ModuleNo}"_simp_output_connected.txt)
-    EndLine=$(tail -1 m43_"${ModuleNo}"_simp_output_connected.txt)
+    EndLine=$(tail -1 m43n_"${ModuleNo}"_simp_output_connected.txt)
     debug_print "${LogPrefix} DeviceOpened: ${DeviceOpened}, DeviceClosed: ${DeviceClosed}, EndLine: ${EndLine}" "${LogFile}"
     if [ "${DeviceOpened}" -eq 1 ] && [ "${DeviceClosed}" -eq 1 ] && [ "${EndLine}" == "=> OK" ]; then
         return "${ERR_OK}"
