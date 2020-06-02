@@ -796,7 +796,7 @@ function m_module_x_test {
             ModprobeDriver="men_ll_m43"
             ModuleSimp="m43_ex1"
             ModuleResultCmpFunc="compare_m43n_simp_values"
-            ModuleInstanceName="${MModuleName}_${MModuleBoardNr}"
+            ModuleInstanceName="m43_${MModuleBoardNr}"
             ;;
         m66)
             ModprobeDriver="men_ll_m66"
