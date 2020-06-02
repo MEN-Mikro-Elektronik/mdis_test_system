@@ -282,49 +282,29 @@ Most important variables that have to be set in configuration file ```Common/Con
   ```GrubConfFile="/media/tests/boot.cfg"```
 
 - GrubOsesF26L
+- GrubOsesF23P
+- GrubOsesG23
+- GrubOsesG25A
+- GrubOsesBL50
+- GrubOsesBL51E
+- GrubOsesBL70
 
-  List of names of operating systems used for testing on F26L.
+  List of names of operating systems used for testing on CPU board
   "0" is default OS and is not used for testing but should be present anyhow.
   
   e.g.:
   ```GrubOsesF26L=("0" "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda14)")```
-
-- GrubOsesF23P
-
-  List of names of operating systems used for testing on F23P.
-  "0" is default OS and is not used for testing but should be present anyhow.
   
-  e.g.:
-  ```GrubOsesF23P=("0" "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda14)")```
-
-- GrubOsesG23
-
-  List of names of operating systems used for testing on G23.
-  "0" is default OS and is not used for testing but should be present anyhow.
-  
-  e.g.:
-  ```GrubOsesG23=("0" "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda14)")```
-
-- GrubOsesG25A
-
-  List of names of operating systems used for testing on G25A.
-  "0" is default OS and is not used for testing but should be present anyhow.
-  
-  e.g.:
-  ```GrubOsesG25A=("0" "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda14)")```
-
-- GrubOsesBL51E
-
-  List of names of operating systems used for testing on BL51E.
-  "0" is default OS and is not used for testing but should be present anyhow.
-  
-  e.g.:
-  ```GrubOsesBL51E=("0" "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda14)")```
 
 ## Running functional tests
-When everything is set up just run the script on he Host machine:
+When everything is set up, please move to mdis_test_system/Host/Mdis_Test directory and run test script with proper options:
 ```
-# Host/Jenkins/Jenkins.sh
+# Print help
+# ./Mdis_Test.sh --help
+# Run tests on setup 1 on all OS-es with verbose output 
+# ./Mdis_Test.sh --run-setup=1 --verbose=1
+# Run tests on setup 1 on OS that is currently running on Target machine
+# ./Mdis_Test.sh --run-instantly --run-setup=1
 ```
 
 # Compilation tests
