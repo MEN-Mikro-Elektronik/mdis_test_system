@@ -203,6 +203,7 @@ function usage {
     echo "          --short           :Compile only short list of modules"
     echo "          --all             :Run all available .mak on all kernels"
     echo "          --run-failed      :Run only failed Makefiles"
+    echo ""         --makefile file   :Use "file" as Makefile
     echo ""
          
 }
@@ -308,12 +309,22 @@ function automatic_driver_test {
                 return 1
             fi
         else
-            # Check list of all available Makefiles in Makefiles directory
-            # Save list into temporary file
-            cd "Makefiles/" || (echo "Could not enter directory \"Makefiles/\". Quitting!" && exit 1)
-            find . -maxdepth 1 -type f -printf '%P\n' | grep Makefile > ../MakefilesList.tmp
-            MakefilesNumber=$(wc -l <../MakefilesList.tmp)
-            cd ".."
+            if [ -z "${BuildMakefile}" ]; then
+                # Check list of all available Makefiles in Makefiles directory
+                # Save list into temporary file
+                cd "Makefiles/" || (echo "Could not enter directory \"Makefiles/\". Quitting!" && exit 1)
+                find . -maxdepth 1 -type f -printf '%P\n' | grep Makefile > ../MakefilesList.tmp
+                MakefilesNumber=$(wc -l <../MakefilesList.tmp)
+                cd ".."
+            else
+                if [ -e "${BuildMakefile}" ]; then
+                    echo "${BuildMakefile}" > MakefilesList.tmp
+                    MakefilesNumber=$(wc -l <MakefilesList.tmp)
+                else
+                    echo "Makefile \"${BuildMakefile}\" not found. Quitting!"
+                    exit 1
+                fi
+            fi
             if [ -f "${1}_${MakefilesCompilationListFailed}" ]
             then
                 cp "${1}_${MakefilesCompilationListFailed}" "${MakefilesCompilationListFailed}.bak"
@@ -338,7 +349,11 @@ function automatic_driver_test {
                         make clean >/dev/null
                 fi
 
-                cp "Makefiles/${Makefile}" Makefile &>/dev/null
+                if [ -z "${BuildMakefile}" ]; then
+                    cp "Makefiles/${Makefile}" Makefile &>/dev/null
+                else
+                    cp "${Makefile}" Makefile &>/dev/null
+                fi
 
                 #change kernel directory path
                 sed -i "/.*MEN_LIN_DIR =.*/c MEN_LIN_DIR = ${2}" Makefile
@@ -438,6 +453,16 @@ while test $# -gt 0 ; do
                 export BuildAllKernelGcc="1"
                 echo "Compile all kernels on all available gcc versions"
                 echo "Go for tee" 
+                ;;
+        --makefile)
+                shift
+                if test $# -gt 0; then
+                    export BuildMakefile=$1
+                else
+                    echo "No Makefile for \"--makefile\" specified"
+                    exit 1
+                fi
+                shift
                 ;;
         *)
                 break
