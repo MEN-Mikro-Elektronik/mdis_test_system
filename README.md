@@ -320,3 +320,15 @@ When everything is set up just run the script:
 ```
 # MDIS_Compilation_Tests/run_buildtest.sh --download --all
 ```
+
+### Running compilation tests faster
+In order to make compilation tests faster you can create one Makefile from all other Makefiles.
+Simply run the script:
+```
+# MDIS_Compilation_Tests/create_makefile.sh
+```
+This will create ```Makefile.shared```
+Next just run the script:
+```
+# MDIS_Compilation_Tests/run_buildtest.sh --download --all --makefile Makefile.shared
+```
