@@ -5,7 +5,7 @@ mdis_test_system repository provides scripts to easily test behaviour of MEN har
 
 Shortened functional test usage description:
 1. Prepare and configure OS-es on external drive (ssd USB 3 drive shall be considered), that can be connected to MEN CPU boards
-2. Prepare MEN hardware (Test setup <1-10> and BOXPC BL51E - if relay is necessary)
+2. Prepare MEN hardware (Test setup <1-10>, BOXPC BL51E, 12V power supply)
 3. Configure test system (please follow "Test script configuration" section)
 4. Run main test script ./Mdis_Test.sh with proper params and wait for the results
 5. Generate results in user friendly format with Mdis_Report.sh script
@@ -19,13 +19,15 @@ Shortened compilation test usage:
 2. Download MDIS repository,
 3. Run compilation tests to check MDIS compatibility.
 
-Please find detailed ussage description in proper sections.
+Please find detailed usage description in proper sections.
 
 # Functional tests
 To run automated functional tests please prepare below equipment:
-- Target - MEN hardware in proper configuration - Test setup <1-10>
 - Host - Computer with Linux OS that will run tests on Target
-- Relay - to enable/disable modules inputs - MEN Box PC BL51 is used
+- Target - MEN hardware in proper configuration - Test setup <1-10>
+- Relay - to enable/disable modules inputs - MEN Box PC BL51
+- 12V power supply
+- SSD drive with preinstalled and configured OS-es. 
 
 Functional tests sources consist of directories:
 - Common - common part used by Target, Host (Configuration file)
@@ -180,47 +182,6 @@ Restart SSH service
 Check if addresses of devices are correct in inventory file
 ```ansible-playbook -i inventory playbook.yml```
 To add new packages to install edit ```roles/defaults/main.yml```
-
-#### Poky genearation
-1. Yocto (sumo) generated with Core Sumo 2.5, Linux kernel 4.15 Linux Yocto BSP (MEN)
-Please check: https://www.men.de/software/10f026l90/ or https://www.men.de/software/10g025a90/
-
-For Yocto OS additional tools have been added. Please check below layer.conf file:
-```
-# We have a conf directory, add to BBPATH
-BBPATH .= ":${LAYERDIR}"
-
-# We have a recipes-* directories, add to BBFILES
-BBFILES += "${LAYERDIR}/recipes-*/*/*.bb \
-	${LAYERDIR}/recipes-*/*/*.bbappend"
-
-BBFILE_COLLECTIONS += "men-intel"
-BBFILE_PATTERN_men-intel = "^${LAYERDIR}/"
-BBFILE_PRIORITY_men-intel = "6"
-
-# This should only be incremented on significant changes that will
-# cause compatibility issues with other layers
-LAYERVERSION_men-intel = "5"
-LAYERSERIES_COMPAT_men-intel = "sumo"
-
-PACKAGE_CLASSES ?= "package_deb"
-
-EXTRA_IMAGE_FEATURES ?= "debug-tweaks"
-EXTRA_IMAGE_FEATURES += " tools-sdk "
-
-USER_CLASSES ?= "buildstats image-mklibs image-prelink"
-
-CORE_IMAGE_EXTRA_INSTALL += "openssh"
-CORE_IMAGE_EXTRA_INSTALL += "i2c-tools"
-CORE_IMAGE_EXTRA_INSTALL += "kernel-devsrc"
-CORE_IMAGE_EXTRA_INSTALL += "minicom"
-CORE_IMAGE_EXTRA_INSTALL += "git-perltools"
-
-MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS += "kernel-modules"
-
-IMAGE_INSTALL_append += " grub"
-IMAGE_INSTALL_append += " mdis5"
-```
 
 ## Test script configuration
 Most important variables that have to be set in configuration file ```Common/Conf.sh```
