@@ -84,17 +84,17 @@ function z055_hdlc_test {
     fi
 
     # ping response is not required
-    debug_print "${LogPrefix} ping ppp0 -c 20 -i 0.05 -s 1400 8.8.8.8" "${LogFile}"
+    debug_print "${LogPrefix} ping ppp0 -c 20 -i ${PingInterval} -s 1400 8.8.8.8" "${LogFile}"
     run_as_root ping -I ppp0 -c 20 -i "${PingInterval}" -s 1400 8.8.8.8 > /dev/null
-    debug_print "${LogPrefix} ping -I ppp1 -c 10 -i 0.1 -s 1400 8.8.8.8" "${LogFile}"
+    debug_print "${LogPrefix} ping -I ppp1 -c 10 -i ${PingInterval} -s 1400 8.8.8.8" "${LogFile}"
     run_as_root ping -I ppp1 -c 10 -i "${PingInterval}" -s 1400 8.8.8.8 > /dev/null
 
     run_as_root ifconfig ppp0 txqueuelen 100
     run_as_root ifconfig ppp1 txqueuelen 100
     # ping response is not required
-    debug_print "${LogPrefix} ping -I ppp0 -c 16 -i 0.3 -s 65000 8.8.8.8" "${LogFile}"
+    debug_print "${LogPrefix} ping -I ppp0 -c 16 -i ${PingInterval} -s 65000 8.8.8.8" "${LogFile}"
     run_as_root ping -I ppp0 -c 16 -i "${PingInterval}" -s 65000 8.8.8.8 > /dev/null
-    debug_print "${LogPrefix} ping -I ppp1 -c 16 -i 0.3 -s 65000 8.8.8.8" "${LogFile}"
+    debug_print "${LogPrefix} ping -I ppp1 -c 17 -i ${PingInterval} -s 65000 8.8.8.8" "${LogFile}"
     run_as_root ping -I ppp1 -c 17 -i "${PingInterval}" -s 65000 8.8.8.8 > /dev/null
 
     sleep 2
