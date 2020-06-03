@@ -181,47 +181,6 @@ Check if addresses of devices are correct in inventory file
 ```ansible-playbook -i inventory playbook.yml```
 To add new packages to install edit ```roles/defaults/main.yml```
 
-#### Poky genearation
-1. Yocto (sumo) generated with Core Sumo 2.5, Linux kernel 4.15 Linux Yocto BSP (MEN)
-Please check: https://www.men.de/software/10f026l90/ or https://www.men.de/software/10g025a90/
-
-For Yocto OS additional tools have been added. Please check below layer.conf file:
-```
-# We have a conf directory, add to BBPATH
-BBPATH .= ":${LAYERDIR}"
-
-# We have a recipes-* directories, add to BBFILES
-BBFILES += "${LAYERDIR}/recipes-*/*/*.bb \
-	${LAYERDIR}/recipes-*/*/*.bbappend"
-
-BBFILE_COLLECTIONS += "men-intel"
-BBFILE_PATTERN_men-intel = "^${LAYERDIR}/"
-BBFILE_PRIORITY_men-intel = "6"
-
-# This should only be incremented on significant changes that will
-# cause compatibility issues with other layers
-LAYERVERSION_men-intel = "5"
-LAYERSERIES_COMPAT_men-intel = "sumo"
-
-PACKAGE_CLASSES ?= "package_deb"
-
-EXTRA_IMAGE_FEATURES ?= "debug-tweaks"
-EXTRA_IMAGE_FEATURES += " tools-sdk "
-
-USER_CLASSES ?= "buildstats image-mklibs image-prelink"
-
-CORE_IMAGE_EXTRA_INSTALL += "openssh"
-CORE_IMAGE_EXTRA_INSTALL += "i2c-tools"
-CORE_IMAGE_EXTRA_INSTALL += "kernel-devsrc"
-CORE_IMAGE_EXTRA_INSTALL += "minicom"
-CORE_IMAGE_EXTRA_INSTALL += "git-perltools"
-
-MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS += "kernel-modules"
-
-IMAGE_INSTALL_append += " grub"
-IMAGE_INSTALL_append += " mdis5"
-```
-
 ## Test script configuration
 Most important variables that have to be set in configuration file ```Common/Conf.sh```
 
