@@ -5,7 +5,7 @@ mdis_test_system repository provides scripts to easily test behaviour of MEN har
 
 Shortened functional test usage description:
 1. Prepare and configure OS-es on external drive (ssd USB 3 drive shall be considered), that can be connected to MEN CPU boards
-2. Prepare MEN hardware (Test setup <1-10> and BOXPC BL51E - if relay is necessary)
+2. Prepare MEN hardware (Test setup <1-10>, BOXPC BL51E, 12V power supply)
 3. Configure test system (please follow "Test script configuration" section)
 4. Run main test script ./Mdis_Test.sh with proper params and wait for the results
 5. Generate results in user friendly format with Mdis_Report.sh script
@@ -19,13 +19,15 @@ Shortened compilation test usage:
 2. Download MDIS repository,
 3. Run compilation tests to check MDIS compatibility.
 
-Please find detailed ussage description in proper sections.
+Please find detailed usage description in proper sections.
 
 # Functional tests
 To run automated functional tests please prepare below equipment:
-- Target - MEN hardware in proper configuration - Test setup <1-10>
 - Host - Computer with Linux OS that will run tests on Target
-- Relay - to enable/disable modules inputs - MEN Box PC BL51 is used
+- Target - MEN hardware in proper configuration - Test setup <1-10>
+- Relay - to enable/disable modules inputs - MEN Box PC BL51
+- 12V power supply
+- SSD drive with preinstalled and configured OS-es. 
 
 Functional tests sources consist of directories:
 - Common - common part used by Target, Host (Configuration file)
