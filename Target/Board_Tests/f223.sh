@@ -49,13 +49,14 @@ function f223_description {
 # run board f223 test
 #
 # parameters:
-# $1    TestCaseLogName
+# $1    LogFile
 # $2    LogPrefix
 # $3    M-Module number
 function f223_test {
-    local TestCaseLogName=${1}
+    local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
+    local Port0=""
 
     MachineState="Step1"
     MachineRun=true
@@ -64,69 +65,79 @@ function f223_test {
         case "${MachineState}" in
             Step1);&
             Step2)
-                echo "Run step @2" | tee -a "${TestCaseLogName}" 2>&1
-                echo "${MenPcPassword}" | sudo -S --prompt=$'\r' modprobe men_ll_pi7c9_gpio
-                if [ $? -ne 0 ]; then
-                    echo "ERR_VALUE: could not modprobe men_ll_pi7c9_gpio" | tee -a "${TestCaseLogName}" 2>&1
+                debug_print "${LogPrefix} Run step @2" "${LogFile}"
+                if ! run_as_root modprobe men_ll_pi7c9_gpio
+                then
+                    debug_print "ERR_VALUE: could not modprobe men_ll_pi7c9_gpio" "${LogFile}"
                     return "${ERR_VALUE}"
                 fi
-                echo ${MenPcPassword} | sudo -S --prompt=$'\r' pi7c9_gpio_simp -g pi7c9_gpio_1 > pi7c9_gpio_simp_output.txt 2>&1
-                CmdResult=$?
-                if [ ${CmdResult} -ne ${ERR_OK} ]; then
-                    echo "ERR pi7c9_gpio_simp -g pi7c9_gpio_1" | tee -a "${TestCaseLogName}" 2>&1
+                if ! run_as_root pi7c9_gpio_simp -g pi7c9_gpio_1 > pi7c9_gpio_simp_start.txt 2>&1
+                then
+                    debug_print "${LogPrefix} ERR pi7c9_gpio_simp -g pi7c9_gpio_1" "${LogFile}"
                     MachineState="Break"
                     TestCaseStep2=${ERR_SIMP_ERROR}
                 else
                     TestCaseStep2=0
-                    BinaryStateBegin="$(cat ./pi7c9_gpio_simp_output.txt\
-                      | awk NR==2'{print $2 $3 $4 $5 $6 $7 $8 $9}')"
+                    BinaryStateBegin="$(awk NR==2'{print $2 $3 $4 $5 $6 $7 $8 $9}' < pi7c9_gpio_simp_start.txt)"
                     MachineState="Step3"
                 fi
                 ;;
             Step3)
-                echo "Run step @3" | tee -a "${TestCaseLogName}" 2>&1
-                echo ${MenPcPassword} | sudo -S --prompt=$'\r' pi7c9_gpio_simp -s=1 -p=0x01 pi7c9_gpio_1
-                CmdResult=$?
-                if [ ${CmdResult} -ne ${ERR_OK} ]; then
-                    echo "ERR pi7c9_gpio_simp -s=1 -p=0x01 pi7c9_gpio_1" | tee -a "${TestCaseLogName}" 2>&1
+                debug_print "${LogPrefix} Run step @3" "${LogFile}"
+                if ! run_as_root pi7c9_gpio_simp -s=1 -p=0x01 pi7c9_gpio_1
+                then
+                    debug_print "ERR pi7c9_gpio_simp -s=1 -p=0x01 pi7c9_gpio_1" "${LogFile}"
                     TestCaseStep3=${ERR_SIMP_ERROR}
                     MachineState="Break"
                 else
-                    TestCaseStep3=0
+                    run_as_root pi7c9_gpio_simp -g pi7c9_gpio_1 > pi7c9_gpio_simp_port0_set.txt 2>&1
+                    Port0=$(awk NR==2'{print $9}' < pi7c9_gpio_simp_port0_set.txt)
+                    if [ "${Port0}" = "1" ]
+                    then
+                        TestCaseStep3="0"
+                    else
+                        TestCaseStep3="${ERR_VALUE}"
+                    fi
                     MachineState="Step4"
                 fi
-                echo "PORT 0 should be 1: $(awk NR==2'{print $9}')" | tee -a "${TestCaseLogName}" 2>&1
+                debug_print "${LogPrefix} PORT0 should be 1: ${Port0}" "${LogFile}"
                 ;;
             Step4)
-                echo "Run step @4" | tee -a "${TestCaseLogName}" 2>&1
-                echo ${MenPcPassword} | sudo -S --prompt=$'\r' pi7c9_gpio_simp -s=0 -p=0x01 pi7c9_gpio_1
-                CmdResult=$?
-                if [ ${CmdResult} -ne ${ERR_OK} ]; then
-                    echo "ERR pi7c9_gpio_simp -s=0 -p=0x01 pi7c9_gpio_1" | tee -a "${TestCaseLogName}" 2>&1
+                debug_print "${LogPrefix} Run step @4" "${LogFile}"
+                if ! run_as_root pi7c9_gpio_simp -s=0 -p=0x01 pi7c9_gpio_1
+                then
+                    debug_print "${LogPrefix} ERR pi7c9_gpio_simp -s=0 -p=0x01 pi7c9_gpio_1" "${LogFile}"
                     MachineState="Break"
                 else
+                    run_as_root pi7c9_gpio_simp -g pi7c9_gpio_1 > pi7c9_gpio_simp_port0_clear.txt 2>&1
+                    Port0=$(awk NR==2'{print $9}' < pi7c9_gpio_simp_port0_clear.txt)
+                    if [ "${Port0}" = "0" ]
+                    then
+                        TestCaseStep4="0"
+                    else
+                        TestCaseStep4="${ERR_VALUE}"
+                    fi
                     TestCaseStep4=0
                     MachineState="Step5"
                 fi
-                echo "PORT 0 should be 0: $(awk NR==2'{print $9}')" | tee -a "${TestCaseLogName}" 2>&1
+                debug_print "PORT0 should be 0: ${Port0}" "${LogFile}"
                 ;;
             Step5)
-                echo "Run step @5" | tee -a ${TestCaseLogName} 2>&1
-                echo "Go to beginning state of F223"            | tee -a "${TestCaseLogName}" 2>&1
-                echo "Beginning state: ${BinaryStateBegin}"       | tee -a "${TestCaseLogName}" 2>&1
-                echo "Disable all port first"                   | tee -a "${TestCaseLogName}" 2>&1
-                echo ${MenPcPassword} | sudo -S --prompt=$'\r' pi7c9_gpio_simp -s=0 -p=0xFF pi7c9_gpio_1
-                echo "Set previous value"                       | tee -a "${TestCaseLogName}" 2>&1
-                echo ${MenPcPassword} | sudo -S --prompt=$'\r' pi7c9_gpio_simp -s=1 -p=0x$((2#${BinaryStateBegin})) pi7c9_gpio_1
-                echo ${MenPcPassword} | sudo -S --prompt=$'\r' pi7c9_gpio_simp -g pi7c9_gpio_1 > pi7c9_gpio_simp_output_end.txt 2>&1
+                debug_print "${LogPrefix} Run step @5" "${LogFile}"
+                debug_print "${LogPrefix} Go to beginning state of F223" "${LogFile}"
+                debug_print "${LogPrefix} Beginning state: ${BinaryStateBegin}" "${LogFile}"
+                debug_print "${LogPrefix} Disable all port first" "${LogFile}"
+                run_as_root pi7c9_gpio_simp -s=0 -p=0xFF pi7c9_gpio_1
+                debug_print "${LogPrefix} Set previous value" "${LogFile}"
+                run_as_root pi7c9_gpio_simp -s=1 -p=0x$((2#${BinaryStateBegin})) pi7c9_gpio_1
+                run_as_root pi7c9_gpio_simp -g pi7c9_gpio_1 > pi7c9_gpio_simp_end.txt 2>&1
                 # Check if value at the end of the Test Case is equal to the value from
                 # the beginning
-                BinaryStateEnd="$(cat ./pi7c9_gpio_simp_output_end.txt\
-                                | awk NR==2'{print $2 $3 $4 $5 $6 $7 $8 $9}')"
-                echo "End state: ${BinaryStateBegin}" | tee -a "${TestCaseLogName}" 2>&1
+                BinaryStateEnd="$(awk NR==2'{print $2 $3 $4 $5 $6 $7 $8 $9}' < pi7c9_gpio_simp_end.txt)"
+                debug_print "${LogPrefix} End state: ${BinaryStateBegin}" "${LogFile}"
 
-                if [ $((${BinaryStateBegin})) -ne $((${BinaryStateEnd})) ]; then
-                    echo "ERR ${ERR_VALUE} :could not set up previous state" | tee -a "${TestCaseLogName}" 2>&1
+                if [ $((BinaryStateBegin)) -ne $((BinaryStateEnd)) ]; then
+                    debug_print "${LogPrefix} ERR ${ERR_VALUE} :could not set up previous state" "${LogFile}"
                 else
                     TestCaseStep5=0
                     MachineState="Break"
@@ -134,11 +145,11 @@ function f223_test {
                 ;;
             Break)
                 # Clean after Test Case
-                echo "Break State"  | tee --a "${TestCaseLogName}"
+                debug_print "${LogPrefix} Break State" "${LogFile}"
                 MachineRun=false
                 ;;
             *)
-                echo "State is not set, start with Step1"
+                debug_print "${LogPrefix} State is not set, start with Step1" "${LogFile}"
                 MachineState="Step1"
                 ;;
         esac

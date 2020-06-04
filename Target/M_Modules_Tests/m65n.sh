@@ -100,8 +100,7 @@ function m65n_test {
     debug_print "${LogPrefix} Step2: run icanl2_veri m65_${ModuleNo}a m65_${ModuleNo}b -n=2" "${LogFile}"
     if ! run_as_root icanl2_veri m65_"${ModuleNo}"a m65_"${ModuleNo}"b -n=2 > icanl2_veri.log
     then
-        debug_print "${LogPrefix} Could not run icanl2_veri "\
-          | tee -a "${LogFile}" 2>&1
+        debug_print "${LogPrefix} Could not run icanl2_veri " "${LogFile}"
     fi
 
     debug_print "${LogPrefix} Step3: check for errors" "${LogFile}"
