@@ -84,7 +84,7 @@ function f223_test {
                 ;;
             Step3)
                 debug_print "${LogPrefix} Run step @3" "${LogFile}"
-                if ! run_as_root pi7c9_gpio_simp -s=1 -p=0x01 pi7c9_gpio_1
+                if ! run_as_root pi7c9_gpio_simp -s=1 -p=0x01 pi7c9_gpio_1 > /dev/null
                 then
                     debug_print "ERR pi7c9_gpio_simp -s=1 -p=0x01 pi7c9_gpio_1" "${LogFile}"
                     TestCaseStep3=${ERR_SIMP_ERROR}
@@ -104,7 +104,7 @@ function f223_test {
                 ;;
             Step4)
                 debug_print "${LogPrefix} Run step @4" "${LogFile}"
-                if ! run_as_root pi7c9_gpio_simp -s=0 -p=0x01 pi7c9_gpio_1
+                if ! run_as_root pi7c9_gpio_simp -s=0 -p=0x01 pi7c9_gpio_1 > /dev/null
                 then
                     debug_print "${LogPrefix} ERR pi7c9_gpio_simp -s=0 -p=0x01 pi7c9_gpio_1" "${LogFile}"
                     MachineState="Break"
@@ -127,9 +127,9 @@ function f223_test {
                 debug_print "${LogPrefix} Go to beginning state of F223" "${LogFile}"
                 debug_print "${LogPrefix} Beginning state: ${BinaryStateBegin}" "${LogFile}"
                 debug_print "${LogPrefix} Disable all port first" "${LogFile}"
-                run_as_root pi7c9_gpio_simp -s=0 -p=0xFF pi7c9_gpio_1
+                run_as_root pi7c9_gpio_simp -s=0 -p=0xFF pi7c9_gpio_1 > /dev/null
                 debug_print "${LogPrefix} Set previous value" "${LogFile}"
-                run_as_root pi7c9_gpio_simp -s=1 -p=0x$((2#${BinaryStateBegin})) pi7c9_gpio_1
+                run_as_root pi7c9_gpio_simp -s=1 -p=0x$((2#${BinaryStateBegin})) pi7c9_gpio_1 > /dev/null
                 run_as_root pi7c9_gpio_simp -g pi7c9_gpio_1 > pi7c9_gpio_simp_end.txt 2>&1
                 # Check if value at the end of the Test Case is equal to the value from
                 # the beginning
