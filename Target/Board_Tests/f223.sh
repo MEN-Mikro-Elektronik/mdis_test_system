@@ -22,10 +22,12 @@ function f223_description {
     echo "    Use pi7c9_gpio_simp to set GPIO port HIGH/LOW"
     echo "    1. Load men_ll_pi7c9_gpio driver"
     echo "    2. Save command pi7c9_gpio_simp -g pi7c0_gpio_1 output"
-    echo "    3. Set f223 port state to 1: pi7c9_gpio_simp -s=1 -p=0x01 pi7c0_gpio_1"
-    echo "       Check if port state was set."
-    echo "    4. Set f223 port state to 0: pi7c9_gpio_simp -s=1 -p=0x01 pi7c0_gpio_1"
-    echo "       Check if port state was set."
+    echo "    3. Set f223 port state to 0f: pi7c9_gpio_simp pi7c0_gpio_1 -s=1 -p=0f"
+    echo "       Switching off PCI Express Mini Cards. Check if port state was set."
+    echo "    4. Clear f223 port state to 0c: pi7c9_gpio_simp pi7c0_gpio_1 -s=0 -p=0c"
+    echo "       Switching on PCI Express Mini Cards. Check if port state was set."
+    echo "       'Future Technology Devices International, Ltd F232' device shall appear in"
+    echo "       devices listed with the use of lsusb tool."
     echo "    5. Set f223 port values into state before the test and compare the read"
     echo "       values"
     echo "PURPOSE:"
@@ -56,7 +58,8 @@ function f223_test {
     local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
-    local Port0=""
+    local PortValue=""
+    local FutureTechDevAvailable=""
 
     MachineState="Step1"
     MachineRun=true
@@ -84,15 +87,17 @@ function f223_test {
                 ;;
             Step3)
                 debug_print "${LogPrefix} Run step @3" "${LogFile}"
-                if ! run_as_root pi7c9_gpio_simp -s=1 -p=0x01 pi7c9_gpio_1 > /dev/null
+                if ! run_as_root pi7c9_gpio_simp pi7c0_gpio_1 -s=1 -p=0f > /dev/null
                 then
                     debug_print "ERR pi7c9_gpio_simp -s=1 -p=0x01 pi7c9_gpio_1" "${LogFile}"
                     TestCaseStep3=${ERR_SIMP_ERROR}
                     MachineState="Break"
                 else
-                    run_as_root pi7c9_gpio_simp -g pi7c9_gpio_1 > pi7c9_gpio_simp_port0_set.txt 2>&1
-                    Port0=$(awk NR==2'{print $9}' < pi7c9_gpio_simp_port0_set.txt)
-                    if [ "${Port0}" = "1" ]
+                    run_as_root pi7c9_gpio_simp -g pi7c9_gpio_1 > pi7c9_gpio_simp_switch_off.txt 2>&1
+                    FutureTechDevAvailable=$(lsusb | grep -c "Future Technology Devices International, Ltd FT232 USB")
+                    debug_print "${LogPrefix} FutureTechDevAvailable: ${FutureTechDevAvailable}" "${LogFile}"
+                    PortValue=$(awk NR==2'{print $2$3$4$5$6$7$8$9}' < pi7c9_gpio_simp_switch_off.txt)
+                    if [ "${PortValue}" = "00001111" ] && [ "${FutureTechDevAvailable}" = "0" ]
                     then
                         TestCaseStep3="0"
                     else
@@ -100,18 +105,20 @@ function f223_test {
                     fi
                     MachineState="Step4"
                 fi
-                debug_print "${LogPrefix} PORT0 should be 1: ${Port0}" "${LogFile}"
+                debug_print "${LogPrefix} PortValue should be 00001111: ${PortValue}" "${LogFile}"
                 ;;
             Step4)
                 debug_print "${LogPrefix} Run step @4" "${LogFile}"
-                if ! run_as_root pi7c9_gpio_simp -s=0 -p=0x01 pi7c9_gpio_1 > /dev/null
+                if ! run_as_root pi7c9_gpio_simp -s=0 -p=0c pi7c9_gpio_1 > /dev/null
                 then
                     debug_print "${LogPrefix} ERR pi7c9_gpio_simp -s=0 -p=0x01 pi7c9_gpio_1" "${LogFile}"
                     MachineState="Break"
                 else
-                    run_as_root pi7c9_gpio_simp -g pi7c9_gpio_1 > pi7c9_gpio_simp_port0_clear.txt 2>&1
-                    Port0=$(awk NR==2'{print $9}' < pi7c9_gpio_simp_port0_clear.txt)
-                    if [ "${Port0}" = "0" ]
+                    run_as_root pi7c9_gpio_simp -g pi7c9_gpio_1 > pi7c9_gpio_simp_switch_on.txt 2>&1
+                    FutureTechDevAvailable=$(lsusb | grep -c "Future Technology Devices International, Ltd FT232 USB")
+                    debug_print "${LogPrefix} FutureTechDevAvailable: ${FutureTechDevAvailable}" "${LogFile}"
+                    PortValue=$(awk NR==2'{print $2$3$4$5$6$7$8$9}' < pi7c9_gpio_simp_switch_on.txt)
+                    if [ "${PortValue}" = "00000011" ] && [ "${FutureTechDevAvailable}" = "1" ]
                     then
                         TestCaseStep4="0"
                     else
@@ -120,7 +127,7 @@ function f223_test {
                     TestCaseStep4=0
                     MachineState="Step5"
                 fi
-                debug_print "PORT0 should be 0: ${Port0}" "${LogFile}"
+                debug_print "PortValue should be 0: ${PortValue}" "${LogFile}"
                 ;;
             Step5)
                 debug_print "${LogPrefix} Run step @5" "${LogFile}"
@@ -129,7 +136,7 @@ function f223_test {
                 debug_print "${LogPrefix} Disable all port first" "${LogFile}"
                 run_as_root pi7c9_gpio_simp -s=0 -p=0xFF pi7c9_gpio_1 > /dev/null
                 debug_print "${LogPrefix} Set previous value" "${LogFile}"
-                run_as_root pi7c9_gpio_simp -s=1 -p=0x$((2#${BinaryStateBegin})) pi7c9_gpio_1 > /dev/null
+                run_as_root pi7c9_gpio_simp -s=1 -p=$((2#${BinaryStateBegin})) pi7c9_gpio_1 > /dev/null
                 run_as_root pi7c9_gpio_simp -g pi7c9_gpio_1 > pi7c9_gpio_simp_end.txt 2>&1
                 # Check if value at the end of the Test Case is equal to the value from
                 # the beginning
