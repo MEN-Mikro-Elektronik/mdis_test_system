@@ -42,6 +42,9 @@ function mdis_report_usage {
     echo "    --test-setup=SETUP"
     echo "        Print results for specified test setup"
     echo ""
+    echo "    --tester-name=NAME"
+    echo "        Person responsible for testing"
+    echo ""
     echo "    -h, --help"
     echo "        Print this help"
 }
@@ -68,6 +71,10 @@ while test $# -gt 0 ; do
             ;;
         --test-setup*)
             ResultTestSetup="$(echo "$1" | sed -e 's/^[^=]*=//g')"
+            shift
+            ;;
+        --tester-name*)
+            TesterName="$(echo "$1" | sed -e 's/^[^=]*=//g')"
             shift
             ;;
         *)
@@ -139,7 +146,7 @@ function print_results {
     rm results.txt
     touch results.txt
     echo "Date: ${TestDate}"
-    echo "Tester Name: Konrad Tomasik"
+    echo "Tester Name: ${TesterName}"
     echo "${CommitID}"
 
     echo "Get brief test case description (cmd):"
