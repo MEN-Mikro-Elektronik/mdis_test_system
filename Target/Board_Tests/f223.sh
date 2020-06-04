@@ -55,9 +55,12 @@ function f223_description {
 # $2    LogPrefix
 # $3    M-Module number
 function f223_test {
-    local LogFile=${1}
-    local LogPrefix=${2}
-    local ModuleNo=${3}
+    local TestCaseId="${1}"
+    local TestSummaryDirectory="${2}"
+    local OsNameKernel="${3}"
+    local LogFile=${4}
+    local LogPrefix=${5}
+    local BoardInSystem=${6}
     local PortValue=""
     local FutureTechDevAvailable=""
 
@@ -87,6 +90,7 @@ function f223_test {
                 ;;
             Step3)
                 debug_print "${LogPrefix} Run step @3" "${LogFile}"
+                debug_print "${LogPrefix} Switch off PCI Express Mini Cards" "${LogFile}"
                 if ! run_as_root pi7c9_gpio_simp pi7c9_gpio_1 -s=1 -p=0f > /dev/null
                 then
                     debug_print "ERR pi7c9_gpio_simp -s=1 -p=0x01 pi7c9_gpio_1" "${LogFile}"
@@ -94,6 +98,7 @@ function f223_test {
                     MachineState="Break"
                 else
                     run_as_root pi7c9_gpio_simp -g pi7c9_gpio_1 > pi7c9_gpio_simp_switch_off.txt 2>&1
+                    sleep 3
                     FutureTechDevAvailable=$(lsusb | grep -c "Future Technology Devices International, Ltd FT232 USB")
                     debug_print "${LogPrefix} FutureTechDevAvailable: ${FutureTechDevAvailable}" "${LogFile}"
                     PortValue=$(awk NR==2'{print $2$3$4$5$6$7$8$9}' < pi7c9_gpio_simp_switch_off.txt)
@@ -109,12 +114,14 @@ function f223_test {
                 ;;
             Step4)
                 debug_print "${LogPrefix} Run step @4" "${LogFile}"
+                debug_print "${LogPrefix} Switch on PCI Express Mini Cards" "${LogFile}"
                 if ! run_as_root pi7c9_gpio_simp -s=0 -p=0c pi7c9_gpio_1 > /dev/null
                 then
                     debug_print "${LogPrefix} ERR pi7c9_gpio_simp -s=0 -p=0x01 pi7c9_gpio_1" "${LogFile}"
                     MachineState="Break"
                 else
                     run_as_root pi7c9_gpio_simp -g pi7c9_gpio_1 > pi7c9_gpio_simp_switch_on.txt 2>&1
+                    sleep 3
                     FutureTechDevAvailable=$(lsusb | grep -c "Future Technology Devices International, Ltd FT232 USB")
                     debug_print "${LogPrefix} FutureTechDevAvailable: ${FutureTechDevAvailable}" "${LogFile}"
                     PortValue=$(awk NR==2'{print $2$3$4$5$6$7$8$9}' < pi7c9_gpio_simp_switch_on.txt)
@@ -127,7 +134,7 @@ function f223_test {
                     TestCaseStep4=0
                     MachineState="Step5"
                 fi
-                debug_print "PortValue should be 0: ${PortValue}" "${LogFile}"
+                debug_print "PortValue should be 00000011: ${PortValue}" "${LogFile}"
                 ;;
             Step5)
                 debug_print "${LogPrefix} Run step @5" "${LogFile}"
