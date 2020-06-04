@@ -87,7 +87,7 @@ function f223_test {
                 ;;
             Step3)
                 debug_print "${LogPrefix} Run step @3" "${LogFile}"
-                if ! run_as_root pi7c9_gpio_simp pi7c0_gpio_1 -s=1 -p=0f > /dev/null
+                if ! run_as_root pi7c9_gpio_simp pi7c9_gpio_1 -s=1 -p=0f > /dev/null
                 then
                     debug_print "ERR pi7c9_gpio_simp -s=1 -p=0x01 pi7c9_gpio_1" "${LogFile}"
                     TestCaseStep3=${ERR_SIMP_ERROR}
