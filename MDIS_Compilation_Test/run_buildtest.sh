@@ -178,7 +178,13 @@ function install_13MD05_90_sources {
 # usage text
 #
 function usage {
-    echo "  Usage example:"
+    echo "run_buildtest.sh - test MDIS compilation"
+    echo ""
+    echo "USAGE"
+    echo "    run_buildtest.sh -h | --help"
+    echo "    run_buildtest.sh [--download] [--all | --short | --run-failed | --makefile <file>]"
+    echo ""
+    echo "DESCRIPTION"
     echo "  1. Please specify all required parameters in Conf.sh (Branch, commit id, paths ... )"
     echo "  2. Make sure that Linux kernel sources are available in LinuxKernelsDirectoryPath"
     echo "     specified in Conf.sh file."
@@ -196,16 +202,25 @@ function usage {
     echo "  "
     echo "    !!! Please specify all required parameters in Conf.sh file !!!"
     echo "    Please remember to add --download flag when MDIS sources are unavailable"
-    echo "  "
-    echo "      Option List:"
-    echo "          -h|--help         :Print help"
-    echo "          --download        :Download MDIS sources"
-    echo "          --short           :Compile only short list of modules"
-    echo "          --all             :Run all available .mak on all kernels"
-    echo "          --run-failed      :Run only failed Makefiles"
-    echo ""         --makefile file   :Use "file" as Makefile
     echo ""
-         
+    echo "OPTIONS"
+    echo "    -h, --help"
+    echo "        Print help"
+    echo ""
+    echo "    --download"
+    echo "        Download MDIS sources"
+    echo ""
+    echo "    --all"
+    echo "        Run all available .mak on all kernels"
+    echo ""
+    echo "    --short"
+    echo "        Compile only short list of modules"
+    echo ""
+    echo "    --run-failed"
+    echo "        Run only failed Makefiles"
+    echo ""
+    echo "    --makefile <file>"
+    echo "        Use <file> as Makefile for compilation test"
 }
 
 ###############################################################################
