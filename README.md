@@ -168,20 +168,8 @@ Restart SSH service
     - bison
     - flex
     - libssl-dev
-
-8. Install ansible:
-- Ubuntu
-```
-# apt-get update
-# apt-get install software-properties-common
-# apt-add-repository --yes --update ppa:ansible/ansible
-# apt-get install ansible
-```
-
-9. Run ansible playbook on Host PC that will run tests
-Check if addresses of devices are correct in inventory file
-```ansible-playbook -i inventory playbook.yml```
-To add new packages to install edit ```roles/defaults/main.yml```
+    - pppd
+    - net-tools
 
 ## Test script configuration
 Most important variables that have to be set in configuration file ```Common/Conf.sh```
