@@ -79,7 +79,7 @@ while test $# -gt 0 ; do
             ;;
         *)
             echo "No valid parameters"
-            break
+            exit 0
             ;;
         esac
 
@@ -141,8 +141,8 @@ function print_results {
     local CommitID=""
     local SourceInfo=""
     SourceInfo=$(find "${ResultPath}" -name "Source_info.txt" | awk 'NR==1')
-    TestDate=$(cat ${SourceInfo} | awk 'NR==1')
-    CommitID=$(cat ${SourceInfo} | awk 'NR==2')
+    TestDate=$(awk 'NR==1' < "${SourceInfo}")
+    CommitID=$(awk 'NR==2' < "${SourceInfo}")
     rm results.txt
     touch results.txt
     echo "Date: ${TestDate}"
@@ -277,7 +277,7 @@ function print_results {
 
     while IFS= read -r -d '' ResultFile
     do
-        rm ${ResultFile}
+        rm "${ResultFile}"
     done <  <(find . -name "*_results.txt" -print0)
 }
 
