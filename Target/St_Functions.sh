@@ -18,7 +18,7 @@ function run_test_case_id {
     local TestCaseId=${1}
     local TestSummaryDirectory=${2}
     local OsNameKernel=${3}
-    local Board=""
+    local Board="Board"
     local Module=""
     echo "run_test_case_id: ${TestCaseId}"
 
@@ -33,7 +33,7 @@ function run_test_case_id {
     if [ "${TestCaseId}" -lt "200" ]
     then
         Board=$(echo "${TEST_CASES_MAP[${TestCaseId}]}")
-        run_test_case_board "${TestCaseId}" "${TestSummaryDirectory}" "${OsNameKernel}"
+        run_test_case_board "${TestCaseId}" "1" "${TestSummaryDirectory}" "${OsNameKernel}" "${Board}"
     elif [ "${TestCaseId}" -lt "300" ]
     then
         Module=$(echo "${TEST_CASES_MAP[${TestCaseId}]}" | sed 's/carrier_g204_//')

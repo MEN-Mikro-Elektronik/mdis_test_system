@@ -24,9 +24,6 @@ function mdis_test_usage {
     echo "        Run all tests specified in Test Setup which is saved in Conf.sh on"
     echo "        curent Target OS"
     echo ""
-    echo "    --no-build"
-    echo "        Do not scan and build mdis modules on target"
-    echo ""
     echo "    --verbose=LEVEL"
     echo "        Print additional debug info. Possible values for LEVEL are:"
     echo "        0 - default (only general information is written into terminal)"
@@ -219,10 +216,6 @@ while test $# -gt 0 ; do
         --run-instantly)
             shift
             RUN_INSTANTLY="1"
-            ;;
-        --no-build)
-            shift
-            BUILD_MDIS="0"
             ;;
         --verbose*)
             VERBOSE_LEVEL="$(echo "$1" | sed -e 's/^[^=]*=//g')"
