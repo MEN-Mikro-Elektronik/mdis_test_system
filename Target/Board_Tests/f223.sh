@@ -26,7 +26,7 @@ function f223_description {
     echo "       Switching off PCI Express Mini Cards. Check if port state was set."
     echo "    4. Clear f223 port state to 0c: pi7c9_gpio_simp pi7c0_gpio_1 -s=0 -p=0c"
     echo "       Switching on PCI Express Mini Cards. Check if port state was set."
-    echo "       'Future Technology Devices International, Ltd F232' device shall appear in"
+    echo "       'Future Technology Devices International' device shall appear in"
     echo "       devices listed with the use of lsusb tool."
     echo "    5. Set f223 port values into state before the test and compare the read"
     echo "       values"
@@ -99,7 +99,7 @@ function f223_test {
                 else
                     run_as_root pi7c9_gpio_simp -g pi7c9_gpio_1 > pi7c9_gpio_simp_switch_off.txt 2>&1
                     sleep 3
-                    FutureTechDevAvailable=$(lsusb | grep -c "Future Technology Devices International, Ltd FT232 USB")
+                    FutureTechDevAvailable=$(lsusb | grep -c "Future Technology Devices International")
                     debug_print "${LogPrefix} FutureTechDevAvailable: ${FutureTechDevAvailable}" "${LogFile}"
                     PortValue=$(awk NR==2'{print $2$3$4$5$6$7$8$9}' < pi7c9_gpio_simp_switch_off.txt)
                     if [ "${PortValue}" = "00001111" ] && [ "${FutureTechDevAvailable}" = "0" ]
@@ -122,7 +122,7 @@ function f223_test {
                 else
                     run_as_root pi7c9_gpio_simp -g pi7c9_gpio_1 > pi7c9_gpio_simp_switch_on.txt 2>&1
                     sleep 3
-                    FutureTechDevAvailable=$(lsusb | grep -c "Future Technology Devices International, Ltd FT232 USB")
+                    FutureTechDevAvailable=$(lsusb | grep -c "Future Technology Devices International")
                     debug_print "${LogPrefix} FutureTechDevAvailable: ${FutureTechDevAvailable}" "${LogFile}"
                     PortValue=$(awk NR==2'{print $2$3$4$5$6$7$8$9}' < pi7c9_gpio_simp_switch_on.txt)
                     if [ "${PortValue}" = "00000011" ] && [ "${FutureTechDevAvailable}" = "1" ]
@@ -131,7 +131,6 @@ function f223_test {
                     else
                         TestCaseStep4="${ERR_VALUE}"
                     fi
-                    TestCaseStep4=0
                     MachineState="Step5"
                 fi
                 debug_print "PortValue should be 00000011: ${PortValue}" "${LogFile}"
