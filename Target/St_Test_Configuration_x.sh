@@ -176,7 +176,7 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             run_test_case_board "2" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ CB70
             ;;
         7)
-            # Manuall tests
+            # Manual tests
             ;;
         8)
             run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" "SC24-08" # SMB2_TEST @ BL50

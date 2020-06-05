@@ -18,6 +18,7 @@ function m35n_description {
     echo "    are available in the system"
     echo "    M35n adapter is plugged into m35n m-module"
     echo "    Some m35n adapter banana plugs are connected into relay (0V/12V)"
+    echo "    For this test relay is required"
     echo "DESCRIPTION:"
     echo "    Load module driver and run M-Module example programs"
     echo "    1.Check values read from m35n"

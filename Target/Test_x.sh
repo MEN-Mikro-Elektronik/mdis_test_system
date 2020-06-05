@@ -230,7 +230,7 @@ case "${TestTypeDev}" in
         TestCaseLogName="${ScriptName%.*}_${DeviceName}_log.txt"
         ;;
     *)
-        TestCaseName="${ScriptName%.*}_${TestCaseId}_${DeviceName}_${DeviceNo}__Test_Case"
+        TestCaseName="${ScriptName%.*}_${TestCaseId}_${DeviceName}_${DeviceNo}_Test_Case"
         TestCaseLogName="${ScriptName%.*}_log.txt"
         ;;
 esac
