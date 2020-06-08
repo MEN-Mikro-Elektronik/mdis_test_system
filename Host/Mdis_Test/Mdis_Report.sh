@@ -29,15 +29,19 @@ declare -a TEST_RESULTS_GROUP=("TEST_RESULT_OS_1" "TEST_RESULT_OS_2" "TEST_RESUL
 
 ### @brief script usage --help
 function mdis_report_usage {
-    echo "Mdis_Report.sh - tool generate MDIS results"
+    echo "Mdis_Report.sh - generate MDIS results in user friendly format"
     echo ""
     echo "USAGE"
     echo "    Mdis_Report.sh -h | --help"
-    echo "    Mdis_Report.sh <RESULT_PATH> [--test-setup=SETUP]"
+    echo "    Mdis_Report.sh <RESULT_PATH> [--test-setup=SETUP] [--tester-name=NAME]"
+    echo ""
+    echo "DESCRIPTION"
+    echo "    Generate MDIS results for user specified test setup"
     echo ""
     echo "OPTIONS"
     echo "    RESULT_PATH"
-    echo "        Path to Mdis_Test result directory"
+    echo "        Path to Mdis_Test result directory."
+    echo "        Provide dir to exact test setup result location: ../Test_Setup_1"
     echo ""
     echo "    --test-setup=SETUP"
     echo "        Print results for specified test setup"
@@ -79,12 +83,11 @@ while test $# -gt 0 ; do
             ;;
         *)
             echo "No valid parameters"
+            echo "run Mdis_Report.sh --help"
             exit 0
             ;;
         esac
-
 done
-
 
 function set_result_os {
     local TestSetup=${1}
@@ -134,12 +137,17 @@ function print_requirements {
 function print_results {
     local ResultPath="${1}"
     local ResultTestSetup="${2}"
-    local ResultOperatingSystem="${3}"
     local OSCnt=0
     local OSNo=0
     local TestDate=""
     local CommitID=""
     local SourceInfo=""
+    if [ -z "${ResultPath}" ] || [ -z ${ResultTestSetup} ]
+    then
+        echo "Please specify Result Path for and Result Test Setup"
+        exit 1
+    fi
+
     SourceInfo=$(find "${ResultPath}" -name "Source_info.txt" | awk 'NR==1')
     TestDate=$(awk 'NR==1' < "${SourceInfo}")
     CommitID=$(awk 'NR==2' < "${SourceInfo}")
@@ -159,71 +167,68 @@ function print_results {
     echo ""
 
     create_test_cases_map
-    if [ -z "${ResultTestSetup}" ]; then
-        echo "Id|Requirement|Description(firstline)|OS" >> results.txt
-        echo "||Purpose||1|2|3|4|5| Test Setup" >> results.txt
-    else
-        echo "Id|Requirement|Description(firstline)|OS|Test Setup" >> results.txt
-        echo "||Purpose||${ResultTestSetup}" >> results.txt
-        ResultTestSetup=$((ResultTestSetup-1))
-    fi
+
+    echo "Id|Requirement|Description(firstline)|OS|Test Setup" >> results.txt
+    echo "||Purpose||${ResultTestSetup}" >> results.txt
+    ResultTestSetup=$((ResultTestSetup-1))
+
     echo "|||" >> results.txt
     #($(echo "${ids[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
     for K in "${!TEST_CASES_MAP[@]}"
     do
         # Obtain results directory
         find "${ResultPath}" -name "${K}.tmp" > "${K}_file_list.log"
-        #TestCaseCnt=$(grep -c "${K}.tmp" "${K}_file_list.log")
-        #echo "TestCaseCnt: ${TestCaseCnt}"
-        OSCnt=0
-        #OSNo=$(< "${K}_file_list.log" wc -l)
-        OSItr=0
 
         while IFS= read -r file
         do
-            OSItr=$((OSItr+1))
-            TEST_OS["${OSItr}"]=$( grep "Test_Os" "${file}" | awk '{print $3}' | awk '{$1=$1};1' )
+            local TEST_SETUP_FILE=$(grep "Test_Setup:" "${file}" | awk '{print $3}')
+            if [ "${TEST_SETUP_FILE}" -eq $((ResultTestSetup+1)) ]
+            then
+                echo "${file}" >> "${K}_${TEST_SETUP_FILE}_file_list.log"
+            fi
         done < "${K}_file_list.log"
 
-        OSNo=$(echo "${TEST_OS[@]}" | tr ' ' '\n' | sort -u | wc -l)
-        unset TEST_OS
+        TEST_SETUP_FILE=$((ResultTestSetup+1))
+        if test -f "${K}_${TEST_SETUP_FILE}_file_list.log"
+        then
+            mv "${K}_${TEST_SETUP_FILE}_file_list.log" "${K}_file_list.log"
+            #TestCaseCnt=$(grep -c "${K}.tmp" "${K}_file_list.log")
+            #echo "TestCaseCnt: ${TestCaseCnt}"
+            OSCnt=0
+            #OSNo=$(< "${K}_file_list.log" wc -l)
+            OSItr=0
 
-        while IFS= read -r file
-        do
-            OSCnt=$((OSCnt+1))
-            TEST_DESCRIPTION_SHORT=$(grep "DESCRIPTION:" -A 1 "${file}" | awk 'NR==2' | awk '{$1=$1};1')
-            TEST_PURPOSE0=$(grep "PURPOSE:" -A 2 "${file}" | awk 'NR==2' | awk '{$1=$1};1' )
-            TEST_PURPOSE1=$(grep "PURPOSE:" -A 2 "${file}" | awk 'NR==3' | awk '{$1=$1};1' )
-            TEST_PURPOSE1=$(if ! echo "${TEST_PURPOSE1}" | grep "REQUIREMENT_ID" > /dev/null; then echo "${TEST_PURPOSE1}"; fi)
-            TEST_PURPOSE1=$(if ! echo "${TEST_PURPOSE1}" | grep "RESULT" > /dev/null; then echo "${TEST_PURPOSE1}"; fi)
-            TEST_ID=$(grep "Test_ID" "${file}" | awk '{print $3}' | awk '{$1=$1};1')
-            TEST_OS_FULL=$(grep "Test_Os" "${file}" | awk '{print $3}' | awk '{$1=$1};1')
-            print_requirements "${file}" > /dev/null
-            TEST_REQ=($(echo "${TEST_REQ[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
-            ReqCnt=$(echo "${TEST_REQ[@]}" | tr ' ' '\n' | wc -l)
+            while IFS= read -r file
+            do
+                OSItr=$((OSItr+1))
+                TEST_OS["${OSItr}"]=$( grep "Test_Os" "${file}" | awk '{print $3}' | awk '{$1=$1};1' )
+            done < "${K}_file_list.log"
 
-            TEST_SETUP=$(grep "Test_Setup" "${file}" | awk '{print $3}' | awk '{$1=$1};1')
-            TEST_RESULTS=$(grep "Test_Result" "${file}" | awk '{print $2 $3}' | awk '{$1=$1};1')
-            TEST_INSTANCE=$(grep "Test_Instance" "${file}" | awk '{print $3}' | awk '{$1=$1};1')
-            if [ -z "${ResultTestSetup}" ]; then
-                TEST_RESULTS=$(if echo "${TEST_RESULTS}" | grep "SUCCESS" > /dev/null; then echo "S"; else echo "F"; fi)
-            else
+            OSNo=$(echo "${TEST_OS[@]}" | tr ' ' '\n' | sort -u | wc -l)
+            unset TEST_OS
+
+            while IFS= read -r file
+            do
+                OSCnt=$((OSCnt+1))
+                TEST_DESCRIPTION_SHORT=$(grep "DESCRIPTION:" -A 1 "${file}" | awk 'NR==2' | awk '{$1=$1};1')
+                TEST_PURPOSE0=$(grep "PURPOSE:" -A 2 "${file}" | awk 'NR==2' | awk '{$1=$1};1' )
+                TEST_PURPOSE1=$(grep "PURPOSE:" -A 2 "${file}" | awk 'NR==3' | awk '{$1=$1};1' )
+                TEST_PURPOSE1=$(if ! echo "${TEST_PURPOSE1}" | grep "REQUIREMENT_ID" > /dev/null; then echo "${TEST_PURPOSE1}"; fi)
+                TEST_PURPOSE1=$(if ! echo "${TEST_PURPOSE1}" | grep "RESULT" > /dev/null; then echo "${TEST_PURPOSE1}"; fi)
+                TEST_ID=$(grep "Test_ID" "${file}" | awk '{print $3}' | awk '{$1=$1};1')
+                TEST_OS_FULL=$(grep "Test_Os" "${file}" | awk '{print $3}' | awk '{$1=$1};1')
+                print_requirements "${file}" > /dev/null
+                TEST_REQ=($(echo "${TEST_REQ[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
+                ReqCnt=$(echo "${TEST_REQ[@]}" | tr ' ' '\n' | wc -l)
+
+                TEST_SETUP=$(grep "Test_Setup" "${file}" | awk '{print $3}' | awk '{$1=$1};1')
+                TEST_RESULTS=$(grep "Test_Result" "${file}" | awk '{print $2 $3}' | awk '{$1=$1};1')
+                TEST_INSTANCE=$(grep "Test_Instance" "${file}" | awk '{print $3}' | awk '{$1=$1};1')
                 TEST_RESULTS=$(if echo "${TEST_RESULTS}" | grep "SUCCESS" > /dev/null; then echo "SUCCESS"; else echo "FAIL"; fi)
-            fi
-            TEST_CMD0="./Mdis_Test.sh --run-test=${TEST_ID}"
-            TEST_DSC="./Mdis_Test.sh --print-test-brief=${TEST_ID}"
-            #TEST_FNC_DESCRIPTION="${TEST_CASES_MAP[${K}]}_test()"
-            set_result_os "${TEST_SETUP}" "${TEST_OS_FULL}" "${TEST_RESULTS}"
-            if [ -z "${ResultTestSetup}" ]; then
-                if [ "${OSCnt}" -eq "${OSNo}" ]; then
-                    echo -e "${TEST_ID}|${TEST_REQ0}|${TEST_DESCRIPTION_SHORT}|${TEST_RESULT_OS["1"]}|${TEST_RESULT_OS_1[0]}|${TEST_RESULT_OS_1[1]}|${TEST_RESULT_OS_1[2]}|${TEST_RESULT_OS_1[3]}|${TEST_RESULT_OS_1[4]}|${TEST_RESULT_OS_1[5]}" >> "${TEST_ID}"_"${TEST_INSTANCE}"_results.txt
-                    echo -e "|${TEST_REQ1}|${TEST_PURPOSE0}|${TEST_RESULT_OS["2"]}|${TEST_RESULT_OS_2[0]}|${TEST_RESULT_OS_2[1]}|${TEST_RESULT_OS_2[2]}|${TEST_RESULT_OS_2[3]}|${TEST_RESULT_OS_2[4]}|${TEST_RESULT_OS_2[5]}" >> "${TEST_ID}"_"${TEST_INSTANCE}"_results.txt
-                     echo -e "|${TEST_REQ2}|${TEST_PURPOSE1}|${TEST_RESULT_OS["3"]}|${TEST_RESULT_OS_3[0]}|${TEST_RESULT_OS_3[1]}|${TEST_RESULT_OS_3[2]}|${TEST_RESULT_OS_3[3]}|${TEST_RESULT_OS_3[4]}|${TEST_RESULT_OS_3[5]}" >> "${TEST_ID}"_"${TEST_INSTANCE}"_results.txt
-                    echo -e "|${TEST_REQ3}||${TEST_RESULT_OS["4"]}|${TEST_RESULT_OS_4[0]}|${TEST_RESULT_OS_4[1]}|${TEST_RESULT_OS_4[2]}|${TEST_RESULT_OS_4[3]}|${TEST_RESULT_OS_4[4]}|${TEST_RESULT_OS_4[5]}" >> "${TEST_ID}"_"${TEST_INSTANCE}"_results.txt
-                    echo -e "|${TEST_REQ4}||${TEST_RESULT_OS["5"]}|${TEST_RESULT_OS_5[0]}|${TEST_RESULT_OS_5[1]}|${TEST_RESULT_OS_5[2]}|${TEST_RESULT_OS_5[3]}|${TEST_RESULT_OS_5[4]}|${TEST_RESULT_OS_5[5]}" >> "${TEST_ID}"_"${TEST_INSTANCE}"_results.txt
-                OSCnt=0
-                fi
-            else
+                TEST_CMD0="./Mdis_Test.sh --run-test=${TEST_ID}"
+                TEST_DSC="./Mdis_Test.sh --print-test-brief=${TEST_ID}"
+                #TEST_FNC_DESCRIPTION="${TEST_CASES_MAP[${K}]}_test()"
+                set_result_os "${TEST_SETUP}" "${TEST_OS_FULL}" "${TEST_RESULTS}"
                 if [ "${OSCnt}" -eq "${OSNo}" ]; then
                     local LineCntLoop=0
                     local LineCnt=0
@@ -252,10 +257,10 @@ function print_results {
                     fi
                 OSCnt=0
                 fi
-            fi
-            # Empty requirements array
-            unset TEST_REQ
-        done < "${K}_file_list.log"
+                # Empty requirements array
+                unset TEST_REQ
+            done < "${K}_file_list.log"
+        fi
     rm "${K}_file_list.log"
     done | sort -n -k3
 
@@ -279,6 +284,7 @@ function print_results {
     do
         rm "${ResultFile}"
     done <  <(find . -name "*_results.txt" -print0)
+    rm results.txt
 }
 
 # MAIN starts here
