@@ -123,7 +123,7 @@ function print_requirements {
     while [ "${Req}" != "INVALID" ]
     do  
         ReqCnt=$((ReqCnt+1))
-        Req=$(cat "${TestCase}" | grep -A 10 "REQUIREMENT_ID:" | awk NR==${ReqCnt} | tr -d ' ')
+        Req=$(grep -A 10 "REQUIREMENT_ID:" < "${TestCase}" | awk NR==${ReqCnt} | tr -d ' ')
         if [ "${Req}" != "RESULTS" ] && [ "${Req}" != "" ]
         then
             TEST_REQ[$((ReqCnt-2))]="${Req}"
@@ -142,7 +142,7 @@ function print_results {
     local TestDate=""
     local CommitID=""
     local SourceInfo=""
-    if [ -z "${ResultPath}" ] || [ -z ${ResultTestSetup} ]
+    if [ -z "${ResultPath}" ] || [ -z "${ResultTestSetup}" ]
     then
         echo "Please specify Result Path for and Result Test Setup"
         exit 1
@@ -181,7 +181,8 @@ function print_results {
 
         while IFS= read -r file
         do
-            local TEST_SETUP_FILE=$(grep "Test_Setup:" "${file}" | awk '{print $3}')
+            local TEST_SETUP_FILE
+            TEST_SETUP_FILE=$(grep "Test_Setup:" "${file}" | awk '{print $3}')
             if [ "${TEST_SETUP_FILE}" -eq $((ResultTestSetup+1)) ]
             then
                 echo "${file}" >> "${K}_${TEST_SETUP_FILE}_file_list.log"
@@ -225,8 +226,6 @@ function print_results {
                 TEST_RESULTS=$(grep "Test_Result" "${file}" | awk '{print $2 $3}' | awk '{$1=$1};1')
                 TEST_INSTANCE=$(grep "Test_Instance" "${file}" | awk '{print $3}' | awk '{$1=$1};1')
                 TEST_RESULTS=$(if echo "${TEST_RESULTS}" | grep "SUCCESS" > /dev/null; then echo "SUCCESS"; else echo "FAIL"; fi)
-                TEST_CMD0="./Mdis_Test.sh --run-test=${TEST_ID}"
-                TEST_DSC="./Mdis_Test.sh --print-test-brief=${TEST_ID}"
                 #TEST_FNC_DESCRIPTION="${TEST_CASES_MAP[${K}]}_test()"
                 set_result_os "${TEST_SETUP}" "${TEST_OS_FULL}" "${TEST_RESULTS}"
                 if [ "${OSCnt}" -eq "${OSNo}" ]; then
