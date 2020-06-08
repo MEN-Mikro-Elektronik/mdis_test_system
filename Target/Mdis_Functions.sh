@@ -174,7 +174,7 @@ function warning_check {
     local FileName="${1}"
 
     if < "${FileName}" grep "warning:" >/dev/null
-    then 
+    then
         echo "Warning Check FAILED!"
         return "${ERR_WARNING}"
     fi
@@ -188,7 +188,13 @@ function warning_check {
 # parameters:
 # $1    File name
 function error_check {
-  local LogPrefix="$1 "
-  echo "${LogPrefix}TODO !! error_check"
+    local FileName="${1}"
+    if < "${FileName}" grep -i "error:" >/dev/null
+    then
+        echo "Error Check FAILED!"
+        return "${ERR_MAKE}"
+    fi
+
+    return "${ERR_OK}"
 }
 
