@@ -1,6 +1,0 @@
----
-# Example command that can be run
-- name: Run commands
-  shell: uptime
-  changed_when: False
-...
