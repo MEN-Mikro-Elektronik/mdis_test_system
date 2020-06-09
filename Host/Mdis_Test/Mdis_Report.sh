@@ -118,20 +118,22 @@ function set_result_os {
 
 function print_requirements {
     local TestCase=${1}
-    local Req=""
-    local ReqCnt=1
+    local ReqCnt=${2}
+    local ReqLineCnt=1
+    local Req="VALID"
     while [ "${Req}" != "INVALID" ]
     do  
-        ReqCnt=$((ReqCnt+1))
-        Req=$(grep -A 10 "REQUIREMENT_ID:" < "${TestCase}" | awk NR==${ReqCnt} | tr -d ' ')
+        ReqLineCnt=$((ReqLineCnt+1))
+        Req=$(grep -A 15 "REQUIREMENT_ID:" < "${TestCase}" | awk NR==${ReqLineCnt} )
         if [ "${Req}" != "RESULTS" ] && [ "${Req}" != "" ]
         then
-            TEST_REQ[$((ReqCnt-2))]="${Req}"
+            TEST_REQ[${ReqCnt}]="${Req}"
+            ReqCnt=$((ReqCnt+1))
         else
             Req="INVALID"
         fi
     done
-    echo "$((ReqCnt-1))"
+    echo "$((ReqLineCnt-1))"
 }
 
 function print_results {
@@ -188,7 +190,7 @@ function print_results {
                 echo "${file}" >> "${K}_${TEST_SETUP_FILE}_file_list.log"
             fi
         done < "${K}_file_list.log"
-
+        ReqCnt=0
         TEST_SETUP_FILE=$((ResultTestSetup+1))
         if test -f "${K}_${TEST_SETUP_FILE}_file_list.log"
         then
@@ -218,10 +220,9 @@ function print_results {
                 TEST_PURPOSE1=$(if ! echo "${TEST_PURPOSE1}" | grep "RESULT" > /dev/null; then echo "${TEST_PURPOSE1}"; fi)
                 TEST_ID=$(grep "Test_ID" "${file}" | awk '{print $3}' | awk '{$1=$1};1')
                 TEST_OS_FULL=$(grep "Test_Os" "${file}" | awk '{print $3}' | awk '{$1=$1};1')
-                print_requirements "${file}" > /dev/null
+                print_requirements "${file}" "${ReqCnt}" > /dev/null
                 TEST_REQ=($(echo "${TEST_REQ[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
                 ReqCnt=$(echo "${TEST_REQ[@]}" | tr ' ' '\n' | wc -l)
-
                 TEST_SETUP=$(grep "Test_Setup" "${file}" | awk '{print $3}' | awk '{$1=$1};1')
                 TEST_RESULTS=$(grep "Test_Result" "${file}" | awk '{print $2 $3}' | awk '{$1=$1};1')
                 TEST_INSTANCE=$(grep "Test_Instance" "${file}" | awk '{print $3}' | awk '{$1=$1};1')
@@ -251,14 +252,14 @@ function print_results {
                             local RealArrayName="TEST_RESULT_OS_${GroupArrayIdx}"
                             local RealArrayIdx="${ResultTestSetup}"
                             local RealArrayValue=${RealArrayName}[RealArrayIdx]
-                            echo -e "|${TEST_REQ["$((i+3))"]}||${TEST_RESULT_OS[$((i+3))]}|${!RealArrayValue}" >> "${TEST_ID}"_"${TEST_INSTANCE}"_results.txt
+                            echo -e "|${TEST_REQ["$((i+2))"]}||${TEST_RESULT_OS[$((i+3))]}|${!RealArrayValue}" >> "${TEST_ID}"_"${TEST_INSTANCE}"_results.txt
                         done
                     fi
                 OSCnt=0
                 fi
-                # Empty requirements array
-                unset TEST_REQ
             done < "${K}_file_list.log"
+            # Empty requirements array
+            unset TEST_REQ
         fi
     rm "${K}_file_list.log"
     done | sort -n -k3
