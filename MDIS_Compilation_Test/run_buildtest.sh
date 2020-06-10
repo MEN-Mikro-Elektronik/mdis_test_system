@@ -385,7 +385,7 @@ function automatic_driver_test {
                         Retval=$?
                         if [ ${Retval} -eq 0 ]
                         then 
-                                > "${STR_RESULT_DIR}/${Makefile}.log" grep warning: >/dev/null
+                                grep warning: "${STR_RESULT_DIR}/${Makefile}.log" >/dev/null
                                 Retval=$?
                                 if [ ${Retval} -eq 0 ]
                                 then 
