@@ -354,7 +354,7 @@ function automatic_driver_test {
 
         local CurrentMakefileNumber=1
 
-        while read -r Makefile
+        while read -r Makefile <&13;
         do
                 # loop through the Makefiles
                 echo "${Makefile} compiling  ${CurrentMakefileNumber} of ${MakefilesNumber}" 
@@ -417,7 +417,7 @@ function automatic_driver_test {
                         fi
                 done
 
-        done < MakefilesList.tmp
+        done 13< MakefilesList.tmp
         echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm MakefilesList.tmp
 
 }
@@ -525,7 +525,7 @@ cd "${CurrentDir}" || (echo "Could not enter directory \"${CurrentDir}\". Quitti
 
 # Compiling Makefiles ... 
 if [ "${BuildAllKernelGcc}" == "1" ] || [ "${CompileShortList}" == "1" ] || [ "${CompileShortList}" == "2" ]; then
-        while read -r kern_version
+        while read -r kern_version <&11;
         do
                 currdir="$(pwd)"
                 cd "${TEST_KERNEL_DIR}" || (echo "Could not enter directory \"${TEST_KERNEL_DIR}\". Quitting!" && exit 1)
@@ -550,7 +550,7 @@ if [ "${BuildAllKernelGcc}" == "1" ] || [ "${CompileShortList}" == "1" ] || [ "$
                 
                 print_result $? "${kern_version}"
 
-        done < kernel_list_release_02.txt
+        done 11< kernel_list_release_02.txt
 fi
 
 if [ -e "Makefile" ]; then
