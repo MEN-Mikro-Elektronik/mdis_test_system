@@ -189,7 +189,7 @@ function warning_check {
 # $1    File name
 function error_check {
     local FileName="${1}"
-    if < "${FileName}" grep -i "error:" >/dev/null
+    if grep -i "error:" "${FileName}" >/dev/null
     then
         echo "Error Check FAILED!"
         return "${ERR_MAKE}"
