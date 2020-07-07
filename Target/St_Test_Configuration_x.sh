@@ -172,21 +172,21 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             run_test_case_module "m199" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
         6)
-            run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" "CB70-00" # SMB2_TEST @ CB70
+            run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" "CB70-" # SMB2_TEST @ CB70
             run_test_case_board "2" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ CB70
             ;;
         7)
             # Manual tests
             ;;
         8)
-            run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" "SC24-08" # SMB2_TEST @ BL50
+            run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" "SC24-" # SMB2_TEST @ BL50
             run_test_case_board "2" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL50
             run_test_case_board "3" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL50
             run_test_case_board "4" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL50
             run_test_case_board "500" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # BL50 fpga ip core tests
             ;;
         9)
-            run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" "SC31-01" # SMB2_TEST @ BL51
+            run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" "SC31-" # SMB2_TEST @ BL51
             run_test_case_board "2" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL51
             run_test_case_board "3" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL51
             run_test_case_board "4" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL51
