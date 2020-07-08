@@ -151,16 +151,15 @@ function gpio_stress {
     local end=$((SECONDS+60))
 
     # LOG memleak
-    #run_as_root bash -c "echo scan > /sys/kernel/debug/kmemleak"
-    #run_as_root bash -c "cp /sys/kernel/debug/kmemleak kmemleak_log0"
+
+    debug_print "${LogPrefix} gpio_stress z17_io ${DeviceName} -g" "${LogFile}"
 
     while [ $SECONDS -lt $end ]; do
-        z17_io "${DeviceName}" -g > /dev/null
+        z17_io "${DeviceName}" -g >> z17_io.log
+        debug_print "${LogPrefix} SECONDS: ${SECONDS}/${end}" "${LogFile}"
     done
 
     # LOG memleak 
-    #run_as_root bash -c "echo scan > /sys/kernel/debug/kmemleak"
-    #run_as_root bash -c "cp /sys/kernel/debug/kmemleak kmemleak_log1"
 
     return "${ERR_OK}"
 }
