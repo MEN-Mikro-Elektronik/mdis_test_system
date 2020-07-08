@@ -71,7 +71,7 @@ function f215_stress_test {
     UartNo="2"
     CanTest="stress_test"
     GpioTest="stress_test" # "write"
-    MachineState="gpio_z034_test"
+    MachineState="can_test"
     MachineRun=true
 
     while ${MachineRun}; do
@@ -95,7 +95,7 @@ function f215_stress_test {
             run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
-                                             -dname "z034_gpio_stress"\
+                                             -dname "z034_gpio"\
                                              -venid "${VenID}"\
                                              -devid "${DevID}"\
                                              -subvenid "${SubVenID}"\
