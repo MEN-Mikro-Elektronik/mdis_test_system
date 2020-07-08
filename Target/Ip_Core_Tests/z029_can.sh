@@ -209,26 +209,28 @@ function can_test_ll_z15_stress {
     make_install "${LogPrefix}"
     cd "${CurrentPath}" || exit "${ERR_NOEXIST}"
 
-
+    debug_print "${LogPrefix} ip link set can0 type can bitrate 500000" "${LogFile}"
     if ! run_as_root ip link set can0 type can bitrate 500000
     then
         debug_print "${LogPrefix}  ERR_VALUE :ip link set can0 type can bitrate 500000" "${LogFile}"
         return "${ERR_VALUE}"
     fi
 
+    debug_print "${LogPrefix} ip link set up can0" "${LogFile}"
     if ! run_as_root ip link set up can0
     then
         debug_print "${LogPrefix}  ERR_VALUE :ip link set up can0" "${LogFile}"
         return "${ERR_VALUE}"
     fi
-    #Now can adapter shall be configured properly
 
+    #Now can adapter shall be configured properly
+    debug_print "${LogPrefix} modprobe men_ll_z15" "${LogFile}"
     if ! run_as_root modprobe men_ll_z15
     then
         debug_print "${LogPrefix}  ERR_VALUE :could not modprobe men_ll_z15" "${LogFile}"
         return "${ERR_VALUE}"
     fi
-
+    debug_print "${LogPrefix}run mscan_concurrent > mscan_concurrent.log &" "${LogFile}"
     # Currently can number is fixed within mscan_concurrent (can_7 can8)
     if ! run_as_root $(mscan_concurrent > mscan_concurrent.log &)
     then
@@ -239,25 +241,20 @@ function can_test_ll_z15_stress {
     # Save background process PID
     local MscanConcurrentPID
     MscanConcurrentPID=$(pgrep "mscan_concurrent" | awk 'NR==1 {print $2}')
+    debug_print "${LogPrefix}MscanConcurrentPID: ${MscanConcurrentPID}" "${LogFile}"
+    # Can stress test duration in seconds
+    local TestDuration=15
 
-    if ! run_as_root $(can_generate_frames &)
+    debug_print "${LogPrefix}can_generate_frames" "${LogFile}"
+    if ! run_as_root $(can_generate_frames ${LogFile} ${LogPrefix} ${TestDuration} &)
     then
         debug_print "${LogPrefix} Could not start generating can frames" "${LogFile}"
     fi
-    sleep 1
-    # Save background process PID
-    local GenCanFramesPID
-    GenCanFramesPID=$(pgrep "can_generate_frames" | awk 'NR==1 {print $2}')
-
-    # Can stress test duration in seconds
-    sleep 120
-
-    if ! run_as_root kill "${GenCanFramesPID}"
-    then
-        print "${LogPrefix} Could not kill can_generate_frames process ${GenCanFramesPID}" "${LogFile}"
-    fi
+    debug_print "${LogPrefix}Test is running.." "${LogFile}"
+    sleep ${TestDuration}
 
     # wait for all pending packets and updated mscan_concurrent log file
+    debug_print "${LogPrefix}Waiting for results" "${LogFile}"
     sleep 40
 
     if ! run_as_root kill "${MscanConcurrentPID}"
@@ -294,7 +291,15 @@ function can_test_ll_z15_stress {
 function can_generate_frames {
     local LogFile=${1}
     local LogPrefix=${2}
-    local MezzChamDevDescriptionFile=${3}
-    
-    while true ; do cangen can0 -g .2 -I 42A -e -L 5 -D i -n 20 ; sleep 0.04 ; done
+    local TimeParam=${3}
+
+    local Duration=$((SECONDS+TimeParam))
+
+    debug_print "${LogPrefix} gpio_stress z17_io ${DeviceName} -g" "${LogFile}"
+
+    while [ $SECONDS -lt $Duration ]; do
+        cangen can0 -g .2 -I 42A -e -L 5 -D i -n 20
+        sleep 0.04
+        debug_print "${LogPrefix} SECONDS: ${SECONDS}/${Duration}" "${LogFile}"
+    done
 }
