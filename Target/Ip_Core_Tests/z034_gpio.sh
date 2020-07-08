@@ -148,7 +148,7 @@ function gpio_stress {
     local DeviceName=${3}
 
     debug_print "${LogPrefix} Read register via z17_io ${DeviceName}" "${LogFile}"
-    local end=$((SECONDS+600))
+    local end=$((SECONDS+60))
 
     # LOG memleak
     #run_as_root bash -c "echo scan > /sys/kernel/debug/kmemleak"
