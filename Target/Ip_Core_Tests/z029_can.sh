@@ -245,11 +245,9 @@ function can_test_ll_z15_stress {
     # Can stress test duration in seconds
     local TestDuration=15
 
-    debug_print "${LogPrefix}can_generate_frames" "${LogFile}"
-    if ! run_as_root $(can_generate_frames ${LogFile} ${LogPrefix} ${TestDuration} &)
-    then
-        debug_print "${LogPrefix} Could not start generating can frames" "${LogFile}"
-    fi
+    debug_print "${LogPrefix} can_generate_frames" "${LogFile}"
+    can_generate_frames "${LogFile}" "${LogPrefix}" "${TestDuration}" &
+
     debug_print "${LogPrefix}Test is running.." "${LogFile}"
     sleep ${TestDuration}
 
@@ -302,4 +300,6 @@ function can_generate_frames {
         sleep 0.04
         debug_print "${LogPrefix} SECONDS: ${SECONDS}/${Duration}" "${LogFile}"
     done
+
+    return "${ERR_OK}"
 }
