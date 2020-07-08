@@ -95,7 +95,7 @@ function z127_gpio_test {
                     ;;
                     stress)
                         # Test GPIO read status
-                        gpio_stress "${LogFile}" "${LogPrefix}" "${Gpio}"
+                        gpio_stress_z127 "${LogFile}" "${LogPrefix}" "${Gpio}"
                         Result=$?
                         debug_print "${LogPrefix} gpio_stress ${Gpio} test result: ${Result}" "${LogFile}"
                         return "${Result}"
@@ -172,7 +172,7 @@ function gpio_led_z127 {
 # $1    Log file
 # $2    Log prefix
 # $3    DeviceName
-function gpio_stress {
+function gpio_stress_z127 {
     local LogFile=${1}
     local LogPrefix=${2}
     local DeviceName=${3}

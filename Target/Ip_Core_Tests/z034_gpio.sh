@@ -89,14 +89,14 @@ function z034_gpio_test {
                 case "${TestType}" in
                     led)
                         # Test GPIO write (leds)
-                        gpio_led "${LogFile}" "${LogPrefix}" "${Gpio}"
+                        gpio_led_z34 "${LogFile}" "${LogPrefix}" "${Gpio}"
                         Result=$?
                         debug_print "${LogPrefix} gpio_led ${Gpio} test result: ${Result}" "${LogFile}"
                         return "${Result}"
                     ;;
                     stress_test)
                         # Test GPIO read status
-                        gpio_stress "${LogFile}" "${LogPrefix}" "${Gpio}"
+                        gpio_stress_z34 "${LogFile}" "${LogPrefix}" "${Gpio}"
                         Result=$?
                         debug_print "${LogPrefix} gpio_stress ${Gpio} test result: ${Result}" "${LogFile}"
                         return "${Result}"
@@ -119,7 +119,7 @@ function z034_gpio_test {
 # $1    Log file
 # $2    Log prefix
 # $3    DeviceName
-function gpio_led {
+function gpio_led_z34 {
     local LogFile=${1}
     local LogPrefix=${2}
     local DeviceName=${3}
@@ -142,7 +142,7 @@ function gpio_led {
 # $1    Log file
 # $2    Log prefix
 # $3    DeviceName
-function gpio_stress {
+function gpio_stress_z34 {
     local LogFile=${1}
     local LogPrefix=${2}
     local DeviceName=${3}
