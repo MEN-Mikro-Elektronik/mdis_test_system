@@ -85,11 +85,25 @@ function z127_gpio_test {
             debug_print "${LogPrefix} Gpio ${Gpio} is type: ${GpioWizModel}" "${LogFile}"
             if [ "${GpioWizModel}" = "16Z127_GPIO" ]
             then
-                # Test GPIO write/read  (leds)
-                gpio_led_z127 "${LogFile}" "${LogPrefix}" "${Gpio}"
-                Result=$?
-                debug_print "${LogPrefix} gpio_led ${Gpio} test result: ${Result}" "${LogFile}"
-                return "${Result}"
+                case "${TestType}" in
+                    led)
+                        # Test GPIO write (leds)
+                        gpio_led_z127 "${LogFile}" "${LogPrefix}" "${Gpio}"
+                        Result=$?
+                        debug_print "${LogPrefix} gpio_led ${Gpio} test result: ${Result}" "${LogFile}"
+                        return "${Result}"
+                    ;;
+                    stress)
+                        # Test GPIO read status
+                        gpio_stress "${LogFile}" "${LogPrefix}" "${Gpio}"
+                        Result=$?
+                        debug_print "${LogPrefix} gpio_stress ${Gpio} test result: ${Result}" "${LogFile}"
+                        return "${Result}"
+                    ;;
+                    *)
+                        echo "${LogPrefix} No valid test name: ${TestType}" "${LogFile}"
+                    ;;
+                esac
             fi
         done
     fi
@@ -149,5 +163,34 @@ function gpio_led_z127 {
     else
         return "${ERR_VALUE}"
     fi
+}
 
+############################################################################
+# Function checks if GPIO is working correctly - write
+#
+# parameters:
+# $1    Log file
+# $2    Log prefix
+# $3    DeviceName
+function gpio_stress {
+    local LogFile=${1}
+    local LogPrefix=${2}
+    local DeviceName=${3}
+
+    debug_print "${LogPrefix} Read register via z17_io ${DeviceName}" "${LogFile}"
+    local end=$((SECONDS+600))
+
+    # LOG memleak
+    run_as_root bash -c "echo scan > /sys/kernel/debug/kmemleak"
+    run_as_root bash -c "cp /sys/kernel/debug/kmemleak kmemleak_log0"
+    
+    while [ $SECONDS -lt $end ]; do
+        z17_io ${DeviceName} -g > /dev/null
+    done
+
+    # LOG memleak 
+    run_as_root bash -c "echo scan > /sys/kernel/debug/kmemleak"
+    run_as_root bash -c "cp /sys/kernel/debug/kmemleak kmemleak_log1"
+
+    return "${ERR_OK}"
 }

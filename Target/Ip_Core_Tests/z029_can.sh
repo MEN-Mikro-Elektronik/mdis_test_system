@@ -89,6 +89,16 @@ function z029_can_test {
                 debug_print "${LogPrefix} can_test_ll_z15_loopback success " "${LogFile}"
             fi
             ;;
+        stress_test)
+            #It is assumed, that 1 CAN is available in board
+            can_test_ll_z15_stress "${LogFile}" "${LogPrefix}" "${MezzChamDevName}"
+            CmdResult=$?
+            if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+                debug_print "${LogPrefix} can_test_ll_z15_stress err: ${CmdResult}" "${LogFile}"
+            else
+                debug_print "${LogPrefix} can_test_ll_z15_stress success " "${LogFile}"
+            fi
+            ;;
         *)
             echo "${LogPrefix} No valid test name: ${TestType}" "${LogFile}"
             ;;
@@ -179,4 +189,112 @@ function can_test_ll_z15_loopback {
         fi
         return "${ERR_OK}"
     fi
+}
+
+############################################################################
+# Test CAN with men_ll_z15 IpCore 1 CAN interface - stress test
+# Prerequisites: CAN adapter available in system - it shall be detected as can0
+#
+# parameters:
+# $1      Log file
+# $2      Log prefix
+# $3      Mezzaine chameleon device description file
+function can_test_ll_z15_stress {
+    local LogFile=${1}
+    local LogPrefix=${2}
+    local MezzChamDevDescriptionFile=${3}
+
+    cd ../..
+    sed -i '/MSCAN\/TOOLS\/MSCAN_PINGPONG\/COM\/program.mak/ a /MSCAN\/TOOLS\/MSCAN_CONCURRENT\/COM\/program.mak \\' Makefile
+    make_install "${LogPrefix}"
+    cd "${CurrentPath}" || exit "${ERR_NOEXIST}"
+
+
+    if ! run_as_root ip link set can0 type can bitrate 500000
+    then
+        debug_print "${LogPrefix}  ERR_VALUE :ip link set can0 type can bitrate 500000" "${LogFile}"
+        return "${ERR_VALUE}"
+    fi
+
+    if ! run_as_root ip link set up can0
+    then
+        debug_print "${LogPrefix}  ERR_VALUE :ip link set up can0" "${LogFile}"
+        return "${ERR_VALUE}"
+    fi
+    #Now can adapter shall be configured properly
+
+    if ! run_as_root modprobe men_ll_z15
+    then
+        debug_print "${LogPrefix}  ERR_VALUE :could not modprobe men_ll_z15" "${LogFile}"
+        return "${ERR_VALUE}"
+    fi
+
+    # Currently can number is fixed within mscan_concurrent (can_7 can8)
+    if ! run_as_root $(mscan_concurrent > mscan_concurrent.log &)
+    then
+        debug_print "${LogPrefix}  ERR_VALUE :could not run mscan_concurrent" "${LogFile}"
+        return "${ERR_VALUE}"
+    fi
+
+    # Save background process PID
+    local MscanConcurrentPID
+    MscanConcurrentPID=$(pgrep "mscan_concurrent" | awk 'NR==1 {print $2}')
+
+    if ! run_as_root $(can_generate_frames &)
+    then
+        debug_print "${LogPrefix} Could not start generating can frames" "${LogFile}"
+    fi
+    sleep 1
+    # Save background process PID
+    local GenCanFramesPID
+    GenCanFramesPID=$(pgrep "can_generate_frames" | awk 'NR==1 {print $2}')
+
+    # Can stress test duration in seconds
+    sleep 120
+
+    if ! run_as_root kill "${GenCanFramesPID}"
+    then
+        print "${LogPrefix} Could not kill can_generate_frames process ${GenCanFramesPID}" "${LogFile}"
+    fi
+
+    # wait for all pending packets and updated mscan_concurrent log file
+    sleep 40
+
+    if ! run_as_root kill "${MscanConcurrentPID}"
+    then
+        print "${LogPrefix} Could not kill mscan_concurrent process ${MscanConcurrentPID}" "${LogFile}"
+    fi
+
+    # Compare packets number from can0 and MDIS can(s)
+    local Can0PacketsNo
+    local CanMdis0PacketsNo
+    local CanMdis1PacketsNo
+    Can0PacketsNo=$(ifconfig can0 | grep "TX packets" | awk '{print $3}')
+    CanMdis0PacketsNo=$(grep can1 mscan_concurrent.log | tail -1 | awk '{print $5}')
+    CanMdis1PacketsNo=$(grep can2 mscan_concurrent.log | tail -1 | awk '{print $7}')
+
+    debug_print "${LogPrefix} Can0PacketsNo: ${Can0PacketsNo}" "${LogFile}"
+    debug_print "${LogPrefix} CanMdis0PacketsNo: ${CanMdis0PacketsNo}" "${LogFile}"
+    debug_print "${LogPrefix} CanMdis1PacketsNo: ${CanMdis1PacketsNo}" "${LogFile}"
+
+    if [ "${Can0PacketsNo}" = "${CanMdis0PacketsNo}" ] && [ "${Can0PacketsNo}" = "${CanMdis1PacketsNo}" ]; then
+        return "${ERR_OK}"
+    else
+        return "${ERR_VALUE}"
+    fi
+}
+
+############################################################################
+# Generate can frames on external device - shall be connected as can0 to system
+#
+# parameters:
+# $1      Log file
+# $2      Log prefix
+# $3      Mezzaine chameleon device description file
+function can_generate_frames {
+    local LogFile=${1}
+    local LogPrefix=${2}
+    local MezzChamDevDescriptionFile=${3}
+    
+    while true ; do cangen can0 -g .2 -I 42A -e -L 5 -D i -n 20 ; sleep 0.04 ; done
 }

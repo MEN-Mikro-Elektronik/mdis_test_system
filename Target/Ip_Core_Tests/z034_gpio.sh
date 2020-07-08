@@ -22,9 +22,11 @@ function z034_gpio_description {
     echo "    2.Load m-module drivers: modprobe men_ll_z17"
     echo "    3.Find GPIO devices on board"
     echo "    4.Check if there is 16Z034_GPIO"
-    echo "    5.Run z17_simp on device 16Z034_GPIO"
+    echo "    5a. LED test - Run z17_simp on device 16Z034_GPIO"
     echo "      -LED(s) blinking is not verified, it is assumed that LED(s) are"
     echo "       working when simple program runs without problems"
+    echo "    5b. STRESS test - Run z17_io in loop for 10 minutes"
+    echo "      -system shall not hang, there are no errors in dmesg"
     echo "    6.Check the results - result log shall contain no errors or warnings"
     echo "      Device shall be opened and closed succesfully"
     echo "PURPOSE:"
@@ -84,11 +86,25 @@ function z034_gpio_test {
             debug_print "${LogPrefix} Gpio ${Gpio} is type: ${GpioWizModel}" "${LogFile}"
             if [ "${GpioWizModel}" = "16Z034_GPIO" ]
             then
-                # Test GPIO write (leds)
-                gpio_led "${LogFile}" "${LogPrefix}" "${Gpio}"
-                Result=$?
-                debug_print "${LogPrefix} gpio_led ${Gpio} test result: ${Result}" "${LogFile}"
-                return "${Result}"
+                case "${TestType}" in
+                    led)
+                        # Test GPIO write (leds)
+                        gpio_led "${LogFile}" "${LogPrefix}" "${Gpio}"
+                        Result=$?
+                        debug_print "${LogPrefix} gpio_led ${Gpio} test result: ${Result}" "${LogFile}"
+                        return "${Result}"
+                    ;;
+                    stress_test)
+                        # Test GPIO read status
+                        gpio_stress "${LogFile}" "${LogPrefix}" "${Gpio}"
+                        Result=$?
+                        debug_print "${LogPrefix} gpio_stress ${Gpio} test result: ${Result}" "${LogFile}"
+                        return "${Result}"
+                    ;;
+                    *)
+                        echo "${LogPrefix} No valid test name: ${TestType}" "${LogFile}"
+                    ;;
+                esac
             fi
         done
     fi
@@ -116,6 +132,36 @@ function gpio_led {
         debug_print "${LogPrefix} ERR_RUN :could not run z17_simp ${DeviceName}" "${LogFile}"
         return "${ERR_VALUE}"
     fi
+    return "${ERR_OK}"
+}
+
+############################################################################
+# Function checks if GPIO is working correctly - write
+#
+# parameters:
+# $1    Log file
+# $2    Log prefix
+# $3    DeviceName
+function gpio_stress {
+    local LogFile=${1}
+    local LogPrefix=${2}
+    local DeviceName=${3}
+
+    debug_print "${LogPrefix} Read register via z17_io ${DeviceName}" "${LogFile}"
+    local end=$((SECONDS+600))
+
+    # LOG memleak
+    #run_as_root bash -c "echo scan > /sys/kernel/debug/kmemleak"
+    #run_as_root bash -c "cp /sys/kernel/debug/kmemleak kmemleak_log0"
+
+    while [ $SECONDS -lt $end ]; do
+        z17_io "${DeviceName}" -g > /dev/null
+    done
+
+    # LOG memleak 
+    #run_as_root bash -c "echo scan > /sys/kernel/debug/kmemleak"
+    #run_as_root bash -c "cp /sys/kernel/debug/kmemleak kmemleak_log1"
+
     return "${ERR_OK}"
 }
 
