@@ -203,6 +203,7 @@ function can_test_ll_z15_stress {
     local LogFile=${1}
     local LogPrefix=${2}
     local MezzChamDevDescriptionFile=${3}
+    local CurrentPath=$PWD
 
     cd ../..
     sed -i '/MSCAN\/TOOLS\/MSCAN_PINGPONG\/COM\/program.mak/ a /MSCAN\/TOOLS\/MSCAN_CONCURRENT\/COM\/program.mak \\' Makefile
@@ -240,11 +241,13 @@ function can_test_ll_z15_stress {
 
     # Save background process PID
     local MscanConcurrentPID
-    MscanConcurrentPID=$(pgrep "mscan_conc" | awk 'NR==1 {print $2}')
+    MscanConcurrentPID=$(pgrep "mscan_conc" | awk 'NR==1 {print $1}')
     debug_print "${LogPrefix}MscanConcurrentPID: ${MscanConcurrentPID}" "${LogFile}"
     # Can stress test duration in seconds
-    local TestDuration=15
+    local TestDuration=20
 
+    # Wait for MDIS can initialization
+    sleep 10
     debug_print "${LogPrefix} can_generate_frames" "${LogFile}"
     can_generate_frames "${LogFile}" "${LogPrefix}" "${TestDuration}" &
 
