@@ -10,7 +10,7 @@ source "${MyDir}/Ip_Core_Tests/z127_gpio.sh"
 # parameters:
 # $1    Module number
 # $2    Module log path 
-function g229_description {
+function g229_stress_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
     local TestSummaryDirectory="${3}"
@@ -53,7 +53,7 @@ function g229_description {
 # $4    Log file
 # $5    Log prefix
 # $6    Board number
-function g229_test {
+function g229_stress_test {
     local TestCaseId="${1}"
     local TestSummaryDirectory="${2}"
     local OsNameKernel="${3}"
