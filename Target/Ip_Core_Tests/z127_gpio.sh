@@ -212,7 +212,7 @@ function gpio_stress_z127 {
     debug_print "${LogPrefix} MemUsedStart: ${MemUsedStart}" "${LogFile}"
     debug_print "${LogPrefix} MemUsedEnd: ${MemUsedEnd}" "${LogFile}"
 
-    if [ ! -s kmemleak1.log ]
+    if [ -s kmemleak1.log ]
     then
         debug_print "${LogPrefix} There is a leak in kernel space !!" "${LogFile}"
         debug_print "${LogPrefix} Check file kmemleak1.log" "${LogFile}"
