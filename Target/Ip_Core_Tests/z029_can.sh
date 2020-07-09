@@ -232,7 +232,7 @@ function can_test_ll_z15_stress {
     fi
     debug_print "${LogPrefix}run mscan_concurrent > mscan_concurrent.log &" "${LogFile}"
     # Currently can number is fixed within mscan_concurrent (can_7 can8)
-    if ! run_as_root $(mscan_concurrent > mscan_concurrent.log &)
+    if ! run_as_root $(stdbuf -o0 mscan_concurrent > mscan_concurrent.log &)
     then
         debug_print "${LogPrefix}  ERR_VALUE :could not run mscan_concurrent" "${LogFile}"
         return "${ERR_VALUE}"
@@ -240,7 +240,7 @@ function can_test_ll_z15_stress {
 
     # Save background process PID
     local MscanConcurrentPID
-    MscanConcurrentPID=$(pgrep "mscan_concurrent" | awk 'NR==1 {print $2}')
+    MscanConcurrentPID=$(pgrep "mscan_conc" | awk 'NR==1 {print $2}')
     debug_print "${LogPrefix}MscanConcurrentPID: ${MscanConcurrentPID}" "${LogFile}"
     # Can stress test duration in seconds
     local TestDuration=15
@@ -298,7 +298,6 @@ function can_generate_frames {
     while [ $SECONDS -lt $Duration ]; do
         cangen can0 -g .2 -I 42A -e -L 5 -D i -n 20
         sleep 0.04
-        debug_print "${LogPrefix} SECONDS: ${SECONDS}/${Duration}" "${LogFile}"
     done
 
     return "${ERR_OK}"
