@@ -192,7 +192,7 @@ function gpio_stress_z127 {
         if [ "${ValgrindCnt}" -eq 100 ]; then
             ValgrindCnt=0
             stdbuf -o0 valgrind z127_io "${Gpio_Z127_0}" -g > z127_gpio_0_io.log 2>&1
-            if ! grep -c "in use at exit: 0 bytes in 0 blocks" z127_gpio_0_io.log
+            if ! grep -c "in use at exit: 0 bytes in 0 blocks" z127_gpio_0_io.log > /dev/null
             then
                 debug_print "${LogPrefix} -------------ERROR------------" "${LogFile}"
                 debug_print "${LogPrefix} Memory leak in z127_io ! - exit" "${LogFile}"
