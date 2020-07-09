@@ -185,8 +185,8 @@ function gpio_stress_z127 {
     local end=$((SECONDS+60))
 
     # LOG memleak
-    #run_as_root bash -c "echo scan > /sys/kernel/debug/kmemleak"
-    #run_as_root bash -c "cp /sys/kernel/debug/kmemleak kmemleak_log0"
+    run_as_root bash -c "echo scan > /sys/kernel/debug/kmemleak"
+    run_as_root bash -c "cp /sys/kernel/debug/kmemleak kmemleak0.log"
     MemUsedStart=$(free | grep Mem: | awk '{print $3}')
     while [ $SECONDS -lt $end ]; do
         if [ "${ValgrindCnt}" -eq 100 ]; then
@@ -206,14 +206,20 @@ function gpio_stress_z127 {
     done
     MemUsedEnd=$(free | grep Mem: | awk '{print $3}')
     # LOG memleak 
-    #run_as_root bash -c "echo scan > /sys/kernel/debug/kmemleak"
-    #run_as_root bash -c "cp /sys/kernel/debug/kmemleak kmemleak_log1"
+    run_as_root bash -c "echo scan > /sys/kernel/debug/kmemleak"
+    run_as_root bash -c "cp /sys/kernel/debug/kmemleak kmemleak1.log"
 
     debug_print "${LogPrefix} MemUsedStart: ${MemUsedStart}" "${LogFile}"
     debug_print "${LogPrefix} MemUsedEnd: ${MemUsedEnd}" "${LogFile}"
 
-    dmesg > dmesg_z127.log
+    if [ ! -s kmemleak1.log ]
+    then
+        debug_print "${LogPrefix} There is a leak in kernel space !!" "${LogFile}"
+        debug_print "${LogPrefix} Check file kmemleak1.log" "${LogFile}"
+        return "${ERR_VALUE}"
+    fi
 
+    dmesg > dmesg_z127.log
     if ! grep -c "BUG" dmesg_z127.log
     then
         return "${ERR_OK}"
