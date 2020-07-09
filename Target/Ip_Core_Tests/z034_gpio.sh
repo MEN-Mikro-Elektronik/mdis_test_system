@@ -147,6 +147,9 @@ function gpio_stress_z34 {
     local LogPrefix=${2}
     local DeviceName=${3}
 
+    local MemUsedStart
+    local MemUsedEnd
+
     debug_print "${LogPrefix} Read register via z17_io ${DeviceName}" "${LogFile}"
     local end=$((SECONDS+60))
 
@@ -155,15 +158,25 @@ function gpio_stress_z34 {
     #run_as_root bash -c "cp /sys/kernel/debug/kmemleak kmemleak_log0"
 
     debug_print "${LogPrefix} gpio_stress z17_io ${DeviceName} -g" "${LogFile}"
-
+    MemUsedStart=$(free | grep Mem: | awk '{print $3}')
     while [ $SECONDS -lt $end ]; do
-        z17_io "${DeviceName}" -g >> z17_io.log
+        stdbuf -o0 z17_io "${DeviceName}" -g >> z17_0_io.log &
     done
+    MemUsedEnd=$(free | grep Mem: | awk '{print $3}')
 
     # LOG memleak
     #run_as_root bash -c "echo scan > /sys/kernel/debug/kmemleak"
     #run_as_root bash -c "cp /sys/kernel/debug/kmemleak kmemleak_log0"
+    debug_print "${LogPrefix} MemUsedStart: ${MemUsedStart}" "${LogFile}"
+    debug_print "${LogPrefix} MemUsedEnd: ${MemUsedEnd}" "${LogFile}"
 
-    return "${ERR_OK}"
+    dmesg > dmesg_z127.log
+
+    if ! grep -c "BUG" dmesg_z127.log
+    then
+        return "${ERR_OK}"
+    else
+        return "${ERR_VALUE}"
+    fi
 }
 

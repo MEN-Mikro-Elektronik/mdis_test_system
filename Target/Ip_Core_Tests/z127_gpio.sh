@@ -93,8 +93,7 @@ function z127_gpio_test {
                         debug_print "${LogPrefix} gpio_led ${Gpio} test result: ${Result}" "${LogFile}"
                         return "${Result}"
                     ;;
-                    stress)
-                        # Test GPIO read status
+                    stress_test)
                         gpio_stress_z127 "${LogFile}" "${LogPrefix}" "${Gpio}"
                         Result=$?
                         debug_print "${LogPrefix} gpio_stress ${Gpio} test result: ${Result}" "${LogFile}"
@@ -175,22 +174,44 @@ function gpio_led_z127 {
 function gpio_stress_z127 {
     local LogFile=${1}
     local LogPrefix=${2}
-    local DeviceName=${3}
+    local Gpio_Z127_0=${3}
+    local MemUsedStart
+    local MemUsedEnd
+    #local Gpio_Z127_1=${4}
 
-    debug_print "${LogPrefix} Read register via z17_io ${DeviceName}" "${LogFile}"
-    local end=$((SECONDS+600))
+    debug_print "${LogPrefix} Read register via z127_io ${Gpio_Z127_0}" "${LogFile}"
+
+    local end=$((SECONDS+60))
 
     # LOG memleak
-    run_as_root bash -c "echo scan > /sys/kernel/debug/kmemleak"
-    run_as_root bash -c "cp /sys/kernel/debug/kmemleak kmemleak_log0"
-    
+    #run_as_root bash -c "echo scan > /sys/kernel/debug/kmemleak"
+    #run_as_root bash -c "cp /sys/kernel/debug/kmemleak kmemleak_log0"
+    MemUsedStart=$(free | grep Mem: | awk '{print $3}')
     while [ $SECONDS -lt $end ]; do
-        z17_io ${DeviceName} -g > /dev/null
+        stdbuf -o0 valgrind z127_io "${Gpio_Z127_0}" -g >> z127_gpio_0_io.log 2>&1 &
+        #stdbuf -o0 valgrind z127_io "${Gpio_Z127_1}" -g >> z127_gpio_1_io.log 2>&1 &
     done
-
+    MemUsedEnd=$(free | grep Mem: | awk '{print $3}')
     # LOG memleak 
-    run_as_root bash -c "echo scan > /sys/kernel/debug/kmemleak"
-    run_as_root bash -c "cp /sys/kernel/debug/kmemleak kmemleak_log1"
+    #run_as_root bash -c "echo scan > /sys/kernel/debug/kmemleak"
+    #run_as_root bash -c "cp /sys/kernel/debug/kmemleak kmemleak_log1"
 
-    return "${ERR_OK}"
+    debug_print "${LogPrefix} MemUsedStart: ${MemUsedStart}" "${LogFile}"
+    debug_print "${LogPrefix} MemUsedEnd: ${MemUsedEnd}" "${LogFile}"
+
+    dmesg > dmesg_z127.log
+
+    if grep -c "in use at exit: 0 bytes in 0 blocks" z127_gpio_0_io.log
+    then
+        if ! grep -c "BUG" dmesg_z127.log
+        then
+            return "${ERR_OK}"
+        else
+            return "${ERR_VALUE}"
+        fi
+    else
+        return "${ERR_VALUE}"
+    fi
+
+
 }
