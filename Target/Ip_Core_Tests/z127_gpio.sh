@@ -177,6 +177,7 @@ function gpio_stress_z127 {
     local Gpio_Z127_0=${3}
     local MemUsedStart
     local MemUsedEnd
+    local ValgrindCnt=0
     #local Gpio_Z127_1=${4}
 
     debug_print "${LogPrefix} Read register via z127_io ${Gpio_Z127_0}" "${LogFile}"
@@ -188,8 +189,20 @@ function gpio_stress_z127 {
     #run_as_root bash -c "cp /sys/kernel/debug/kmemleak kmemleak_log0"
     MemUsedStart=$(free | grep Mem: | awk '{print $3}')
     while [ $SECONDS -lt $end ]; do
-        stdbuf -o0 valgrind z127_io "${Gpio_Z127_0}" -g >> z127_gpio_0_io.log 2>&1 &
-        #stdbuf -o0 valgrind z127_io "${Gpio_Z127_1}" -g >> z127_gpio_1_io.log 2>&1 &
+        if [ "${ValgrindCnt}" -eq 100 ]; then
+            ValgrindCnt=0
+            stdbuf -o0 valgrind z127_io "${Gpio_Z127_0}" -g > z127_gpio_0_io.log 2>&1
+            if ! grep -c "in use at exit: 0 bytes in 0 blocks" z127_gpio_0_io.log
+            then
+                debug_print "${LogPrefix} -------------ERROR------------" "${LogFile}"
+                debug_print "${LogPrefix} Memory leak in z127_io ! - exit" "${LogFile}"
+                debug_print "${LogPrefix} ------------------------------" "${LogFile}"
+                return "${ERR_VALUE}"
+            fi
+        else
+            ValgrindCnt=$((ValgrindCnt+1))
+            z127_io "${Gpio_Z127_0}" -g &
+        fi
     done
     MemUsedEnd=$(free | grep Mem: | awk '{print $3}')
     # LOG memleak 
@@ -201,17 +214,11 @@ function gpio_stress_z127 {
 
     dmesg > dmesg_z127.log
 
-    if grep -c "in use at exit: 0 bytes in 0 blocks" z127_gpio_0_io.log
+    if ! grep -c "BUG" dmesg_z127.log
     then
-        if ! grep -c "BUG" dmesg_z127.log
-        then
-            return "${ERR_OK}"
-        else
-            return "${ERR_VALUE}"
-        fi
+        return "${ERR_OK}"
     else
         return "${ERR_VALUE}"
     fi
-
 
 }
