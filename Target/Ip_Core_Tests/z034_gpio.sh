@@ -160,7 +160,7 @@ function gpio_stress_z34 {
     debug_print "${LogPrefix} gpio_stress z17_io ${DeviceName} -g" "${LogFile}"
     MemUsedStart=$(free | grep Mem: | awk '{print $3}')
     while [ $SECONDS -lt $end ]; do
-        stdbuf -o0 z17_io "${DeviceName}" -g >> z17_0_io.log &
+        stdbuf -o0 z17_io "${DeviceName}" -g > /dev/null &
     done
     MemUsedEnd=$(free | grep Mem: | awk '{print $3}')
 
@@ -170,9 +170,9 @@ function gpio_stress_z34 {
     debug_print "${LogPrefix} MemUsedStart: ${MemUsedStart}" "${LogFile}"
     debug_print "${LogPrefix} MemUsedEnd: ${MemUsedEnd}" "${LogFile}"
 
-    dmesg > dmesg_z127.log
+    dmesg > dmesg_z034.log
 
-    if ! grep -c "BUG" dmesg_z127.log
+    if ! grep -c "BUG" dmesg_z034.log
     then
         return "${ERR_OK}"
     else

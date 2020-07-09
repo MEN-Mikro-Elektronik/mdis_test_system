@@ -201,7 +201,7 @@ function gpio_stress_z127 {
             fi
         else
             ValgrindCnt=$((ValgrindCnt+1))
-            z127_io "${Gpio_Z127_0}" -g &
+            z127_io "${Gpio_Z127_0}" -g > /dev/null &
         fi
     done
     MemUsedEnd=$(free | grep Mem: | awk '{print $3}')
