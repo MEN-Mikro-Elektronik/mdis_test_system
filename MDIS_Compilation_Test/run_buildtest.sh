@@ -408,8 +408,8 @@ function automatic_driver_test {
                 touch "${STR_RESULT_DIR}/ModinfoResults.log"
                 Modules=$(find "OBJ/" -name '*.ko' -type f)
                 for Module in ${Modules}; do
-                        modinfo "${Module}" > "${STR_RESULT_DIR}/ModinfoResults/${Module##*/}.${Makefile}.log"
-                        Version="$(modinfo "${Module}" | grep -l "^version:")"
+                        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modinfo "${Module}" > "${STR_RESULT_DIR}/ModinfoResults/${Module##*/}.${Makefile}.log"
+                        Version="$(echo ${MenPcPassword} | sudo -S --prompt=$'\r' modinfo "${Module}" | grep -l "^version:")"
                         if [ "${Version}" != "" ]; then
                                 echo "${Module##*/}.${Makefile} PASSED" >> "${STR_RESULT_DIR}/ModinfoResults.log"
                         else
