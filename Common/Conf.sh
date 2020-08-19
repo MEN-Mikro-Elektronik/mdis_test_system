@@ -73,7 +73,7 @@ MenBoxPcIpAddr="10.1.1.159"
 INPUT_SWITCH_TIMEOUT=10 #seconds
 
 # Credentials, address, and command to download Git repository with Test Cases source
-GitTestSourcesBranch="jpe-dev-02_02"
+GitTestSourcesBranch="jpe-dev-02_03"
 GitTestSourcesCmd="git clone -b ${GitTestSourcesBranch} https://github.com/MEN-Mikro-Elektronik/mdis_test_system.git"
 
 # Credentials, address, and command to download Git repository with 13MD05-90 sources
@@ -143,17 +143,17 @@ GrubConfFile=/media/tests/boot.cfg
 # not used for tests.
 
 # List of test setups that require manual OS booting
-ManualOsBootSetups=("9" "8" "10")
+ManualOsBootSetups=()
 
 #F26L
 GrubOsesF26L=("0" \
         "Ubuntu 18.04.3 LTS (18.04) (on /dev/sda16)" \
         "Ubuntu, with Linux 5.0.0-23-generic (on /dev/sda17)" \
         "Ubuntu, with Linux 5.4.0-26-generic (on /dev/sda12)" \
-        "CentOS Linux 7 (Core) (on /dev/sda10)" \
-        "CentOS Linux 8 (Core) (on /dev/sda11)" \
-        "Debian GNU/Linux, with Linux 4.19.0-6-686-pae (on /dev/sda18)" \
-        "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)" \
+        "CentOS Linux 7 (Core) (on /dev/sda6)" \
+        "CentOS Linux 8 (Core) (on /dev/sda9)" \
+        "Debian GNU/Linux 10 (buster) (on /dev/sda14)" \
+        "Debian GNU/Linux, with Linux 4.19.0-10-amd64 (on /dev/sda15)" \
         )
 
 #F23P
@@ -161,79 +161,80 @@ GrubOsesF23P=("0" \
         "Ubuntu 18.04.3 LTS (18.04) (on /dev/sda16)" \
         "Ubuntu, with Linux 5.0.0-23-generic (on /dev/sda17)" \
         "Ubuntu, with Linux 5.4.0-26-generic (on /dev/sda12)" \
-        "CentOS Linux 7 (Core) (on /dev/sda10)" \
-        "CentOS Linux 8 (Core) (on /dev/sda11)" \
-        "Debian GNU/Linux, with Linux 4.19.0-6-686-pae (on /dev/sda18)" \
-        "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)" \
+        "CentOS Linux 7 (Core) (on /dev/sda6)" \
+        "CentOS Linux 8 (Core) (on /dev/sda9)" \
+        "Debian GNU/Linux 10 (buster) (on /dev/sda14)" \
+        "Debian GNU/Linux, with Linux 4.19.0-10-amd64 (on /dev/sda15)" \
         )
 #G23
 GrubOsesG23=("0" \
         "Ubuntu 18.04.3 LTS (18.04) (on /dev/sda16)" \
         "Ubuntu, with Linux 5.0.0-23-generic (on /dev/sda17)" \
         "Ubuntu, with Linux 5.4.0-26-generic (on /dev/sda12)" \
-        "CentOS Linux 7 (Core) (on /dev/sda10)" \
-        "CentOS Linux 8 (Core) (on /dev/sda11)" \
-        "Debian GNU/Linux, with Linux 4.19.0-6-686-pae (on /dev/sda18)" \
-        "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)" \
+        "CentOS Linux 7 (Core) (on /dev/sda6)" \
+        "CentOS Linux 8 (Core) (on /dev/sda9)" \
+        "Debian GNU/Linux 10 (buster) (on /dev/sda14)" \
+        "Debian GNU/Linux, with Linux 4.19.0-10-amd64 (on /dev/sda15)" \
         )
 #G25A
 GrubOsesG25A=("0" \
         "Ubuntu 18.04.3 LTS (18.04) (on /dev/sda16)" \
         "Ubuntu, with Linux 5.0.0-23-generic (on /dev/sda17)" \
         "Ubuntu, with Linux 5.4.0-26-generic (on /dev/sda12)" \
-        "CentOS Linux 7 (Core) (on /dev/sda10)" \
-        "CentOS Linux 8 (Core) (on /dev/sda11)" \
-        "Debian GNU/Linux, with Linux 4.19.0-6-686-pae (on /dev/sda18)" \
-        "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)" \
+        "CentOS Linux 7 (Core) (on /dev/sda6)" \
+        "CentOS Linux 8 (Core) (on /dev/sda9)" \
+        "Debian GNU/Linux 10 (buster) (on /dev/sda14)" \
+        "Debian GNU/Linux, with Linux 4.19.0-10-amd64 (on /dev/sda15)" \
         )
 #BL50
 GrubOsesBL50=("0" \
         "Ubuntu 18.04.3 LTS (18.04) (on /dev/sda16)" \
         "Ubuntu, with Linux 5.0.0-23-generic (on /dev/sda17)" \
         "Ubuntu, with Linux 5.4.0-26-generic (on /dev/sda12)" \
-        "CentOS Linux 7 (Core) (on /dev/sda10)" \
-        "CentOS Linux 8 (Core) (on /dev/sda11)" \
-        "Debian GNU/Linux, with Linux 4.19.0-6-686-pae (on /dev/sda18)" \
-        "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)" \
+        "CentOS Linux 7 (Core) (on /dev/sda6)" \
+        "CentOS Linux 8 (Core) (on /dev/sda9)" \
+        "Debian GNU/Linux 10 (buster) (on /dev/sda14)" \
+        "Debian GNU/Linux, with Linux 4.19.0-10-amd64 (on /dev/sda15)" \
         )
 #BL51E
 GrubOsesBL51E=("0" \
         "Ubuntu 18.04.3 LTS (18.04) (on /dev/sda16)" \
         "Ubuntu, with Linux 5.0.0-23-generic (on /dev/sda17)" \
         "Ubuntu, with Linux 5.4.0-26-generic (on /dev/sda12)" \
-        "CentOS Linux 7 (Core) (on /dev/sda10)" \
-        "CentOS Linux 8 (Core) (on /dev/sda11)" \
-        "Debian GNU/Linux, with Linux 4.19.0-6-686-pae (on /dev/sda18)" \
-        "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)" \
+        "CentOS Linux 7 (Core) (on /dev/sda6)" \
+        "CentOS Linux 8 (Core) (on /dev/sda9)" \
+        "Debian GNU/Linux 10 (buster) (on /dev/sda14)" \
+        "Debian GNU/Linux, with Linux 4.19.0-10-amd64 (on /dev/sda15)" \
         )
 #BL70
 GrubOsesBL70=("0" \
         "Ubuntu 18.04.3 LTS (18.04) (on /dev/sda16)" \
         "Ubuntu, with Linux 5.0.0-23-generic (on /dev/sda17)" \
         "Ubuntu, with Linux 5.4.0-26-generic (on /dev/sda12)" \
-        "CentOS Linux 7 (Core) (on /dev/sda10)" \
-        "CentOS Linux 8 (Core) (on /dev/sda11)" \
-        "Debian GNU/Linux, with Linux 4.19.0-6-686-pae (on /dev/sda18)" \
-        "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)" \
+        "CentOS Linux 7 (Core) (on /dev/sda6)" \
+        "CentOS Linux 8 (Core) (on /dev/sda9)" \
+        "Debian GNU/Linux 10 (buster) (on /dev/sda14)" \
+        "Debian GNU/Linux, with Linux 4.19.0-10-amd64 (on /dev/sda15)" \
         )
 #CB70
 GrubOsesCB70=("0" \
         "Ubuntu 18.04.3 LTS (18.04) (on /dev/sda16)" \
         "Ubuntu, with Linux 5.0.0-23-generic (on /dev/sda17)" \
         "Ubuntu, with Linux 5.4.0-26-generic (on /dev/sda12)" \
-        "CentOS Linux 7 (Core) (on /dev/sda10)" \
-        "CentOS Linux 8 (Core) (on /dev/sda11)" \
-        "Debian GNU/Linux, with Linux 4.19.0-6-686-pae (on /dev/sda18)" \
-        "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)" \
+        "CentOS Linux 7 (Core) (on /dev/sda6)" \
+        "CentOS Linux 8 (Core) (on /dev/sda9)" \
+        "Debian GNU/Linux 10 (buster) (on /dev/sda14)" \
+        "Debian GNU/Linux, with Linux 4.19.0-10-amd64 (on /dev/sda15)" \
         )
 #A25
 GrubOsesA25=("0" \
-        "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda14)" \
-        "Ubuntu, with Linux 4.15.0-45-generic (on /dev/sda15)" \
         "Ubuntu 18.04.3 LTS (18.04) (on /dev/sda16)" \
         "Ubuntu, with Linux 5.0.0-23-generic (on /dev/sda17)" \
-        "Debian GNU/Linux, with Linux 4.19.0-6-686-pae (on /dev/sda18)" \
-        "Debian GNU/Linux, with Linux 4.19.0-6-amd64 (on /dev/sda19)" \
+        "Ubuntu, with Linux 5.4.0-26-generic (on /dev/sda12)" \
+        "CentOS Linux 7 (Core) (on /dev/sda6)" \
+        "CentOS Linux 8 (Core) (on /dev/sda9)" \
+        "Debian GNU/Linux 10 (buster) (on /dev/sda14)" \
+        "Debian GNU/Linux, with Linux 4.19.0-10-amd64 (on /dev/sda15)" \
         )
 
 function create_test_cases_map {
