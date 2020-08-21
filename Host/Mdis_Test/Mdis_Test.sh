@@ -94,6 +94,9 @@ function print_test_list {
         if [ "${TEST_SETUP_10_TEST_CASES[${K}]}" = "true" ]; then
             TestSetupList+="10,"
         fi
+        if [ "${TEST_SETUP_11_TEST_CASES[${K}]}" = "true" ]; then
+            TestSetupList+="11,"
+        fi
         if [ "${TestSetupList}" = "" ]; then
             TestSetupList+="not used"
         fi
@@ -289,6 +292,9 @@ case ${TEST_SETUP} in
         ;;
     10)
         GrubOses=( "${GrubOsesBL70[@]}" )
+        ;;
+    11)
+        GrubOses=( "${GrubOsesDC19[@]}" )
         ;;
     *)
         echo "TEST SETUP IS NOT SET"

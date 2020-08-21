@@ -63,7 +63,7 @@ TEST_CASES_MAP["502"]="bl70_boxpc"
 TEST_CASES_MAP["700"]="dc19_panelpc"
 
 # Address of Target that will be tested
-MenPcIpAddr="10.1.1.103"
+MenPcIpAddr="10.1.1.60"
 
 # Credentials for Pc that will be tested - required by ssh connection and sudo cmds
 MenPcLogin="men"
@@ -470,3 +470,7 @@ function create_test_setup_test_cases_map {
             ;;
     esac
 }
+VERBOSE_LEVEL=0
+TEST_SETUP=11
+VERBOSE_LEVEL=0
+TEST_SETUP=11
