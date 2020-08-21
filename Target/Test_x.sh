@@ -302,6 +302,7 @@ case "${TestTypeDev}" in
         ;;
     b);&
     f);&
+    d);&
     g)
         print "${LogPrefix} Board test: ${DeviceName}" "${TestCaseLogName}"
         debug_print "${LogPrefix} \"${TestFunc} ${TestCaseId} ${TestCaseMainDir}/${TestCaseName} ${TestOs} ${TestCaseLogName} ${LogPrefix} ${DevicesFile} ${DeviceNo}\"" "${TestCaseLogName}"
