@@ -201,6 +201,11 @@ function print_test_brief {
         Board=$(echo "${TEST_CASES_MAP[${TestId}]}")
         source ${TestPath}/BoxPC_Tests/${Board}.sh
         ${Board}_description "" "" "" "long_description"
+    elif [ "${TestId}" -lt "700" ]
+    then
+        Board=$(echo "${TEST_CASES_MAP[${TestId}]}")
+        source ${TestPath}/PanelPC_Tests/${Board}.sh
+        ${Board}_description "" "" "" "long_description"
     fi
 }
 

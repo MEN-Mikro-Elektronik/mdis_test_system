@@ -40,6 +40,7 @@ source "${MyDir}"/SMB2_Tests/b_smb2_eetemp.sh
 source "${MyDir}"/SMB2_Tests/b_smb2_led.sh
 source "${MyDir}"/SMB2_Tests/b_smb2_pci.sh
 source "${MyDir}"/SMB2_Tests/b_smb2_poe.sh
+source "${MyDir}"/PanelPC_Tests/dc19_panelpc.sh
 
 CurrDir=$(pwd)
 

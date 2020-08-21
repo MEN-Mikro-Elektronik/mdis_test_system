@@ -213,7 +213,9 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             run_test_case_board "502" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # BL70 fpga ip core tests
             ;;
         11)
-            run_test_case_board "102" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # F614 @ F23P
+            run_test_case_board "700" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # DC19 FPGA IP cores tests
+            ;;
+        12)
             echo "Dummy test setup"
             ;;
         *)

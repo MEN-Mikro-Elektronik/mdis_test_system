@@ -60,6 +60,7 @@ TEST_CASES_MAP["151"]="g229_stress"
 TEST_CASES_MAP["500"]="bl50_boxpc"
 TEST_CASES_MAP["501"]="bl51_boxpc"
 TEST_CASES_MAP["502"]="bl70_boxpc"
+TEST_CASES_MAP["700"]="dc19_panelpc"
 
 # Address of Target that will be tested
 MenPcIpAddr="10.1.1.103"
@@ -77,7 +78,7 @@ GitTestSourcesBranch="jpe-dev-02_03"
 GitTestSourcesCmd="git clone -b ${GitTestSourcesBranch} https://github.com/MEN-Mikro-Elektronik/mdis_test_system.git"
 
 # Credentials, address, and command to download Git repository with 13MD05-90 sources
-GitMdisBranch="release-13MD05-90_02_02"
+GitMdisBranch="release-13MD05-90_02_03"
 GitMdisCmd="git clone --recursive -b ${GitMdisBranch} https://github.com/MEN-Mikro-Elektronik/13MD05-90.git"
 # This is optional if specific commit have to be tested !
 # If Commit sha is not defined, then the most recent commit on branch is used. 
@@ -237,6 +238,17 @@ GrubOsesA25=("0" \
         "Debian GNU/Linux, with Linux 4.19.0-10-amd64 (on /dev/sda15)" \
         )
 
+#DC19
+GrubOsesDC19=("0" \
+        "Ubuntu 18.04.3 LTS (18.04) (on /dev/sda16)" \
+        "Ubuntu, with Linux 5.0.0-23-generic (on /dev/sda17)" \
+        "Ubuntu, with Linux 5.4.0-26-generic (on /dev/sda12)" \
+        "CentOS Linux 7 (Core) (on /dev/sda6)" \
+        "CentOS Linux 8 (Core) (on /dev/sda9)" \
+        "Debian GNU/Linux 10 (buster) (on /dev/sda14)" \
+        "Debian GNU/Linux, with Linux 4.19.0-10-amd64 (on /dev/sda15)" \
+        )
+
 function create_test_cases_map {
     local IsTarget="${1}"
     local TestPath=""
@@ -377,6 +389,7 @@ declare -a TEST_SETUP_7_TEST_CASES
 declare -a TEST_SETUP_8_TEST_CASES
 declare -a TEST_SETUP_9_TEST_CASES
 declare -a TEST_SETUP_10_TEST_CASES
+declare -a TEST_SETUP_11_TEST_CASES
 # Create test setup test cases map:
 function create_test_setup_test_cases_map {
     local Setup="${1}"
@@ -447,6 +460,9 @@ function create_test_setup_test_cases_map {
             TEST_SETUP_10_TEST_CASES[4]="true"
             TEST_SETUP_10_TEST_CASES[5]="true"
             TEST_SETUP_10_TEST_CASES[502]="true"
+            ;;
+        11)
+            TEST_SETUP_11_TEST_CASES[700]="true"
             ;;
         *)
             echo "TEST SETUP OR TEST ID IS NOT SET PROPERLY"
