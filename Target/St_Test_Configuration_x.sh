@@ -125,8 +125,7 @@ then
 fi
 
 # Check if OS was compiled with CONFIG_DEBUG_KMEMLEAK flag
-#IsMemLeakOS=$(echo "${OsNameKernel}" | grep -c "kmemleak")
-IsMemLeakOS=1
+IsMemLeakOS=$(echo "${OsNameKernel}" | grep -c "kmemleak")
 
 # Clear dmesg log
 run_as_root dmesg --clear
