@@ -114,7 +114,7 @@ function bl51_boxpc_test {
                                              -devid "${DevID}"\
                                              -subvenid "${SubVenID}"\
                                              -tspec "${UartDevice1}"\
-                                             -dno "1"
+                                             -dno "2"
             UartTestResult1=$?
             MachineState="Break"
             ;;
