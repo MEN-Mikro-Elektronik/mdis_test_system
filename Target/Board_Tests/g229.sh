@@ -119,7 +119,7 @@ function g229_test {
                                              -venid "${VenID}"\
                                              -devid "${DevID}"\
                                              -subvenid "${SubVenID}"\
-                                             -tspec "dummy"\
+                                             -tspec "led"\
                                              -dno "1"
             GpioZ127TestResult=$?
             MachineState="hsuart_test"
