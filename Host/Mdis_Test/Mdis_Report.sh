@@ -153,7 +153,7 @@ function print_results {
     SourceInfo=$(find "${ResultPath}" -name "Source_info.txt" | awk 'NR==1')
     TestDate=$(awk 'NR==1' < "${SourceInfo}")
     CommitID=$(awk 'NR==2' < "${SourceInfo}")
-    rm results.txt
+    rm -f results.txt
     touch results.txt
     echo "Date: ${TestDate}"
     echo "Tester Name: ${TesterName}"
