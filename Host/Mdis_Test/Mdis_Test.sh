@@ -57,6 +57,7 @@ function print_test_list {
     create_test_setup_test_cases_map "8"
     create_test_setup_test_cases_map "9"
     create_test_setup_test_cases_map "10"
+    create_test_setup_test_cases_map "11"
 
     echo "" > /tmp/test_cases_list.txt
     for K in "${!TEST_CASES_MAP[@]}"
@@ -152,6 +153,11 @@ function print_test_purpose {
         Board=$(echo "${TEST_CASES_MAP[${TestId}]}")
         source ${TestPath}/BoxPC_Tests/${Board}.sh
         Purpose=$(${Board}_description "" "" "")
+    elif [ "${TestId}" -lt "800" ]
+    then
+        Board=$(echo "${TEST_CASES_MAP[${TestId}]}")
+        source ${TestPath}/PanelPC_Tests/${Board}.sh
+        Purpose=$(${Board}_description "" "" "")
     fi
     Purpose0=$(echo "${Purpose}" | grep "PURPOSE:" -A 2 | awk 'NR==2' | awk '{$1=$1};1' )
     Purpose1=$(echo "${Purpose}" | grep "PURPOSE:" -A 2 | awk 'NR==3' | awk '{$1=$1};1' )
@@ -204,7 +210,7 @@ function print_test_brief {
         Board=$(echo "${TEST_CASES_MAP[${TestId}]}")
         source ${TestPath}/BoxPC_Tests/${Board}.sh
         ${Board}_description "" "" "" "long_description"
-    elif [ "${TestId}" -lt "700" ]
+    elif [ "${TestId}" -lt "800" ]
     then
         Board=$(echo "${TEST_CASES_MAP[${TestId}]}")
         source ${TestPath}/PanelPC_Tests/${Board}.sh
