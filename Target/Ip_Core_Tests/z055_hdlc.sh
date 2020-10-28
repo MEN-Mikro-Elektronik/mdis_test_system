@@ -64,6 +64,10 @@ function z055_hdlc_test {
     z055_hdlc_mak_fix "${LogFile}" "${LogPrefix}"
     debug_print "${LogPrefix} z055_hdlc_mak_fix applied, move on.." "${LogFile}"
 
+    if [ ! -e "/dev/ppp" ]; then
+        run_as_root mknod /dev/ppp c 108 0
+    fi
+
     # establish ppp connection between Z055_HDLC interfaces
     if ! run_as_root "${StartScript}" > /dev/null 2>&1
     then
