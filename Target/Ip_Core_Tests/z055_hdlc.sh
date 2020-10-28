@@ -140,18 +140,18 @@ function z055_hdlc_compare_ppp_stats {
     local ErrorTXPPP1="0"
     local ErrorRXPPP1="0"
 
-    ifconfig ppp0 > ppp0.log
-    ifconfig ppp1 > ppp1.log
+    run_as_root ifconfig ppp0 > ppp0.log
+    run_as_root ifconfig ppp1 > ppp1.log
 
-    BytesTXPPP0=$(ifconfig ppp0 | grep "TX packets" | awk '{print $5}')
-    BytesTXPPP1=$(ifconfig ppp1 | grep "TX packets" | awk '{print $5}')
-    BytesRXPPP0=$(ifconfig ppp0 | grep "RX packets" | awk '{print $5}')
-    BytesRXPPP1=$(ifconfig ppp1 | grep "RX packets" | awk '{print $5}')
+    BytesTXPPP0=$(grep "TX packets" ppp0.log | awk '{print $5}')
+    BytesTXPPP1=$(grep "TX packets" ppp1.log | awk '{print $5}')
+    BytesRXPPP0=$(grep "RX packets" ppp0.log | awk '{print $5}')
+    BytesRXPPP1=$(grep "RX packets" ppp1.log | awk '{print $5}')
 
-    ErrorTXPPP0=$(ifconfig ppp0 | grep "TX errors" | awk '{print $3}')
-    ErrorRXPPP0=$(ifconfig ppp0 | grep "RX errors" | awk '{print $3}')
-    ErrorTXPPP1=$(ifconfig ppp1 | grep "TX errors" | awk '{print $3}')
-    ErrorRXPPP1=$(ifconfig ppp1 | grep "RX errors" | awk '{print $3}')
+    ErrorTXPPP0=$(grep "TX errors" ppp0.log | awk '{print $3}')
+    ErrorRXPPP0=$(grep "RX errors" ppp0.log | awk '{print $3}')
+    ErrorTXPPP1=$(grep "TX errors" ppp1.log | awk '{print $3}')
+    ErrorRXPPP1=$(grep "RX errors" ppp1.log | awk '{print $3}')
 
     debug_print "${LogPrefix} BytesTXPPP0: ${BytesTXPPP0}" "${LogFile}"
     debug_print "${LogPrefix} BytesTXPPP1: ${BytesTXPPP1}" "${LogFile}"
