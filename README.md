@@ -1,11 +1,11 @@
 # MDIS test system
 This is description of the automated test system for MDIS.
 
-mdis_test_system repository provides scripts to easily test behaviour of MEN hardware/software on different operating systems and kernels for tests setups specified for mdis release 13MD05-90_02_02. 
+mdis_test_system repository provides scripts to easily test behaviour of MEN hardware/software on different operating systems and kernels for tests setups specified for mdis release 13MD05-90_02_03. 
 
 Shortened functional test usage description:
 1. Prepare and configure OS-es on external drive (ssd USB 3 drive shall be considered), that can be connected to MEN CPU boards
-2. Prepare MEN hardware (Test setup <1-10>, BOXPC BL51E, 12V power supply)
+2. Prepare MEN hardware (Test setup <1-11>, BOXPC BL51E, 12V power supply)
 3. Configure test system (please follow "Test script configuration" section)
 4. Run main test script ./Mdis_Test.sh with proper params and wait for the results
 5. Generate results in user friendly format with Mdis_Report.sh script
