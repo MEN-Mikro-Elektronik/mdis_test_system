@@ -85,8 +85,13 @@ function mdis_prepare {
         return "${CmdResult}"
     fi
 
-    # Check if any errors exists in output files
-    if ! error_check "${LogPrefix}"
+    # Check if any error exists in output files
+    if ! error_check "make_output.txt"
+    then
+        return "${CmdResult}"
+    fi
+
+    if ! error_check "make_install_output.txt"
     then
         return "${CmdResult}"
     fi
@@ -95,7 +100,7 @@ function mdis_prepare {
     # make_output.txt
     # make_install_output.txt 2>&1
 
-    # Check if any errors exists in output files
+    # Check if any warning exists in output files
     if ! warning_check "make_output.txt"
     then
         return "${CmdResult}"
