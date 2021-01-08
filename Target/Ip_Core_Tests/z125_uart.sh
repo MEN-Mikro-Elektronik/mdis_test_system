@@ -122,11 +122,11 @@ function load_z125_driver {
         return "${ERR_MODPROBE}"
     fi
 
-    debug_print "${LogPrefix} modprobe men_lx_z25 baud_base=1843200,1843200 mode=se,se" "${LogFile}"
+    debug_print "${LogPrefix} modprobe men_lx_z25 baud_base=1843200 mode=se,se" "${LogFile}"
 
-    if ! run_as_root modprobe men_lx_z25 baud_base=1843200,1843200 mode=se,se
+    if ! run_as_root modprobe men_lx_z25 baud_base=1843200 mode=se,se
     then
-        debug_print "${LogPrefix} ERR_MODPROBE :could not modprobe men_lx_z25 baud_base=1843200,1843200 mode=se,se" "${LogFile}"
+        debug_print "${LogPrefix} ERR_MODPROBE :could not modprobe men_lx_z25 baud_base=1843200 mode=se,se" "${LogFile}"
         return "${ERR_MODPROBE}"
     fi
 
@@ -195,9 +195,9 @@ function uart_test_lx_z25 {
         return "${ERR_VALUE}"
     fi
 
-    if ! run_as_root modprobe men_lx_z25 baud_base=1843200,1843200 mode=se,se
+    if ! run_as_root modprobe men_lx_z25 baud_base=1843200 mode=se,se
     then
-        debug_print "${LogPrefix}  ERR_VALUE: could not  modprobe men_lx_z25 baud_base=1843200,1843200 mode=se,se" "${LogFile}"
+        debug_print "${LogPrefix}  ERR_VALUE: could not  modprobe men_lx_z25 baud_base=1843200 mode=se,se" "${LogFile}"
         return "${ERR_VALUE}"
     fi
     sleep 1
