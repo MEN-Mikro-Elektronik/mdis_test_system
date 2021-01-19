@@ -244,6 +244,7 @@ function checkout_kernel_version {
   make defconfig
   make prepare
   make scripts
+  make modules_prepare
   cd "${currdir}" || (echo "Could not enter directory \"${currdir}\". Quitting!" && exit 1)
 }
 
