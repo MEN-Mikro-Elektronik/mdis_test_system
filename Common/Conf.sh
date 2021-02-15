@@ -63,7 +63,7 @@ TEST_CASES_MAP["502"]="bl70_boxpc"
 TEST_CASES_MAP["700"]="dc19_panelpc"
 
 # Address of Target that will be tested
-MenPcIpAddr="10.1.1.91"
+MenPcIpAddr="10.1.1.162"
 
 # Credentials for Pc that will be tested - required by ssh connection and sudo cmds
 MenPcLogin="men"
@@ -78,7 +78,7 @@ GitTestSourcesBranch="jpe-dev-02_04"
 GitTestSourcesCmd="git clone -b ${GitTestSourcesBranch} https://github.com/MEN-Mikro-Elektronik/mdis_test_system.git"
 
 # Credentials, address, and command to download Git repository with 13MD05-90 sources
-GitMdisBranch="release-13MD05-90_02_03"
+GitMdisBranch="jpe-dev"
 GitMdisCmd="git clone --recursive -b ${GitMdisBranch} https://github.com/MEN-Mikro-Elektronik/13MD05-90.git"
 # This is optional if specific commit have to be tested !
 # If Commit sha is not defined, then the most recent commit on branch is used. 
@@ -155,6 +155,8 @@ GrubOsesF26L=("0" \
         "CentOS Linux 8 (Core) (on /dev/sda9)" \
         "Debian GNU/Linux 10 (buster) (on /dev/sda14)" \
         "Debian GNU/Linux, with Linux 4.19.0-10-amd64 (on /dev/sda15)" \
+        "Debian GNU/Linux (on /dev/sda20)" \
+        "Debian GNU/Linux (on /dev/sda21)" \
         )
 
 #F23P
@@ -166,6 +168,8 @@ GrubOsesF23P=("0" \
         "CentOS Linux 8 (Core) (on /dev/sda9)" \
         "Debian GNU/Linux 10 (buster) (on /dev/sda14)" \
         "Debian GNU/Linux, with Linux 4.19.0-10-amd64 (on /dev/sda15)" \
+        "Debian GNU/Linux (on /dev/sda20)" \
+        "Debian GNU/Linux (on /dev/sda21)" \
         )
 #G23
 GrubOsesG23=("0" \
@@ -176,6 +180,8 @@ GrubOsesG23=("0" \
         "CentOS Linux 8 (Core) (on /dev/sda9)" \
         "Debian GNU/Linux 10 (buster) (on /dev/sda14)" \
         "Debian GNU/Linux, with Linux 4.19.0-10-amd64 (on /dev/sda15)" \
+        "Debian GNU/Linux (on /dev/sda20)" \
+        "Debian GNU/Linux (on /dev/sda21)" \
         )
 #G25A
 GrubOsesG25A=("0" \
@@ -186,6 +192,8 @@ GrubOsesG25A=("0" \
         "CentOS Linux 8 (Core) (on /dev/sda9)" \
         "Debian GNU/Linux 10 (buster) (on /dev/sda14)" \
         "Debian GNU/Linux, with Linux 4.19.0-10-amd64 (on /dev/sda15)" \
+        "Debian GNU/Linux (on /dev/sda20)" \
+        "Debian GNU/Linux (on /dev/sda21)" \
         )
 #BL50
 GrubOsesBL50=("0" \
@@ -196,6 +204,8 @@ GrubOsesBL50=("0" \
         "CentOS Linux 8 (Core) (on /dev/sda9)" \
         "Debian GNU/Linux 10 (buster) (on /dev/sda14)" \
         "Debian GNU/Linux, with Linux 4.19.0-10-amd64 (on /dev/sda15)" \
+        "Debian GNU/Linux (on /dev/sda20)" \
+        "Debian GNU/Linux (on /dev/sda21)" \
         )
 #BL51E
 GrubOsesBL51E=("0" \
@@ -206,6 +216,8 @@ GrubOsesBL51E=("0" \
         "CentOS Linux 8 (Core) (on /dev/sda9)" \
         "Debian GNU/Linux 10 (buster) (on /dev/sda14)" \
         "Debian GNU/Linux, with Linux 4.19.0-10-amd64 (on /dev/sda15)" \
+        "Debian GNU/Linux (on /dev/sda20)" \
+        "Debian GNU/Linux (on /dev/sda21)" \
         )
 #BL70
 GrubOsesBL70=("0" \
@@ -216,6 +228,8 @@ GrubOsesBL70=("0" \
         "CentOS Linux 8 (Core) (on /dev/sda9)" \
         "Debian GNU/Linux 10 (buster) (on /dev/sda14)" \
         "Debian GNU/Linux, with Linux 4.19.0-10-amd64 (on /dev/sda15)" \
+        "Debian GNU/Linux (on /dev/sda20)" \
+        "Debian GNU/Linux (on /dev/sda21)" \
         )
 #CB70
 GrubOsesCB70=("0" \
@@ -226,6 +240,8 @@ GrubOsesCB70=("0" \
         "CentOS Linux 8 (Core) (on /dev/sda9)" \
         "Debian GNU/Linux 10 (buster) (on /dev/sda14)" \
         "Debian GNU/Linux, with Linux 4.19.0-10-amd64 (on /dev/sda15)" \
+        "Debian GNU/Linux (on /dev/sda20)" \
+        "Debian GNU/Linux (on /dev/sda21)" \
         )
 #A25
 GrubOsesA25=("0" \
@@ -236,6 +252,8 @@ GrubOsesA25=("0" \
         "CentOS Linux 8 (Core) (on /dev/sda9)" \
         "Debian GNU/Linux 10 (buster) (on /dev/sda14)" \
         "Debian GNU/Linux, with Linux 4.19.0-10-amd64 (on /dev/sda15)" \
+        "Debian GNU/Linux (on /dev/sda20)" \
+        "Debian GNU/Linux (on /dev/sda21)" \
         )
 
 #DC19
@@ -247,6 +265,8 @@ GrubOsesDC19=("0" \
         "CentOS Linux 8 (Core) (on /dev/sda9)" \
         "Debian GNU/Linux 10 (buster) (on /dev/sda14)" \
         "Debian GNU/Linux, with Linux 4.19.0-10-amd64 (on /dev/sda15)" \
+        "Debian GNU/Linux (on /dev/sda20)" \
+        "Debian GNU/Linux (on /dev/sda21)" \
         )
 
 function create_test_cases_map {
