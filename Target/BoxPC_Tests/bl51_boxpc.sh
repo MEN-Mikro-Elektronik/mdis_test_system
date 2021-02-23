@@ -26,7 +26,7 @@ function bl51_boxpc_description {
     echo "       Z029 (can test)"
     echo "    UART loopback tests on interfaces:"
     echo "       RS422/485"
-    echo "       RS232 (SA-adapter on X12)"
+    echo "       RS232
     echo "PURPOSE:"
     echo "    Check if all interfaces of BoxPC are detected and are working"
     echo "    correctly"
@@ -48,7 +48,7 @@ function bl51_boxpc_description {
 }
 
 ############################################################################
-# Box PC BL51  test
+# Box PC BL51E10 test
 #
 # parameters:
 #
@@ -64,8 +64,8 @@ function bl51_boxpc_test {
     VenID="sc31_fpga"
     DevID=""
     SubVenID=""
-    UartDevice0="ttyS2"  # RS422/485 
-    UartDevice1="ttyS3"  # RS232 on X12
+    UartDevice0="ttyS1"  # RS422/485
+    UartDevice1="ttyS2"  # RS232
 
     CanTest="loopback_single"
     MachineState="can_test"
