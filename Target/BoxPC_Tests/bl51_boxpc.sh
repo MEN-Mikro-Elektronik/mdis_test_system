@@ -26,7 +26,7 @@ function bl51_boxpc_description {
     echo "       Z029 (can test)"
     echo "    UART loopback tests on interfaces:"
     echo "       RS422/485"
-    echo "       RS232
+    echo "       RS232"
     echo "PURPOSE:"
     echo "    Check if all interfaces of BoxPC are detected and are working"
     echo "    correctly"
