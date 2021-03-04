@@ -60,7 +60,7 @@ function m57_test {
 
     # Run profidp_simp
     debug_print "${LogPrefix} Step2: run profidp_simp m57_${ModuleNo}" "${LogFile}"
-    if ! echo "${MenPcPassword}" | sudo -S --prompt=$'\r' -- stdbuf -oL profidp_simp m57_"${ModuleNo}" &> profidp_simp.log &
+    if ! echo "${MenPcPassword}" | sudo -S --prompt=$'\r' -- stdbuf -oL profidp_simp m57_"${ModuleNo}" > profidp_simp.log &
     then
         debug_print "${LogPrefix} Could not run profidp_simp " "${LogFile}"
     fi
