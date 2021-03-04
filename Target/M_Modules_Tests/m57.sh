@@ -58,26 +58,22 @@ function m57_test {
         return "${ERR_VALUE}"
     fi
 
-    # Run profidp_simp
-    debug_print "${LogPrefix} Step2: run profidp_simp m57_${ModuleNo}" "${LogFile}"
-    if ! echo "${MenPcPassword}" | sudo -S --prompt=$'\r' -- stdbuf -oL profidp_simp m57_"${ModuleNo}" > profidp_simp.log &
-    then
-        debug_print "${LogPrefix} Could not run profidp_simp " "${LogFile}"
-    fi
+    cat >m57_test.sh <<EOF
+#!/usr/bin/env bash
+stdbuf -oL profidp_simp m57_${ModuleNo} > profidp_simp.log &
+sleep 2
+profidp_simp_PID=\$(pgrep profidp_simp)
+sleep 20
+kill -9 \${profidp_simp_PID} > /dev/null 2>&1
+EOF
+    chmod +x m57_test.sh
 
-    # Kill bacground processess profidp_simp
-    sleep 2
-    profidp_simp_PID=$(pgrep profidp_simp)
-    sleep 20
-
-    if ! run_as_root kill -9 "${profidp_simp_PID}" > /dev/null 2>&1
-    then
-        if pgrep profidp_simp
-        then
-            debug_print "${LogPrefix} Could not kill profidp_simp PID: ${profidp_simp_PID}" "${LogFile}"
-        fi
-    fi
-    sleep 5
+   # Run profidp_simp
+   debug_print "${LogPrefix} Step2: run profidp_simp m57_${ModuleNo}" "${LogFile}"
+   if ! run_as_root ./m57_test.sh
+   then
+       debug_print "${LogPrefix} Could not run profidp_simp " "${LogFile}"
+   fi
 
     debug_print "${LogPrefix} Step3: check for errors" "${LogFile}"
     grep "^M_open" profidp_simp.log > /dev/null && \
