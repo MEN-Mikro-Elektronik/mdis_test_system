@@ -66,6 +66,7 @@ function m57_test {
     fi
 
     # Kill bacground processess profidp_simp
+    sleep 2
     profidp_simp_PID=$(pgrep profidp_simp)
     sleep 20
 
