@@ -24,7 +24,7 @@ function create_main_test_directory {
         local Retval=0
         if [ ! -d "${MainTestDirectoryPath}/${MainTestDirectoryName}" ]; then
                 # create and move to Test Case directory 
-                mkdir "${MainTestDirectoryPath}/${MainTestDirectoryName}"
+                mkdir -p "${MainTestDirectoryPath}/${MainTestDirectoryName}"
                 Retval=$?
                 if [ ${Retval} -ne 0 ]; then
                         echo "ERR: ${ERR_CREATE} - cannot create directory"
@@ -48,7 +48,7 @@ function create_result_directory {
         local Retval=0
         if [ ! -d "${MdisResultsDirectoryPath}" ]; then
                 # create Results directory
-                mkdir "${MdisResultsDirectoryPath}"
+                mkdir -p "${MdisResultsDirectoryPath}"
                 Retval=$?
                 if [ ${Retval} -ne 0 ]; then
                         echo "ERR: ${ERR_CREATE} - cannot create directory"
@@ -296,7 +296,7 @@ function automatic_driver_test {
         local Version
 
         rm -rf "${STR_RESULT_DIR}"
-        mkdir "${STR_RESULT_DIR}"
+        mkdir -p "${STR_RESULT_DIR}"
 
         # Check if flag for compilation of failed Makefiles is set 
         if [ -n "${6}" ]; then
