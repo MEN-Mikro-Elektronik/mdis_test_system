@@ -1,11 +1,11 @@
 # MDIS test system
 This is description of the automated test system for MDIS.
 
-mdis_test_system repository provides scripts to easily test behaviour of MEN hardware/software on different operating systems and kernels for tests setups specified for mdis release 13MD05-90_02_04. 
+mdis_test_system repository provides scripts to easily test behaviour of MEN hardware/software on different operating systems and kernels for test setups specified for MDIS release 13MD05-90_02_04. 
 
 Shortened functional test usage description:
-1. Prepare and configure OS-es on external drive (ssd USB 3 drive shall be considered), that can be connected to MEN CPU boards
-2. Prepare MEN hardware (Test setup <1-11>, BOXPC BL51E, 12V power supply)
+1. Prepare and configure OSs on external drive (SSD USB 3.0 drive shall be considered), that can be connected to MEN CPU boards
+2. Prepare MEN hardware (Test setup <1-n>, Box PC BL51E, 12V power supply)
 3. Configure test system (please follow "Test script configuration" section)
 4. Run main test script ./Mdis_Test.sh with proper params and wait for the results
 5. Generate results in user friendly format with Mdis_Report.sh script
@@ -24,10 +24,10 @@ Please find detailed usage description in proper sections.
 # Functional tests
 To run automated functional tests please prepare below equipment:
 - Host - Computer with Linux OS that will run tests on Target
-- Target - MEN hardware in proper configuration - Test setup <1-10>
+- Target - MEN hardware in proper configuration - Test setup <1-n>
 - Relay - to enable/disable modules inputs - MEN Box PC BL51
 - 12V power supply
-- SSD drive with preinstalled and configured OS-es. 
+- SSD drive with preinstalled and configured OSs. 
 
 Functional tests sources consist of directories:
 - Common - common part used by Target, Host (Configuration file)
@@ -39,7 +39,7 @@ Functional tests sources consist of directories:
 ### Disk partitioning
 Disk should be partitioned like below
 - GPT partition table
-  - 10 GB partition for data files (ext4)
+  - 20 GB partition for data files (ext2)
   - 10 GB swap partition
   - 512 MB EFI partition
   - 512 MB BIOS partition
@@ -92,21 +92,23 @@ The default variable is the name of the OS to boot. It is the name of a menu ent
 Update GRUB configuration:
 ```# update-grub```
 
-### OSes support and configuration
-Following OSes are supported:
+### OS support and configuration
+Following OSs are supported:
 - Ubuntu
   - 18.04.3 32-bit
   - 18.04.3 64-bit
   - 20.04 64-bit
 - Debian
-  - 10 32-bit
-  - 10 64-bit
+  - 10.5 32-bit
+  - 10.5 64-bit
+  - 10.6 32-bit
+  - 10.6 64-bit
 - Centos
-  - 7 64-bit
-  - 8 64-bit
+  - 7.8 64-bit
+  - 8.2 64-bit
 
 
-The system should be configured as it is described below. It applies to all OSes (Ubuntu, CentOS etc.). For some of them special action is required.
+The system should be configured as it is described below. It applies to all OSs (Ubuntu, CentOS etc.). For some of them special action is required.
 
 1. Disable automatic update,
 - CentOS:
@@ -138,7 +140,7 @@ Defaults secure_path=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin
 ```
 
 5. Set to ask sudo password every time,
-- Ubuntu, CentOS:
+- Ubuntu, CentOS, Debian:
 ```
 # visudo
 Defaults env_reset
@@ -148,7 +150,7 @@ Defaults env_reset, timestamp_timeout=0
 6. Allow to log in as root via ssh,
 - CentOS:
 Make sure that password for root is "men". During install CentOS require password to be at least 8 characters.
-- Ubuntu:
+- Ubuntu, Debian:
 Open: /etc/ssh/sshd_config 
 Add just below line: 
 ```
@@ -250,7 +252,7 @@ When everything is set up, please move to mdis_test_system/Host/Mdis_Test direct
 ```
 # Print help
 # ./Mdis_Test.sh --help
-# Run tests on setup 1 on all OS-es with verbose output 
+# Run tests on setup 1 on all OSs with verbose output 
 # ./Mdis_Test.sh --run-setup=1 --verbose=1
 # Run tests on setup 1 on OS that is currently running on Target machine
 # ./Mdis_Test.sh --run-instantly --run-setup=1
@@ -259,8 +261,34 @@ When everything is set up, please move to mdis_test_system/Host/Mdis_Test direct
 # Compilation tests
 Compilation test part is located in ```MDIS_Compilation_Test``` directory.
 
+## OS setup
+
+Below packages have to be installed on system:
+
+- git
+- build-essential
+- flex
+- bison
+- libelf-dev, libelf-devel or elfutils-libelf-devel
+
+Linux kernel sources should be placed in ```LinuxKernelsDirectoryPath``` directory and should not be compressed e.g.:
+```
+men@men:/media/tests/Linux_Kernels$ tree -L 1
+.
+├── linux-3.16.85
+├── linux-4.14.216
+├── linux-4.19.168
+├── linux-4.4.252
+├── linux-4.9.252
+├── linux-5.10.8
+├── linux-5.4.90
+└── linux-5.6.19
+
+8 directories, 0 files
+```
+
 ## Test script configuration
-Most important variables that have to be set in configuration file ```MDIS_Compilation_Test/Conf.sh```
+Most important variables that have to be set in configuration file ```Conf.sh```
 
 - GitMdisBranch
 
@@ -285,38 +313,43 @@ Most important variables that have to be set in configuration file ```MDIS_Compi
 
 - LinuxKernelsDirectoryPath
 
-  Path to directory with kernel sources. All Linux kernels should be placed in this direcotry.
+  Path to directory with kernel sources. All Linux kernels should be placed in this direcotry 
   
   e.g.:
-  ```LinuxKernelsDirectoryPath="/media/tests/LinuxKernels"```
+  ```LinuxKernelsDirectoryPath="/media/tests/Linux_Kernels"```
 
 ## Kernel list for testing
-The list of kernels used for testing should be placed in ``` MDIS_Compilation_Tests/kernel_list_release_02.txt```
+The list of kernels used for testing should be placed in ``` kernel_list_release_02.txt```
 e.g.:
+
 ```
-3.16.83
-4.4.221
-4.9.221
-4.14.178
-4.19.120
-5.4.38
-5.5.19
+3.16.85
+4.4.252
+4.9.252
+4.14.216
+4.19.168
+5.4.90
+5.6.19
+5.10.8
 ```
 
 ## Running compilation tests
+
+```
+Compilation tests include testing of proprietary drivers 13M057-06 and 13M065-06 that are not public.
+If you don't have source code for these drivers remove Makefile.13M057-06 and Makefile.13M065-06 from Makefiles directory to not test them.
+```
+
 When everything is set up just run the script:
 ```
-# MDIS_Compilation_Tests/run_buildtest.sh --download --all
+# ./run_buildtest.sh --download --all
 ```
 
 ### Running compilation tests faster
-In order to make compilation tests faster you can create one Makefile from all other Makefiles.
-Simply run the script:
+In order to make compilation tests faster you can use one Makefile for tests:
 ```
-# MDIS_Compilation_Tests/create_makefile.sh
+# ./run_buildtest.sh --download --all --makefile Makefile.shared
 ```
-This will create ```Makefile.shared```
-Next just run the script:
 ```
-# MDIS_Compilation_Tests/run_buildtest.sh --download --all --makefile Makefile.shared
+# ./run_buildtest.sh --download --all --makefile Makefile.static
 ```
