@@ -17,8 +17,6 @@ The beta package serves the acceptance tests. It should be as close as possible 
 - Package should be compressed and named release-13MD05_xx_xx_b1.tar.gz
 
 
-
-
 1. It's best to start with fresh master branch downloaded
 
 $ git clone --recurse-submodules -b master https://github.com/MEN-Mikro-Elektronik/13MD05-90 release-13MD05-90_02\_*04*\_b1
@@ -53,7 +51,7 @@ $ git submodule foreach git merge origin/*jpe-dev*
 
 9. Each submodule commits are pushed to remote
 
-$git submodule foreach git push
+$ git submodule foreach git push
 
 10. Check which submodule needs a new tag
 
@@ -61,8 +59,7 @@ $ git submodule --quiet foreach 'if [ "$(git rev-list --tags --max-count=1)" != 
 
 11. Create tag for each submodule that needs it
 
-
-
+  
 1. Go to the sumbodule directory
 
 $ cd *13Z025-90*
@@ -83,8 +80,7 @@ $ git push --tags
 
 $ cd -
 
-
-
+  
 12. Add all changes
 
 $ git add -u
