@@ -353,3 +353,4 @@ In order to make compilation tests faster you can use one Makefile for tests:
 ```
 # ./run_buildtest.sh --download --all --makefile Makefile.static
 ```
+You must run ./create_makefile.sh to create both Makefiles 
