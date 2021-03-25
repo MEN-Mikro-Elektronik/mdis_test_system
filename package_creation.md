@@ -59,28 +59,26 @@ $ git submodule --quiet foreach 'if [ "$(git rev-list --tags --max-count=1)" != 
 
 11. Create tag for each submodule that needs it
 
-  
-1. Go to the sumbodule directory
+11.1. Go to the sumbodule directory
 
 $ cd *13Z025-90*
 
-2. Get the last tag name
+11.2. Get the last tag name
 
 $ git describe --tags "$(git rev-list --tags --max-count=1)"
 
-3. Create tag with an updated name
+11.3. Create tag with an updated name
 
 $ git tag -a *13Z025-90_01_19* -m "Tag created for MDIS release 13MD05-90_02_*04*"
 
-4. Push tag to remote
+11.4. Push tag to remote
 
 $ git push --tags
 
-5. Go back to previous directory
+11.5. Go back to previous directory
 
 $ cd -
 
-  
 12. Add all changes
 
 $ git add -u
