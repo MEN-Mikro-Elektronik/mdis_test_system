@@ -172,6 +172,7 @@ Restart SSH service
     - libssl-dev
     - pppd
     - net-tools
+    - rsync
 
 ## Test script configuration
 Most important variables that have to be set in configuration file ```Common/Conf.sh```
