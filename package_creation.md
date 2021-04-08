@@ -10,11 +10,11 @@ The beta package serves the acceptance tests. It should be as close as possible 
 
 - All submodules should be merged from their corresponding development branch to master branch
 - For all submodules the last tag should reference the last commit (if not, a tag should be created and tag version increased)
-- A new branch for the main repository should be created (release-13MD05_xx_xx_b1) and should contain all the development branch changes, except it should reference the submodules from master branches
+- A new branch for the main repository should be created (release-13MD05-90_xx_xx_b1) and should contain all the development branch changes, except it should reference the submodules from master branches
 - A new branch should be taged (if not, a tag should be created and tag version increased)
 - Package should contain HISTORY directory for offline installation
 - Package should not contain any version control system files (git)
-- Package should be compressed and named release-13MD05_xx_xx_b1.tar.gz
+- Package should be compressed and named "13MD05-90_xx_xx_b1.tar.gz"
 
 
 1. It's best to start with fresh master branch downloaded
@@ -128,3 +128,75 @@ $ cd -
 $ tar -czf 13MD05-90_02\_*04*\_b1.tar.gz 13MD05-90
 
 ## Release package
+
+The release package will be put on the company's website for download.
+
+- All submodules should be merged from their corresponding development branch to master branch - already done when beta release package was created
+- For all submodules the last tag should reference the last commit (if not, a tag should be created and tag version increased) -  already done when beta release package was created
+- The main repository should be merged from beta release branch to master branch
+- The main repository should reference the submodules from master branches - already done when beta release package was created
+- The main repository should be taged (tag version should be increased)
+- Package should contain HISTORY directory for offline installation
+- Package should not contain any version control system files (git)
+- Package should be compressed and named "13MD05-90_xx_xx.tar.gz"
+
+
+1. It's best to start with fresh master branch downloaded
+
+$ git clone --recurse-submodules -b master https://github.com/MEN-Mikro-Elektronik/13MD05-90 release-13MD05-90_02\_*04*
+
+2. Almos everything will happen in this directory
+
+$ cd release-13MD05-90_02\_*04*
+
+3. Merge beta release branch into master branch
+
+$ git merge origin/release-13MD05-90_02\_*04_b1*
+
+4. Add all changes
+
+$ git add -u
+
+5. Push commits to remote
+
+$ git push
+
+6. Get the last tag name
+
+$ git describe --tags "$(git rev-list --tags --max-count=1)"
+
+7. Create tag with an updated name
+
+$ git tag -a 13MD05-90_02\_*04* -m "Release 13MD05-90_02\_*04*"
+
+8. Push tag to remote
+
+$ git push --tags
+
+9. Go to the directory below
+
+$ cd ..
+
+10. Download new release
+
+$ git clone --recurse-submodules -b master https://github.com/MEN-Mikro-Elektronik/13MD05-90 13MD05-90
+
+11. Go to release directory
+
+$ cd 13MD05-90
+
+12. Create HISTORY directory with content
+
+$ ./INSTALL.sh --install-only
+
+13. Remove all git related files
+
+$ find . -name '.git*' -exec rm -rf '{}' \;
+
+14. Go to the previous direcory
+
+$ cd -
+
+15. Create tar.gz archive
+
+$ tar -czf 13MD05-90_02\_*04*.tar.gz 13MD05-90
