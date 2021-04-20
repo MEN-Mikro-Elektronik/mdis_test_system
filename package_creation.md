@@ -117,7 +117,7 @@ $ ./INSTALL.sh --install-only
 
 21. Remove all git related files
 
-$ find . -name '.git*' -exec rm -rf '{}' \;
+$ find . -name '.git*' -exec rm -rf '{}' /\;
 
 22. Go to the previous direcory
 
@@ -153,50 +153,58 @@ $ cd release-13MD05-90_02\_*04*
 
 $ git merge origin/release-13MD05-90_02\_*04_b1*
 
-4. Add all changes
+4. Each submodule should reference master branch
+
+$ git submodule foreach git checkout master
+
+5. Add all changes
 
 $ git add -u
 
-5. Push commits to remote
+6. Update submodules to latest commit
+
+$ git commit -m "Update submodules to latest commit"
+
+7. Push commits to remote
 
 $ git push
 
-6. Get the last tag name
+8. Get the last tag name
 
 $ git describe --tags "$(git rev-list --tags --max-count=1)"
 
-7. Create tag with an updated name
+9. Create tag with an updated name
 
 $ git tag -a 13MD05-90_02\_*04* -m "Release 13MD05-90_02\_*04*"
 
-8. Push tag to remote
+10. Push tag to remote
 
 $ git push --tags
 
-9. Go to the directory below
+11. Go to the directory below
 
 $ cd ..
 
-10. Download new release
+12. Download new release
 
 $ git clone --recurse-submodules -b master https://github.com/MEN-Mikro-Elektronik/13MD05-90 13MD05-90
 
-11. Go to release directory
+13. Go to release directory
 
 $ cd 13MD05-90
 
-12. Create HISTORY directory with content
+14. Create HISTORY directory with content
 
 $ ./INSTALL.sh --install-only
 
-13. Remove all git related files
+15. Remove all git related files
 
-$ find . -name '.git*' -exec rm -rf '{}' \;
+$ find . -name '.git*' -exec rm -rf '{}' /\;
 
-14. Go to the previous direcory
+16. Go to the previous direcory
 
 $ cd -
 
-15. Create tar.gz archive
+17. Create tar.gz archive
 
 $ tar -czf 13MD05-90_02\_*04*.tar.gz 13MD05-90
