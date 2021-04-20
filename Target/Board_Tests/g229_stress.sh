@@ -2,10 +2,7 @@
 MyDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${MyDir}/../../Common/Conf.sh"
 source "${MyDir}/../St_Functions.sh"
-source "${MyDir}/Ip_Core_Tests/z001_smb.sh"
-#source "${MyDir}/Ip_Core_Tests/z029_can.sh"
 source "${MyDir}/Ip_Core_Tests/z127_gpio.sh"
-source "${MyDir}/Ip_Core_Tests/z135_hsuart.sh"
 
 ############################################################################
 # board g229 test
@@ -13,7 +10,7 @@ source "${MyDir}/Ip_Core_Tests/z135_hsuart.sh"
 # parameters:
 # $1    Module number
 # $2    Module log path 
-function g229_description {
+function g229_stress_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
     local TestSummaryDirectory="${3}"
@@ -24,17 +21,14 @@ function g229_description {
     echo "    are available in the system"
     echo "DESCRIPTION:"
     echo "    G229 Interfaces Test"
-    echo "    Run tests for devices: z001_smb, z127_gpio, z135_hsuart"
+    echo "    Run tests for devices: z127_gpio"
     echo "PURPOSE:"
-    echo "    Check if all interfaces of G215 board are detected and are working"
-    echo "    correctly"
+    echo "    MDIS stress test on gpio interfaces"
     echo "UPPER_REQUIREMENT_ID:"
     print_env_requirements "${TestSummaryDirectory}"
     arch_requirement "pci"
     echo "    MEN_13MD0590_SWR_1040"
-    print_requirements "z001_smb_description"
     print_requirements "z127_gpio_description"
-    print_requirements "z135_hsuart_description"
     #echo "REQUIREMENT_ID:"
     #echo "    MEN_13MD05-90_SA_1330"
     echo "RESULTS"
@@ -44,10 +38,8 @@ function g229_description {
 
     if [ ! -z "${LongDescription}" ]
     then
-        z001_smb_description
         #z029_can_description
         z127_gpio_description
-        z135_hsuart_description
     fi
 }
 
@@ -61,7 +53,7 @@ function g229_description {
 # $4    Log file
 # $5    Log prefix
 # $6    Board number
-function g229_test {
+function g229_stress_test {
     local TestCaseId="${1}"
     local TestSummaryDirectory="${2}"
     local OsNameKernel="${3}"
@@ -74,42 +66,14 @@ function g229_test {
     DevID="0x4d45"
     SubVenID="0x00d1"
 
-    CanTest="loopback_single"
-    MachineState="smb_test"
+    GpioTest="stress_test"
+    MachineState="gpio_z127_test"
     MachineRun=true
     SmbTestResult=${ERR_VALUE}
     CanTestResult=${ERR_VALUE}
 
     while ${MachineRun}; do
         case "${MachineState}" in
-        smb_test)
-            debug_print "${LogPrefix} Smb test" "${LogFile}"
-            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
-                                             -id "${TestCaseId}"\
-                                             -os "${OsNameKernel}"\
-                                             -dname "z001_smb"\
-                                             -venid "${VenID}"\
-                                             -devid "${DevID}"\
-                                             -subvenid "${SubVenID}"\
-                                             -tspec "${CanTest}"\
-                                             -dno "1"
-            SmbTestResult=$?
-            MachineState="gpio_z127_test"
-            ;;
-        # can_test)
-        #    debug_print "${LogPrefix} Run CAN test" "${LogFile}"
-        #    run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
-        #                                     -id "${TestCaseId}"\
-        #                                     -os "${OsNameKernel}"\
-        #                                     -dname "z029_can"\
-        #                                     -venid "${VenID}"\
-        #                                     -devid "${DevID}"\
-        #                                     -subvenid "${SubVenID}"\
-        #                                     -tspec "${CanTest}"\
-        #                                     -dno "1"
-        #    CanTestResult=$?
-        #    MachineState="gpio_z127_test"
-        #    ;;
         gpio_z127_test)
             debug_print "${LogPrefix} Run GPIO z127 test" "${LogFile}"
             run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
@@ -119,23 +83,9 @@ function g229_test {
                                              -venid "${VenID}"\
                                              -devid "${DevID}"\
                                              -subvenid "${SubVenID}"\
-                                             -tspec "led"\
+                                             -tspec "${GpioTest}"\
                                              -dno "1"
             GpioZ127TestResult=$?
-            MachineState="hsuart_test"
-            ;;
-        hsuart_test)
-            debug_print "${LogPrefix} Run HSUART test" "${LogFile}"
-            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
-                                             -id "${TestCaseId}"\
-                                             -os "${OsNameKernel}"\
-                                             -dname "z135_hsuart"\
-                                             -venid "${VenID}"\
-                                             -devid "${DevID}"\
-                                             -subvenid "${SubVenID}"\
-                                             -tspec "${CanTest}"\
-                                             -dno "1"
-            UartTestResult=$?
             MachineState="Break"
             ;;
         Break)
@@ -150,7 +100,7 @@ function g229_test {
         esac
     done
 
-    if [ "${SmbTestResult}" = "${ERR_OK}" ] && [ "${GpioZ127TestResult}" = "${ERR_OK}" ] && [ "${UartTestResult}" = "${ERR_OK}" ]; then
+    if  [ "${GpioZ127TestResult}" = "${ERR_OK}" ]; then
         return "${ERR_OK}"
     else
         return "${ERR_VALUE}"

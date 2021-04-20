@@ -119,7 +119,7 @@ function f215_test {
                                              -venid "${VenID}"\
                                              -devid "${DevID}"\
                                              -subvenid "${SubVenID}"\
-                                             -tspec "dummy"\
+                                             -tspec "led"\
                                              -dno "1"
             GpioZ034TestResult=$?
             MachineState="gpio_z037_test"

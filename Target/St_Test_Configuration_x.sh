@@ -124,6 +124,9 @@ then
     echo "${LogPrefix} Could not rmmmod all MEN modules !"
 fi
 
+# Check if OS was compiled with CONFIG_DEBUG_KMEMLEAK flag
+IsMemLeakOS=$(echo "${OsNameKernel}" | grep -c "kmemleak")
+
 # Clear dmesg log
 run_as_root dmesg --clear
 
@@ -133,13 +136,17 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             run_test_case_id "${TestId}" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
         1)
-            run_test_case_board "100" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # F215 board test
-            run_test_case_board "104" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # G215 board test
-            run_test_case_module "m65n_canopen" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
-            run_test_case_module "m65n" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
-            run_test_case_module "m77" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
-            run_test_case_module "m33" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
-            run_test_case_module "m47" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            if [ "${IsMemLeakOS}" -gt 0 ]; then
+                run_test_case_board "150" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # F215 stress test
+            else
+                run_test_case_board "100" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # F215 board test
+                run_test_case_board "104" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # G215 board test
+                run_test_case_module "m65n_canopen" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+                run_test_case_module "m65n" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+                run_test_case_module "m77" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+                run_test_case_module "m33" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+                run_test_case_module "m47" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            fi
             ;;
         2)
             run_test_case_board "102" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # F614 @ F23P
@@ -159,10 +166,14 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             run_test_case_module "m36n" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
         4)
-            run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" "G025A03" # SMB2_TEST @ G25A03
-            run_test_case_board "103" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
-            run_test_case_module "m81" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
-            run_test_case_module "m72" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            if [ "${IsMemLeakOS}" -gt 0 ]; then
+                run_test_case_board "151" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # G229 stress test
+            else
+                run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" "G025A03" # SMB2_TEST @ G25A03
+                run_test_case_board "103" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+                run_test_case_module "m81" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+                run_test_case_module "m72" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            fi
             ;;
         5)
             run_test_case_board "105" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # F206 board with Z055 HDLC core
@@ -172,21 +183,21 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             run_test_case_module "m199" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
         6)
-            run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" "CB70-00" # SMB2_TEST @ CB70
+            run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" "CB70-" # SMB2_TEST @ CB70
             run_test_case_board "2" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ CB70
             ;;
         7)
             # Manual tests
             ;;
         8)
-            run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" "SC24-08" # SMB2_TEST @ BL50
+            run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" "SC24-" # SMB2_TEST @ BL50
             run_test_case_board "2" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL50
             run_test_case_board "3" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL50
             run_test_case_board "4" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL50
             run_test_case_board "500" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # BL50 fpga ip core tests
             ;;
         9)
-            run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" "SC31-01" # SMB2_TEST @ BL51
+            run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" "SC31-" # SMB2_TEST @ BL51
             run_test_case_board "2" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL51
             run_test_case_board "3" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL51
             run_test_case_board "4" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ BL51
@@ -201,7 +212,9 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             run_test_case_board "502" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # BL70 fpga ip core tests
             ;;
         11)
-            run_test_case_board "102" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # F614 @ F23P
+            run_test_case_board "700" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # DC19 FPGA IP cores tests
+            ;;
+        12)
             echo "Dummy test setup"
             ;;
         *)

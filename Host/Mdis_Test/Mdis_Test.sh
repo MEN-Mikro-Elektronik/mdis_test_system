@@ -57,6 +57,7 @@ function print_test_list {
     create_test_setup_test_cases_map "8"
     create_test_setup_test_cases_map "9"
     create_test_setup_test_cases_map "10"
+    create_test_setup_test_cases_map "11"
 
     echo "" > /tmp/test_cases_list.txt
     for K in "${!TEST_CASES_MAP[@]}"
@@ -93,6 +94,9 @@ function print_test_list {
         fi
         if [ "${TEST_SETUP_10_TEST_CASES[${K}]}" = "true" ]; then
             TestSetupList+="10,"
+        fi
+        if [ "${TEST_SETUP_11_TEST_CASES[${K}]}" = "true" ]; then
+            TestSetupList+="11,"
         fi
         if [ "${TestSetupList}" = "" ]; then
             TestSetupList+="not used"
@@ -149,6 +153,11 @@ function print_test_purpose {
         Board=$(echo "${TEST_CASES_MAP[${TestId}]}")
         source ${TestPath}/BoxPC_Tests/${Board}.sh
         Purpose=$(${Board}_description "" "" "")
+    elif [ "${TestId}" -lt "800" ]
+    then
+        Board=$(echo "${TEST_CASES_MAP[${TestId}]}")
+        source ${TestPath}/PanelPC_Tests/${Board}.sh
+        Purpose=$(${Board}_description "" "" "")
     fi
     Purpose0=$(echo "${Purpose}" | grep "PURPOSE:" -A 2 | awk 'NR==2' | awk '{$1=$1};1' )
     Purpose1=$(echo "${Purpose}" | grep "PURPOSE:" -A 2 | awk 'NR==3' | awk '{$1=$1};1' )
@@ -200,6 +209,11 @@ function print_test_brief {
     then
         Board=$(echo "${TEST_CASES_MAP[${TestId}]}")
         source ${TestPath}/BoxPC_Tests/${Board}.sh
+        ${Board}_description "" "" "" "long_description"
+    elif [ "${TestId}" -lt "800" ]
+    then
+        Board=$(echo "${TEST_CASES_MAP[${TestId}]}")
+        source ${TestPath}/PanelPC_Tests/${Board}.sh
         ${Board}_description "" "" "" "long_description"
     fi
 }
@@ -285,6 +299,9 @@ case ${TEST_SETUP} in
     10)
         GrubOses=( "${GrubOsesBL70[@]}" )
         ;;
+    11)
+        GrubOses=( "${GrubOsesDC19[@]}" )
+        ;;
     *)
         echo "TEST SETUP IS NOT SET"
         exit 99
@@ -319,17 +336,19 @@ function cleanOnExit() {
 function cleanMdisTestBackgroundJob {
     echo "** cleanOnExit"
     if [ ${MdisTestBackgroundPID} -ne 0 ]; then
-        # Kill process
-        echo "${LogPrefix} kill process ${MdisTestBackgroundPID}"
+        if kill -0 ${MdisTestBackgroundPID} >/dev/null 2>&1; then
+            # Kill process
+            echo "${LogPrefix} kill process ${MdisTestBackgroundPID}"
 
-        if ! kill  ${MdisTestBackgroundPID}
-        then
-            echo "${LogPrefix} Could not kill cat backgroung process ${MdisTestBackgroundPID}"
-        else
-            echo "${LogPrefix} process ${MdisTestBackgroundPID} killed"
+            if ! kill  ${MdisTestBackgroundPID}
+            then
+                echo "${LogPrefix} Could not kill cat backgroung process ${MdisTestBackgroundPID}"
+            else
+                echo "${LogPrefix} process ${MdisTestBackgroundPID} killed"
+            fi
+            sleep 1
+            jobs
         fi
-        sleep 1
-        jobs
     fi
 }
 

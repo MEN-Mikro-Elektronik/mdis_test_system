@@ -23,10 +23,12 @@ source "${MyDir}"/M_Modules_Tests/m82.sh
 source "${MyDir}"/M_Modules_Tests/m99.sh
 source "${MyDir}"/M_Modules_Tests/m199.sh
 source "${MyDir}"/Board_Tests/f215.sh
+source "${MyDir}"/Board_Tests/f215_stress.sh
 source "${MyDir}"/Board_Tests/f206.sh
 source "${MyDir}"/Board_Tests/f614.sh
 source "${MyDir}"/Board_Tests/g215.sh
 source "${MyDir}"/Board_Tests/g229.sh
+source "${MyDir}"/Board_Tests/g229_stress.sh
 source "${MyDir}"/Board_Tests/f223.sh
 source "${MyDir}"/Board_Tests/carriers_f205.sh
 source "${MyDir}"/Board_Tests/carriers_g204.sh
@@ -38,6 +40,7 @@ source "${MyDir}"/SMB2_Tests/b_smb2_eetemp.sh
 source "${MyDir}"/SMB2_Tests/b_smb2_led.sh
 source "${MyDir}"/SMB2_Tests/b_smb2_pci.sh
 source "${MyDir}"/SMB2_Tests/b_smb2_poe.sh
+source "${MyDir}"/PanelPC_Tests/dc19_panelpc.sh
 
 CurrDir=$(pwd)
 
@@ -299,6 +302,7 @@ case "${TestTypeDev}" in
         ;;
     b);&
     f);&
+    d);&
     g)
         print "${LogPrefix} Board test: ${DeviceName}" "${TestCaseLogName}"
         debug_print "${LogPrefix} \"${TestFunc} ${TestCaseId} ${TestCaseMainDir}/${TestCaseName} ${TestOs} ${TestCaseLogName} ${LogPrefix} ${DevicesFile} ${DeviceNo}\"" "${TestCaseLogName}"

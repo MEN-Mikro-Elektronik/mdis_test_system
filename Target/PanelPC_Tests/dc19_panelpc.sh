@@ -2,42 +2,37 @@
 MyDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${MyDir}/../../Common/Conf.sh"
 source "${MyDir}/../St_Functions.sh"
-source "${MyDir}/SMB2_Tests/b_smb2_eetemp.sh"
 source "${MyDir}/Ip_Core_Tests/z029_can.sh"
+source "${MyDir}/Ip_Core_Tests/z125_uart.sh"
 
 ############################################################################
-# Box PC BL51 description
+# Panel PC DC19 description
 #
 # parameters:
 # $1    Module number
 # $2    Module log path 
-function bl51_boxpc_description {
+function dc19_panelpc_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
     local TestSummaryDirectory="${3}"
     local LongDescription="${4}"
-    echo "--------------------------BL51 BoxPC Test Case--------------------------------"
+    echo "--------------------------DC19 PanelPC Test Case--------------------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that at this point all necessary drivers have been build and"
     echo "    are available in the system"
     echo "DESCRIPTION:"
-    echo "    Run Z029, RS422/485, RS232 tests on BL50"
-    echo "    Tests on BL51 for ip cores:"
-    echo "       Z029 (can test)"
-    echo "    UART loopback tests on interfaces:"
-    echo "       RS422/485"
-    echo "       RS232"
+    echo "    Run Z029, UART tests on DC19:"
     echo "PURPOSE:"
-    echo "    Check if all interfaces of BoxPC are detected and are working"
+    echo "    Check if all interfaces of PanelPC are detected and are working"
     echo "    correctly"
     echo "UPPER_REQUIREMENT_ID:"
     print_env_requirements "${TestSummaryDirectory}"
-    echo "    MEN_13MD0590_SWR_0870"
+    echo "    MEN_13MD0590_SWR_0820"
     print_requirements "z029_can_description"
     #echo "REQUIREMENT_ID:"
-    #echo "    MEN_13MD05-90_SA_1080"
+    #echo "    MEN_13MD05-90_SA_1070"
     echo "RESULTS"
-    echo "    SUCCESS if ip-cores tests on BL51 are passed."
+    echo "    SUCCESS if ip-cores tests on DC19 are passed."
     echo "    FAIL otherwise"
     echo ""
 
@@ -48,11 +43,11 @@ function bl51_boxpc_description {
 }
 
 ############################################################################
-# Box PC BL51E10 test
+# Panel PC DC19  test
 #
 # parameters:
 #
-function bl51_boxpc_test {
+function dc19_panelpc_test {
     local TestCaseId="${1}"
     local TestSummaryDirectory="${2}"
     local OsNameKernel="${3}"
@@ -60,19 +55,16 @@ function bl51_boxpc_test {
     local LogPrefix=${5}
     local BoardInSystem=${6}
 
-    # Board in this Test Case always have
+    # FPGA chameleon table identifier
     VenID="sc31_fpga"
     DevID=""
     SubVenID=""
-    UartDevice0="ttyS1"  # RS422/485
-    UartDevice1="ttyS2"  # RS232
+    UartDevice="ttyS0"  # device under /dev/*"
 
     CanTest="loopback_single"
     MachineState="can_test"
     MachineRun=true
     CanTestResult=${ERR_VALUE}
-    UartTestResult0=${ERR_VALUE}
-    UartTestResult1=${ERR_VALUE}
 
     while ${MachineRun}; do
         case "${MachineState}" in
@@ -88,10 +80,10 @@ function bl51_boxpc_test {
                                              -tspec "${CanTest}"\
                                              -dno "1"
             CanTestResult=$?
-            MachineState="uart_test0"
+            MachineState="uart_test"
             ;;
-        uart_test0)
-            debug_print "${LogPrefix} Run UART RS422/485 test" "${LogFile}"
+        uart_test)
+            debug_print "${LogPrefix} Run UART test" "${LogFile}"
             run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
@@ -99,23 +91,9 @@ function bl51_boxpc_test {
                                              -venid "${VenID}"\
                                              -devid "${DevID}"\
                                              -subvenid "${SubVenID}"\
-                                             -tspec "${UartDevice0}"\
+                                             -tspec "${UartDevice}"\
                                              -dno "1"
-            UartTestResult0=$?
-            MachineState="uart_test1"
-            ;;
-        uart_test1)
-            debug_print "${LogPrefix} Run UART RS232 test" "${LogFile}"
-            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
-                                             -id "${TestCaseId}"\
-                                             -os "${OsNameKernel}"\
-                                             -dname "z125_uart"\
-                                             -venid "${VenID}"\
-                                             -devid "${DevID}"\
-                                             -subvenid "${SubVenID}"\
-                                             -tspec "${UartDevice1}"\
-                                             -dno "2"
-            UartTestResult1=$?
+            UartTestResult=$?
             MachineState="Break"
             ;;
         Break)
@@ -130,7 +108,7 @@ function bl51_boxpc_test {
         esac
     done
 
-    if [ "${CanTestResult}" = "${ERR_OK}" ] && [ "${UartTestResult0}" = "${ERR_OK}" ] && [ "${UartTestResult1}" = "${ERR_OK}" ]; then
+    if [ "${CanTestResult}" = "${ERR_OK}" ] && [ "${UartTestResult}" = "${ERR_OK}" ]; then
         return "${ERR_OK}"
     else
         return "${ERR_VALUE}"

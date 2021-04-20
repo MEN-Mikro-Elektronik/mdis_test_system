@@ -24,7 +24,7 @@ function create_main_test_directory {
         local Retval=0
         if [ ! -d "${MainTestDirectoryPath}/${MainTestDirectoryName}" ]; then
                 # create and move to Test Case directory 
-                mkdir "${MainTestDirectoryPath}/${MainTestDirectoryName}"
+                mkdir -p "${MainTestDirectoryPath}/${MainTestDirectoryName}"
                 Retval=$?
                 if [ ${Retval} -ne 0 ]; then
                         echo "ERR: ${ERR_CREATE} - cannot create directory"
@@ -48,7 +48,7 @@ function create_result_directory {
         local Retval=0
         if [ ! -d "${MdisResultsDirectoryPath}" ]; then
                 # create Results directory
-                mkdir "${MdisResultsDirectoryPath}"
+                mkdir -p "${MdisResultsDirectoryPath}"
                 Retval=$?
                 if [ ${Retval} -ne 0 ]; then
                         echo "ERR: ${ERR_CREATE} - cannot create directory"
@@ -244,6 +244,7 @@ function checkout_kernel_version {
   make defconfig
   make prepare
   make scripts
+  make modules_prepare
   cd "${currdir}" || (echo "Could not enter directory \"${currdir}\". Quitting!" && exit 1)
 }
 
@@ -295,7 +296,7 @@ function automatic_driver_test {
         local Version
 
         rm -rf "${STR_RESULT_DIR}"
-        mkdir "${STR_RESULT_DIR}"
+        mkdir -p "${STR_RESULT_DIR}"
 
         # Check if flag for compilation of failed Makefiles is set 
         if [ -n "${6}" ]; then
@@ -408,8 +409,8 @@ function automatic_driver_test {
                 touch "${STR_RESULT_DIR}/ModinfoResults.log"
                 Modules=$(find "OBJ/" -name '*.ko' -type f)
                 for Module in ${Modules}; do
-                        modinfo "${Module}" > "${STR_RESULT_DIR}/ModinfoResults/${Module##*/}.${Makefile}.log"
-                        Version="$(modinfo "${Module}" | grep -l "^version:")"
+                        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modinfo "${Module}" > "${STR_RESULT_DIR}/ModinfoResults/${Module##*/}.${Makefile}.log"
+                        Version="$(echo ${MenPcPassword} | sudo -S --prompt=$'\r' modinfo "${Module}" | grep -l "^version:")"
                         if [ "${Version}" != "" ]; then
                                 echo "${Module##*/}.${Makefile} PASSED" >> "${STR_RESULT_DIR}/ModinfoResults.log"
                         else
