@@ -336,17 +336,19 @@ function cleanOnExit() {
 function cleanMdisTestBackgroundJob {
     echo "** cleanOnExit"
     if [ ${MdisTestBackgroundPID} -ne 0 ]; then
-        # Kill process
-        echo "${LogPrefix} kill process ${MdisTestBackgroundPID}"
+        if kill -0 ${MdisTestBackgroundPID} >/dev/null 2>&1; then
+            # Kill process
+            echo "${LogPrefix} kill process ${MdisTestBackgroundPID}"
 
-        if ! kill  ${MdisTestBackgroundPID}
-        then
-            echo "${LogPrefix} Could not kill cat backgroung process ${MdisTestBackgroundPID}"
-        else
-            echo "${LogPrefix} process ${MdisTestBackgroundPID} killed"
+            if ! kill  ${MdisTestBackgroundPID}
+            then
+                echo "${LogPrefix} Could not kill cat backgroung process ${MdisTestBackgroundPID}"
+            else
+                echo "${LogPrefix} process ${MdisTestBackgroundPID} killed"
+            fi
+            sleep 1
+            jobs
         fi
-        sleep 1
-        jobs
     fi
 }
 
