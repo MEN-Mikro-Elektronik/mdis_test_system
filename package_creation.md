@@ -117,7 +117,7 @@ $ ./INSTALL.sh --install-only
 
 21. Remove all git related files
 
-$ find . -name '.git*' -exec rm -rf '{}' /\;
+$ find . -name '.git*' -exec rm -rf '{}' \\;
 
 22. Go to the previous direcory
 
@@ -199,7 +199,7 @@ $ ./INSTALL.sh --install-only
 
 15. Remove all git related files
 
-$ find . -name '.git*' -exec rm -rf '{}' /\;
+$ find . -name '.git*' -exec rm -rf '{}' \\;
 
 16. Go to the previous direcory
 
