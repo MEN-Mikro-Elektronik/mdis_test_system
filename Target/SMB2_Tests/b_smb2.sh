@@ -89,7 +89,11 @@ function b_smb2_test {
             Step3)
                 debug_print "${LogPrefix} Run step @3" "${LogFile}"
                 run_as_root smb2_boardident "${DevName}" > "smb2_boardident.log"
-                run_as_root grep "HW-Name[[:space:]]\+=[[:space:]]\+${BoardName}" "smb2_boardident.log" > /dev/null
+                if [ "${BoardName}" == "b_smb2" ]; then
+                    run_as_root grep "HW-Name[[:space:]]\+=[[:space:]]\+[a-zA-Z0-9]\+" "smb2_boardident.log" > /dev/null
+                else
+                    run_as_root grep "HW-Name[[:space:]]\+=[[:space:]]\+${BoardName}" "smb2_boardident.log" > /dev/null
+                fi
                 CmdResult=$?
                 if [ ${CmdResult} -ne 0 ]; then
                     debug_print "${LogPrefix}  ERR_VALUE: \"${BoardName}\" not found with smb2_boardident" "${LogFile}"
