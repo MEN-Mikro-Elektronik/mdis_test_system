@@ -12,7 +12,7 @@ Shortened functional test usage description:
 
 Please check MDIS test system scheme :
 
-![mdis_test_system_scheme](https://github.com/MEN-Mikro-Elektronik/mdis_test_system/blob/jpe-dev-02_02/Images/mdis_test_system.png)
+![mdis_test_system_scheme](https://github.com/MEN-Mikro-Elektronik/mdis_test_system/blob/master/Images/mdis_test_system.png)
 
 Shortened compilation test usage:
 1. Download and unzip kernel sources you would like to use (https://www.kernel.org/),

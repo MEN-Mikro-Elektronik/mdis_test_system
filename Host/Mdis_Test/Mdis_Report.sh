@@ -17,6 +17,8 @@ TEST_RESULT_OS["4"]="DebianGNULinux419010amd64x8664"
 TEST_RESULT_OS["5"]="DebianGNULinux419010686paei686"
 TEST_RESULT_OS["6"]="CentOSLinux31001127el7x8664x8664"
 TEST_RESULT_OS["7"]="CentOSLinux4180193el8x8664x8664"
+TEST_RESULT_OS["8"]="DebianGNULinux419013amd64x8664"
+TEST_RESULT_OS["9"]="DebianGNULinux419013686paei686"
 
 declare -a TEST_RESULT_OS_1=(_ _ _ _ _)
 declare -a TEST_RESULT_OS_2=(_ _ _ _ _)
@@ -25,7 +27,9 @@ declare -a TEST_RESULT_OS_4=(_ _ _ _ _)
 declare -a TEST_RESULT_OS_5=(_ _ _ _ _)
 declare -a TEST_RESULT_OS_6=(_ _ _ _ _)
 declare -a TEST_RESULT_OS_7=(_ _ _ _ _)
-declare -a TEST_RESULTS_GROUP=("TEST_RESULT_OS_1" "TEST_RESULT_OS_2" "TEST_RESULT_OS_3" "TEST_RESULT_OS_4" "TEST_RESULT_OS_5"  "TEST_RESULT_OS_6" "TEST_RESULT_OS_7")
+declare -a TEST_RESULT_OS_8=(_ _ _ _ _)
+declare -a TEST_RESULT_OS_9=(_ _ _ _ _)
+declare -a TEST_RESULTS_GROUP=("TEST_RESULT_OS_1" "TEST_RESULT_OS_2" "TEST_RESULT_OS_3" "TEST_RESULT_OS_4" "TEST_RESULT_OS_5" "TEST_RESULT_OS_6" "TEST_RESULT_OS_7" "TEST_RESULT_OS_8" "TEST_RESULT_OS_9")
 
 ### @brief script usage --help
 function mdis_report_usage {
@@ -110,6 +114,10 @@ function set_result_os {
         TEST_RESULT_OS_6["${TestSetup}"]="${Result}"
     elif [ "${OSName}" = "${TEST_RESULT_OS[7]}" ]; then
         TEST_RESULT_OS_7["${TestSetup}"]="${Result}"
+    elif [ "${OSName}" = "${TEST_RESULT_OS[8]}" ]; then
+        TEST_RESULT_OS_8["${TestSetup}"]="${Result}"
+    elif [ "${OSName}" = "${TEST_RESULT_OS[9]}" ]; then
+        TEST_RESULT_OS_9["${TestSetup}"]="${Result}"
     else
         echo "OS NOT SPECIFIED"
         exit 1
