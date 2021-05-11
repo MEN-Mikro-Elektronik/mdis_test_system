@@ -176,7 +176,7 @@ while test $# -gt 0 ; do
                 shift
             else
                 echo "No board name specified"
-		BoardName="noname"
+		exit 1
             fi
             ;;
         *)
