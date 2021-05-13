@@ -173,6 +173,9 @@ Restart SSH service
     - pppd
     - net-tools
     - rsync
+    - i2c-tools
+    - build-essential
+    - git
 
 ## Test script configuration
 Most important variables that have to be set in configuration file ```Common/Conf.sh```
