@@ -163,19 +163,21 @@ Restart SSH service
 ```sudo service ssh restart```
 
 7. Below packages have to be installed on system:
-    - python
-    - openssh-server
-    - sshpass
-    - libelf-dev
-    - bison
-    - flex
-    - libssl-dev
-    - pppd
-    - net-tools
-    - rsync
-    - i2c-tools
-    - build-essential
-    - git
+
+   - bison
+   - build-essential
+   - flex
+   - git
+   - i2c-tools
+   - libelf-dev
+   - libssl-dev
+   - net-tools
+   - openssh-server
+   - pppd
+   - python
+   - rsync
+   - sshpass
+
 
 ## Test script configuration
 Most important variables that have to be set in configuration file ```Common/Conf.sh```
