@@ -320,7 +320,7 @@ function cleanOnExit() {
         # Kill process
         echo "${LogPrefix} kill process ${MdisTestBackgroundPID}"
 
-        if ! kill ${MdisTestBackgroundPID}
+        if ! kill ${MdisTestBackgroundPID} 2>/dev/null
         then
             echo "${LogPrefix} Could not kill cat backgroung process ${MdisTestBackgroundPID}"
         else
