@@ -87,7 +87,7 @@ done
 idx=1
 n_lines_bk=0
 n_match=0
-while [ \$idx -le 10 ]
+while [ \$idx -le 15 ]
 do
     sleep 2
     n_lines=\$(cat profidp_simp.log | wc -l)
@@ -117,7 +117,7 @@ then
         Result="${ERR_OK}"
     fi
 fi
-return \$Result
+exit \$Result
 EOF
     chmod +x m57_test.sh
     
