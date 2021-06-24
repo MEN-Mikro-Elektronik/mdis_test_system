@@ -60,20 +60,79 @@ function m57_test {
 
     cat >m57_test.sh <<EOF
 #!/usr/bin/env bash
-stdbuf -oL profidp_simp m57_${ModuleNo} > profidp_simp.log &
-sleep 2
+stdbuf -o0 profidp_simp m57_${ModuleNo} > profidp_simp.log &
+Result="${ERR_SIMP_ERROR}"
+#Wait until PID is created
+idx=1
+while [ \$idx -le 5 ]
+do
+    sleep 1
+    profidp_simp_PID=\$(pgrep profidp_simp)
+    if [ -z "\$profidp_simp_PID" ]
+    then
+        idx=\$(( \$idx + 1 ))
+    else
+        Result="${ERR_OK}"
+        break
+    fi
+done
+#Wait until log FILE is created
+idx=1
+while [[ ! -f profidp_simp.log && \$idx -le 5 ]]
+do
+    sleep 1
+    idx=\$(( \$idx + 1 ))
+done
+#Test has finished if the number of lines does not change in 2 cycles otherwise by Timeout
+idx=1
+n_lines_bk=0
+n_match=0
+while [ \$idx -le 15 ]
+do
+    sleep 2
+    n_lines=\$(cat profidp_simp.log | wc -l)
+    if [ \$n_lines_bk != \$n_lines ]
+    then
+        n_lines_bk=\$n_lines
+        n_match=0
+    else
+        if [ \$n_lines -gt 12 ]
+        then
+            n_match=\$(( \$n_match + 1 ))
+        fi
+        if [ \$n_match -ge 2 ]
+        then
+            break
+        fi
+    fi
+    idx=\$(( \$idx + 1 ))
+done
+#The test is killed if it is still running 
 profidp_simp_PID=\$(pgrep profidp_simp)
-sleep 20
-kill -9 \${profidp_simp_PID} > /dev/null 2>&1
+if [ -n "\$profidp_simp_PID" ]
+then
+    kill -9 \${profidp_simp_PID} > /dev/null 2>&1
+    if [ \$n_match -ge 2 ]
+    then
+        Result="${ERR_OK}"
+    fi
+fi
+exit \$Result
 EOF
     chmod +x m57_test.sh
-
-   # Run profidp_simp
-   debug_print "${LogPrefix} Step2: run profidp_simp m57_${ModuleNo}" "${LogFile}"
-   if ! run_as_root ./m57_test.sh
-   then
-       debug_print "${LogPrefix} Could not run profidp_simp " "${LogFile}"
-   fi
+    
+    m57_test_errors=0
+    # Run profidp_simp
+    debug_print "${LogPrefix} Step2: run profidp_simp m57_${ModuleNo}" "${LogFile}"
+    if ! run_as_root ./m57_test.sh
+    then
+        debug_print "${LogPrefix} Could not run profidp_simp " "${LogFile}"
+    else
+        if [ $? -eq "${ERR_SIMP_ERROR}" ]
+        then
+            m57_test_errors=1
+        fi
+    fi
 
     debug_print "${LogPrefix} Step3: check for errors" "${LogFile}"
     grep "^M_open" profidp_simp.log > /dev/null && \
@@ -97,6 +156,10 @@ EOF
     if [ $? -eq 0 ]; then
         debug_print "${LogPrefix} Error in profidp_simp.log, ERROR" "${LogFile}"
         return "${ERR_VALUE}"
+    fi
+
+    if [ $m57_test_errors -eq 1 ]; then
+        debug_print "${LogPrefix} Any Error in m57_test.sh, ERROR" "${LogFile}"
     fi
 
     return "${ERR_OK}"
