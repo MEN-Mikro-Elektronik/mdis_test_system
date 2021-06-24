@@ -64,13 +64,13 @@ stdbuf -o0 profidp_simp m57_${ModuleNo} > profidp_simp.log &
 Result="${ERR_SIMP_ERROR}"
 #Wait until PID is created
 idx=1
-while [ $idx -le 5 ]
+while [ \$idx -le 5 ]
 do
     sleep 1
     profidp_simp_PID=\$(pgrep profidp_simp)
-    if [ -z "$profidp_simp_PID" ]
+    if [ -z "\$profidp_simp_PID" ]
     then
-        idx=$(( $idx + 1 ))
+        idx=\$(( \$idx + 1 ))
     else
         Result="${ERR_OK}"
         break
@@ -78,46 +78,46 @@ do
 done
 #Wait until log FILE is created
 idx=1
-while [[ ! -f profidp_simp.log && $idx -le 5 ]]
+while [[ ! -f profidp_simp.log && \$idx -le 5 ]]
 do
     sleep 1
-    idx=$(( $idx + 1 ))
+    idx=\$(( \$idx + 1 ))
 done
 #Test has finished if the number of lines does not change in 2 cycles otherwise by Timeout
 idx=1
 n_lines_bk=0
 n_match=0
-while [ $idx -le 10 ]
+while [ \$idx -le 10 ]
 do
     sleep 2
     n_lines=\$(cat profidp_simp.log | wc -l)
-    if [ $n_lines_bk != $n_lines ]
+    if [ \$n_lines_bk != \$n_lines ]
     then
-        n_lines_bk=$n_lines
+        n_lines_bk=\$n_lines
         n_match=0
     else
-        if [ $n_lines -gt 12 ]
+        if [ \$n_lines -gt 12 ]
         then
-            n_match=$(( $n_match + 1 ))
+            n_match=\$(( \$n_match + 1 ))
         fi
-        if [ $n_match -ge 2 ]
+        if [ \$n_match -ge 2 ]
         then
             break
         fi
     fi
-    idx=$(( $idx + 1 ))
+    idx=\$(( \$idx + 1 ))
 done
 #The test is killed if it is still running 
 profidp_simp_PID=\$(pgrep profidp_simp)
-if [ -n "$profidp_simp_PID" ]
+if [ -n "\$profidp_simp_PID" ]
 then
     kill -9 \${profidp_simp_PID} > /dev/null 2>&1
-    if [ $n_match -ge 2 ]
+    if [ \$n_match -ge 2 ]
     then
         Result="${ERR_OK}"
     fi
 fi
-return $Result
+return \$Result
 EOF
     chmod +x m57_test.sh
     
