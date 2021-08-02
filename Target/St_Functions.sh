@@ -94,14 +94,23 @@ function run_test_case_module {
 #
 # parameters:
 # $1     Test case id
-# $2     Test case summary directory
-# $3     OS kernel no
+# $2     Device No
+# $3     Test case summary directory
+# $4     OS Kernel No	 
+# $5     Board Name
 function run_test_case_board {
     local TestCaseId="${1}"
     local DeviceNo="${2}"
     local TestSummaryDirectory="${3}"
     local OsNameKernel="${4}"
     local BoardName="${5}"
+
+    # Set BoardName if empty
+    if [ "$BoardName" = '' ]; then
+        BoardName="noname"
+    fi
+
+    
     if [ "${TEST_CASES_MAP[${TestCaseId}]+_}" ]; then
         run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "${TEST_CASES_MAP[${TestCaseId}]}" -dno "${DeviceNo}" -bname "${BoardName}"
     else
