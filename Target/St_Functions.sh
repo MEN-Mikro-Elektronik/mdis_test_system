@@ -229,6 +229,9 @@ function print_env_requirements {
         elif echo "${CPU}" | grep -i "a25" > /dev/null
         then
             cpu_requirement "a25"
+        elif echo "${CPU}" | grep -i "f27" > /dev/null
+        then
+            cpu_requirement "f27"
         fi
     fi
 }

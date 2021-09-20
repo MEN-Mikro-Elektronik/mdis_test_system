@@ -8,7 +8,7 @@ source "${MyDir}"/Relay_Functions.sh
 # This script runs mdis tests
 
 TEST_SETUP="0"
-Date="_2020"
+Date="_2021"
 VERBOSE_LEVEL="0"
 TestId="0"
 BuildMdis="0"
@@ -215,6 +215,13 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             run_test_case_board "700" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # DC19 FPGA IP cores tests
             ;;
         12)
+            #run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # board @ F27P
+            run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" "F027P" # SMB2_TEST @ F027P
+            run_test_case_board "2" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ F27P
+            run_test_case_board "3" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ F27P
+            run_test_case_board "4" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ F27P
+            ;;
+        13)
             echo "Dummy test setup"
             ;;
         *)

@@ -58,6 +58,7 @@ function print_test_list {
     create_test_setup_test_cases_map "9"
     create_test_setup_test_cases_map "10"
     create_test_setup_test_cases_map "11"
+    create_test_setup_test_cases_map "12"
 
     echo "" > /tmp/test_cases_list.txt
     for K in "${!TEST_CASES_MAP[@]}"
@@ -97,6 +98,9 @@ function print_test_list {
         fi
         if [ "${TEST_SETUP_11_TEST_CASES[${K}]}" = "true" ]; then
             TestSetupList+="11,"
+        fi
+        if [ "${TEST_SETUP_12_TEST_CASES[${K}]}" = "true" ]; then
+            TestSetupList+="12,"
         fi
         if [ "${TestSetupList}" = "" ]; then
             TestSetupList+="not used"
@@ -301,6 +305,9 @@ case ${TEST_SETUP} in
         ;;
     11)
         GrubOses=( "${GrubOsesDC19[@]}" )
+        ;;
+    12)
+        GrubOses=( "${GrubOsesF27P[@]}" )
         ;;
     *)
         echo "TEST SETUP IS NOT SET"

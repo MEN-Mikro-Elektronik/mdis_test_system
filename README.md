@@ -239,6 +239,7 @@ Most important variables that have to be set in configuration file ```Common/Con
 - GrubOsesBL50
 - GrubOsesBL51E
 - GrubOsesBL70
+- GrubOsesF27P
 
   List of names of operating systems used for testing on CPU board
   "0" is default OS and is not used for testing but should be present anyhow.

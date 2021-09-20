@@ -269,6 +269,19 @@ GrubOsesDC19=("0" \
         "Debian GNU/Linux (on /dev/sda21)" \
         )
 
+#F27P
+GrubOsesF27P=("0" \
+        "Ubuntu 18.04.3 LTS (18.04) (on /dev/sda16)" \
+        "Ubuntu, with Linux 5.0.0-23-generic (on /dev/sda17)" \
+        "Ubuntu, with Linux 5.4.0-26-generic (on /dev/sda12)" \
+        "CentOS Linux 7 (Core) (on /dev/sda6)" \
+        "CentOS Linux 8 (Core) (on /dev/sda9)" \
+        "Debian GNU/Linux 10 (buster) (on /dev/sda14)" \
+        "Debian GNU/Linux, with Linux 4.19.0-10-amd64 (on /dev/sda15)" \
+        "Debian GNU/Linux (on /dev/sda20)" \
+        "Debian GNU/Linux (on /dev/sda21)" \
+        )
+
 function create_test_cases_map {
     local IsTarget="${1}"
     local TestPath=""
@@ -410,6 +423,7 @@ declare -a TEST_SETUP_8_TEST_CASES
 declare -a TEST_SETUP_9_TEST_CASES
 declare -a TEST_SETUP_10_TEST_CASES
 declare -a TEST_SETUP_11_TEST_CASES
+declare -a TEST_SETUP_12_TEST_CASES
 # Create test setup test cases map:
 function create_test_setup_test_cases_map {
     local Setup="${1}"
@@ -483,6 +497,19 @@ function create_test_setup_test_cases_map {
             ;;
         11)
             TEST_SETUP_11_TEST_CASES[700]="true"
+            ;;
+        12)
+            #TEST_SETUP_12_TEST_CASES[100]="true"
+            #TEST_SETUP_12_TEST_CASES[104]="true"
+            #TEST_SETUP_12_TEST_CASES[$(get_test_case_id "m65n" "G204")]="true"
+            #TEST_SETUP_12_TEST_CASES[$(get_test_case_id "m65n_canopen" "G204")]="true"
+            #TEST_SETUP_12_TEST_CASES[$(get_test_case_id "m77" "G204")]="true"
+            #TEST_SETUP_12_TEST_CASES[$(get_test_case_id "m33" "F205")]="true"
+            #TEST_SETUP_12_TEST_CASES[$(get_test_case_id "m47" "F205")]="true"
+            TEST_SETUP_12_TEST_CASES[1]="true"
+            TEST_SETUP_12_TEST_CASES[2]="true"
+            TEST_SETUP_12_TEST_CASES[3]="true"
+            TEST_SETUP_12_TEST_CASES[4]="true"
             ;;
         *)
             echo "TEST SETUP OR TEST ID IS NOT SET PROPERLY"

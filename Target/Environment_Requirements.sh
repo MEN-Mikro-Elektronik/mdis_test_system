@@ -8,6 +8,9 @@ function cpu_requirement_id {
         f26)
             echo "    MEN_13MD05-90_SA_1010"
             ;;
+        f27)
+            echo "    MEN_13MD05-90_SA_1011"
+            ;;
         g23)
             echo "    MEN_13MD05-90_SA_1020"
             ;;
@@ -96,6 +99,9 @@ function cpu_requirement_id {
             ;;
         f26)
             echo "    MEN_13MD05-90_SA_1010"
+            ;;
+        f27)
+            echo "    MEN_13MD05-90_SA_1011"
             ;;
         g23)
             echo "    MEN_13MD05-90_SA_1020"
@@ -199,6 +205,9 @@ function cpu_requirement {
             ;;
         sc31)
             echo "    MEN_13MD0590_SWR_0870"
+            ;;
+        f27)
+            echo "    MEN_13MD0590_SWR_0920"
             ;;
         *)
             ;;
