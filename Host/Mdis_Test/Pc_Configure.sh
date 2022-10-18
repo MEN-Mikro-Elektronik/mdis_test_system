@@ -14,7 +14,7 @@ function create_main_test_directory {
     echo "create_main_test_directory"
     if [ ! -d "${MainTestDirectoryPath}/${MainTestDirectoryName}" ]; then
         # create and move to Test Case directory 
-        if ! mkdir "${MainTestDirectoryPath}/${MainTestDirectoryName}"
+        if ! mkdir -p "${MainTestDirectoryPath}/${MainTestDirectoryName}"
         then
             echo "ERR: ${ERR_CREATE} - cannot create directory"
             return "${ERR_CREATE}"
