@@ -164,19 +164,19 @@ Restart SSH service
 
 7. Below packages have to be installed on system:
 
-   - bison
-   - build-essential
-   - flex
-   - git
-   - i2c-tools
-   - libelf-dev
-   - libssl-dev
-   - net-tools
-   - openssh-server
-   - pppd
-   - python
-   - rsync
-   - sshpass
+    - bison
+    - build-essential
+    - flex
+    - git
+    - i2c-tools
+    - libelf-dev
+    - libssl-dev
+    - net-tools
+    - openssh-server
+    - pppd
+    - python
+    - rsync
+    - sshpass
 
 
 ## Test script configuration
