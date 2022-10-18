@@ -96,7 +96,7 @@ function smb_test_lx_z001 {
     run_as_root i2cdetect -y -l > "i2c_bus_list_after.log" 2>&1
 
     run_as_root cat "i2c_bus_list_before.log" "i2c_bus_list_after.log" | sort | uniq --unique > "i2c_bus_list_test.log" 2>&1
-    SMBUS_ID="$(run_as_root grep --only-matching "16Z001-[0-1]\+ BAR[0-9]\+ offs 0x[0-9]\+" "i2c_bus_list_test.log")"
+    SMBUS_ID="$(run_as_root grep --only-matching "i2c-[0-9]\+" "i2c_bus_list_test.log" | sed -e 's/i2c-//')"
     run_as_root i2cdump -y "${SMBUS_ID}" "${ReadAddress}" > "i2c_bus_dump_before.log"
 
     
