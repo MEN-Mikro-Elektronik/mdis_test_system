@@ -269,18 +269,10 @@ GrubOsesDC19=("0" \
         "Debian GNU/Linux (on /dev/sda21)" \
         )
 
-function create_test_cases_map {
-    local IsTarget="${1}"
-    local TestPath=""
+function get_test_cases_map {
+    local TestPath="${1}"
     local TestCaseId=""
     local Module=""
-
-    if [ ! -z "${IsTarget}" ]
-    then
-        TestPath=$(realpath "${GitTestTargetDirPath}")
-    else
-        TestPath=$(realpath ../../Target)
-    fi
 
     if [ ! -d "${TestPath}" ]
     then
@@ -299,6 +291,20 @@ function create_test_cases_map {
         TestCaseId=$(get_test_case_id "${Module}" "F205")
         TEST_CASES_MAP["${TestCaseId}"]="carrier_f205_${Module}"
     done
+}
+
+function create_test_cases_map {
+    local IsTarget="${1}"
+    local TestPath=""
+
+    if [ ! -z "${IsTarget}" ]
+    then
+        TestPath=$(realpath "${GitTestTargetDirPath}")
+    else
+        TestPath=$(realpath ../../Target)
+    fi
+    echo ">>>>> ${TestPath}"
+    get_test_cases_map ${TestPath}
 }
 
 ############################################################################
