@@ -74,11 +74,11 @@ MenBoxPcIpAddr="11.10.10.10"
 INPUT_SWITCH_TIMEOUT=10 #seconds
 
 # Credentials, address, and command to download Git repository with Test Cases source
-GitTestSourcesBranch="mad-dev-02_04"
+GitTestSourcesBranch="mad-dev"
 GitTestSourcesCmd="git clone -b ${GitTestSourcesBranch} https://github.com/MEN-Mikro-Elektronik/mdis_test_system.git"
 
 # Credentials, address, and command to download Git repository with 13MD05-90 sources
-GitMdisBranch="master"
+GitMdisBranch="mad-dev"
 GitMdisCmd="git clone --recursive -b ${GitMdisBranch} https://github.com/MEN-Mikro-Elektronik/13MD05-90.git"
 # This is optional if specific commit have to be tested !
 # If Commit sha is not defined, then the most recent commit on branch is used. 
