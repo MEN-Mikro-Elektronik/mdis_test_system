@@ -63,22 +63,22 @@ TEST_CASES_MAP["502"]="bl70_boxpc"
 TEST_CASES_MAP["700"]="dc19_panelpc"
 
 # Address of Target that will be tested
-MenPcIpAddr="10.1.1.101"
+MenPcIpAddr="11.10.10.12"
 
 # Credentials for Pc that will be tested - required by ssh connection and sudo cmds
 MenPcLogin="men"
 MenPcPassword="men"
 
 # Address of device that will be changing status of inputs in tested device 
-MenBoxPcIpAddr="10.1.1.78"
+MenBoxPcIpAddr="11.10.10.10"
 INPUT_SWITCH_TIMEOUT=10 #seconds
 
 # Credentials, address, and command to download Git repository with Test Cases source
-GitTestSourcesBranch="jpe-dev-02_04"
+GitTestSourcesBranch="mad-dev"
 GitTestSourcesCmd="git clone -b ${GitTestSourcesBranch} https://github.com/MEN-Mikro-Elektronik/mdis_test_system.git"
 
 # Credentials, address, and command to download Git repository with 13MD05-90 sources
-GitMdisBranch="jpe-dev"
+GitMdisBranch="mad-dev"
 GitMdisCmd="git clone --recursive -b ${GitMdisBranch} https://github.com/MEN-Mikro-Elektronik/13MD05-90.git"
 # This is optional if specific commit have to be tested !
 # If Commit sha is not defined, then the most recent commit on branch is used. 

@@ -163,15 +163,21 @@ Restart SSH service
 ```sudo service ssh restart```
 
 7. Below packages have to be installed on system:
-    - python
-    - openssh-server
-    - sshpass
-    - libelf-dev
+
     - bison
+    - build-essential
     - flex
+    - git
+    - i2c-tools
+    - libelf-dev
     - libssl-dev
-    - pppd
     - net-tools
+    - openssh-server
+    - pppd
+    - python
+    - rsync
+    - sshpass
+
 
 ## Test script configuration
 Most important variables that have to be set in configuration file ```Common/Conf.sh```
@@ -353,3 +359,4 @@ In order to make compilation tests faster you can use one Makefile for tests:
 ```
 # ./run_buildtest.sh --download --all --makefile Makefile.static
 ```
+You must run ./create_makefile.sh to create both Makefiles 
