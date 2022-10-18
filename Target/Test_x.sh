@@ -176,7 +176,7 @@ while test $# -gt 0 ; do
                 shift
             else
                 echo "No board name specified"
-		exit 1
+                exit 1
             fi
             ;;
         *)
