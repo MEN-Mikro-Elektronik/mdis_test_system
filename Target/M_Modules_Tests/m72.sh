@@ -73,8 +73,8 @@ function m72_test {
     # Count changes for a while
     sleep 10
 
-    M72_Out_PID=$(pgrep m72_single)
-    M72_Single_PID=$(pgrep m72_out)
+    M72_Single_PID=$(pgrep m72_single)
+    M72_Out_PID=$(pgrep m72_out)
 
     # Kill background processes
     if ! run_as_root kill -9 "${M72_Out_PID}" > /dev/null 2>&1
