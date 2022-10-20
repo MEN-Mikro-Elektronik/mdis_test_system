@@ -303,7 +303,7 @@ function create_test_cases_map {
     else
         TestPath=$(realpath ../../Target)
     fi
-    echo ">>>>> ${TestPath}"
+
     get_test_cases_map ${TestPath}
 }
 
