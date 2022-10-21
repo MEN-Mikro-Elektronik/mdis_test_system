@@ -263,6 +263,17 @@ function build_mdis {
   make 2>&1 | tee "buildlog_$1.log"
 }
 
+function test_report {
+        local kernel_version=${1}
+        local results_in=${2}
+        local report_out=${3}
+
+        if [ -z "$(grep FAILED ${results_in})" ]; then
+                echo "${kernel_version} PASSED" >> ${report_out}
+        else
+                echo "${kernel_version} FAILED" >> ${report_out}
+        fi
+}
 
 function automatic_driver_test {
 
@@ -270,6 +281,7 @@ function automatic_driver_test {
         GCC_VERSION=$(gcc --version | awk NR==1'{print $4}')
         local STR_RESULT_DIR="${4}/TestOutput_${1}_GCC_${GCC_VERSION}_${DATE}_${5}"
         local STR_RESULT_FILE="${STR_RESULT_DIR}/TestResults.log"
+        local STR_REPORT_FILE="${4}/TestReport_${DATE}.log"
         local Retval=0
         local Modules
         local Module
@@ -401,6 +413,7 @@ function automatic_driver_test {
         done 13< MakefilesList.tmp
         echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm MakefilesList.tmp
 
+        test_report ${1}_${5} ${STR_RESULT_FILE} ${STR_REPORT_FILE}
 }
 
 ############################################################################
