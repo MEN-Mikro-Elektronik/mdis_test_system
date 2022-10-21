@@ -263,25 +263,6 @@ function build_mdis {
 }
 
 
-###############################################################################
-# Print result
-#
-function print_result {
-
-        local Result=$1
-        local KernelVersion=$2
-
-        if [ "${Result}" -eq 0 ]; then
-                echo " --------- Build for ${KernelVersion} succeeded ------------"
-        else
-                echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-                echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-                echo "         Build for ${KernelVersion} FAILED!! "
-                echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-                echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-        fi
-}
-
 function automatic_driver_test {
 
         local GCC_VERSION
@@ -542,14 +523,16 @@ if [ "${BuildAllKernelGcc}" == "1" ] || [ "${CompileShortList}" == "1" ] || [ "$
                 echo " ============================================================"
                 echo " ============================dbg============================="
                 automatic_driver_test "${kern_version}" ${MEN_LIN_DIR} ${TEST_KERNEL_DIR} ${MdisResultsDirectoryPath} "dbg" ${CompileShortList}
+                Retval_dbg=$?
                 echo " ============================nodbg==========================="
                 automatic_driver_test "${kern_version}" ${MEN_LIN_DIR} ${TEST_KERNEL_DIR} ${MdisResultsDirectoryPath} "nodbg" ${CompileShortList} 
-                Retval=$?
-                if [ ${Retval} -ne 0 ]; then
+                Retval_nodbg=$?
+                if [ ${Retval_dbg} -ne 0 || ${Retval_nodbg} -ne 0 ]; then
                         echo "ERR: automatic_driver_test"
+                        echo " --------- Build for ${kern_version} FAILED ------------ "
+                else
+                        echo " --------- Build for ${kern_version} PASSED ------------ "
                 fi
-                
-                print_result $? "${kern_version}"
 
         done 11< kernel_list_release_02.txt
 fi
