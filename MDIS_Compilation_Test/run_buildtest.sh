@@ -6,7 +6,7 @@ MyDir="$(dirname "$0")"
 source "${MyDir}/Conf.sh"
 
 CurrentDir=$(pwd)
-DATE=$(date '+%Y-%m-%d_%H:%M:%S')
+DATE=$(date '+%Y%m%d%H%M%S')
 
 #
 # build test script for a general MDIS project
