@@ -6,6 +6,7 @@ MyDir="$(dirname "$0")"
 source "${MyDir}/Conf.sh"
 
 CurrentDir=$(pwd)
+DATE=$(date '+%Y-%m-%d_%H:%M:%S')
 
 #
 # build test script for a general MDIS project
@@ -267,8 +268,6 @@ function automatic_driver_test {
 
         local GCC_VERSION
         GCC_VERSION=$(gcc --version | awk NR==1'{print $4}')
-        local DATE
-        DATE=$(date '+%Y-%m-%d_%H:%M:%S')
         local STR_RESULT_DIR="${4}/TestOutput_${1}_GCC_${GCC_VERSION}_${DATE}_${5}"
         local STR_RESULT_FILE="${STR_RESULT_DIR}/TestResults.log"
         local Retval=0
