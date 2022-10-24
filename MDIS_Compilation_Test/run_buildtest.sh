@@ -237,16 +237,23 @@ do_or_die()
 # checkout the given kernel version from the repo
 #
 function checkout_kernel_version {
-  currdir=$(pwd)
-  cd "${TEST_KERNEL_DIR}" || (echo "Could not enter directory \"${TEST_KERNEL_DIR}\". Quitting!" && exit 1)
-  # wipe leftovers from previous checked out version by forced checkout
-  make clean
-  make distclean
-  make defconfig
-  make prepare
-  make scripts
-  make modules_prepare
-  cd "${currdir}" || (echo "Could not enter directory \"${currdir}\". Quitting!" && exit 1)
+        currdir=$(pwd)
+
+        if [ ! -d "${TEST_KERNEL_DIR}" ]; then
+                echo "Cloning Kernel sources from git repo..."
+                cd "$(dirname ${TEST_KERNEL_DIR})" || (echo "Could not enter directory \"${TEST_KERNEL_DIR}\". Quitting!" && exit 1)
+                git clone https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git $(basename ${TEST_KERNEL_DIR})
+        fi
+
+        cd "${TEST_KERNEL_DIR}" || (echo "Could not enter directory \"${TEST_KERNEL_DIR}\". Quitting!" && exit 1)
+        git reset --hard v${1}
+        make clean
+        make distclean
+        make defconfig
+        make prepare
+        make scripts
+        make modules_prepare
+        cd "${currdir}" || (echo "Could not enter directory \"${currdir}\". Quitting!" && exit 1)
 }
 
 
@@ -489,11 +496,6 @@ if [ ${Retval} -ne 0 ]; then
 fi
 
 cd "${LinuxKernelsDirectoryPath}" || (echo "Could not enter directory \"${LinuxKernelsDirectoryPath}\". Quitting!" && exit 1)
-
-LinuxKernelNameInit=$(head -n 1 "${CurrentDir}/kernel_list_release_02.txt")
-
-ln -sfn "linux-${LinuxKernelNameInit}" linux
-
 cd "${MdisMainDirectoryPath}" || (echo "Could not enter directory \"${MdisMainDirectoryPath}\". Quitting!" && exit 1)
 
 create_result_directory
@@ -521,14 +523,6 @@ cd "${CurrentDir}" || (echo "Could not enter directory \"${CurrentDir}\". Quitti
 if [ "${BuildAllKernelGcc}" == "1" ] || [ "${CompileShortList}" == "1" ] || [ "${CompileShortList}" == "2" ]; then
         while read -r kern_version <&11;
         do
-                currdir="$(pwd)"
-                cd "${TEST_KERNEL_DIR}" || (echo "Could not enter directory \"${TEST_KERNEL_DIR}\". Quitting!" && exit 1)
-                # shellcheck disable=SC2103
-                cd ".."
-                rm linux
-                ln -sfn "linux-${kern_version}" linux
-                cd "${currdir}" || (echo "Could not enter directory \"${currdir}\". Quitting!" && exit 1)
-
                 checkout_kernel_version "${kern_version}"
                 echo " ============================================================"
                 echo " ==     building MDIS project using kernel ${kern_version}      "
