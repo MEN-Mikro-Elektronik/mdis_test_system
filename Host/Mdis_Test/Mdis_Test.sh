@@ -314,8 +314,7 @@ MdisTestBackgroundPID=0
 
 trap cleanOnExit SIGINT SIGTERM
 function cleanOnExit() {
-    echo "** cleanOnExit - signal"
-    echo "MdisTestBackgroundPID: ${MdisTestBackgroundPID}"
+    echo "${LogPrefix} ** cleanOnExit - signal"
     if [ ${MdisTestBackgroundPID} -ne 0 ]; then
         # Kill process
         echo "${LogPrefix} kill process ${MdisTestBackgroundPID}"
@@ -328,14 +327,15 @@ function cleanOnExit() {
         fi
         sleep 1
         jobs
-        grub_set_os "0"
     fi
+    grub_set_os "0"
     exit
 }
 
 function cleanMdisTestBackgroundJob {
-    echo "** cleanOnExit"
+    echo "${LogPrefix} ** cleanOnExit"
     if [ ${MdisTestBackgroundPID} -ne 0 ]; then
+        # Invoking kill -0 only checks if the process is still running.
         if kill -0 ${MdisTestBackgroundPID} >/dev/null 2>&1; then
             # Kill process
             echo "${LogPrefix} kill process ${MdisTestBackgroundPID}"
@@ -345,6 +345,8 @@ function cleanMdisTestBackgroundJob {
                 echo "${LogPrefix} Could not kill cat backgroung process ${MdisTestBackgroundPID}"
             else
                 echo "${LogPrefix} process ${MdisTestBackgroundPID} killed"
+                wait ${MdisTestBackgroundPID}
+                MdisTestBackgroundPID=0
             fi
             sleep 1
             jobs

@@ -2,7 +2,7 @@
 
 trap cleanOnExit SIGINT SIGTERM
 function cleanOnExit() {
-    echo "** cleanOnExit: Mdis_Test_Background.sh"
+    echo "${LogPrefix} ** cleanOnExit"
     exit 0
 }
 
