@@ -241,6 +241,7 @@ function checkout_kernel_version {
 
         if [ ! -d "${TEST_KERNEL_DIR}" ]; then
                 echo "Cloning Kernel sources from git repo..."
+                mkdir -p ${TEST_KERNEL_DIR}
                 cd "$(dirname ${TEST_KERNEL_DIR})" || (echo "Could not enter directory \"${TEST_KERNEL_DIR}\". Quitting!" && exit 1)
                 git clone https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git $(basename ${TEST_KERNEL_DIR})
         fi
