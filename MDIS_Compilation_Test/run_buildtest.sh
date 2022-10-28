@@ -6,7 +6,8 @@ MyDir="$(dirname "$0")"
 source "${MyDir}/Conf.sh"
 
 CurrentDir=$(pwd)
-DATE=$(date '+%Y%m%d%H%M%S')
+DATE=$(date +%Y_%m_%d_%H_%M_%S)
+BUILD_TEST_DIRECTORY=${MdisResultsDirectoryPath}/${DATE}
 
 #
 # build test script for a general MDIS project
@@ -47,16 +48,16 @@ function create_main_test_directory {
 function create_result_directory {
         echo "create_result_directory"
         local Retval=0
-        if [ ! -d "${MdisResultsDirectoryPath}" ]; then
+        if [ ! -d "${BUILD_TEST_DIRECTORY}" ]; then
                 # create Results directory
-                mkdir -p "${MdisResultsDirectoryPath}"
+                mkdir -p "${BUILD_TEST_DIRECTORY}"
                 Retval=$?
                 if [ ${Retval} -ne 0 ]; then
                         echo "ERR: ${ERR_CREATE} - cannot create directory"
                         return "${ERR_CREATE}"
                 fi
         else
-                echo "${MdisResultsDirectoryPath} directory exists"
+                echo "${BUILD_TEST_DIRECTORY} directory exists"
         fi
 
         return "${ERR_OK}"
@@ -287,9 +288,9 @@ function automatic_driver_test {
 
         local GCC_VERSION
         GCC_VERSION=$(gcc --version | awk NR==1'{print $4}')
-        local STR_RESULT_DIR="${4}/TestOutput_${1}_GCC_${GCC_VERSION}_${DATE}_${5}"
+        local STR_RESULT_DIR="${4}/${1}_${5}"
         local STR_RESULT_FILE="${STR_RESULT_DIR}/TestResults.log"
-        local STR_REPORT_FILE="${4}/TestReport_${DATE}.log"
+        local STR_REPORT_FILE="${4}/TestReport.log"
         local Retval=0
         local Modules
         local Module
@@ -529,10 +530,10 @@ if [ "${BuildAllKernelGcc}" == "1" ] || [ "${CompileShortList}" == "1" ] || [ "$
                 echo " ==     building MDIS project using kernel ${kern_version}      "
                 echo " ============================================================"
                 echo " ============================dbg============================="
-                automatic_driver_test "${kern_version}" ${MEN_LIN_DIR} ${TEST_KERNEL_DIR} ${MdisResultsDirectoryPath} "dbg" ${CompileShortList}
+                automatic_driver_test "${kern_version}" ${MEN_LIN_DIR} ${TEST_KERNEL_DIR} ${BUILD_TEST_DIRECTORY} "dbg" ${CompileShortList}
                 Retval_dbg=$?
                 echo " ============================nodbg==========================="
-                automatic_driver_test "${kern_version}" ${MEN_LIN_DIR} ${TEST_KERNEL_DIR} ${MdisResultsDirectoryPath} "nodbg" ${CompileShortList} 
+                automatic_driver_test "${kern_version}" ${MEN_LIN_DIR} ${TEST_KERNEL_DIR} ${BUILD_TEST_DIRECTORY} "nodbg" ${CompileShortList}
                 Retval_nodbg=$?
                 if [ ${Retval_dbg} -ne 0 ] || [ ${Retval_nodbg} -ne 0 ]; then
                         echo "ERR: automatic_driver_test for ${kern_version} FAILED!!!"
