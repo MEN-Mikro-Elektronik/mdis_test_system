@@ -6,6 +6,8 @@ MyDir="$(dirname "$0")"
 source "${MyDir}/Conf.sh"
 
 CurrentDir=$(pwd)
+DATE=$(date +%Y_%m_%d_%H_%M_%S)
+BUILD_TEST_DIRECTORY=${MdisResultsDirectoryPath}/${DATE}
 
 #
 # build test script for a general MDIS project
@@ -46,16 +48,16 @@ function create_main_test_directory {
 function create_result_directory {
         echo "create_result_directory"
         local Retval=0
-        if [ ! -d "${MdisResultsDirectoryPath}" ]; then
+        if [ ! -d "${BUILD_TEST_DIRECTORY}" ]; then
                 # create Results directory
-                mkdir -p "${MdisResultsDirectoryPath}"
+                mkdir -p "${BUILD_TEST_DIRECTORY}"
                 Retval=$?
                 if [ ${Retval} -ne 0 ]; then
                         echo "ERR: ${ERR_CREATE} - cannot create directory"
                         return "${ERR_CREATE}"
                 fi
         else
-                echo "${MdisResultsDirectoryPath} directory exists"
+                echo "${BUILD_TEST_DIRECTORY} directory exists"
         fi
 
         return "${ERR_OK}"
@@ -236,16 +238,24 @@ do_or_die()
 # checkout the given kernel version from the repo
 #
 function checkout_kernel_version {
-  currdir=$(pwd)
-  cd "${TEST_KERNEL_DIR}" || (echo "Could not enter directory \"${TEST_KERNEL_DIR}\". Quitting!" && exit 1)
-  # wipe leftovers from previous checked out version by forced checkout
-  make clean
-  make distclean
-  make defconfig
-  make prepare
-  make scripts
-  make modules_prepare
-  cd "${currdir}" || (echo "Could not enter directory \"${currdir}\". Quitting!" && exit 1)
+        currdir=$(pwd)
+
+        if [ ! -d "${TEST_KERNEL_DIR}" ]; then
+                echo "Cloning Kernel sources from git repo..."
+                mkdir -p ${TEST_KERNEL_DIR}
+                cd "$(dirname ${TEST_KERNEL_DIR})" || (echo "Could not enter directory \"${TEST_KERNEL_DIR}\". Quitting!" && exit 1)
+                git clone https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git $(basename ${TEST_KERNEL_DIR})
+        fi
+
+        cd "${TEST_KERNEL_DIR}" || (echo "Could not enter directory \"${TEST_KERNEL_DIR}\". Quitting!" && exit 1)
+        git reset --hard v${1}
+        make clean
+        make distclean
+        make defconfig
+        make prepare
+        make scripts
+        make modules_prepare
+        cd "${currdir}" || (echo "Could not enter directory \"${currdir}\". Quitting!" && exit 1)
 }
 
 
@@ -262,23 +272,15 @@ function build_mdis {
   make 2>&1 | tee "buildlog_$1.log"
 }
 
+function test_report {
+        local kernel_version=${1}
+        local results_in=${2}
+        local report_out=${3}
 
-###############################################################################
-# Print result
-#
-function print_result {
-
-        local Result=$1
-        local KernelVersion=$2
-
-        if [ "${Result}" -eq 0 ]; then
-                echo " --------- Build for ${KernelVersion} succeeded ------------"
+        if [ -z "$(grep FAILED ${results_in})" ]; then
+                echo "${kernel_version} PASSED" >> ${report_out}
         else
-                echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-                echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-                echo "         Build for ${KernelVersion} FAILED!! "
-                echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-                echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+                echo "${kernel_version} FAILED" >> ${report_out}
         fi
 }
 
@@ -286,10 +288,9 @@ function automatic_driver_test {
 
         local GCC_VERSION
         GCC_VERSION=$(gcc --version | awk NR==1'{print $4}')
-        local DATE
-        DATE=$(date '+%Y-%m-%d_%H:%M:%S')
-        local STR_RESULT_DIR="${4}/TestOutput_${1}_GCC_${GCC_VERSION}_${DATE}_${5}"
+        local STR_RESULT_DIR="${4}/${1}_${5}"
         local STR_RESULT_FILE="${STR_RESULT_DIR}/TestResults.log"
+        local STR_REPORT_FILE="${4}/TestReport.log"
         local Retval=0
         local Modules
         local Module
@@ -421,6 +422,7 @@ function automatic_driver_test {
         done 13< MakefilesList.tmp
         echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm MakefilesList.tmp
 
+        test_report ${1}_${5} ${STR_RESULT_FILE} ${STR_REPORT_FILE}
 }
 
 ############################################################################
@@ -496,11 +498,6 @@ if [ ${Retval} -ne 0 ]; then
 fi
 
 cd "${LinuxKernelsDirectoryPath}" || (echo "Could not enter directory \"${LinuxKernelsDirectoryPath}\". Quitting!" && exit 1)
-
-LinuxKernelNameInit=$(head -n 1 "${CurrentDir}/kernel_list_release_02.txt")
-
-ln -sfn "linux-${LinuxKernelNameInit}" linux
-
 cd "${MdisMainDirectoryPath}" || (echo "Could not enter directory \"${MdisMainDirectoryPath}\". Quitting!" && exit 1)
 
 create_result_directory
@@ -528,28 +525,22 @@ cd "${CurrentDir}" || (echo "Could not enter directory \"${CurrentDir}\". Quitti
 if [ "${BuildAllKernelGcc}" == "1" ] || [ "${CompileShortList}" == "1" ] || [ "${CompileShortList}" == "2" ]; then
         while read -r kern_version <&11;
         do
-                currdir="$(pwd)"
-                cd "${TEST_KERNEL_DIR}" || (echo "Could not enter directory \"${TEST_KERNEL_DIR}\". Quitting!" && exit 1)
-                # shellcheck disable=SC2103
-                cd ".."
-                rm linux
-                ln -sfn "linux-${kern_version}" linux
-                cd "${currdir}" || (echo "Could not enter directory \"${currdir}\". Quitting!" && exit 1)
-
                 checkout_kernel_version "${kern_version}"
                 echo " ============================================================"
                 echo " ==     building MDIS project using kernel ${kern_version}      "
                 echo " ============================================================"
                 echo " ============================dbg============================="
-                automatic_driver_test "${kern_version}" ${MEN_LIN_DIR} ${TEST_KERNEL_DIR} ${MdisResultsDirectoryPath} "dbg" ${CompileShortList}
+                automatic_driver_test "${kern_version}" ${MEN_LIN_DIR} ${TEST_KERNEL_DIR} ${BUILD_TEST_DIRECTORY} "dbg" ${CompileShortList}
+                Retval_dbg=$?
                 echo " ============================nodbg==========================="
-                automatic_driver_test "${kern_version}" ${MEN_LIN_DIR} ${TEST_KERNEL_DIR} ${MdisResultsDirectoryPath} "nodbg" ${CompileShortList} 
-                Retval=$?
-                if [ ${Retval} -ne 0 ]; then
-                        echo "ERR: automatic_driver_test"
+                automatic_driver_test "${kern_version}" ${MEN_LIN_DIR} ${TEST_KERNEL_DIR} ${BUILD_TEST_DIRECTORY} "nodbg" ${CompileShortList}
+                Retval_nodbg=$?
+                if [ ${Retval_dbg} -ne 0 ] || [ ${Retval_nodbg} -ne 0 ]; then
+                        echo "ERR: automatic_driver_test for ${kern_version} FAILED!!!"
+                        echo " --------- Test for ${kern_version} FAILED ------------ "
+                else
+                        echo " --------- Test for ${kern_version} COMPLETE ------------ "
                 fi
-                
-                print_result $? "${kern_version}"
 
         done 11< kernel_list_release_02.txt
 fi

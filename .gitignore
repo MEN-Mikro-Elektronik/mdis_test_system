@@ -1,0 +1,8 @@
+*.swp
+MDIS_Compilation_Test/test/
+MDIS_Compilation_Test/OBJ/
+MDIS_Compilation_Test/*.log
+MDIS_Compilation_Test/*.log.bak
+MDIS_Compilation_Test/*.tmp
+MDIS_Compilation_Test/.kernel*
+MDIS_Compilation_Test/Makefile
