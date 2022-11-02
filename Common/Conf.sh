@@ -95,10 +95,10 @@ GitMdisCommitSha=""
 #               |--Commit_xxxx
 #               `--Commit_xxxx
 #
-MainTestDirectoryPath="/media/tests"
+MainTestDirectoryPath="/media/tests/MDIS_Test"
 MdisSourcesDirectoryName="13MD05-90" 
 TestSourcesDirectoryName="mdis_test_system"
-MainTestDirectoryName="MDIS_Test"
+MainTestDirectoryName="MDIS_Functional"
 MdisResultsDirectoryName="Results"
 # optional - used for proprietary drivers
 MdisExternalDirectoryPath="/media/tests/MDIS_External_Sources"

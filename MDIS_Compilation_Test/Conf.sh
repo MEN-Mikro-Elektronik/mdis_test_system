@@ -33,7 +33,7 @@ ERR_UNDEFINED=99        # 99 - undefined error
 MenPcPassword=""
 
 # Credentials, address, and command to download Git repository with 13MD05-90 sources
-GitMdisBranch="jpe-dev"
+GitMdisBranch="mad-dev"
 GitMdisCmd="git clone --recursive -b ${GitMdisBranch} https://github.com/MEN-Mikro-Elektronik/13MD05-90.git"
 # This is optional if specific commit have to be tested !
 # If Commit sha is not defined, then the most recent commit on branch is used. 
@@ -53,7 +53,7 @@ GitMdisCommitSha=""
 MainTestDirectoryPath="/media/tests/MDIS_Test"
 MdisSourcesDirectoryName="13MD05-90" 
 MdisSourcesDirectoryInstall="13MD05-90_Install"
-MainTestDirectoryName="MDIS_Compilation_Results"
+MainTestDirectoryName="MDIS_Compilation"
 MdisResultsDirectoryName="Results"
 LinuxKernelsDirectoryName="Linux_Kernels"
 
