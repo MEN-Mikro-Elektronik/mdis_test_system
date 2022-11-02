@@ -105,7 +105,7 @@ if [ "${CmdResult}" -ne "${ERR_OK}" ] && [ "${CmdResult}" -ne "${ERR_DIR_EXISTS}
 fi
 cd "${OsNameKernel}" || exit "${ERR_NOEXIST}"
 
-TestSummaryDirectory="${MdisResultsDirectoryPath}/${CommitSha}/${TestConfiguration}/${Date}/${OsNameKernel}"
+TestSummaryDirectory="${MdisResultsDirectoryPath}/${TestConfiguration}/${Date}/${OsNameKernel}"
 cd "${MainTestDirectoryPath}" || exit "${ERR_NOEXIST}"
 
 if [ "${BuildMdis}" -eq "1" ]; then
