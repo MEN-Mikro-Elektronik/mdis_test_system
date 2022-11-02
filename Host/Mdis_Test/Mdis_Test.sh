@@ -454,8 +454,5 @@ else
         rm tmp.sh
         runTests
     done
-    # Copy the results into the host
-    scp men@$MenPcIpAddr:/$MdisResultsDirectoryPath/$Today .
-    # The cleanOnExit should clean the target too
 fi
 cleanOnExit

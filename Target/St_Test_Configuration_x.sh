@@ -72,18 +72,12 @@ echo "${LogPrefix} Testing:  ${TestConfiguration}"
 echo "${LogPrefix} Commit SHA: ${CommitSha}"
 echo "${LogPrefix} Os Name:  ${OsNameKernel}"
 
+create_directory "${MdisResultsDirectoryPath}" "${LogPrefix}"
+
 cd "${MdisResultsDirectoryPath}" || exit "${ERR_NOEXIST}"
 
-CommitSha="Commit_${CommitSha}"
-
-create_directory "${CommitSha}" "${LogPrefix}"
-CmdResult=$?
-if [ "${CmdResult}" -ne "${ERR_OK}" ] && [ "${CmdResult}" -ne "${ERR_DIR_EXISTS}" ]; then
-    exit "${CmdResult}"
-fi
-cd "${CommitSha}" || exit "${ERR_NOEXIST}"
-
 create_directory "${TestConfiguration}" "${LogPrefix}"
+
 CmdResult=$?
 if [ "${CmdResult}" -ne "${ERR_OK}" ] && [ "${CmdResult}" -ne "${ERR_DIR_EXISTS}" ]; then
     exit "${CmdResult}"
@@ -246,3 +240,4 @@ echo "${CommitSha}" >> Source_info.txt
 
 find . -type f -name "${ResultsFileLogName}.tmp" -exec cat {} + > "${ResultsFileLogName}"
 sed -i "1i${SystemInfo}" "${ResultsFileLogName}"
+
