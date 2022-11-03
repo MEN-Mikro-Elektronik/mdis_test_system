@@ -262,7 +262,7 @@ function create_directory {
     local LogPrefix="$2 "
     if [ ! -d "${DirectoryName}" ]; then
         # create and move to Test Case directory 
-        if ! mkdir "${DirectoryName}"
+        if ! mkdir -p "${DirectoryName}"
         then
             echo "${LogPrefix} ERR_CREATE :$1 - cannot create directory"
             return "${ERR_CREATE}"
