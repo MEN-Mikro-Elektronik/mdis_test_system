@@ -179,15 +179,35 @@ Restart SSH service
     - sshpass
 
 
+## Network Setup
+
+MDIS test setups (targets) are accessed via ssh. These are the hosts the scripts will expect to be
+accessible via ssh:
+
+* mdis-setupX: The host for each target to be testet.
+* mdis-aux: The host for the auxiliary PC tha controls the relay switch (BL51 Box PC).
+
+An ssh config file is necessary:
+
+```
+cat ~/.ssh/config
+Host mdis-setup1
+    Hostname 192.168.1.101
+    User men
+
+Host mdis-setup2
+    Hostname 192.168.1.102
+    User men
+...
+# Relay Switching
+Host mdis-aux
+    Hostname 192.168.1.109
+    User men
+```
+
 ## Test script configuration
-Most important variables that have to be set in configuration file ```Common/Conf.sh```
 
-- MenPcIpAddr
-
-  IP address of test computer
-  
-  e.g.:
-  ```MenPcIpAddr="192.168.1.100"```
+These are some important variables that have to be set in configuration file ```Common/Conf.sh```
 
 - MenPcLogin
 
@@ -202,13 +222,6 @@ Most important variables that have to be set in configuration file ```Common/Con
   
   e.g.:
   ```MenPcPassword="men"```
-
-- MenBoxPcIpAddr (relay)
-
-  IP address of auxiliary Box PC BL51E
-  
-  e.g.:
-  ```MenBoxPcIpAddr="192.168.1.200"```
 
 - GitTestSourcesBranch
 

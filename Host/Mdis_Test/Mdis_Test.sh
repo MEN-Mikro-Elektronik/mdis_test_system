@@ -392,11 +392,11 @@ function runTests {
 # MAIN start here
 create_test_cases_map
 if [ "${RUN_INSTANTLY}" == "1" ]; then
-    ssh-keygen -R "${MenPcIpAddr}"
     # Check if devices are available
-    if ! ping -c 2 "${MenPcIpAddr}"
+    if ! sshpass -p "${MenPcPassword}" ssh mdis-setup${TEST_SETUP} "echo"
     then
-        echo "${MenPcIpAddr} is not responding"
+        echo "mdis-setup${TEST_SETUP} is not responding"
+        exit
     fi
 
     cat "${MyDir}/../../Common/Conf.sh" > tmp.sh
@@ -414,11 +414,9 @@ if [ "${RUN_INSTANTLY}" == "1" ]; then
 else
     grub_set_os "0"
     for ExpectedOs in "${GrubOses[@]}"; do
-        ssh-keygen -R "${MenPcIpAddr}"
         # Check if devices are available
-        if ! ping -i 5 -c 4  "${MenPcIpAddr}"
-        then
-            echo "${MenPcIpAddr} is not responding"
+        if ! sshpass -p "${MenPcPassword}" ssh mdis-setup${TEST_SETUP} "echo"; then
+            echo "mdis-setup${TEST_SETUP} is not responding"
             break
         fi
         CurrentOs="$(grub_get_os)"
@@ -441,10 +439,9 @@ else
         fi
         if ! reboot_and_wait
         then
-            echo "${MenPcIpAddr} is not responding"
+            echo "mdis-setup${TEST_SETUP} is not responding"
             break
         fi
-        ssh-keygen -R "${MenPcIpAddr}"
 
         cat "${MyDir}/../../Common/Conf.sh" "${MyDir}"/Pc_Configure.sh > tmp.sh
         if ! run_script_on_remote_pc "${MyDir}"/tmp.sh

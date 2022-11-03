@@ -62,15 +62,10 @@ TEST_CASES_MAP["501"]="bl51_boxpc"
 TEST_CASES_MAP["502"]="bl70_boxpc"
 TEST_CASES_MAP["700"]="dc19_panelpc"
 
-# Address of Target that will be tested
-MenPcIpAddr="11.10.10.12"
-
 # Credentials for Pc that will be tested - required by ssh connection and sudo cmds
 MenPcLogin="men"
 MenPcPassword="men"
 
-# Address of device that will be changing status of inputs in tested device 
-MenBoxPcIpAddr="11.10.10.10"
 INPUT_SWITCH_TIMEOUT=10 #seconds
 
 # Credentials, address, and command to download Git repository with Test Cases source
