@@ -52,7 +52,7 @@ if [ "${TEST_SETUP}" -eq "0" ]; then
         exit "${ERR_VALUE}"
     fi
 else
-    TestConfiguration="St_Test_Setup_${TEST_SETUP}"
+    TestConfiguration="${TestSetupPrefix}${TEST_SETUP}"
 fi
 
 echo "test-setup=${TEST_SETUP}"

@@ -400,7 +400,7 @@ function debug_print_host {
 function downloadTestResults {
     local TargetPath=${1}
     local HostPath=${2}
-    local TestSetupFolder="St_Test_Setup_${3}"
+    local TestSetupFolder="${TestSetupPrefix}${3}"
     local Date=${4}
     local LogPrefix=${5}
 
@@ -438,7 +438,7 @@ function downloadTestResults {
 
 function processTestResults {
     local HostPath=${1}
-    local TestSetupFolder="St_Test_Setup_${2}"
+    local TestSetupFolder="${TestSetupPrefix}${2}"
     local Date=${3}
     local LogPrefix=${4}
 
