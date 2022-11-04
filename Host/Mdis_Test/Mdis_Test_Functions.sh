@@ -384,3 +384,78 @@ function debug_print_host {
         echo "${Msg}"
     fi
 }
+
+############################################################################
+# Download the test results from the Target PC.
+#
+#
+# parameters:
+# $1      target test result directory
+# $2      host test directory
+# $3      testSetup id
+# $4      date
+# $5      log prefix
+#
+
+function downloadTestResults {
+    local TargetPath=${1}
+    local HostPath=${2}
+    local TestSetupFolder="St_Test_Setup_${3}"
+    local Date=${4}
+    local LogPrefix=${5}
+
+    local TargetFullPath=${TargetPath}"/${TestSetupFolder}/${Date}"
+    local HostFullPath="${HostPath}/${TestSetupFolder}"
+
+    echo "${LogPrefix} Creating Results/ log in the host device..."
+    mkdir -p ${HostFullPath}
+
+    if [ ! -d ${TestSetupDir} ]; then
+        echo "${LogPrefix} Error. Unable to create the folder"
+        return "${ERR_DIR_NOT_EXISTS}"
+    fi
+
+    echo "${LogPrefix} Retrieving the logs from the Target... folder date: "${Date}
+    sshpass -p "${MenPcPassword}" scp -r men@${MenPcIpAddr}:${TargetFullPath} ${HostFullPath}
+
+    if [ $? -eq 0 ]; then
+        return "${ERR_OK}"
+    else
+        return "${ERR_DOWNLOAD}"
+    fi
+}
+
+############################################################################
+# Process the test results.
+#
+#
+# parameters:
+# $1      host test directory
+# $2      testSetup id
+# $3      date
+# $4      log prefix
+#
+
+function processTestResults {
+    local HostPath=${1}
+    local TestSetupFolder="St_Test_Setup_${2}"
+    local Date=${3}
+    local LogPrefix=${4}
+
+    local HostFullPath="${HostPath}/${TestSetupFolder}/${Date}"
+
+    echo "${LogPrefix} Searching for Results_Summary.log files of each OS."
+    resultFileList=$(find ${HostFullPath} -type f -name ${ResultsFileLogName})
+
+    for resultFile in $resultFileList
+    do
+        echo -n "${LogPrefix} Processing file: "$resultFile "... "
+        python3 ${MyDir}/../../Common/test_report_formatter.py -s -i mdis -f $resultFile
+
+        if [ $? -eq 0 ]; then
+            echo "[OK]"
+        else
+            echo "[FAIL]"
+        fi
+    done
+}
