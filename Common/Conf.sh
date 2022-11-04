@@ -109,6 +109,7 @@ GitTestTargetDirPath="${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSo
 GitTestHostDirPath="${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}/Host/Mdis_Test"
 
 ResultsFileLogName="Results_summary.log"
+TestSetupPrefix="St_Test_Setup_"
 
 # LockFile can be created only in 
 #       ${MainTestDirectoryName}/

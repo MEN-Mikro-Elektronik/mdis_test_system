@@ -52,7 +52,7 @@ if [ "${TEST_SETUP}" -eq "0" ]; then
         exit "${ERR_VALUE}"
     fi
 else
-    TestConfiguration="St_Test_Setup_${TEST_SETUP}"
+    TestConfiguration="${TestSetupPrefix}${TEST_SETUP}"
 fi
 
 echo "test-setup=${TEST_SETUP}"
@@ -238,6 +238,13 @@ echo "${GCCInfo}" >> System_info.txt
 echo "${Date}" > Source_info.txt
 echo "${CommitSha}" >> Source_info.txt
 
-find . -type f -name "${ResultsFileLogName}.tmp" -exec cat {} + > "${ResultsFileLogName}"
+# Dump all test result data
+find . -type f -name "Test_x_*.txt" -exec cat {} + > "${ResultsFileLogName}"
 sed -i "1i${SystemInfo}" "${ResultsFileLogName}"
 
+# Once the test has finished, deleting unneeded folders.
+# There is no special interesting in binary files.
+rm -rf BIN/
+rm -rf OBJ/
+rm -rf LIB/
+rm -rf DESC/
