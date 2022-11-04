@@ -416,7 +416,7 @@ function downloadTestResults {
     fi
 
     echo "${LogPrefix} Retrieving the logs from the Target... folder date: "${Date}
-    sshpass -p "${MenPcPassword}" scp -r men@${MenPcIpAddr}:${TargetFullPath} ${HostFullPath}
+    sshpass -p "${MenPcPassword}" scp -r ${MenPcLogin}@${MenPcIpAddr}:${TargetFullPath} ${HostFullPath}
 
     if [ $? -eq 0 ]; then
         return "${ERR_OK}"
