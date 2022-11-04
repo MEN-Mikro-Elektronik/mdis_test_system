@@ -242,3 +242,9 @@ echo "${CommitSha}" >> Source_info.txt
 find . -type f -name "Test_x_*.txt" -exec cat {} + > "${ResultsFileLogName}"
 sed -i "1i${SystemInfo}" "${ResultsFileLogName}"
 
+# Once the test has finished, deleting unneeded folders.
+# There is no special interesting in binary files.
+rm -rf BIN/
+rm -rf OBJ/
+rm -rf LIB/
+rm -rf DESC/
