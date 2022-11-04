@@ -457,4 +457,10 @@ else
         runTests
     done
 fi
+# Retrieve the test results
+downloadTestResults "${MdisResultsDirectoryPath}" "${MyDir}/${MainTestDirectoryName}" "${TEST_SETUP}" "${Today}" "${LogPrefix}"
+
+# Process the test results
+processTestResults "${MyDir}/${MainTestDirectoryName}" "${TEST_SETUP}" "${Today}" "${LogPrefix}"
+
 cleanOnExit
