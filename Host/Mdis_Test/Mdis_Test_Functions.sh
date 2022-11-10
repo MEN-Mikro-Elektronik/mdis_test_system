@@ -21,7 +21,7 @@ function make_visible_in_log {
 # $1    command
 #
 function run_cmd_on_remote_pc {
-    sshpass -p "${MenPcPassword}" ssh -o StrictHostKeyChecking=no "${MenPcLogin}"@"${MenPcIpAddr}" "${1}"
+    sshpass -p "${MenPcPassword}" ssh -o StrictHostKeyChecking=no mdis-setup${TEST_SETUP} "${1}"
 }
 
 ############################################################################
@@ -31,7 +31,7 @@ function run_cmd_on_remote_pc {
 # $1    command
 #
 function run_cmd_on_remote_input_switch {
-    sshpass -p "${MenPcPassword}" ssh -o StrictHostKeyChecking=no "${MenPcLogin}"@"${MenBoxPcIpAddr}" "${1}"
+    sshpass -p "${MenPcPassword}" ssh -o StrictHostKeyChecking=no mdis-aux "${1}"
 }
 
 ############################################################################
@@ -41,7 +41,7 @@ function run_cmd_on_remote_input_switch {
 # $1    script
 #
 function run_script_on_remote_pc {
-    sshpass -p "${MenPcPassword}" ssh -o StrictHostKeyChecking=no "${MenPcLogin}"@"${MenPcIpAddr}" \
+    sshpass -p "${MenPcPassword}" ssh -o StrictHostKeyChecking=no mdis-setup${TEST_SETUP} \
     bash -s < "${1}"
 }
 
@@ -353,24 +353,23 @@ function reboot_and_wait {
         echo "Press <ENTER> to continue..."
         read -r -s
     fi
-    echo "Waiting for ${MenPcIpAddr}..."
+    echo "Waiting for mdis-setup${TEST_SETUP}..."
     if [ "${ManualBoot}" -eq 0 ]; then
         sleep 120
     fi
     while true; do
-        if ping -c 1 -W 2 "${MenPcIpAddr}"
+        if sshpass -p "${MenPcPassword}" ssh mdis-setup${TEST_SETUP} "echo"
         then
-            echo "Waiting for ${MenPcIpAddr} to fully start..."
-            sleep 60
+            echo "mdis-setup${TEST_SETUP} up and running..."
             Return=0
             break
         else
             TryCount=$((TryCount + 1))
-            if [ "${TryCount}" -ge 30 ]; then
+            if [ "${TryCount}" -ge 60 ]; then
                 Return=1
                 break
             fi
-            echo "Waiting for ${MenPcIpAddr}..."
+            echo "Waiting for mdis-setup${TEST_SETUP}..."
             sleep 10
         fi
     done
@@ -416,7 +415,7 @@ function downloadTestResults {
     fi
 
     echo "${LogPrefix} Retrieving the logs from the Target... folder date: "${Date}
-    sshpass -p "${MenPcPassword}" scp -r ${MenPcLogin}@${MenPcIpAddr}:${TargetFullPath} ${HostFullPath}
+    sshpass -p "${MenPcPassword}" scp -r mdis-setup${3}:${TargetFullPath} ${HostFullPath}
 
     if [ $? -eq 0 ]; then
         return "${ERR_OK}"

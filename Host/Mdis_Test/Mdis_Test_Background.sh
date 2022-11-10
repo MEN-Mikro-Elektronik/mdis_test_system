@@ -34,7 +34,7 @@ while true; do
     FileExist=$(run_cmd_on_remote_pc "${CheckFileExistsCmd}")
     if [ "${FileExist}" = "true" ]; then
         # Check if there is connection with relay
-        if ping -c 2 "${MenBoxPcIpAddr}" > /dev/null 2>&1
+        if sshpass -p "${MenPcPassword}" ssh mdis-aux "echo"
         then
             # Read from lock file, which input should be changed
             debug_print_host "${LogPrefix} Lock file exists: change input ${LockFileData}"
@@ -53,7 +53,7 @@ while true; do
                 fi
             fi
         else
-            debug_print_host "${LogPrefix} No connection with relay: ${MenBoxPcIpAddr}"
+            debug_print_host "${LogPrefix} No connection with relay: mdis-aux"
         fi
     fi
 done
