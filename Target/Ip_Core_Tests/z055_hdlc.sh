@@ -200,18 +200,22 @@ function z055_hdlc_mak_fix {
     debug_print "${CurrentPath}" "${LogFile}"
 
     cd ../.. || exit "${ERR_NOEXIST}"
-    Z055_NATIVE_DRIVER="DRIVERS/Z055_HDLC/DRIVER/driver.mak"
+    Z055_NATIVE_DRIVER="DRIVERS/Z055_HDLC/DRIVER/driver.mak DRIVERS/CHAMELEON/driver.mak"
     Z055_NATIVE_TOOL="DRIVERS/Z055_HDLC/TOOLS/Z055_HDLC_UTIL/program.mak"
 
-    NativeDriverCnt=$(grep -c 'ALL_NATIVE_DRIVERS = \\' Makefile)
-    if [ "${NativeDriverCnt}" -eq "0" ]
-    then
-        sed -i 's/'"ALL_NATIVE_DRIVERS =.*"'/& \\/' Makefile
-        sed -i '/'"ALL_NATIVE_DRIVERS =.*"'/a '"\    \ ${Z055_NATIVE_DRIVER} \\\\"'' Makefile
-    elif [ "${NativeDriverCnt}" -eq "1" ]
-    then
-        sed -i '/'"ALL_NATIVE_DRIVERS =.*"'/a '"\    \ ${Z055_NATIVE_DRIVER} \\\\"'' Makefile
-    fi
+    for Driver in $Z055_NATIVE_DRIVER
+    do
+        NativeDriverCnt=$(grep -c 'ALL_NATIVE_DRIVERS = \\' Makefile)
+
+        if [ "${NativeDriverCnt}" -eq "0" ]
+        then
+            sed -i 's/'"ALL_NATIVE_DRIVERS =.*"'/& \\/' Makefile
+            sed -i '/'"ALL_NATIVE_DRIVERS =.*"'/a '"\    \ ${Driver} \\\\"'' Makefile
+        elif [ "${NativeDriverCnt}" -eq "1" ]
+        then
+            sed -i '/'"ALL_NATIVE_DRIVERS =.*"'/a '"\    \ ${Driver} \\\\"'' Makefile
+        fi
+    done
 
     NativeToolCnt=$(grep -c 'ALL_NATIVE_TOOLS = \\' Makefile)
     if [ "${NativeToolCnt}" -eq "0" ]

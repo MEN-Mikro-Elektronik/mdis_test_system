@@ -57,11 +57,22 @@ function m99_test {
         return "${ERR_VALUE}"
     fi
 
-    # Run m99_latency
+    # Run m99_latency in background.
     debug_print "${LogPrefix} Step2: run m99_latency m99_${ModuleNo}" "${LogFile}"
-    if ! run_as_root bash -c 'm99_latency m99_1 < <(sleep 10; echo "") > m99_latency.log'
+    if ! run_as_root $(stdbuf -oL m99_latency m99_1 < /dev/null > m99_latency.log &)
     then
-        debug_print "${LogPrefix} Could not run m99_latency " "${LogFile}"
+        debug_print "${LogPrefix} Could not run m99_latency" "${LogFile}"
+    fi
+
+    # Count changes for a while
+    sleep 10
+
+    M99_Latency_PID=$(pgrep m99_latency)
+
+    # Kill background processes
+    if ! run_as_root kill -9 "${M99_Latency_PID}" > /dev/null 2>&1
+    then
+        debug_print "${LogPrefix} Could not kill m99_latency" "${LogFile}"
     fi
 
     debug_print "${LogPrefix} Step3: check for errors" "${LogFile}"
