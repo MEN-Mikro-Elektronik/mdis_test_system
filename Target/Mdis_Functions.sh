@@ -24,7 +24,7 @@ function scan_and_install {
 }
 
 ############################################################################
-# Perform make and make install.
+# Perform make clean, make and make install.
 # If error occurs stop and exit with proper error code
 #
 # parameters:
@@ -32,6 +32,12 @@ function scan_and_install {
 function make_install {
     local LogPrefix="${1} "
     echo "${LogPrefix}make_install"
+
+    if ! run_as_root make clean > make_output.txt 2>&1
+    then
+        echo "ERR 3 :make clean error"
+        exit "${ERR_MAKE}"
+    fi
 
     if ! run_as_root make > make_output.txt 2>&1 
     then
