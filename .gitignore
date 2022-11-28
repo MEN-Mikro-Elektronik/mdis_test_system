@@ -6,3 +6,4 @@ MDIS_Compilation_Test/*.log.bak
 MDIS_Compilation_Test/*.tmp
 MDIS_Compilation_Test/.kernel*
 MDIS_Compilation_Test/Makefile
+Host/Mdis_Test/MDIS_Functional/
