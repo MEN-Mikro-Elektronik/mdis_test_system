@@ -177,6 +177,7 @@ Restart SSH service
     - python
     - rsync
     - sshpass
+    - pip3 install junit_xml
 
 
 ## Network Setup
