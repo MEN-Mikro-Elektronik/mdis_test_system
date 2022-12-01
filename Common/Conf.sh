@@ -393,6 +393,9 @@ function get_test_case_id {
         m65n_canopen)
             TestCaseId=$((baseId+21))
             ;;
+        m47_pci)
+            TestCaseId=$((baseId+22))
+            ;;
         *)
             TestCaseId="9999"
             ;;
@@ -424,6 +427,7 @@ function create_test_setup_test_cases_map {
             TEST_SETUP_1_TEST_CASES[$(get_test_case_id "m77" "G204")]="true"
             TEST_SETUP_1_TEST_CASES[$(get_test_case_id "m33" "F205")]="true"
             TEST_SETUP_1_TEST_CASES[$(get_test_case_id "m47" "F205")]="true"
+            TEST_SETUP_1_TEST_CASES[$(get_test_case_id "m47_pci" "F205")]="true"
             ;;
         2)
             TEST_SETUP_2_TEST_CASES[102]="true"

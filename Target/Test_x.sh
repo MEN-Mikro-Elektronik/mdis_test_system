@@ -10,6 +10,7 @@ source "${MyDir}"/M_Modules_Tests/m36n.sh
 source "${MyDir}"/M_Modules_Tests/m37n.sh
 source "${MyDir}"/M_Modules_Tests/m43n.sh
 source "${MyDir}"/M_Modules_Tests/m47.sh
+source "${MyDir}"/M_Modules_Tests/m47_pci.sh
 source "${MyDir}"/M_Modules_Tests/m57.sh
 source "${MyDir}"/M_Modules_Tests/m58.sh
 source "${MyDir}"/M_Modules_Tests/m62n.sh
