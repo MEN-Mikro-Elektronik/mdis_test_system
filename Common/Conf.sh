@@ -95,6 +95,7 @@ MdisSourcesDirectoryName="13MD05-90"
 TestSourcesDirectoryName="mdis_test_system"
 MainTestDirectoryName="MDIS_Functional"
 MdisResultsDirectoryName="Results"
+MdisDescDir="/etc/mdis"
 # optional - used for proprietary drivers
 MdisExternalDirectoryPath="/media/tests/MDIS_External_Sources"
 
