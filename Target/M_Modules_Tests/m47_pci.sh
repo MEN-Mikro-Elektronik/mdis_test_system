@@ -2,6 +2,7 @@
 MyDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${MyDir}/../../Common/Conf.sh"
 source "${MyDir}/../St_Functions.sh"
+source "${MyDir}/M_Modules_Tests/m47.sh"
 
 ############################################################################
 # m47 test description
@@ -12,10 +13,13 @@ source "${MyDir}/../St_Functions.sh"
 function m47_pci_description {
     local ModuleNo=${1}
     local ModuleLogPath=${2}
-    echo "--------------------------------M47 Test Case---------------------------------"
+    echo "--------------------------------M47 PCI Test Case---------------------------------"
     echo "PREREQUISITES:"
     echo "    It is assumed that at this point all necessary drivers have been build and"
-    echo "    are available in the system"
+    echo "    are available in the system."
+    echo "    Use the PCI_BUS_PATH makes the test dependent on the CompactPCI slot in the backplane"
+    echo "    where the carrier board should be placed, so please, remember to connect the F205"
+    echo "    in the same slot specified on 13MD05-90_02_03-System-TestReport-1.pdf"
     echo "DESCRIPTION:"
     echo "    Load module driver and run M-Module example programs"
     echo "    1.Load m-module drivers: modprobe men_ll_m47"
@@ -24,7 +28,7 @@ function m47_pci_description {
     echo "    3.Verify if m47_simp command output is valid - does not contain errors"
     echo "      Device was opened and closed succesfully"
     echo "PURPOSE:"
-    echo "    Check if M-module m47 is working correctly"
+    echo "    Check if M-module m47 is working correctly accessing via PCI_BUS_PATH instead of PCI BUS/PCI DEVICE NUMBER"
     echo "UPPER_REQUIREMENT_ID:"
     echo "    MEN_13MD0590_SWR_1560"
     #echo "REQUIREMENT_ID:"
@@ -49,29 +53,34 @@ function m47_pci_test {
     local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
+    local TestResult=0
 
-    debug_print "${LogPrefix} Step1: modprobe men_ll_m47" "${LogFile}"
-    if ! run_as_root modprobe men_ll_m47
-    then
-        debug_print "${LogPrefix} ERR_VALUE: could not modprobe men_ll_m47" "${LogFile}"
-        return "${ERR_VALUE}"
-    fi
+    # This carrier board is indentified as d203_1 so we copy
+    # the previous file.
+    debug_print "${LogPrefix} Backup previous d203_1.bin file" "${LogFile}"
+    run_as_root cp ${MdisDescDir}/d203_1.bin ${MdisDescDir}/d203_1.bin.original
 
-    # Run m47_simp
-    debug_print "${LogPrefix} Step2: run m47_simp m47_${ModuleNo}" "${LogFile}"
-    if ! run_as_root m47_simp m47_"${ModuleNo}" > m47_simp.log
-    then
-        debug_print "${LogPrefix} Could not run m47_simp " "${LogFile}"
-    fi
+    # Copy the new DESC binary file of carrier board where
+    # this M-Module is connected to.
+    debug_print "${LogPrefix} Replace the d203_1.bin file with the new one" "${LogFile}"
+    run_as_root cp ${MyDir}/Config/St_Test_Setup_1/d203_1.bin ${MdisDescDir}/d203_1.bin
 
-    # Do not check read value
-    debug_print "${LogPrefix} Step3: check for errors" "${LogFile}"
-    grep "^ Device name: m47_${ModuleNo}" m47_simp.log > /dev/null && \
-    grep "^ Channel: 0" m47_simp.log > /dev/null && \
-    grep "^M_open" m47_simp.log > /dev/null && \
-    grep "^M_close" m47_simp.log > /dev/null
-    if [ $? -ne 0 ]; then
-        debug_print "${LogPrefix} Invalid log output, ERROR" "${LogFile}"
+    # Run the parent test
+    debug_print "${LogPrefix} Run parent m47 test..." "${LogFile}"
+    m47_test ${LogFile} ${LogPrefix} ${ModuleNo}
+    TestResult=$?
+
+    debug_print "${LogPrefix} Test result: ${TestResult}" "${LogFile}"
+
+    # After that, restore the file with the previous DESC binary
+    # file.
+    debug_print "${LogPrefix} Restore old d203_1.bin file" "${LogFile}"
+    run_as_root cp ${MdisDescDir}/d203_1.bin.original ${MdisDescDir}/d203_1.bin
+
+    # Delete original file.
+    run_as_root rm -rf ${MdisDescDir}/d203_1.bin.original
+
+    if [ ${TestResult} -ne 0 ]; then
         return "${ERR_VALUE}"
     fi
 
