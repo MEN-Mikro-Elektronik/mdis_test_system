@@ -23,6 +23,7 @@ source "${MyDir}"/M_Modules_Tests/m81.sh
 source "${MyDir}"/M_Modules_Tests/m82.sh
 source "${MyDir}"/M_Modules_Tests/m99.sh
 source "${MyDir}"/M_Modules_Tests/m199.sh
+source "${MyDir}"/M_Modules_Tests/m199_pci.sh
 source "${MyDir}"/Board_Tests/f215.sh
 source "${MyDir}"/Board_Tests/f215_stress.sh
 source "${MyDir}"/Board_Tests/f206.sh

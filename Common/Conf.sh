@@ -397,6 +397,9 @@ function get_test_case_id {
         m47_pci)
             TestCaseId=$((baseId+22))
             ;;
+        m199_pci)
+            TestCaseId=$((baseId+23))
+            ;;
         *)
             TestCaseId="9999"
             ;;
@@ -458,6 +461,7 @@ function create_test_setup_test_cases_map {
             TEST_SETUP_5_TEST_CASES[$(get_test_case_id "m82" "G204")]="true" #x2
             TEST_SETUP_5_TEST_CASES[$(get_test_case_id "m99" "F205")]="true"
             TEST_SETUP_5_TEST_CASES[$(get_test_case_id "m199" "F205")]="true"
+            TEST_SETUP_5_TEST_CASES[$(get_test_case_id "m199_pci" "F205")]="true"
             ;;
         6)
             TEST_SETUP_6_TEST_CASES[1]="true"
