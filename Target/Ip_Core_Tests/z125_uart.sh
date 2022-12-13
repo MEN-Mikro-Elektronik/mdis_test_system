@@ -87,9 +87,9 @@ function z125_uart_test {
         return "${CmdResult}"
     fi
 
-
-    if ! obtain_tty_number_list_from_board "${LogFile}" "${ChamTableDumpFile}" "${UartNoList}" "${LogPrefix}"
-    then
+    obtain_tty_number_list_from_board "${LogFile}" "${ChamTableDumpFile}" "${UartNoList}" "${LogPrefix}"
+    CmdResult=$?
+    if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
         debug_print "${LogPrefix} obtain_tty_number_list_from_board failed, err: ${CmdResult}" "${LogFile}"
         return "${CmdResult}"
     fi
