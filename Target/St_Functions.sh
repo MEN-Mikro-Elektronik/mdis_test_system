@@ -939,3 +939,78 @@ function m_module_x_test {
         return "${TestError}"
     fi
 }
+
+############################################################################
+# This function updates the desc file with the new one,
+# mainly to verify the PCI_BUS_PATH feature.
+#
+# parameters:
+# $1    Desc filename (without path)
+# $2    Path to the new Desc File
+# $3    Log file
+# $4    Log prefix
+function update_desc_file {
+    local DescFile=$1
+    local NewDescFile=$2
+    local LogFile=$3
+    local LogPrefix=$4
+    local CmdResult=0
+
+    debug_print "${LogPrefix} Backup previous ${DescFile} file" "${LogFile}"
+    run_as_root cp ${MdisDescDir}/${DescFile} ${MdisDescDir}/${DescFile}.original
+    CmdResult=$?
+
+    if [ ${CmdResult} -ne "0" ]; then
+        debug_print "${LogPrefix} Unable to backup ${DescFile} file. File does not exist" "${LogFile}"
+        return ${ERR_NOEXIST}
+    fi
+
+    # Copy the new DESC binary file of carrier board where
+    # this M-Module is connected to.
+    debug_print "${LogPrefix} Replace the ${DescFile} file with the new one placed in: ${NewDescFile}" "${LogFile}"
+    run_as_root cp ${NewDescFile} ${MdisDescDir}/${DescFile}
+    CmdResult=$?
+
+    if [ ${CmdResult} -ne "0" ]; then
+        debug_print "${LogPrefix} Unable to replace ${DescFile} file. File does not exist" "${LogFile}"
+        return ${ERR_NOEXIST}
+    fi
+
+    return ${ERR_OK}
+}
+
+############################################################################
+# This function restores the desc file previously backed up.
+#
+# parameters:
+# $1    Desc filename (without path)
+# $2    Log file
+# $3    Log prefix
+function restore_desc_file {
+    local DescFile=$1
+    local LogFile=$3
+    local LogPrefix=$3
+    local CmdResult=0
+
+    # After that, restore the file with the previous DESC binary
+    # file.
+    debug_print "${LogPrefix} Restore old ${DescFile} file" "${LogFile}"
+    run_as_root cp ${MdisDescDir}/${DescFile}.original ${MdisDescDir}/${DescFile}
+    CmdResult=$?
+
+    if [ ${CmdResult} -ne "0" ]; then
+        debug_print "${LogPrefix} Unable to restore ${DescFile} file. File does not exist" "${LogFile}"
+        return ${ERR_NOEXIST}
+    fi
+
+    # Delete original file.
+    run_as_root rm -rf ${MdisDescDir}/${DescFile}.original
+    CmdResult=$?
+
+    if [ ${CmdResult} -ne "0" ]; then
+        debug_print "${LogPrefix} Unable to delete ${DescFile}.original backup file. File does not exist" "${LogFile}"
+        return ${ERR_NOEXIST}
+    fi
+
+    return ${ERR_OK}
+}
