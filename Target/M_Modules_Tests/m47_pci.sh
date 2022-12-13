@@ -57,13 +57,7 @@ function m47_pci_test {
 
     # This carrier board is indentified as d203_1 so we copy
     # the previous file.
-    debug_print "${LogPrefix} Backup previous d203_1.bin file" "${LogFile}"
-    run_as_root cp ${MdisDescDir}/d203_1.bin ${MdisDescDir}/d203_1.bin.original
-
-    # Copy the new DESC binary file of carrier board where
-    # this M-Module is connected to.
-    debug_print "${LogPrefix} Replace the d203_1.bin file with the new one" "${LogFile}"
-    run_as_root cp ${MyDir}/Config/St_Test_Setup_1/d203_1.bin ${MdisDescDir}/d203_1.bin
+    update_desc_file "d203_1.bin" "${MyDir}/Config/St_Test_Setup_1/d203_1.bin" $LogFile $LogPrefix
 
     # Run the parent test
     debug_print "${LogPrefix} Run parent m47 test..." "${LogFile}"
@@ -74,11 +68,7 @@ function m47_pci_test {
 
     # After that, restore the file with the previous DESC binary
     # file.
-    debug_print "${LogPrefix} Restore old d203_1.bin file" "${LogFile}"
-    run_as_root cp ${MdisDescDir}/d203_1.bin.original ${MdisDescDir}/d203_1.bin
-
-    # Delete original file.
-    run_as_root rm -rf ${MdisDescDir}/d203_1.bin.original
+    restore_desc_file "d203_1.bin" $LogFile $LogPrefix
 
     if [ ${TestResult} -ne 0 ]; then
         return "${ERR_VALUE}"
