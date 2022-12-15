@@ -140,6 +140,7 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
                 run_test_case_module "m77" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
                 run_test_case_module "m33" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
                 run_test_case_module "m47" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+                run_test_case_module "m47_pci" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             fi
             ;;
         2)
@@ -175,6 +176,7 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             run_test_case_module "m82" "G204" "2" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_module "m99" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_module "m199" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case_module "m199_pci" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
         6)
             run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" "CB70-" # SMB2_TEST @ CB70

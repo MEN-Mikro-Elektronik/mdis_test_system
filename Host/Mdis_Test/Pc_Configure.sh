@@ -196,13 +196,13 @@ function install_13MD05_90_sources {
         if [ "${RUN_INSTANTLY}" != "1" ]; then
             echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -rf /opt/menlinux
             echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -f /lib/modules/"$(uname -r)"/misc/men_*.ko
-            echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -f /etc/mdis/*.bin
+            echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -f ${MdisDescDir}/*.bin
             cd "${MainTestDirectoryPath}"/"${MainTestDirectoryName}"/"${MdisSourcesDirectoryName}" || return "${ERR_INSTALL}"
             echo "${MenPcPassword}" | sudo -S --prompt=$'\r' ./INSTALL.sh --install-only
         else
             if [ ! -d /opt/menlinux ]; then
                 echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -f /lib/modules/"$(uname -r)"/misc/men_*.ko
-                echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -f /etc/mdis/*.bin
+                echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -f ${MdisDescDir}/*.bin
                 cd "${MainTestDirectoryPath}"/"${MainTestDirectoryName}"/"${MdisSourcesDirectoryName}" || return "${ERR_INSTALL}"
                 echo "${MenPcPassword}" | sudo -S --prompt=$'\r' ./INSTALL.sh --install-only
             fi

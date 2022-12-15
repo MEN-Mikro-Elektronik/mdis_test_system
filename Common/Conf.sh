@@ -95,6 +95,7 @@ MdisSourcesDirectoryName="13MD05-90"
 TestSourcesDirectoryName="mdis_test_system"
 MainTestDirectoryName="MDIS_Functional"
 MdisResultsDirectoryName="Results"
+MdisDescDir="/etc/mdis"
 # optional - used for proprietary drivers
 MdisExternalDirectoryPath="/media/tests/MDIS_External_Sources"
 
@@ -393,6 +394,12 @@ function get_test_case_id {
         m65n_canopen)
             TestCaseId=$((baseId+21))
             ;;
+        m47_pci)
+            TestCaseId=$((baseId+22))
+            ;;
+        m199_pci)
+            TestCaseId=$((baseId+23))
+            ;;
         *)
             TestCaseId="9999"
             ;;
@@ -424,6 +431,7 @@ function create_test_setup_test_cases_map {
             TEST_SETUP_1_TEST_CASES[$(get_test_case_id "m77" "G204")]="true"
             TEST_SETUP_1_TEST_CASES[$(get_test_case_id "m33" "F205")]="true"
             TEST_SETUP_1_TEST_CASES[$(get_test_case_id "m47" "F205")]="true"
+            TEST_SETUP_1_TEST_CASES[$(get_test_case_id "m47_pci" "F205")]="true"
             ;;
         2)
             TEST_SETUP_2_TEST_CASES[102]="true"
@@ -453,6 +461,7 @@ function create_test_setup_test_cases_map {
             TEST_SETUP_5_TEST_CASES[$(get_test_case_id "m82" "G204")]="true" #x2
             TEST_SETUP_5_TEST_CASES[$(get_test_case_id "m99" "F205")]="true"
             TEST_SETUP_5_TEST_CASES[$(get_test_case_id "m199" "F205")]="true"
+            TEST_SETUP_5_TEST_CASES[$(get_test_case_id "m199_pci" "F205")]="true"
             ;;
         6)
             TEST_SETUP_6_TEST_CASES[1]="true"
