@@ -68,7 +68,7 @@ MdisSourcesDirectoryInstallPath="${MainTestDirectoryPath}/${MainTestDirectoryNam
 # PLEASE check below paths before running compilation tests
 # Below paths should be provided by user  
 
-LinuxKernelsDirectoryPath="/media/tests/${LinuxKernelsDirectoryName}"
+LinuxKernelsDirectoryPath="${MainTestDirectoryPath}/${LinuxKernelsDirectoryName}"
 # parent folder in which linux kernel repo is located
 TEST_KERNEL_DIR="${LinuxKernelsDirectoryPath}/linux"
 # folder of MDIS package, by default /opt/menlinux

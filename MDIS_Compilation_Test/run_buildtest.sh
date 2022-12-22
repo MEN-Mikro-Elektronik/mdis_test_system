@@ -215,6 +215,9 @@ function usage {
     echo "    --all"
     echo "        Run all available .mak on all kernels"
     echo ""
+    echo "    --output-dir"
+    echo "        Select a custom output result directory"
+    echo ""
     echo "    --short"
     echo "        Compile only short list of modules"
     echo ""
@@ -472,6 +475,12 @@ while test $# -gt 0 ; do
                 echo "Compile all kernels on all available gcc versions"
                 echo "Go for tee" 
                 ;;
+        --output-dir)
+                shift
+                echo "Custom output result dir: $1"
+                BUILD_TEST_DIRECTORY=$1
+                shift
+                ;;
         --makefile)
                 shift
                 if test $# -gt 0; then
@@ -496,9 +505,6 @@ if [ ${Retval} -ne 0 ]; then
         echo "ERR: create_main_test_directory"
         exit "${ERR_CONF}"
 fi
-
-cd "${LinuxKernelsDirectoryPath}" || (echo "Could not enter directory \"${LinuxKernelsDirectoryPath}\". Quitting!" && exit 1)
-cd "${MdisMainDirectoryPath}" || (echo "Could not enter directory \"${MdisMainDirectoryPath}\". Quitting!" && exit 1)
 
 create_result_directory
 CmdResult=$?
