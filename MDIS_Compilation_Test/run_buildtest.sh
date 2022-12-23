@@ -24,16 +24,16 @@ BUILD_TEST_DIRECTORY=${MdisResultsDirectoryPath}/${DATE}
 function create_main_test_directory {
         echo "create main Compilation results directory"
         local Retval=0
-        if [ ! -d "${MainTestDirectoryPath}/${MainTestDirectoryName}" ]; then
+        if [ ! -d "${MdisMainDirectoryPath}" ]; then
                 # create and move to Test Case directory 
-                mkdir -p "${MainTestDirectoryPath}/${MainTestDirectoryName}"
+                mkdir -p "${MdisMainDirectoryPath}"
                 Retval=$?
                 if [ ${Retval} -ne 0 ]; then
                         echo "ERR: ${ERR_CREATE} - cannot create directory"
                         return "${ERR_CREATE}"
                 fi
         else
-                echo "${MainTestDirectoryPath}/${MainTestDirectoryName} directory exists"
+                echo "${MdisMainDirectoryPath} directory exists"
         fi
 
         return "${ERR_OK}"
@@ -76,7 +76,7 @@ function create_result_directory {
 function create_13MD05-90_directory {
         # create and download 
         local Retval=0
-        if [ ! -d "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" ]; then
+        if [ ! -d "${MdisMainDirectoryPath}/${MdisSourcesDirectoryName}" ]; then
                 # create and move to Test Case directory
                 download_13MD05_90_repository
                 Retval=$?
@@ -162,13 +162,13 @@ function download_13MD05_90_repository {
 #
 function install_13MD05_90_sources {
 
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf ${MdisSourcesDirectoryInstallPath}
+        rm -rf ${MdisSourcesDirectoryInstallPath}
 
         if [ -d "${MdisSourcesDirectoryPath}" ]; then
                 # install sources of MDIS
-                # echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf /opt/menlinux
+                # rm -rf /opt/menlinux
                 cd "${MdisSourcesDirectoryPath}" || (echo "Could not enter directory \"${MdisSourcesDirectoryPath}\". Quitting!" && exit 1)
-                echo ${MenPcPassword} | sudo -S --prompt=$'\r' ./INSTALL.sh --path=${MdisSourcesDirectoryInstallPath} --install-only
+                ./INSTALL.sh --path=${MdisSourcesDirectoryInstallPath} --install-only
         else
                 echo "ERR ${ERR_INSTALL} :no sources to install"
                 echo "Make sure that sources are in ${MdisResultsDirectoryPath}" 
@@ -319,7 +319,7 @@ function automatic_driver_test {
                 if [ -f "${1}_${MakefilesCompilationListFailed}" ]; then
                     cp "${1}_${MakefilesCompilationListFailed}" "${1}_${MakefilesCompilationListFailed}.bak"
                     cp "${1}_${MakefilesCompilationListFailed}" MakefilesList.tmp
-                    echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm "${1}_${MakefilesCompilationListFailed}"
+                    rm "${1}_${MakefilesCompilationListFailed}"
                     MakefilesNumber=$(wc -l <MakefilesList.tmp)
                 else
                     echo "There is no list of failed Makefiles"
@@ -349,7 +349,7 @@ function automatic_driver_test {
             if [ -f "${1}_${MakefilesCompilationListFailed}" ]
             then
                 cp "${1}_${MakefilesCompilationListFailed}" "${MakefilesCompilationListFailed}.bak"
-                echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm "${1}_${MakefilesCompilationListFailed}"
+                rm "${1}_${MakefilesCompilationListFailed}"
             fi
         fi
 
@@ -414,8 +414,8 @@ function automatic_driver_test {
                 touch "${STR_RESULT_DIR}/ModinfoResults.log"
                 Modules=$(find "OBJ/" -name '*.ko' -type f)
                 for Module in ${Modules}; do
-                        echo ${MenPcPassword} | sudo -S --prompt=$'\r' modinfo "${Module}" > "${STR_RESULT_DIR}/ModinfoResults/${Module##*/}.${Makefile}.log"
-                        Version="$(echo ${MenPcPassword} | sudo -S --prompt=$'\r' modinfo "${Module}" | grep -l "^version:")"
+                        modinfo "${Module}" > "${STR_RESULT_DIR}/ModinfoResults/${Module##*/}.${Makefile}.log"
+                        Version="$(modinfo "${Module}" | grep -l "^version:")"
                         if [ "${Version}" != "" ]; then
                                 echo "${Module##*/}.${Makefile} PASSED" >> "${STR_RESULT_DIR}/ModinfoResults.log"
                         else
@@ -424,7 +424,7 @@ function automatic_driver_test {
                 done
 
         done 13< MakefilesList.tmp
-        echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm MakefilesList.tmp
+        rm MakefilesList.tmp
 
         test_report ${1}_${5} ${STR_RESULT_FILE} ${STR_REPORT_FILE}
 }
@@ -555,8 +555,8 @@ fi
 if [ -e "Makefile" ]; then
         make clean
 fi
-echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -f Makefile
-echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf DESC
-echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf LIB
-echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf BIN
-echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf OBJ
+rm -f Makefile
+rm -rf DESC
+rm -rf LIB
+rm -rf BIN
+rm -rf OBJ
