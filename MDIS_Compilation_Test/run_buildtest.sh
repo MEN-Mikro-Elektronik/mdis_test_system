@@ -124,6 +124,7 @@ function create_13MD05-90_directory {
 #
 
 function download_13MD05_90_repository {
+        cd "${MdisMainDirectoryPath}" || (echo "Could not enter directory \"${MdisMainDirectoryPath}\". Quitting!" && exit 1)
         ${GitMdisCmd}
         local Retval=0
         Retval=$?
