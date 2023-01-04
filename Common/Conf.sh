@@ -66,8 +66,6 @@ TEST_CASES_MAP["700"]="dc19_panelpc"
 MenPcLogin="men"
 MenPcPassword="men"
 
-INPUT_SWITCH_TIMEOUT=10 #seconds
-
 # Credentials, address, and command to download Git repository with Test Cases source
 GitTestSourcesBranch="mad-dev"
 GitTestSourcesCmd="git clone -b ${GitTestSourcesBranch} https://github.com/MEN-Mikro-Elektronik/mdis_test_system.git"
