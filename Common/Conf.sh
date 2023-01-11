@@ -105,24 +105,6 @@ GitTestHostDirPath="${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSour
 ResultsFileLogName="Results_summary.log"
 TestSetupPrefix="St_Test_Setup_"
 
-# LockFile can be created only in 
-#       ${MainTestDirectoryName}/
-#       `-- lock.change.input.tmp
-#
-# When input change is required - file is created and Test Case name and Command  
-# code is written into file. When the change has been done, success / fail flag  
-# is added after Command code. When the status is read, file have to be deleted.
-# Lock file contains only ONE command code!
-# example: 
-#       TestCaseName : IN_0_ENABLE : success
-# example1: 
-#       TestCaseName : IN_2_DISABLE : failed
-#
-LockFileName="${MainTestDirectoryPath}/${MainTestDirectoryName}/lock.change.input.tmp"
-LockFileNameResult="${MainTestDirectoryPath}/${MainTestDirectoryName}/lock.change.input.tmp.result"
-LockFileSuccess="success"
-LockFileFailed="failed"
-
 # Number of request packets to send
 PING_PACKET_COUNT=3
 # Time to wait for a response [s]
