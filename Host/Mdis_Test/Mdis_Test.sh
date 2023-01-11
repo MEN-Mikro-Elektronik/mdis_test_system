@@ -268,9 +268,9 @@ function runTests {
     echo "${St_Test_Configuration} ${TEST_SETUP}"
 
     # Make all scripts executable
-    run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' chmod +x ${GitTestCommonDirPath}/*"
-    run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' chmod +x ${GitTestTargetDirPath}/*"
-    run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' chmod +x ${GitTestHostDirPath}/*"
+    run_cmd_on_remote_pc "chmod +x ${GitTestCommonDirPath}/*"
+    run_cmd_on_remote_pc "chmod +x ${GitTestTargetDirPath}/*"
+    run_cmd_on_remote_pc "chmod +x ${GitTestHostDirPath}/*"
 
     # Run Test script - now scripts from remote device should be run
     make_visible_in_log "TEST CASE - ${St_Test_Configuration} ${TEST_SETUP}"

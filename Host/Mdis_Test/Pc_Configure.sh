@@ -59,8 +59,8 @@ function create_result_directory {
 function create_test_case_sources_directory {
     # remove if exists 
     if [ -d "${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}" ]; then
-        echo "The folder ${TestSourcesDirectoryName} exists. Removing it first..."
-        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -rf "${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}"
+		echo "The folder ${TestSourcesDirectoryName} exists. Removing it first..."
+        rm -rf "${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}"
     fi
 
     if ! ${GitTestSourcesCmd}
@@ -86,7 +86,7 @@ function create_13MD05-90_directory {
     # create and download 
     if [ -d "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" ]; then
         echo "The folder ${MdisSourcesDirectoryName} exists. Removing it first..."
-        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -rf "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}"
+        rm -rf "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}"
     fi
 
     if ! download_13MD05_90_repository
@@ -108,7 +108,7 @@ function copy_external_sources {
     if [ -d "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" ]; then
         # check if external sources directory exists
         if [ -d "${MdisExternalDirectoryPath}" ]; then
-            echo "${MenPcPassword}" | sudo -S --prompt=$'\r' cp -r "${MdisExternalDirectoryPath}"/* "${MainTestDirectoryPath}"/"${MainTestDirectoryName}"/"${MdisSourcesDirectoryName}"/
+            cp -r "${MdisExternalDirectoryPath}"/* "${MainTestDirectoryPath}"/"${MainTestDirectoryName}"/"${MdisSourcesDirectoryName}"/
         fi
     fi
     return "${ERR_OK}"
