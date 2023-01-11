@@ -161,21 +161,21 @@ function install_13MD05_90_sources {
         IsYocto="$(hostnamectl | grep "Operating System" | grep -c "Yocto")"
         echo "IsYocto: ${IsYocto}"
         if [ "${SystemName}" == "CentOS" ] || [ "${IsRedHat}" == "1" ]; then
-            echo "${MenPcPassword}" | sudo --stdin --prompt=$'\r' ln --symbolic --no-dereference --force "/usr/src/kernels/${CurrentKernel}" "/usr/src/linux"
+            run_as_root ln --symbolic --no-dereference --force "/usr/src/kernels/${CurrentKernel}" "/usr/src/linux"
         elif [ "${IsYocto}" == "1" ]; then
-            echo "${MenPcPassword}" | sudo --stdin --prompt=$'\r' ln --symbolic --no-dereference --force "/usr/src/kernel" "/usr/src/linux"
+            run_as_root ln --symbolic --no-dereference --force "/usr/src/kernel" "/usr/src/linux"
             # make prepare
             # make scripts
         else
-            echo "${MenPcPassword}" | sudo --stdin --prompt=$'\r' ln --symbolic --no-dereference --force "/usr/src/linux-headers-${CurrentKernel}" "/usr/src/linux"
+            run_as_root ln --symbolic --no-dereference --force "/usr/src/linux-headers-${CurrentKernel}" "/usr/src/linux"
         fi
 
         # install sources of MDIS
-        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -rf /opt/menlinux
-        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -f /lib/modules/"$(uname -r)"/misc/men_*.ko
-        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -f ${MdisDescDir}/*.bin
+        run_as_root rm -rf /opt/menlinux
+        run_as_root rm -f /lib/modules/"$(uname -r)"/misc/men_*.ko
+        run_as_root rm -f ${MdisDescDir}/*.bin
         cd "${MainTestDirectoryPath}"/"${MainTestDirectoryName}"/"${MdisSourcesDirectoryName}" || return "${ERR_INSTALL}"
-        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' ./INSTALL.sh --install-only
+        run_as_root ./INSTALL.sh --install-only
     else
         echo "ERR ${ERR_INSTALL} :no sources to install" 
         return "${ERR_INSTALL}"

@@ -31,7 +31,7 @@ function scan_and_install {
 # $1    Log Prefix
 function make_install {
     local LogPrefix="${1} "
-    echo "${LogPrefix}make_install"
+    echo "${LogPrefix}make_install user: $(whoami)"
 
     if ! make clean > make_output.txt 2>&1
     then
