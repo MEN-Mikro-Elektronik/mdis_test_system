@@ -54,7 +54,7 @@ function f213_test {
           Step1)
                 echo "Run step @1" | tee -a ${TestCaseLogName} 2>&1
 
-                echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cdetect -y -l > "i2c_bus_list_before.log" 2>&1
+                run_as_root i2cdetect -y -l > "i2c_bus_list_before.log" 2>&1
 
                 TestCaseStep1=0
                 MachineState="Step2"
@@ -62,7 +62,7 @@ function f213_test {
           Step2)
                 echo "Run step @2" | tee -a ${TestCaseLogName} 2>&1
 
-                echo ${MenPcPassword} | sudo -S --prompt=$'\r' modprobe men_lx_z001
+                run_as_root modprobe men_lx_z001
                 if [ $? -ne 0 ]; then
                         echo "ERR_MODPROBE: could not modprobe men_lx_z001" | tee -a ${TestCaseLogName} 2>&1a
                         MachineState="Break"
@@ -75,7 +75,7 @@ function f213_test {
           Step3)
                 echo "Run step @3" | tee -a ${TestCaseLogName} 2>&1
 
-                echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cdetect -y -l > "i2c_bus_list_after.log" 2>&1
+                run_as_root i2cdetect -y -l > "i2c_bus_list_after.log" 2>&1
 
                 TestCaseStep3=0
                 MachineState="Step4"
@@ -83,9 +83,9 @@ function f213_test {
           Step4)
                 echo "Run step @4" | tee -a ${TestCaseLogName} 2>&1
 
-                echo ${MenPcPassword} | sudo -S --prompt=$'\r' cat "i2c_bus_list_before.log" "i2c_bus_list_after.log" | sort | uniq --unique > "i2c_bus_list_test.log" 2>&1
-                SMBUS_ID=$(echo ${MenPcPassword} | sudo -S --prompt=$'\r' grep --only-matching "16Z001-[0-1]\+ BAR[0-9]\+ offs 0x[0-9]\+" "i2c_bus_list_test.log")
-                echo ${MenPcPassword} | sudo -S --prompt=$'\r' i2cdump -y "${SMBUS_ID}" 0x57 | grep "P511"
+                run_as_root cat "i2c_bus_list_before.log" "i2c_bus_list_after.log" | sort | uniq --unique > "i2c_bus_list_test.log" 2>&1
+                SMBUS_ID=$(run_as_root grep --only-matching "16Z001-[0-1]\+ BAR[0-9]\+ offs 0x[0-9]\+" "i2c_bus_list_test.log")
+                run_as_root i2cdump -y "${SMBUS_ID}" 0x57 | grep "P511"
                 CmdResult=$?
                 if [ ${CmdResult} -ne ${ERR_OK} ]; then
                         echo "ERR_VALUE: i2cdump failed for ${SMBUS_ID}" | tee -a ${TestCaseLogName} 2>&1
@@ -95,7 +95,7 @@ function f213_test {
                         TestCaseStep4=0
                         MachineState="Break"
                 fi
-                echo ${MenPcPassword} | sudo -S --prompt=$'\r' rmmod men_lx_z001
+                run_as_root rmmod men_lx_z001
                 if [ $? -ne 0 ]; then
                         echo "ERR_RMMOD: could not rmmod men_lx_z001" | tee -a ${TestCaseLogName} 2>&1a
                 fi
