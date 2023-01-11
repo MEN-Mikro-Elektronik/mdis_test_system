@@ -274,11 +274,11 @@ function runTests {
 
     # Run Test script - now scripts from remote device should be run
     make_visible_in_log "TEST CASE - ${St_Test_Configuration} ${TEST_SETUP}"
-    if ! run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' ${GitTestTargetDirPath}/${St_Test_Configuration} --test-setup=${TEST_SETUP}\
-                                                                                                                               --date=${Today}\
-                                                                                                                               --debug-level=${VERBOSE_LEVEL}\
-                                                                                                                               --build-mdis\
-                                                                                                                               --test-id=${RUN_TEST_ID}"
+    if ! run_cmd_on_remote_pc "${GitTestTargetDirPath}/${St_Test_Configuration} --test-setup=${TEST_SETUP}\
+                                                                                --date=${Today}\
+                                                                                --debug-level=${VERBOSE_LEVEL}\
+                                                                                --build-mdis\
+                                                                                --test-id=${RUN_TEST_ID}"
     then
         echo "${LogPrefix} Error while running St_Test_Configuration_x.sh script"
     fi
