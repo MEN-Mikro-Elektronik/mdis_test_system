@@ -33,13 +33,13 @@ function make_install {
     local LogPrefix="${1} "
     echo "${LogPrefix}make_install"
 
-    if ! run_as_root make clean > make_output.txt 2>&1
+    if ! make clean > make_output.txt 2>&1
     then
         echo "ERR 3 :make clean error"
         exit "${ERR_MAKE}"
     fi
 
-    if ! run_as_root make > make_output.txt 2>&1 
+    if ! make > make_output.txt 2>&1
     then
         echo "ERR 3 :make error" 
         exit "${ERR_MAKE}"
@@ -169,10 +169,10 @@ function rmmod_all_men_modules {
 # parameters:
 #       None
 function clean_test_case_files {
-    run_as_root rm -rf BIN/
-    run_as_root rm -rf DESC/
-    run_as_root rm -rf LIB/
-    run_as_root rm -rf OBJ/
+    rm -rf BIN/
+    rm -rf DESC/
+    rm -rf LIB/
+    rm -rf OBJ/
 }
 ############################################################################
 # Check if warning exists in files.. 
