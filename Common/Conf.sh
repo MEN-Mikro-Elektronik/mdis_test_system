@@ -461,27 +461,12 @@ function create_test_setup_test_cases_map {
         7)
             # Manuall tests
             ;;
-        8)
-            TEST_SETUP_8_TEST_CASES[1]="true"
-            TEST_SETUP_8_TEST_CASES[2]="true"
-            TEST_SETUP_8_TEST_CASES[3]="true"
-            TEST_SETUP_8_TEST_CASES[4]="true"
-            TEST_SETUP_8_TEST_CASES[500]="true"
-            ;;
         9)
             TEST_SETUP_9_TEST_CASES[1]="true"
             TEST_SETUP_9_TEST_CASES[2]="true"
             TEST_SETUP_9_TEST_CASES[3]="true"
             TEST_SETUP_9_TEST_CASES[4]="true"
             TEST_SETUP_9_TEST_CASES[501]="true"
-            ;;
-        10)
-            TEST_SETUP_10_TEST_CASES[1]="true"
-            TEST_SETUP_10_TEST_CASES[2]="true"
-            TEST_SETUP_10_TEST_CASES[3]="true"
-            TEST_SETUP_10_TEST_CASES[4]="true"
-            TEST_SETUP_10_TEST_CASES[5]="true"
-            TEST_SETUP_10_TEST_CASES[502]="true"
             ;;
         11)
             TEST_SETUP_11_TEST_CASES[700]="true"
