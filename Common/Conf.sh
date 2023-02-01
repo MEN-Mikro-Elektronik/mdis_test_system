@@ -426,15 +426,13 @@ function create_test_setup_test_cases_map {
             TEST_SETUP_1_TEST_CASES[$(get_test_case_id "m47" "F205")]="true"
             ;;
         2)
-            TEST_SETUP_2_TEST_CASES[102]="true"
-            TEST_SETUP_2_TEST_CASES[101]="true"
             TEST_SETUP_2_TEST_CASES[$(get_test_case_id "m43n" "F205")]="true"
             TEST_SETUP_2_TEST_CASES[$(get_test_case_id "m11" "F205")]="true"
             TEST_SETUP_2_TEST_CASES[$(get_test_case_id "m66" "F205")]="true"
             TEST_SETUP_2_TEST_CASES[$(get_test_case_id "m31" "F205")]="true"
             TEST_SETUP_2_TEST_CASES[$(get_test_case_id "m32" "F205")]="true"
             TEST_SETUP_2_TEST_CASES[$(get_test_case_id "m58" "F205")]="true"
-            TEST_SETUP_2_TEST_CASES[$(get_test_case_id "m37n" "F205")]="true"
+            TEST_SETUP_2_TEST_CASES[$(get_test_case_id "m35n" "F205")]="true"
             TEST_SETUP_2_TEST_CASES[$(get_test_case_id "m62n" "F205")]="true"
             TEST_SETUP_2_TEST_CASES[$(get_test_case_id "m57" "F205")]="true"
             ;;
