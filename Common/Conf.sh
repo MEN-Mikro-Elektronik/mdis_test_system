@@ -447,6 +447,8 @@ function create_test_setup_test_cases_map {
             TEST_SETUP_4_TEST_CASES[$(get_test_case_id "m72" "G204")]="true"
             ;;
         5)
+            TEST_SETUP_1_TEST_CASES[100]="true"
+            TEST_SETUP_1_TEST_CASES[104]="true"
             TEST_SETUP_5_TEST_CASES[105]="true"
             TEST_SETUP_5_TEST_CASES[$(get_test_case_id "m82" "G204")]="true" #x2
             TEST_SETUP_5_TEST_CASES[$(get_test_case_id "m99" "F205")]="true"

@@ -168,6 +168,8 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             fi
             ;;
         5)
+            run_test_case_board "100" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # F215 board test
+            run_test_case_board "104" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # G215 board test
             run_test_case_board "105" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # F206 board with Z055 HDLC core
             run_test_case_module "m82" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_module "m82" "G204" "2" "${TestSummaryDirectory}" "${OsNameKernel}"
