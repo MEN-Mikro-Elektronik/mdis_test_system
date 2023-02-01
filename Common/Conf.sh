@@ -416,15 +416,6 @@ declare -a TEST_SETUP_11_TEST_CASES
 function create_test_setup_test_cases_map {
     local Setup="${1}"
     case "${Setup}" in
-        1)
-            TEST_SETUP_1_TEST_CASES[100]="true"
-            TEST_SETUP_1_TEST_CASES[104]="true"
-            TEST_SETUP_1_TEST_CASES[$(get_test_case_id "m65n" "G204")]="true"
-            TEST_SETUP_1_TEST_CASES[$(get_test_case_id "m65n_canopen" "G204")]="true"
-            TEST_SETUP_1_TEST_CASES[$(get_test_case_id "m77" "G204")]="true"
-            TEST_SETUP_1_TEST_CASES[$(get_test_case_id "m33" "F205")]="true"
-            TEST_SETUP_1_TEST_CASES[$(get_test_case_id "m47" "F205")]="true"
-            ;;
         2)
             TEST_SETUP_2_TEST_CASES[$(get_test_case_id "m43n" "F205")]="true"
             TEST_SETUP_2_TEST_CASES[$(get_test_case_id "m11" "F205")]="true"

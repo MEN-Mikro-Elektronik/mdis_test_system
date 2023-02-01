@@ -129,19 +129,6 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
         0)
             run_test_case_id "${TestId}" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
-        1)
-            if [ "${IsMemLeakOS}" -gt 0 ]; then
-                run_test_case_board "150" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # F215 stress test
-            else
-                run_test_case_board "100" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # F215 board test
-                run_test_case_board "104" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # G215 board test
-                run_test_case_module "m65n_canopen" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
-                run_test_case_module "m65n" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
-                run_test_case_module "m77" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
-                run_test_case_module "m33" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
-                run_test_case_module "m47" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
-            fi
-            ;;
         2)
             run_test_case_module "m43n" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_module "m11" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
