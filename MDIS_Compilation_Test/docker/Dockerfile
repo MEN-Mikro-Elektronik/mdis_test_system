@@ -13,6 +13,10 @@ RUN apt-get install rsync -y
 RUN apt-get install bc -y
 RUN apt-get install kmod -y
 RUN apt-get install libssl-dev -y
+RUN apt-get install curl -y
+
+RUN apt-get install python3 pip3 -y
+RUN pip3 install junit-xml
 
 ARG USER=docker
 ARG UID=1000

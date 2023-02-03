@@ -173,7 +173,7 @@ function clean_test_case_files {
     run_as_root rm -rf DESC/
     run_as_root rm -rf LIB/
     run_as_root rm -rf OBJ/
-    #echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf /etc/mdis/*
+    #echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf ${MdisDescDir}/*
     #echo ${MenPcPassword} | sudo -S --prompt=$'\r' rm -rf /lib/modules/linux_src ../misc/*
 }
 ############################################################################

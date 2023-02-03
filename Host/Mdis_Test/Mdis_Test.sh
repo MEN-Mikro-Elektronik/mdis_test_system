@@ -310,48 +310,11 @@ esac
 
 echo "GrubOses: ${GrubOses}"
 
-MdisTestBackgroundPID=0
-
 trap cleanOnExit SIGINT SIGTERM
 function cleanOnExit() {
     echo "${LogPrefix} ** cleanOnExit - signal"
-    if [ ${MdisTestBackgroundPID} -ne 0 ]; then
-        # Kill process
-        echo "${LogPrefix} kill process ${MdisTestBackgroundPID}"
-
-        if ! kill ${MdisTestBackgroundPID} 2>/dev/null
-        then
-            echo "${LogPrefix} Could not kill cat backgroung process ${MdisTestBackgroundPID}"
-        else
-            echo "${LogPrefix} process ${MdisTestBackgroundPID} killed"
-        fi
-        sleep 1
-        jobs
-    fi
     grub_set_os "0"
     exit
-}
-
-function cleanMdisTestBackgroundJob {
-    echo "${LogPrefix} ** cleanOnExit"
-    if [ ${MdisTestBackgroundPID} -ne 0 ]; then
-        # Invoking kill -0 only checks if the process is still running.
-        if kill -0 ${MdisTestBackgroundPID} >/dev/null 2>&1; then
-            # Kill process
-            echo "${LogPrefix} kill process ${MdisTestBackgroundPID}"
-
-            if ! kill  ${MdisTestBackgroundPID}
-            then
-                echo "${LogPrefix} Could not kill cat backgroung process ${MdisTestBackgroundPID}"
-            else
-                echo "${LogPrefix} process ${MdisTestBackgroundPID} killed"
-                wait ${MdisTestBackgroundPID}
-                MdisTestBackgroundPID=0
-            fi
-            sleep 1
-            jobs
-        fi
-    fi
 }
 
 function runTests {
@@ -365,12 +328,6 @@ function runTests {
     run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' chmod +x ${GitTestTargetDirPath}/*"
     run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' chmod +x ${GitTestHostDirPath}/*"
 
-    ./Mdis_Test_Background.sh &
-
-    # Save background process PID
-    MdisTestBackgroundPID=$!
-    echo "${LogPrefix} MdisTestBackgroundPID is ${MdisTestBackgroundPID}"
-
     # Run Test script - now scripts from remote device should be run
     make_visible_in_log "TEST CASE - ${St_Test_Configuration} ${TEST_SETUP}"
     if ! run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' ${GitTestTargetDirPath}/${St_Test_Configuration} --test-setup=${TEST_SETUP}\
@@ -382,7 +339,6 @@ function runTests {
         echo "${LogPrefix} Error while running St_Test_Configuration_x.sh script"
     fi
 
-    cleanMdisTestBackgroundJob
     # Initialize tested device 
     # run_cmd_on_remote_pc "mkdir $TestCaseDirectoryName"
     # Below command must be run from local device, 

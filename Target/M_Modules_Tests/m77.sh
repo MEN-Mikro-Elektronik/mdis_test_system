@@ -133,5 +133,12 @@ function m77_test {
         return "${ERR_VALUE}"
     fi
 
+    # Deleting the MDIS device created manually to avoid RMMOD error while trying to unload all MDIS modules.
+    if ! run_as_root mdis_createdev -d -b "${M77CarrierName}" > /dev/null
+    then
+        debug_print "${LogPrefix}  ERR_VALUE: could not mdis_createdev -d -b ${M77CarrierName}" "${LogFile}"
+        return "${ERR_VALUE}"
+    fi
+
     return "${ERR_OK}"
 }
