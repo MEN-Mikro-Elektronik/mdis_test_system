@@ -84,7 +84,7 @@ function g229_test {
         case "${MachineState}" in
         smb_test)
             debug_print "${LogPrefix} Smb test" "${LogFile}"
-            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+            "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
                                              -dname "z001_smb"\
@@ -98,7 +98,7 @@ function g229_test {
             ;;
         # can_test)
         #    debug_print "${LogPrefix} Run CAN test" "${LogFile}"
-        #    run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+        #    "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
         #                                     -id "${TestCaseId}"\
         #                                     -os "${OsNameKernel}"\
         #                                     -dname "z029_can"\
@@ -112,7 +112,7 @@ function g229_test {
         #    ;;
         gpio_z127_test)
             debug_print "${LogPrefix} Run GPIO z127 test" "${LogFile}"
-            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+            "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
                                              -dname "z127_gpio"\
@@ -126,7 +126,7 @@ function g229_test {
             ;;
         hsuart_test)
             debug_print "${LogPrefix} Run HSUART test" "${LogFile}"
-            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+            "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
                                              -dname "z135_hsuart"\

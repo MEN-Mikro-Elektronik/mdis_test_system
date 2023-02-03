@@ -57,7 +57,7 @@ function carrier_f205_TPL_test {
     local OsNameKernel="${5}"
 
     local TestCaseResult="${ERR_VALUE}"
-    run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+    "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                      -id "${TestCaseId}"\
                                      -os "${OsNameKernel}"\
                                      -dname "${Module}"\

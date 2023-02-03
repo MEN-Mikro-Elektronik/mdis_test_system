@@ -78,7 +78,7 @@ function f215_stress_test {
         case "${MachineState}" in
         can_test)
             debug_print "${LogPrefix} Run CAN test" "${LogFile}"
-            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+            "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
                                              -dname "z029_can"\
@@ -92,7 +92,7 @@ function f215_stress_test {
             ;;
         gpio_z034_test)
             debug_print "${LogPrefix} Run GPIO z034 test" "${LogFile}"
-            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+            "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
                                              -dname "z034_gpio"\

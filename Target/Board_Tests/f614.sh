@@ -70,7 +70,7 @@ function f614_test {
         case "${MachineState}" in
         eth_test)
             debug_print "${LogPrefix} Run ETH test" "${LogFile}"
-            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+            "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
                                              -dname "z087_eth"\

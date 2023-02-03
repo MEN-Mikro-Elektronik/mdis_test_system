@@ -84,9 +84,9 @@ function run_test_case_module {
 
     if [ "${CarrierBoard}" = "G204" ]
     then
-        run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "carrier_g204_TPL" -module "${Module}" -moduleno "${ModuleNo}"
+        "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "carrier_g204_TPL" -module "${Module}" -moduleno "${ModuleNo}"
     else
-        run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "carrier_f205_TPL" -module "${Module}" -moduleno "${ModuleNo}"
+        "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "carrier_f205_TPL" -module "${Module}" -moduleno "${ModuleNo}"
     fi
 }
 ############################################################################
@@ -112,7 +112,7 @@ function run_test_case_board {
 
     
     if [ "${TEST_CASES_MAP[${TestCaseId}]+_}" ]; then
-        run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "${TEST_CASES_MAP[${TestCaseId}]}" -dno "${DeviceNo}" -bname "${BoardName}"
+        "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "${TEST_CASES_MAP[${TestCaseId}]}" -dno "${DeviceNo}" -bname "${BoardName}"
     else
         echo "Test case not found"
     fi
