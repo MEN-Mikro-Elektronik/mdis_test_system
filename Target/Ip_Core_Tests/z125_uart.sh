@@ -116,7 +116,7 @@ function load_z125_driver {
 
     debug_print "${LogPrefix} modprobe men_mdis_kernel" "${LogFile}"
 
-    if ! run_as_root modprobe men_mdis_kernel
+    if ! do_modprobe men_mdis_kernel
     then
         debug_print "${LogPrefix} ERR_MODPROBE :could not modprobe men_mdis_kernel" "${LogFile}"
         return "${ERR_MODPROBE}"
@@ -124,7 +124,7 @@ function load_z125_driver {
 
     debug_print "${LogPrefix} modprobe men_lx_z25 baud_base=1843200 mode=se,se" "${LogFile}"
 
-    if ! run_as_root modprobe men_lx_z25 baud_base=1843200 mode=se,se
+    if ! do_modprobe men_lx_z25 baud_base=1843200 mode=se,se
     then
         debug_print "${LogPrefix} ERR_MODPROBE :could not modprobe men_lx_z25 baud_base=1843200 mode=se,se" "${LogFile}"
         return "${ERR_MODPROBE}"
@@ -148,7 +148,7 @@ function unload_z125_driver {
     IsDebian="$(hostnamectl | grep "Operating System" | grep -c "Debian")"
     debug_print "${LogPrefix} IsDebian: ${IsDebian}" "${LogFile}"
     if [ "${IsDebian}" == "1" ]; then
-        run_as_root rmmod men_lx_z25
+        do_rmmod men_lx_z25
     fi
 }
 ############################################################################
@@ -189,13 +189,13 @@ function uart_test_lx_z25 {
     fi
 
     sleep 1
-    if ! run_as_root rmmod men_lx_z25
+    if ! do_rmmod men_lx_z25
     then
         debug_print "${LogPrefix}  ERR_VALUE: could not rmmod m" "${LogFile}"
         return "${ERR_VALUE}"
     fi
 
-    if ! run_as_root modprobe men_lx_z25 baud_base=1843200 mode=se,se
+    if ! do_modprobe men_lx_z25 baud_base=1843200 mode=se,se
     then
         debug_print "${LogPrefix}  ERR_VALUE: could not  modprobe men_lx_z25 baud_base=1843200 mode=se,se" "${LogFile}"
         return "${ERR_VALUE}"

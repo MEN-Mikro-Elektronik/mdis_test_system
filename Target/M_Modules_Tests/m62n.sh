@@ -51,7 +51,7 @@ function m62n_test {
     local ModuleNo=${3}
 
     debug_print "${LogPrefix} Step1: modprobe men_ll_m62" "${LogFile}"
-    if ! run_as_root modprobe men_ll_m62
+    if ! do_modprobe men_ll_m62
     then
         debug_print "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m62" "${LogFile}"
         return "${ERR_VALUE}"

@@ -62,7 +62,7 @@ function f213_test {
           Step2)
                 echo "Run step @2" | tee -a ${TestCaseLogName} 2>&1
 
-                run_as_root modprobe men_lx_z001
+                do_modprobe men_lx_z001
                 if [ $? -ne 0 ]; then
                         echo "ERR_MODPROBE: could not modprobe men_lx_z001" | tee -a ${TestCaseLogName} 2>&1a
                         MachineState="Break"
@@ -95,7 +95,7 @@ function f213_test {
                         TestCaseStep4=0
                         MachineState="Break"
                 fi
-                run_as_root rmmod men_lx_z001
+                do_rmmod men_lx_z001
                 if [ $? -ne 0 ]; then
                         echo "ERR_RMMOD: could not rmmod men_lx_z001" | tee -a ${TestCaseLogName} 2>&1a
                 fi

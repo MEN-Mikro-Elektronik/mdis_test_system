@@ -64,7 +64,7 @@ function b_smb2_test {
         case ${MachineState} in
             Step1)
                 debug_print "${LogPrefix} Run step @1" "${LogFile}"
-                if ! run_as_root  modprobe men_mdis_kernel
+                if ! do_modprobe men_mdis_kernel
                 then
                     debug_print "${LogPrefix}  ERR_MODPROBE: could not modprobe men_mdis_kernel" "${LogFile}"
                     TestCaseStep1=${ERR_MODPROBE}
@@ -76,7 +76,7 @@ function b_smb2_test {
                 ;;
             Step2)
                 debug_print "${LogPrefix} Run step @2" "${LogFile}"
-                if ! run_as_root  modprobe i2c_i801
+                if ! do_modprobe i2c_i801
                 then
                     debug_print "${LogPrefix}  ERR_MODPROBE: could not modprobe i2c_i801" "${LogFile}"
                     TestCaseStep2=${ERR_MODPROBE}

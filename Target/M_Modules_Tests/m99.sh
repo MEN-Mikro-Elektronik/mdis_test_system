@@ -51,7 +51,7 @@ function m99_test {
     local m99_latency_PID
 
     debug_print "${LogPrefix} Step1: modprobe men_ll_m99" "${LogFile}"
-    if ! run_as_root modprobe men_ll_m99
+    if ! do_modprobe men_ll_m99
     then
         debug_print "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m99" "${LogFile}" 
         return "${ERR_VALUE}"

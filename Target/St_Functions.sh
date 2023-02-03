@@ -789,7 +789,7 @@ function m_module_x_test {
             ModprobeDriver)
                 # Modprobe driver
                 debug_print "${LogPrefix} ModprobeDriver" "${LogFile}"
-                run_as_root modprobe "${ModprobeDriver}"
+                do_modprobe "${ModprobeDriver}"
                 CmdResult=$?
                 if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
                     debug_print "${LogPrefix} Error: ${ERR_MODPROBE} :could not modprobe ${ModprobeDriver}" "${LogFile}"
@@ -976,4 +976,16 @@ function restore_desc_file {
     fi
 
     return ${ERR_OK}
+}
+
+function do_modprobe {
+    if [ "${#}" -gt "0" ]; then
+        run_as_root modprobe ${@}
+    fi
+}
+
+function do_rmmod {
+    if [ "${#}" -gt "0" ]; then
+        run_as_root rmmod ${1}
+    fi
 }

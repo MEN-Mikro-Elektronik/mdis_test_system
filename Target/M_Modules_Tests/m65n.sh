@@ -90,7 +90,7 @@ function m65n_test {
     m65n_canopen_fix "${1}" "${2}"
 
     debug_print "${LogPrefix} Step1: modprobe men_ll_icanl2" "${LogFile}"
-    if ! run_as_root modprobe men_ll_icanl2
+    if ! do_modprobe men_ll_icanl2
     then
         debug_print "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_icanl2" "${LogFile}"
         return "${ERR_VALUE}"

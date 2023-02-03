@@ -65,7 +65,7 @@ function z135_hsuart_test {
     local TestType=${7}
     local RelayOutput=${IN_0_ENABLE}
 
-    if ! run_as_root modprobe men_lx_z135
+    if ! do_modprobe men_lx_z135
     then
         debug_print "${LogPrefix} ERR_MODPROBE :could not modprobe men_lx_z135" "${LogFile}"
         return "${ERR_MODPROBE}"
@@ -120,13 +120,13 @@ function uart_test_lx_z135 {
     fi
 
     sleep 1
-    if ! run_as_root rmmod men_lx_z135
+    if ! do_rmmod men_lx_z135
     then
         debug_print "${LogPrefix}  ERR_VALUE: could not rmmod m" "${LogFile}"
         return "${ERR_VALUE}"
     fi
 
-    if ! run_as_root modprobe men_lx_z135
+    if ! do_modprobe men_lx_z135
     then
         debug_print "${LogPrefix}  ERR_VALUE: could not  modprobe men_lx_z135" "${LogFile}"
         return "${ERR_VALUE}"

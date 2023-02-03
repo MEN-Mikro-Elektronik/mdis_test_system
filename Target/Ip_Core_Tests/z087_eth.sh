@@ -102,7 +102,7 @@ function eth_test {
     EthListBefore="$(ifconfig -a | grep --perl-regexp --only-matching "^[\w\d]+")"
     debug_print "${LogPrefix} ETH interfaces before driver was loaded:\n${EthListBefore}" "${LogFile}"
 
-    if ! run_as_root modprobe men_lx_z77 phyadr=1,2
+    if ! do_modprobe men_lx_z77 phyadr=1,2
     then
         debug_print "${LogPrefix}  ERR ${ERR_MODPROBE}:could not modprobe men_lx_z77" "${LogFile}"
         return "${ERR_MODPROBE}"

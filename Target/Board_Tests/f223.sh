@@ -72,7 +72,7 @@ function f223_test {
             Step1);&
             Step2)
                 debug_print "${LogPrefix} Run step @2" "${LogFile}"
-                if ! run_as_root modprobe men_ll_pi7c9_gpio
+                if ! do_modprobe men_ll_pi7c9_gpio
                 then
                     debug_print "ERR_VALUE: could not modprobe men_ll_pi7c9_gpio" "${LogFile}"
                     return "${ERR_VALUE}"

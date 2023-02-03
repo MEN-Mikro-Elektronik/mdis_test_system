@@ -50,7 +50,7 @@ function m81_test {
     local ModuleNo=${3}
 
     debug_print "${LogPrefix} Step1: modprobe men_ll_m27" "${LogFile}"
-    if ! run_as_root modprobe men_ll_m27
+    if ! do_modprobe men_ll_m27
     then
         debug_print "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m27" "${LogFile}"
         return "${ERR_VALUE}"

@@ -155,7 +155,7 @@ function rmmod_all_men_modules {
     for i in $(seq 1 ${MenLsmodModuleCnt});
     do
         #echo "$i rmmod $(lsmod | grep men_ | awk NR==1'{print $1}')"
-        if ! run_as_root rmmod "$(lsmod | grep ^men_ | awk NR==1'{print $1}')"
+        if ! do_rmmod "$(lsmod | grep ^men_ | awk NR==1'{print $1}')"
         then
             echo "ERR_RMMOD :cannot rmmod module $(lsmod | grep ^men_ | awk NR==1'{print $1}')"
             return "${ERR_RMMOD}"
