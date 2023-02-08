@@ -801,12 +801,6 @@ function m_module_x_test {
             ModuleResultCmpFunc="compare_m36_simp_values"
             ModuleInstanceName="${MModuleName}_${MModuleBoardNr}"
             ;;
-        m43n)
-            ModprobeDriver="men_ll_m43"
-            ModuleSimp="m43_ex1"
-            ModuleResultCmpFunc="compare_m43n_simp_values"
-            ModuleInstanceName="m43_${MModuleBoardNr}"
-            ;;
         m66)
             ModprobeDriver="men_ll_m66"
             ModuleSimp="m66_simp"
