@@ -599,7 +599,7 @@ function uart_test_tty {
     sleep 1
     # Listen on port in background
 
-    if ! run_as_root $(cat /dev/${tty1} > echo_on_serial_${tty1}.txt &)
+    if ! $(run_as_root cat /dev/${tty1} > echo_on_serial_${tty1}.txt &)
     then
         debug_print "${LogPrefix} Could not cat on ${tty1} in background" "${LogFile}"
     fi
@@ -608,7 +608,7 @@ function uart_test_tty {
     CatEchoTestPID=$(ps aux | grep "cat /dev/${tty1}" | awk 'NR==1 {print $2}')
 
     # Send data into port
-    if ! run_as_root echo "${EchoTestMessage}" > "/dev/${tty0}"
+    if ! echo "${EchoTestMessage}" | sudo tee "/dev/${tty0}"
     then
         debug_print "${LogPrefix} Could not echo on ${tty0}" "${LogFile}"
     fi
