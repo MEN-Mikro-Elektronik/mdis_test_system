@@ -51,17 +51,28 @@ function m11_test {
     local LogPrefix=${2}
     local ModuleNo=${3}
     local TestCaseName=${4}
-    local RelayOutput="${IN_0_ENABLE}"
 
     m11_f205_fix "${1}" "${2}"
-    debug_print "${LogPrefix} Step1:" "${LogFile}"
-    m_module_x_test "${LogFile}" "${TestCaseName}" "${RelayOutput}" "m11" "${ModuleNo}" "" "${LogPrefix}"
-    MResult=$?
 
-    if [ "${MResult}" = "${ERR_OK}" ]; then
-        return "${ERR_OK}"
-    else
+    debug_print "${LogPrefix} Step1: modprobe men_ll_m11" "${LogFile}"
+    if ! run_as_root modprobe men_ll_m11
+    then
+        debug_print "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m11" "${LogFile}"
         return "${ERR_VALUE}"
+    fi
+
+    debug_print "${LogPrefix} Step2: run m11_port_veri m11_${ModuleNo}" "${LogFile}"
+    if ! run_as_root m11_port_veri m11_"${ModuleNo}" > m11_port_veri_output.txt
+    then
+      debug_print "${LogPrefix} Could not run m11_port_veri " "${LogFile}"
+    fi
+
+    local ErrorCnt="0"
+    ErrorCnt=$(grep -ic "error" m11_port_veri_output.txt)
+    if [ "${ErrorCnt}" -ne 0 ]; then
+        return "${ERR_VALUE}"
+    else
+        return "${ERR_OK}"
     fi
 }
 
@@ -89,24 +100,4 @@ function m11_f205_fix {
     sed -i '/.*m11_1.*/a ID_CHECK = U_INT32 0' system.dsc
     make_install "${LogPrefix}"
     cd "${CurrentPath}" || exit "${ERR_NOEXIST}"
-}
-
-############################################################################
-# compare_m11_port_veri_values
-#
-# parameters:
-# $1    Log file
-# $2    Log prefix
-# $3    M-Module number
-function compare_m11_port_veri_values {
-    local LogFile=${1}
-    local LogPrefix=${2}
-    local ModuleNo=${3}
-    local ErrorCnt="0"
-    ErrorCnt=$(grep -ic "error" m11_"${ModuleNo}"_simp_output_connected.txt)
-    if [ "${ErrorCnt}" -ne 0 ]; then
-        return "${ERR_VALUE}"
-    else
-        return "${ERR_OK}"
-    fi
 }
