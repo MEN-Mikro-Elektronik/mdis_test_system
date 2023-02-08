@@ -83,8 +83,8 @@ function f213_test {
           Step4)
                 echo "Run step @4" | tee -a ${TestCaseLogName} 2>&1
 
-                run_as_root cat "i2c_bus_list_before.log" "i2c_bus_list_after.log" | sort | uniq --unique > "i2c_bus_list_test.log" 2>&1
-                SMBUS_ID=$(run_as_root grep --only-matching "16Z001-[0-1]\+ BAR[0-9]\+ offs 0x[0-9]\+" "i2c_bus_list_test.log")
+                cat "i2c_bus_list_before.log" "i2c_bus_list_after.log" | sort | uniq --unique > "i2c_bus_list_test.log" 2>&1
+                SMBUS_ID=$(grep --only-matching "16Z001-[0-1]\+ BAR[0-9]\+ offs 0x[0-9]\+" "i2c_bus_list_test.log")
                 run_as_root i2cdump -y "${SMBUS_ID}" 0x57 | grep "P511"
                 CmdResult=$?
                 if [ ${CmdResult} -ne ${ERR_OK} ]; then

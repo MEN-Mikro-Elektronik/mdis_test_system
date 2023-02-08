@@ -90,9 +90,9 @@ function b_smb2_test {
                 debug_print "${LogPrefix} Run step @3" "${LogFile}"
                 run_as_root smb2_boardident "${DevName}" > "smb2_boardident.log"
                 if [ "${BoardName}" == "b_smb2" ]; then
-                    run_as_root grep "HW-Name[[:space:]]\+=[[:space:]]\+[a-zA-Z0-9]\+" "smb2_boardident.log" > /dev/null
+                    grep "HW-Name[[:space:]]\+=[[:space:]]\+[a-zA-Z0-9]\+" "smb2_boardident.log" > /dev/null
                 else
-                    run_as_root grep "HW-Name[[:space:]]\+=[[:space:]]\+${BoardName}" "smb2_boardident.log" > /dev/null
+                    grep "HW-Name[[:space:]]\+=[[:space:]]\+${BoardName}" "smb2_boardident.log" > /dev/null
                 fi
                 CmdResult=$?
                 if [ ${CmdResult} -ne 0 ]; then
