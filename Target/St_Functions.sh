@@ -865,16 +865,22 @@ function m_module_x_test {
                 # *** ERROR (LINUX) #2:  No such file or directory ***
                 debug_print "${LogPrefix} RunExampleInputDisable" "${LogFile}"
                 run_as_root ${ModuleSimp} ${ModuleInstanceName} > "${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_disconnected.txt" 2>&1
-                ErrorLogCnt=$(grep "ERROR" "${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_disconnected.txt" | grep -c "No such file or directory") 
-                CmdResult="${ErrorLogCnt}"
+                CmdResult=$?
                 if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-                    debug_print "${LogPrefix} Error: ${ERR_SIMP_ERROR} :could not run ${ModuleSimp} ${ModuleInstanceName}" "${LogFile}"
+                    debug_print "${LogPrefix} [InputDisabled] Error: could not run ${ModuleSimp} ${ModuleInstanceName}" "${LogFile}"
                     MachineRun=false
                 else
-                    if [ "${MModuleName}" == "m35" ] && [ "${SubtestName}" == "blkread" ]; then
-                        MachineState="CompareResults"
+                    ErrorLogCnt=$(grep "ERROR" "${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_disconnected.txt" | grep -c "No such file or directory")
+                    CmdResult="${ErrorLogCnt}"
+                    if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+                        debug_print "${LogPrefix} Error: ${ERR_SIMP_ERROR} :could not run ${ModuleSimp} ${ModuleInstanceName}" "${LogFile}"
+                        MachineRun=false
                     else
-                        MachineState="EnableInput"
+                        if [ "${MModuleName}" == "m35" ] && [ "${SubtestName}" == "blkread" ]; then
+                            MachineState="CompareResults"
+                        else
+                            MachineState="EnableInput"
+                        fi
                     fi
                 fi
                 ;;
@@ -895,13 +901,19 @@ function m_module_x_test {
                 # *** ERROR (LINUX) #2:  No such file or directory ***
                 debug_print "${LogPrefix} RunExampleInputEnable" "${LogFile}"
                 run_as_root ${ModuleSimp} ${ModuleInstanceName} > "${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_connected.txt" 2>&1
-                ErrorLogCnt=$(grep "ERROR" "${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_connected.txt" | grep -c "No such file or directory") 
-                CmdResult="${ErrorLogCnt}"
+                CmdResult=$?
                 if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
-                    debug_print "${LogPrefix} Error: ${ERR_SIMP_ERROR} :could not run ${ModuleSimp} ${ModuleInstanceName}" "${LogFile}"
-                    MachineState="DisableInput"
+                    debug_print "${LogPrefix} [InputEnabled] Error: could not run ${ModuleSimp} ${ModuleInstanceName}" "${LogFile}"
+                    MachineRun=false
                 else
-                    MachineState="CompareResults"
+                    ErrorLogCnt=$(grep "ERROR" "${MModuleName}_${MModuleBoardNr}_${ModuleSimpOutput}_output_connected.txt" | grep -c "No such file or directory")
+                    CmdResult="${ErrorLogCnt}"
+                    if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
+                        debug_print "${LogPrefix} Error: ${ERR_SIMP_ERROR} :could not run ${ModuleSimp} ${ModuleInstanceName}" "${LogFile}"
+                        MachineState="DisableInput"
+                    else
+                        MachineState="CompareResults"
+                    fi
                 fi
                 ;;
             CompareResults)
