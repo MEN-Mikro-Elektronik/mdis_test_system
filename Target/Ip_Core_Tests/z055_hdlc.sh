@@ -144,8 +144,8 @@ function z055_hdlc_compare_ppp_stats {
     local ErrorTXPPP1="0"
     local ErrorRXPPP1="0"
 
-    run_as_root ifconfig ppp0 > ppp0.log
-    run_as_root ifconfig ppp1 > ppp1.log
+    ifconfig ppp0 > ppp0.log
+    ifconfig ppp1 > ppp1.log
 
     BytesTXPPP0=$(grep "TX packets" ppp0.log | awk '{print $5}')
     BytesTXPPP1=$(grep "TX packets" ppp1.log | awk '{print $5}')
