@@ -181,9 +181,10 @@ function install_13MD05_90_sources {
         local IsYocto
         CurrentKernel="$(uname --kernel-release)"
         SystemName="$(hostnamectl | grep "Operating System" | awk '{ print $3 }')"
+        IsRedHat="$(hostnamectl | grep "Operating System" | grep -c "Red Hat")"
         IsYocto="$(hostnamectl | grep "Operating System" | grep -c "Yocto")"
         echo "IsYocto: ${IsYocto}"
-        if [ "${SystemName}" == "CentOS" ]; then
+        if [ "${SystemName}" == "CentOS" ] || [ "${IsRedHat}" == "1" ]; then
             echo "${MenPcPassword}" | sudo --stdin --prompt=$'\r' ln --symbolic --no-dereference --force "/usr/src/kernels/${CurrentKernel}" "/usr/src/linux"
         elif [ "${IsYocto}" == "1" ]; then
             echo "${MenPcPassword}" | sudo --stdin --prompt=$'\r' ln --symbolic --no-dereference --force "/usr/src/kernel" "/usr/src/linux"
