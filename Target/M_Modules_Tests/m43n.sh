@@ -52,37 +52,26 @@ function m43n_test {
     local LogPrefix=${2}
     local ModuleNo=${3}
     local TestCaseName=${4}
-    local RelayOutput="${IN_0_ENABLE}"
 
-    debug_print "${LogPrefix} Step1:" "${LogFile}"
-    m_module_x_test "${LogFile}" "${TestCaseName}" "${RelayOutput}" "m43n" "${ModuleNo}" "" "${LogPrefix}"
-    CmdResult=$?
-
-    if [ "${CmdResult}" == "${ERR_OK}" ]; then
-        return "${ERR_OK}"
-    else
+    debug_print "${LogPrefix} Step1: modprobe men_ll_m43" "${LogFile}"
+    if ! run_as_root modprobe men_ll_m43
+    then
+        debug_print "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m43" "${LogFile}"
         return "${ERR_VALUE}"
     fi
-}
 
-############################################################################
-# compare_m43_simp_values
-#
-# parameters:
-# $1    Log file
-# $2    Log prefix
-# $3    M-Module number
-function compare_m43n_simp_values {
-    local LogFile=${1}
-    local LogPrefix=${2}
-    local ModuleNo=${3}
+    debug_print "${LogPrefix} Step2: run m43_ex1 m43_${ModuleNo}" "${LogFile}"
+    if ! run_as_root m43_ex1 m43_"${ModuleNo}" > m43_ex1_output.txt
+    then
+      debug_print "${LogPrefix} Could not run m43_ex1 " "${LogFile}"
+    fi
 
     local DeviceOpened
     local DeviceClosed
     local EndLine
-    DeviceOpened=$(grep -ic "Device m43_${ModuleNo} opened" m43n_"${ModuleNo}"_simp_output_connected.txt)
-    DeviceClosed=$(grep -ic "Device m43_${ModuleNo} closed" m43n_"${ModuleNo}"_simp_output_connected.txt)
-    EndLine=$(tail -1 m43n_"${ModuleNo}"_simp_output_connected.txt)
+    DeviceOpened=$(grep -ic "Device m43_${ModuleNo} opened" m43_ex1_output.txt)
+    DeviceClosed=$(grep -ic "Device m43_${ModuleNo} closed" m43_ex1_output.txt)
+    EndLine=$(tail -1 m43_ex1_output.txt)
     debug_print "${LogPrefix} DeviceOpened: ${DeviceOpened}, DeviceClosed: ${DeviceClosed}, EndLine: ${EndLine}" "${LogFile}"
     if [ "${DeviceOpened}" -eq 1 ] && [ "${DeviceClosed}" -eq 1 ] && [ "${EndLine}" == "=> OK" ]; then
         return "${ERR_OK}"
@@ -90,4 +79,3 @@ function compare_m43n_simp_values {
         return "${ERR_VALUE}"
     fi
 }
-
