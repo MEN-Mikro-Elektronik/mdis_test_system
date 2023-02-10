@@ -770,12 +770,6 @@ function m_module_x_test {
     local ModuleInstanceName=""
 
     case "${MModuleName}" in
-        m11)
-            ModprobeDriver="men_ll_m11"
-            ModuleSimp="m11_port_veri"
-            ModuleResultCmpFunc="compare_m11_port_veri_values"
-            ModuleInstanceName="${MModuleName}_${MModuleBoardNr}"
-            ;;
         m31)
             ModprobeDriver="men_ll_m31"
             ModuleSimp="m31_simp"
