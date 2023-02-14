@@ -16,14 +16,10 @@ function mdis_test_usage {
     echo ""
     echo "USAGE"
     echo "    Mdis_Test.sh -h | --help"
-    echo "    Mdis_Test.sh [--run-instantly] [--verbose=LEVEL] [--print-tests]"
+    echo "    Mdis_Test.sh [--verbose=LEVEL] [--print-tests]"
     echo "                 [--run-test=ID] [--run-setup=TEST_SETUP]"
     echo ""
     echo "OPTIONS"
-    echo "    --run-instantly"
-    echo "        Run all tests specified in Test Setup which is saved in Conf.sh on"
-    echo "        curent Target OS"
-    echo ""
     echo "    --verbose=LEVEL"
     echo "        Print additional debug info. Possible values for LEVEL are:"
     echo "        0 - default (only general information is written into terminal)"
@@ -227,10 +223,6 @@ while test $# -gt 0 ; do
             mdis_test_usage
             exit 0
             ;;
-        --run-instantly)
-            shift
-            RUN_INSTANTLY="1"
-            ;;
         --verbose*)
             VERBOSE_LEVEL="$(echo "$1" | sed -e 's/^[^=]*=//g')"
             shift
@@ -311,7 +303,6 @@ then
 fi
 
 cat "${MyDir}/../../Common/Conf.sh" > tmp.sh
-echo "RUN_INSTANTLY=\"1\"" >> tmp.sh
 cat "${MyDir}"/Pc_Configure.sh >> tmp.sh
 
 if ! run_script_on_remote_pc "${MyDir}"/tmp.sh
