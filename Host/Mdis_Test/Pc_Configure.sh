@@ -48,7 +48,8 @@ function create_result_directory {
 ############################################################################
 # create directory with Test_case sources
 # overwrite if sources are present
-# if no, perform steps as below:
+# if directory exists, delete it first
+# then, perform steps as below:
 #       - create directory
 #       - download repository with sources
 #
@@ -58,6 +59,7 @@ function create_result_directory {
 function create_test_case_sources_directory {
     # remove if exists 
     if [ -d "${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}" ]; then
+        echo "The folder ${TestSourcesDirectoryName} exists. Removing it first..."
         echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -rf "${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}"
     fi
 
@@ -72,7 +74,8 @@ function create_test_case_sources_directory {
 ############################################################################
 # create directory with MDIS sources
 # function checks if directory exists and sources are valid 
-# if no, perform steps as below:
+# if directory exists, delete it first.
+# then, perform steps as below:
 #       - create directory
 #       - download repository with sources
 #
@@ -81,44 +84,17 @@ function create_test_case_sources_directory {
 #
 function create_13MD05-90_directory {
     # create and download 
-    if [ ! -d "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" ]; then
-        # create and move to Test Case directory
-        if ! download_13MD05_90_repository
-        then
-            echo "ERR: ${ERR_DOWNLOAD} - cannot download Mdis"
-            return "${ERR_DOWNLOAD}"
-        fi
-    else
-        cd "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" || return "${ERR_CONF}"
-        local CommitId
-        local GitBranch
-        CommitId="$(git log --pretty=format:'%H' -n 1)"
-        GitBranch="$(git branch | awk NR==1'{print $2}')"
-        echo "On Branch: ${GitBranch}"
-        echo "CommitId: ${CommitId}"
-        echo "Comparision GitBranch: ${GitBranch} with ${GitMdisBranch} "
-        if [ "${GitBranch}" != "${GitMdisBranch}" ]; then
-            cd ..
-            echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -rf "${MdisSourcesDirectoryName}"
-            if ! download_13MD05_90_repository
-            then
-                echo "ERR: ${ERR_DOWNLOAD} - cannot download Mdis"
-                return "${ERR_DOWNLOAD}"
-            fi
-        else
-            if [ ! -z "${GitMdisCommitSha}" ]; then 
-                if ! git reset --hard "${GitMdisCommitSha}"
-                then
-                    echo "Wrong SHA detected"
-                    return "${ERR_CONF}"
-                fi
-            else
-                #Go to most current commit 
-                git pull origin
-            fi
-            cd ..
-        fi
+    if [ -d "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" ]; then
+        echo "The folder ${MdisSourcesDirectoryName} exists. Removing it first..."
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -rf "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}"
     fi
+
+    if ! download_13MD05_90_repository
+    then
+        echo "ERR: ${ERR_DOWNLOAD} - cannot download Mdis"
+        return "${ERR_DOWNLOAD}"
+    fi
+
     return "${ERR_OK}"
 }
 
@@ -193,21 +169,13 @@ function install_13MD05_90_sources {
         else
             echo "${MenPcPassword}" | sudo --stdin --prompt=$'\r' ln --symbolic --no-dereference --force "/usr/src/linux-headers-${CurrentKernel}" "/usr/src/linux"
         fi
+
         # install sources of MDIS
-        if [ "${RUN_INSTANTLY}" != "1" ]; then
-            echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -rf /opt/menlinux
-            echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -f /lib/modules/"$(uname -r)"/misc/men_*.ko
-            echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -f ${MdisDescDir}/*.bin
-            cd "${MainTestDirectoryPath}"/"${MainTestDirectoryName}"/"${MdisSourcesDirectoryName}" || return "${ERR_INSTALL}"
-            echo "${MenPcPassword}" | sudo -S --prompt=$'\r' ./INSTALL.sh --install-only
-        else
-            if [ ! -d /opt/menlinux ]; then
-                echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -f /lib/modules/"$(uname -r)"/misc/men_*.ko
-                echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -f ${MdisDescDir}/*.bin
-                cd "${MainTestDirectoryPath}"/"${MainTestDirectoryName}"/"${MdisSourcesDirectoryName}" || return "${ERR_INSTALL}"
-                echo "${MenPcPassword}" | sudo -S --prompt=$'\r' ./INSTALL.sh --install-only
-            fi
-        fi
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -rf /opt/menlinux
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -f /lib/modules/"$(uname -r)"/misc/men_*.ko
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -f ${MdisDescDir}/*.bin
+        cd "${MainTestDirectoryPath}"/"${MainTestDirectoryName}"/"${MdisSourcesDirectoryName}" || return "${ERR_INSTALL}"
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' ./INSTALL.sh --install-only
     else
         echo "ERR ${ERR_INSTALL} :no sources to install" 
         return "${ERR_INSTALL}"
