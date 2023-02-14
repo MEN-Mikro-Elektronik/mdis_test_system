@@ -253,9 +253,6 @@ while test $# -gt 0 ; do
         esac
 done
 
-echo "VERBOSE_LEVEL=${VERBOSE_LEVEL}" | tee -a "${MyDir}/../../Common/Conf.sh"
-echo "TEST_SETUP=${TEST_SETUP}" | tee -a "${MyDir}/../../Common/Conf.sh"
-
 echo "Test Setup: ${TEST_SETUP}"
 
 trap cleanOnExit SIGINT SIGTERM
@@ -303,6 +300,8 @@ then
 fi
 
 cat "${MyDir}/../../Common/Conf.sh" > tmp.sh
+echo "VERBOSE_LEVEL=${VERBOSE_LEVEL}" >> tmp.sh
+echo "TEST_SETUP=${TEST_SETUP}" >> tmp.sh
 cat "${MyDir}"/Pc_Configure.sh >> tmp.sh
 
 if ! run_script_on_remote_pc "${MyDir}"/tmp.sh
