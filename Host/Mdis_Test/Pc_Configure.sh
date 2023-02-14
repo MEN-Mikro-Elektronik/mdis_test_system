@@ -86,7 +86,7 @@ function create_13MD05-90_directory {
     # create and download 
     if [ -d "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" ]; then
         echo "The folder ${MdisSourcesDirectoryName} exists. Removing it first..."
-        rm -rf "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}"
+        run_as_root rm -rf "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}"
     fi
 
     if ! download_13MD05_90_repository
