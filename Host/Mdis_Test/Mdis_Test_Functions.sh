@@ -35,63 +35,6 @@ function run_script_on_remote_pc {
     bash -s < "${1}"
 }
 
-function grub_get_os {
-    echo "$(run_cmd_on_remote_pc "grep --perl-regexp --only-matching \"\\s*set default=.*\" ${GrubConfFile} | sed \"s/\\s*set default=\\s*//g\" | sed \"s/\\\"//g\"")"
-}
-
-function grub_set_os {
-    local ExpOs
-    ExpOs="$(echo "${1}" | sed "s/\//\\\\\\\\\//g")"
-    run_cmd_on_remote_pc "GrubCfg=\"\$(cat ${GrubConfFile})\" && echo \"\$GrubCfg\" | sed \"s/\\s*set default=.*/set default=\\\"${ExpOs}\\\"/g\" > ${GrubConfFile}"
-}
-
-function reboot_and_wait {
-    local TryCount=0
-    local Return=1
-    local ExpOs="$(grub_get_os)"
-    local ManualBoot=0
-    local Setup
-
-    for Setup in "${ManualOsBootSetups[@]}"; do
-        if [ "${Setup}" == "${TEST_SETUP}" ]; then
-            ManualBoot=1
-            break
-        fi
-    done
-
-    run_cmd_on_remote_pc "echo \"${MenPcPassword}\" | sudo --stdin --prompt=$'\r' shutdown -r +1"
-    if [ "${ManualBoot}" -ne 0 ]; then
-        echo
-        echo "Please, boot the following OS on target computer:"
-        echo "${ExpOs}"
-        echo
-        echo "Press <ENTER> to continue..."
-        read -r -s
-    fi
-    echo "Waiting for mdis-setup${TEST_SETUP}..."
-    if [ "${ManualBoot}" -eq 0 ]; then
-        sleep 120
-    fi
-    while true; do
-        if sshpass -p "${MenPcPassword}" ssh mdis-setup${TEST_SETUP} "echo"
-        then
-            echo "mdis-setup${TEST_SETUP} up and running..."
-            Return=0
-            break
-        else
-            TryCount=$((TryCount + 1))
-            if [ "${TryCount}" -ge 60 ]; then
-                Return=1
-                break
-            fi
-            echo "Waiting for mdis-setup${TEST_SETUP}..."
-            sleep 10
-        fi
-    done
-
-    return "${Return}"
-}
-
 function debug_print_host {
     local Msg="${1}"
     if [ "${VERBOSE_LEVEL}" -ge 2 ]; then

@@ -265,55 +265,10 @@ echo "VERBOSE_LEVEL=${VERBOSE_LEVEL}" | tee -a "${MyDir}/../../Common/Conf.sh"
 echo "TEST_SETUP=${TEST_SETUP}" | tee -a "${MyDir}/../../Common/Conf.sh"
 
 echo "Test Setup: ${TEST_SETUP}"
-case ${TEST_SETUP} in
-    0)
-        GrubOses=( "0" ) #What oses should be run?
-        ;;
-    1)
-        GrubOses=( "${GrubOsesF26L[@]}" )
-        ;;
-    2)
-        GrubOses=( "${GrubOsesF23P[@]}" )
-        ;;
-    3)
-        GrubOses=( "${GrubOsesG23[@]}" )
-        ;;
-    4)
-        GrubOses=( "${GrubOsesG25A[@]}" )
-        ;;
-    5)
-        GrubOses=( "${GrubOsesF23P[@]}" )
-        ;;
-    6)
-        GrubOses=( "${GrubOsesCB70[@]}" )
-        ;;
-    7)
-        GrubOses=( "${GrubOsesA25[@]}" )
-        ;;
-    8)
-        GrubOses=( "${GrubOsesBL50[@]}" )
-        ;;
-    9)
-        GrubOses=( "${GrubOsesBL51E[@]}" )
-        ;;
-    10)
-        GrubOses=( "${GrubOsesBL70[@]}" )
-        ;;
-    11)
-        GrubOses=( "${GrubOsesDC19[@]}" )
-        ;;
-    *)
-        echo "TEST SETUP IS NOT SET"
-        exit 99
-        ;;
-esac
-
-echo "GrubOses: ${GrubOses}"
 
 trap cleanOnExit SIGINT SIGTERM
 function cleanOnExit() {
     echo "${LogPrefix} ** cleanOnExit - signal"
-    grub_set_os "0"
     exit
 }
 
@@ -347,69 +302,27 @@ function runTests {
 
 # MAIN start here
 create_test_cases_map
-if [ "${RUN_INSTANTLY}" == "1" ]; then
-    # Check if devices are available
-    if ! sshpass -p "${MenPcPassword}" ssh mdis-setup${TEST_SETUP} "echo"
-    then
-        echo "mdis-setup${TEST_SETUP} is not responding"
-        exit
-    fi
 
-    cat "${MyDir}/../../Common/Conf.sh" > tmp.sh
-    echo "RUN_INSTANTLY=\"1\"" >> tmp.sh
-    cat "${MyDir}"/Pc_Configure.sh >> tmp.sh
-
-    if ! run_script_on_remote_pc "${MyDir}"/tmp.sh
-    then
-        echo "${LogPrefix} Pc_Configure script failed"
-        exit
-    fi
-    rm tmp.sh
-
-    runTests
-else
-    grub_set_os "0"
-    for ExpectedOs in "${GrubOses[@]}"; do
-        # Check if devices are available
-        if ! sshpass -p "${MenPcPassword}" ssh mdis-setup${TEST_SETUP} "echo"; then
-            echo "mdis-setup${TEST_SETUP} is not responding"
-            break
-        fi
-        CurrentOs="$(grub_get_os)"
-        if [ "${CurrentOs}" == "" ]; then
-            echo "Failed to get OS"
-            break
-        fi
-        if [ "${CurrentOs}" == "${ExpectedOs}" ]; then
-            if [ "${ExpectedOs}" == "${GrubOses[0]}" ]; then
-                continue
-            fi
-            echo "Unexpected OS \"${CurrentOs}\" while \"${ExpectedOs}\" was expected"
-            break
-        fi
-        grub_set_os "${ExpectedOs}"
-        SetOs="$(grub_get_os)"
-        if [ "${SetOs}" != "${ExpectedOs}" ]; then
-            echo "Failed to set OS"
-            break
-        fi
-        if ! reboot_and_wait
-        then
-            echo "mdis-setup${TEST_SETUP} is not responding"
-            break
-        fi
-
-        cat "${MyDir}/../../Common/Conf.sh" "${MyDir}"/Pc_Configure.sh > tmp.sh
-        if ! run_script_on_remote_pc "${MyDir}"/tmp.sh
-        then
-            echo "${LogPrefix} Pc_Configure script failed"
-            exit
-        fi
-
-        rm tmp.sh
-        runTests
-    done
+# Check if devices are available
+if ! sshpass -p "${MenPcPassword}" ssh mdis-setup${TEST_SETUP} "echo"
+then
+    echo "mdis-setup${TEST_SETUP} is not responding"
+    exit
 fi
+
+cat "${MyDir}/../../Common/Conf.sh" > tmp.sh
+echo "RUN_INSTANTLY=\"1\"" >> tmp.sh
+cat "${MyDir}"/Pc_Configure.sh >> tmp.sh
+
+if ! run_script_on_remote_pc "${MyDir}"/tmp.sh
+then
+    echo "${LogPrefix} Pc_Configure script failed"
+    exit
+fi
+rm tmp.sh
+
+runTests
+
 # Retrieve the test results
 downloadTestResults "${MdisResultsDirectoryPath}" "${MyDir}/${MainTestDirectoryName}" "${TEST_SETUP}" "${Today}" "${LogPrefix}"
 
