@@ -87,7 +87,7 @@ function smb_test_lx_z001 {
 
     run_as_root i2cdetect -y -l > "i2c_bus_list_before.log" 2>&1
 
-    if ! run_as_root modprobe men_lx_z001
+    if ! do_modprobe men_lx_z001
     then
         debug_print "${LogPrefix} ERR_MODPROBE: could not modprobe men_lx_z001" "${LogFile}"
         return "${ERR_MODPROBE}"
@@ -95,8 +95,8 @@ function smb_test_lx_z001 {
 
     run_as_root i2cdetect -y -l > "i2c_bus_list_after.log" 2>&1
 
-    run_as_root cat "i2c_bus_list_before.log" "i2c_bus_list_after.log" | sort | uniq --unique > "i2c_bus_list_test.log" 2>&1
-    SMBUS_ID_LINE="$(run_as_root grep "16Z001-[0-1]\+[[:space:]]BAR[0-9]\+[[:space:]]offs[[:space:]]0x[0-9]\+" "i2c_bus_list_test.log")"
+    cat "i2c_bus_list_before.log" "i2c_bus_list_after.log" | sort | uniq --unique > "i2c_bus_list_test.log" 2>&1
+    SMBUS_ID_LINE="$(grep "16Z001-[0-1]\+[[:space:]]BAR[0-9]\+[[:space:]]offs[[:space:]]0x[0-9]\+" "i2c_bus_list_test.log")"
     SMBUS_ID="$(echo ${SMBUS_ID_LINE} | awk '{print $1}' | sed -e 's/i2c-//')"
     run_as_root i2cdump -y "${SMBUS_ID}" "${ReadAddress}" > "i2c_bus_dump_before.log"
 
@@ -104,7 +104,7 @@ function smb_test_lx_z001 {
     if ! < "i2c_bus_dump_before.log" grep "${BoardName}" > /dev/null
     then
         debug_print "${LogPrefix} ERR_VALUE: i2cdump failed for ${SMBUS_ID}" "${LogFile}"
-        if ! run_as_root rmmod men_lx_z001
+        if ! do_rmmod men_lx_z001
         then
             debug_print "${LogPrefix} ERR_RMMOD: could not rmmod men_lx_z001" "${LogFile}"
         fi
@@ -125,14 +125,14 @@ function smb_test_lx_z001 {
           "${Patt2Read}" != "${Patt2Write}" ]]; then
         debug_print "${LogPrefix} ERR_VALUE: read pattern does not match pattern written for ${SMBUS_ID}" "${LogFile}"
 
-        if ! run_as_root rmmod men_lx_z001
+        if ! do_rmmod men_lx_z001
         then
             debug_print "${LogPrefix} ERR_RMMOD: could not rmmod men_lx_z001" "${LogFile}"
         fi
         return "${ERR_VALUE}"
     fi
 
-    if ! run_as_root rmmod men_lx_z001
+    if ! do_rmmod men_lx_z001
     then
         debug_print "${LogPrefix} ERR_RMMOD: could not rmmod men_lx_z001" "${LogFile}"
     fi

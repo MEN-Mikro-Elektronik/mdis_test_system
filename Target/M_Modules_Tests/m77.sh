@@ -74,7 +74,7 @@ function m77_test {
         fi
     fi
 
-    if ! run_as_root modprobe men_mdis_kernel
+    if ! do_modprobe men_mdis_kernel
     then
         debug_print "${LogPrefix} ERR_VALUE: could not modprobe men_mdis_kernel" "${LogFile}"
         return "${ERR_VALUE}"
@@ -86,7 +86,7 @@ function m77_test {
         return "${ERR_VALUE}"
     fi
 
-    if ! run_as_root modprobe men_lx_m77 devName=m77_"${ModuleNo}" brdName="${M77CarrierName}" slotNo=0 mode=7,7,7,7
+    if ! do_modprobe men_lx_m77 devName=m77_"${ModuleNo}" brdName="${M77CarrierName}" slotNo=0 mode=7,7,7,7
     then
         debug_print "${LogPrefix}  ERR_VALUE: could not modprobe men_lx_m77 devName=m77_${ModuleNo} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7" "${LogFile}"
         return "${ERR_VALUE}"
@@ -109,13 +109,13 @@ function m77_test {
     fi
 
     sleep 2 
-    if ! run_as_root rmmod men_lx_m77
+    if ! do_rmmod men_lx_m77
     then
         debug_print "${LogPrefix}  ERR_VALUE: could not rmmod m" "${LogFile}"
         return "${ERR_VALUE}"
     fi
 
-    if ! run_as_root modprobe men_lx_m77 devName=m77_"${ModuleNo}" brdName="${M77CarrierName}" slotNo=0 mode=7,7,7,7
+    if ! do_modprobe men_lx_m77 devName=m77_"${ModuleNo}" brdName="${M77CarrierName}" slotNo=0 mode=7,7,7,7
     then
         debug_print "${LogPrefix}  ERR_VALUE: could not modprobe men_lx_m77 devName=m77_${ModuleNo} brdName=${M77CarrierName} slotNo=0 mode=7,7,7,7" "${LogFile}"
         return "${ERR_VALUE}"

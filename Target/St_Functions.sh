@@ -84,9 +84,9 @@ function run_test_case_module {
 
     if [ "${CarrierBoard}" = "G204" ]
     then
-        run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "carrier_g204_TPL" -module "${Module}" -moduleno "${ModuleNo}"
+        "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "carrier_g204_TPL" -module "${Module}" -moduleno "${ModuleNo}"
     else
-        run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "carrier_f205_TPL" -module "${Module}" -moduleno "${ModuleNo}"
+        "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "carrier_f205_TPL" -module "${Module}" -moduleno "${ModuleNo}"
     fi
 }
 ############################################################################
@@ -112,46 +112,9 @@ function run_test_case_board {
 
     
     if [ "${TEST_CASES_MAP[${TestCaseId}]+_}" ]; then
-        run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "${TEST_CASES_MAP[${TestCaseId}]}" -dno "${DeviceNo}" -bname "${BoardName}"
+        "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "${TEST_CASES_MAP[${TestCaseId}]}" -dno "${DeviceNo}" -bname "${BoardName}"
     else
         echo "Test case not found"
-    fi
-}
-
-############################################################################
-# Run command as root
-#
-# parameters:
-# $1     command to run
-function run_as_root {
-    if [ "${#}" -gt "0" ]; then
-        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' -- ${@}
-    fi
-}
-
-############################################################################
-# Print into terminal and into log file
-#
-# parameters:
-# $1     Msg to print/log
-# $2     Log file name
-function print {
-    local Msg="${1}"
-    local LogFile="${2}"
-    echo "${Msg}" | tee -a "${LogFile}" 2>&1
-}
-
-############################################################################
-# Print debug verbose information into terminal and into log file
-#
-# parameters:
-# $1     Msg to print/log
-# $2     Log file name
-function debug_print {
-    local Msg="${1}"
-    local LogFile="${2}"
-    if [ "${VERBOSE_LEVEL}" -ge "1" ]; then
-        echo "${Msg}" | tee -a "${LogFile}" 2>&1
     fi
 }
 
@@ -636,7 +599,7 @@ function uart_test_tty {
     sleep 1
     # Listen on port in background
 
-    if ! run_as_root $(cat /dev/${tty1} > echo_on_serial_${tty1}.txt &)
+    if ! $(run_as_root cat /dev/${tty1} > echo_on_serial_${tty1}.txt &)
     then
         debug_print "${LogPrefix} Could not cat on ${tty1} in background" "${LogFile}"
     fi
@@ -645,7 +608,7 @@ function uart_test_tty {
     CatEchoTestPID=$(ps aux | grep "cat /dev/${tty1}" | awk 'NR==1 {print $2}')
 
     # Send data into port
-    if ! run_as_root echo "${EchoTestMessage}" > "/dev/${tty0}"
+    if ! echo "${EchoTestMessage}" | sudo tee "/dev/${tty0}"
     then
         debug_print "${LogPrefix} Could not echo on ${tty0}" "${LogFile}"
     fi
@@ -826,7 +789,7 @@ function m_module_x_test {
             ModprobeDriver)
                 # Modprobe driver
                 debug_print "${LogPrefix} ModprobeDriver" "${LogFile}"
-                run_as_root modprobe "${ModprobeDriver}"
+                do_modprobe "${ModprobeDriver}"
                 CmdResult=$?
                 if [ "${CmdResult}" -ne "${ERR_OK}" ]; then
                     debug_print "${LogPrefix} Error: ${ERR_MODPROBE} :could not modprobe ${ModprobeDriver}" "${LogFile}"
@@ -1013,4 +976,16 @@ function restore_desc_file {
     fi
 
     return ${ERR_OK}
+}
+
+function do_modprobe {
+    if [ "${#}" -gt "0" ]; then
+        run_as_root modprobe ${@}
+    fi
+}
+
+function do_rmmod {
+    if [ "${#}" -gt "0" ]; then
+        run_as_root rmmod ${1}
+    fi
 }

@@ -59,8 +59,8 @@ function create_result_directory {
 function create_test_case_sources_directory {
     # remove if exists 
     if [ -d "${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}" ]; then
-        echo "The folder ${TestSourcesDirectoryName} exists. Removing it first..."
-        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -rf "${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}"
+		echo "The folder ${TestSourcesDirectoryName} exists. Removing it first..."
+        rm -rf "${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}"
     fi
 
     if ! ${GitTestSourcesCmd}
@@ -86,7 +86,7 @@ function create_13MD05-90_directory {
     # create and download 
     if [ -d "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" ]; then
         echo "The folder ${MdisSourcesDirectoryName} exists. Removing it first..."
-        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -rf "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}"
+        run_as_root rm -rf "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}"
     fi
 
     if ! download_13MD05_90_repository
@@ -108,7 +108,7 @@ function copy_external_sources {
     if [ -d "${MainTestDirectoryPath}/${MainTestDirectoryName}/${MdisSourcesDirectoryName}" ]; then
         # check if external sources directory exists
         if [ -d "${MdisExternalDirectoryPath}" ]; then
-            echo "${MenPcPassword}" | sudo -S --prompt=$'\r' cp -r "${MdisExternalDirectoryPath}"/* "${MainTestDirectoryPath}"/"${MainTestDirectoryName}"/"${MdisSourcesDirectoryName}"/
+            cp -r "${MdisExternalDirectoryPath}"/* "${MainTestDirectoryPath}"/"${MainTestDirectoryName}"/"${MdisSourcesDirectoryName}"/
         fi
     fi
     return "${ERR_OK}"
@@ -161,21 +161,21 @@ function install_13MD05_90_sources {
         IsYocto="$(hostnamectl | grep "Operating System" | grep -c "Yocto")"
         echo "IsYocto: ${IsYocto}"
         if [ "${SystemName}" == "CentOS" ] || [ "${IsRedHat}" == "1" ]; then
-            echo "${MenPcPassword}" | sudo --stdin --prompt=$'\r' ln --symbolic --no-dereference --force "/usr/src/kernels/${CurrentKernel}" "/usr/src/linux"
+            run_as_root ln --symbolic --no-dereference --force "/usr/src/kernels/${CurrentKernel}" "/usr/src/linux"
         elif [ "${IsYocto}" == "1" ]; then
-            echo "${MenPcPassword}" | sudo --stdin --prompt=$'\r' ln --symbolic --no-dereference --force "/usr/src/kernel" "/usr/src/linux"
+            run_as_root ln --symbolic --no-dereference --force "/usr/src/kernel" "/usr/src/linux"
             # make prepare
             # make scripts
         else
-            echo "${MenPcPassword}" | sudo --stdin --prompt=$'\r' ln --symbolic --no-dereference --force "/usr/src/linux-headers-${CurrentKernel}" "/usr/src/linux"
+            run_as_root ln --symbolic --no-dereference --force "/usr/src/linux-headers-${CurrentKernel}" "/usr/src/linux"
         fi
 
         # install sources of MDIS
-        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -rf /opt/menlinux
-        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -f /lib/modules/"$(uname -r)"/misc/men_*.ko
-        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' rm -f ${MdisDescDir}/*.bin
+        run_as_root rm -rf /opt/menlinux
+        run_as_root rm -f /lib/modules/"$(uname -r)"/misc/men_*.ko
+        run_as_root rm -f ${MdisDescDir}/*.bin
         cd "${MainTestDirectoryPath}"/"${MainTestDirectoryName}"/"${MdisSourcesDirectoryName}" || return "${ERR_INSTALL}"
-        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' ./INSTALL.sh --install-only
+        run_as_root ./INSTALL.sh --install-only
     else
         echo "ERR ${ERR_INSTALL} :no sources to install" 
         return "${ERR_INSTALL}"

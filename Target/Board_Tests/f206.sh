@@ -66,7 +66,7 @@ function f206_test {
         case "${MachineState}" in
         z055_hdlc_test)
             debug_print "${LogPrefix} Run z055_hdlc test" "${LogFile}"
-            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+            "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
                                              -dname "z055_hdlc"\

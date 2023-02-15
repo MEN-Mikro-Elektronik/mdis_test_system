@@ -119,7 +119,7 @@ function can_test_ll_z15 {
     local LogPrefix=${2}
     local MezzChamDevDescriptionFile=${3}
 
-    if ! run_as_root modprobe men_ll_z15
+    if ! do_modprobe men_ll_z15
     then
         debug_print "${LogPrefix}  ERR_VALUE :could not modprobe men_ll_z15" "${LogFile}"
         return "${ERR_VALUE}"
@@ -162,7 +162,7 @@ function can_test_ll_z15_loopback {
     local LogPrefix=${2}
     local MezzChamDevDescriptionFile=${3}
 
-    if ! run_as_root modprobe men_ll_z15
+    if ! do_modprobe men_ll_z15
     then
         debug_print "${LogPrefix}  ERR_VALUE :could not modprobe men_ll_z15" "${LogFile}"
         return "${ERR_VALUE}"
@@ -226,7 +226,7 @@ function can_test_ll_z15_stress {
 
     #Now can adapter shall be configured properly
     debug_print "${LogPrefix} modprobe men_ll_z15" "${LogFile}"
-    if ! run_as_root modprobe men_ll_z15
+    if ! do_modprobe men_ll_z15
     then
         debug_print "${LogPrefix}  ERR_VALUE :could not modprobe men_ll_z15" "${LogFile}"
         return "${ERR_VALUE}"

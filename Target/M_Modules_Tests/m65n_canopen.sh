@@ -94,7 +94,7 @@ Shutdown CAN stack
 Program finished"
 
     debug_print "${LogPrefix} Step1: modprobe men_ll_canopen" "${LogFile}"
-    if ! run_as_root modprobe men_ll_canopen
+    if ! do_modprobe men_ll_canopen
     then
         debug_print "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_canopen" "${LogFile}"
         return "${ERR_VALUE}"

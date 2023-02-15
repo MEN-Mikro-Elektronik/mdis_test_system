@@ -52,7 +52,7 @@ function m72_test {
     local LogPrefix=${2}
     local ModuleNo=${3}
 
-    if ! run_as_root modprobe men_ll_m72
+    if ! do_modprobe men_ll_m72
     then
         debug_print "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m72" "${LogFile}"
         return "${ERR_VALUE}"

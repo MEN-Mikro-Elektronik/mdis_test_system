@@ -78,7 +78,7 @@ function bl51_boxpc_test {
         case "${MachineState}" in
         can_test)
             debug_print "${LogPrefix} Run CAN test" "${LogFile}"
-            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+            "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
                                              -dname "z029_can"\
@@ -92,7 +92,7 @@ function bl51_boxpc_test {
             ;;
         uart_test0)
             debug_print "${LogPrefix} Run UART RS422/485 test" "${LogFile}"
-            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+            "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
                                              -dname "z125_uart"\
@@ -106,7 +106,7 @@ function bl51_boxpc_test {
             ;;
         uart_test1)
             debug_print "${LogPrefix} Run UART RS232 test" "${LogFile}"
-            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+            "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
                                              -dname "z125_uart"\

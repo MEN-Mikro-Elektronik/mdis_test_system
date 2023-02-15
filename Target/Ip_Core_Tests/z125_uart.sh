@@ -116,7 +116,7 @@ function load_z125_driver {
 
     debug_print "${LogPrefix} modprobe men_mdis_kernel" "${LogFile}"
 
-    if ! run_as_root modprobe men_mdis_kernel
+    if ! do_modprobe men_mdis_kernel
     then
         debug_print "${LogPrefix} ERR_MODPROBE :could not modprobe men_mdis_kernel" "${LogFile}"
         return "${ERR_MODPROBE}"
@@ -124,7 +124,7 @@ function load_z125_driver {
 
     debug_print "${LogPrefix} modprobe men_lx_z25 baud_base=1843200 mode=se,se" "${LogFile}"
 
-    if ! run_as_root modprobe men_lx_z25 baud_base=1843200 mode=se,se
+    if ! do_modprobe men_lx_z25 baud_base=1843200 mode=se,se
     then
         debug_print "${LogPrefix} ERR_MODPROBE :could not modprobe men_lx_z25 baud_base=1843200 mode=se,se" "${LogFile}"
         return "${ERR_MODPROBE}"
@@ -148,7 +148,7 @@ function unload_z125_driver {
     IsDebian="$(hostnamectl | grep "Operating System" | grep -c "Debian")"
     debug_print "${LogPrefix} IsDebian: ${IsDebian}" "${LogFile}"
     if [ "${IsDebian}" == "1" ]; then
-        run_as_root rmmod men_lx_z25
+        do_rmmod men_lx_z25
     fi
 }
 ############################################################################
@@ -189,13 +189,13 @@ function uart_test_lx_z25 {
     fi
 
     sleep 1
-    if ! run_as_root rmmod men_lx_z25
+    if ! do_rmmod men_lx_z25
     then
         debug_print "${LogPrefix}  ERR_VALUE: could not rmmod m" "${LogFile}"
         return "${ERR_VALUE}"
     fi
 
-    if ! run_as_root modprobe men_lx_z25 baud_base=1843200 mode=se,se
+    if ! do_modprobe men_lx_z25 baud_base=1843200 mode=se,se
     then
         debug_print "${LogPrefix}  ERR_VALUE: could not  modprobe men_lx_z25 baud_base=1843200 mode=se,se" "${LogFile}"
         return "${ERR_VALUE}"
@@ -209,61 +209,4 @@ function uart_test_lx_z25 {
     fi
 
     return "${ERR_OK}"
-
-    # Linux kernel bug 
-    # https://bugs.launchpad.net/ubuntu/+source/linux-signed-hwe/+bug/1815021
-    #
-    #for item in "${Arr[@]}"; do 
-    #        # Conditions must be met: i2c-i801 is loaded, mcb_pci is disabled
-    #        echo ${MenPcPassword} | sudo -S --prompt=$'\r' chmod o+rw /dev/ttyS${item}
-    #        if [ $? -ne 0 ]; then
-    #                echo "${LogPrefix} Could not chmod o+rw on ttyS${item}"\
-    #                  | tee -a ${LogFile} 2>&1
-    #        fi
-    #        sleep 2
-    #        # Below command prevent infitite loopback on serial port 
-    #        echo ${MenPcPassword} | sudo -S --prompt=$'\r' stty -F /dev/ttyS${item} -echo -onlcr
-    #        if [ $? -ne 0 ]; then
-    #                echo "${LogPrefix} Could not stty -F on ttyS${item}"\
-    #                  | tee -a ${LogFile} 2>&1
-    #        fi
-    #        sleep 2
-    #        # Listen on port in background
-    #        echo ${MenPcPassword} | sudo -S --prompt=$'\r' cat /dev/ttyS${item}\
-    #          > echo_on_serial_S${item}.txt &
-    #        
-    #        if [ $? -ne 0 ]; then
-    #                echo "${LogPrefix} Could not cat on ttyS${item} in background"\
-    #                  | tee -a ${LogFile} 2>&1
-    #        fi
-    #        sleep 2 
-    #        # Save background process PID 
-    #        CatEchoTestPID=$!
-    #        # Send data into port
-    #        echo ${MenPcPassword} | sudo -S --prompt=$'\r' echo ${EchoTestMessage} > /dev/ttyS${item}
-    #        if [ $? -ne 0 ]; then
-    #                echo "${LogPrefix} Could not echo on ttyS${item}"\
-    #                  | tee -a ${LogFile} 2>&1
-    #        fi
-    #        # Kill process
-    #        sleep 2 
-    #        echo ${MenPcPassword} | sudo -S --prompt=$'\r' kill -9 ${CatEchoTestPID}
-    #        if [ $? -ne 0 ]; then
-    #                echo "${LogPrefix} Could not kill cat backgroung process ${CatEchoTestPID} on ttyS${item}"\
-    #                  | tee -a ${LogFile} 2>&1
-    #        fi
-    #        # Compare and check if echo test message was received.
-    #        sleep 1 
-    #        grep -a "${EchoTestMessage}" echo_on_serial_S${item}.txt
-    #        if [ $? -eq 0 ]; then
-    #                echo "${LogPrefix} Echo succeed on ttyS${item}"\
-    #                  | tee -a ${LogFile} 2>&1
-    #        else
-    #                echo "${LogPrefix} Echo failed on ttyS${item}"\
-    #                  | tee -a ${LogFile} 2>&1
-    #                return ${ERR_VALUE}
-    #        fi
-    #
-    #        #rm echo_on_serial_S${item}.txt
-    #done
 }

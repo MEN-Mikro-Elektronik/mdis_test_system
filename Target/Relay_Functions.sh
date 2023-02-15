@@ -1,7 +1,7 @@
 #!/bin/bash
 
 MyDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-source "${MyDir}"/../Common/Conf.sh
+source "${MyDir}"/../Common/Mdis_Common_Functions.sh
 
 ############################################################################
 # Function requests change on input. To specify which input should be changed,

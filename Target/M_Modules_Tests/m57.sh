@@ -52,7 +52,7 @@ function m57_test {
     local profidp_simp_PID
 
     debug_print "${LogPrefix} Step1: modprobe men_ll_profidp" "${LogFile}"
-    if ! run_as_root modprobe men_ll_profidp
+    if ! do_modprobe men_ll_profidp
     then
         debug_print "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_profidp" "${LogFile}" 
         return "${ERR_VALUE}"

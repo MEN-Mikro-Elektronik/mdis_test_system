@@ -74,7 +74,7 @@ function bl70_boxpc_test {
         case "${MachineState}" in
         can_test)
             debug_print "${LogPrefix} Run CAN test" "${LogFile}"
-            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+            "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
                                              -dname "z029_can"\
@@ -88,7 +88,7 @@ function bl70_boxpc_test {
             ;;
         uart_test)
             debug_print "${LogPrefix} Run UART test" "${LogFile}"
-            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+            "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
                                              -dname "z125_uart"\

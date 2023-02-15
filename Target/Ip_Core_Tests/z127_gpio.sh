@@ -69,7 +69,7 @@ function z127_gpio_test {
     MezzChamDevName="MezzChamDevName.txt"
     obtain_device_list_chameleon_device "${VenID}" "${DevID}" "${SubVenID}" "${MezzChamDevName}" "${BoardInSystem}" "${LogFile}" "${LogPrefix}"
 
-    if ! run_as_root modprobe men_ll_z17_z127
+    if ! do_modprobe men_ll_z17_z127
     then
         debug_print "${LogPrefix} ERR_MODPROBE :could not modprobe men_ll_z17_z127" "${LogFile}"
         return "${ERR_MODPROBE}"

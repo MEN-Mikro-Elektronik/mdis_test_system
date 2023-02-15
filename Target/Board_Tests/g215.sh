@@ -84,7 +84,7 @@ function g215_test {
         case "${MachineState}" in
         uart_test)
             debug_print "${LogPrefix} Run UART test" "${LogFile}"
-            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+            "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
                                              -dname "z125_uart"\
@@ -98,7 +98,7 @@ function g215_test {
             ;;
         can_test)
             debug_print "${LogPrefix} Run CAN test" "${LogFile}"
-            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+            "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
                                              -dname "z029_can"\
@@ -112,7 +112,7 @@ function g215_test {
             ;;
         gpio_z034_test)
             debug_print "${LogPrefix} Run GPIO z034 test" "${LogFile}"
-            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+            "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
                                              -dname "z034_gpio"\
@@ -126,7 +126,7 @@ function g215_test {
             ;;
         gpio_z037_test)
             debug_print "${LogPrefix} Run GPIO z037 test" "${LogFile}"
-            run_as_root "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+            "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
                                              -dname "z037_gpio"\

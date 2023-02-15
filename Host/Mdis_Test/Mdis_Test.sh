@@ -268,17 +268,17 @@ function runTests {
     echo "${St_Test_Configuration} ${TEST_SETUP}"
 
     # Make all scripts executable
-    run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' chmod +x ${GitTestCommonDirPath}/*"
-    run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' chmod +x ${GitTestTargetDirPath}/*"
-    run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' chmod +x ${GitTestHostDirPath}/*"
+    run_cmd_on_remote_pc "chmod +x ${GitTestCommonDirPath}/*"
+    run_cmd_on_remote_pc "chmod +x ${GitTestTargetDirPath}/*"
+    run_cmd_on_remote_pc "chmod +x ${GitTestHostDirPath}/*"
 
     # Run Test script - now scripts from remote device should be run
     make_visible_in_log "TEST CASE - ${St_Test_Configuration} ${TEST_SETUP}"
-    if ! run_cmd_on_remote_pc "echo ${MenPcPassword} | sudo -S --prompt=$'\r' ${GitTestTargetDirPath}/${St_Test_Configuration} --test-setup=${TEST_SETUP}\
-                                                                                                                               --date=${Today}\
-                                                                                                                               --debug-level=${VERBOSE_LEVEL}\
-                                                                                                                               --build-mdis\
-                                                                                                                               --test-id=${RUN_TEST_ID}"
+    if ! run_cmd_on_remote_pc "${GitTestTargetDirPath}/${St_Test_Configuration} --test-setup=${TEST_SETUP}\
+                                                                                --date=${Today}\
+                                                                                --debug-level=${VERBOSE_LEVEL}\
+                                                                                --build-mdis\
+                                                                                --test-id=${RUN_TEST_ID}"
     then
         echo "${LogPrefix} Error while running St_Test_Configuration_x.sh script"
     fi
@@ -302,6 +302,7 @@ fi
 cat "${MyDir}/../../Common/Conf.sh" > tmp.sh
 echo "VERBOSE_LEVEL=${VERBOSE_LEVEL}" >> tmp.sh
 echo "TEST_SETUP=${TEST_SETUP}" >> tmp.sh
+cat "${MyDir}/../../Common/Mdis_Common_Functions.sh" >> tmp.sh
 cat "${MyDir}"/Pc_Configure.sh >> tmp.sh
 
 if ! run_script_on_remote_pc "${MyDir}"/tmp.sh

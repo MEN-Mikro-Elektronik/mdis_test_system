@@ -89,17 +89,17 @@ function z055_hdlc_test {
 
     # ping response is not required
     debug_print "${LogPrefix} ping ppp0 -c 20 -i ${PingInterval} -s 1400 8.8.8.8" "${LogFile}"
-    run_as_root ping -I ppp0 -c 20 -i "${PingInterval}" -s 1400 8.8.8.8 > /dev/null
+    ping -I ppp0 -c 20 -i "${PingInterval}" -s 1400 8.8.8.8 > /dev/null
     debug_print "${LogPrefix} ping -I ppp1 -c 10 -i ${PingInterval} -s 1400 8.8.8.8" "${LogFile}"
-    run_as_root ping -I ppp1 -c 10 -i "${PingInterval}" -s 1400 8.8.8.8 > /dev/null
+    ping -I ppp1 -c 10 -i "${PingInterval}" -s 1400 8.8.8.8 > /dev/null
 
     run_as_root ifconfig ppp0 txqueuelen 100
     run_as_root ifconfig ppp1 txqueuelen 100
     # ping response is not required
     debug_print "${LogPrefix} ping -I ppp0 -c 16 -i ${PingInterval} -s 65000 8.8.8.8" "${LogFile}"
-    run_as_root ping -I ppp0 -c 16 -i "${PingInterval}" -s 65000 8.8.8.8 > /dev/null
+    ping -I ppp0 -c 16 -i "${PingInterval}" -s 65000 8.8.8.8 > /dev/null
     debug_print "${LogPrefix} ping -I ppp1 -c 17 -i ${PingInterval} -s 65000 8.8.8.8" "${LogFile}"
-    run_as_root ping -I ppp1 -c 17 -i "${PingInterval}" -s 65000 8.8.8.8 > /dev/null
+    ping -I ppp1 -c 17 -i "${PingInterval}" -s 65000 8.8.8.8 > /dev/null
 
     sleep 2
     # compare ifconfig stats for ppp0 and ppp1
@@ -144,8 +144,8 @@ function z055_hdlc_compare_ppp_stats {
     local ErrorTXPPP1="0"
     local ErrorRXPPP1="0"
 
-    run_as_root ifconfig ppp0 > ppp0.log
-    run_as_root ifconfig ppp1 > ppp1.log
+    ifconfig ppp0 > ppp0.log
+    ifconfig ppp1 > ppp1.log
 
     BytesTXPPP0=$(grep "TX packets" ppp0.log | awk '{print $5}')
     BytesTXPPP1=$(grep "TX packets" ppp1.log | awk '{print $5}')

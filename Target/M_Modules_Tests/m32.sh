@@ -51,7 +51,7 @@ function m32_test {
     local ModuleNo=${3}
 
     debug_print "${LogPrefix} Step1: modprobe men_ll_m31" "${LogFile}"
-    if ! run_as_root modprobe men_ll_m31
+    if ! do_modprobe men_ll_m31
     then
         debug_print "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m31" "${LogFile}"
         return "${ERR_VALUE}"
