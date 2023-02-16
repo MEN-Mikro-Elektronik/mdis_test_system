@@ -270,7 +270,6 @@ function runTests {
     # Make all scripts executable
     run_cmd_on_remote_pc "chmod +x ${GitTestCommonDirPath}/*"
     run_cmd_on_remote_pc "chmod +x ${GitTestTargetDirPath}/*"
-    run_cmd_on_remote_pc "chmod +x ${GitTestHostDirPath}/*"
 
     # Run Test script - now scripts from remote device should be run
     make_visible_in_log "TEST CASE - ${St_Test_Configuration} ${TEST_SETUP}"
