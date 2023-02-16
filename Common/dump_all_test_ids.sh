@@ -34,7 +34,7 @@ echo ">> ***********************************"
 
 echo ""
 
-for setup in {1..11}
+for setup in {2..11}
 do
 	testSetup="TEST_SETUP_"$setup"_TEST_CASES"
     echo ""
