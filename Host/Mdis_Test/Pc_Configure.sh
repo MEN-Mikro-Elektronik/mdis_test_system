@@ -45,31 +45,6 @@ function create_result_directory {
     fi
     return "${ERR_OK}"
 }
-############################################################################
-# create directory with Test_case sources
-# overwrite if sources are present
-# if directory exists, delete it first
-# then, perform steps as below:
-#       - create directory
-#       - download repository with sources
-#
-# parameters:
-#       None 
-#
-function create_test_case_sources_directory {
-    # remove if exists 
-    if [ -d "${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}" ]; then
-		echo "The folder ${TestSourcesDirectoryName} exists. Removing it first..."
-        rm -rf "${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}"
-    fi
-
-    if ! ${GitTestSourcesCmd}
-    then
-        echo "ERR: ${ERR_CREATE} - cannot download Test Sources"
-        return "${ERR_CREATE}"
-    fi
-    return "${ERR_OK}"
-}
 
 ############################################################################
 # create directory with MDIS sources
@@ -214,14 +189,6 @@ then
 fi
 
 copy_external_sources
-
-
-if ! create_test_case_sources_directory
-then
-    echo "ERR: create_test_case_sources_directory"
-    exit "${ERR_CONF}"
-fi
-
 
 if ! install_13MD05_90_sources
 then
