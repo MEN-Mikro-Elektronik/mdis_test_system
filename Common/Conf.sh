@@ -316,7 +316,9 @@ function create_test_setup_test_cases_map {
             TEST_SETUP_6_TEST_CASES[2]="true"
             ;;
         7)
-            # Manuall tests
+            TEST_SETUP_7_TEST_CASES[$(get_test_case_id "m33" "A203N")]="true"
+            TEST_SETUP_7_TEST_CASES[$(get_test_case_id "m47" "A203N")]="true"
+            TEST_SETUP_7_TEST_CASES[$(get_test_case_id "m99" "A203N")]="true"
             ;;
         9)
             TEST_SETUP_9_TEST_CASES[1]="true"

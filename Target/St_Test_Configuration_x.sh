@@ -169,7 +169,9 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             run_test_case_board "2" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # SMB2_TEST @ CB70
             ;;
         7)
-            # Manual tests
+            run_test_case_module "m33" "A203N" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case_module "m47" "A203N" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case_module "m99" "A203N" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             ;;
         9)
             run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" "SC31-" # SMB2_TEST @ BL51
