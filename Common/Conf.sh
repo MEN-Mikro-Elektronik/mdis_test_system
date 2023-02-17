@@ -137,6 +137,11 @@ function get_test_cases_map {
         TestCaseId=$(get_test_case_id "${Module}" "F205")
         TEST_CASES_MAP["${TestCaseId}"]="carrier_f205_${Module}"
     done
+    # loop through A203N carrier board
+    for Module in $(ls -l ${TestPath}/M_Modules_Tests/ | awk '{print $9}' | sed 's/.sh//'); do
+        TestCaseId=$(get_test_case_id "${Module}" "A203N")
+        TEST_CASES_MAP["${TestCaseId}"]="carrier_a203n_${Module}"
+    done
 }
 
 function create_test_cases_map {
@@ -166,6 +171,7 @@ function get_test_case_id {
     local TestCaseId="9999"
     local baseG204Id=200
     local baseF205Id=300
+    local baseA203Id=400
     local baseId="0"
 
     if [ "${CarrierBoard}" = "G204" ]
@@ -174,6 +180,9 @@ function get_test_case_id {
     elif [ "${CarrierBoard}" = "F205" ]
     then
         baseId=${baseF205Id}
+    elif [ "${CarrierBoard}" = "A203N" ]
+    then
+        baseId=${baseA203Id}
     else
         echo "${TestCaseId}"
         return
@@ -307,7 +316,9 @@ function create_test_setup_test_cases_map {
             TEST_SETUP_6_TEST_CASES[2]="true"
             ;;
         7)
-            # Manuall tests
+            TEST_SETUP_7_TEST_CASES[$(get_test_case_id "m33" "A203N")]="true"
+            TEST_SETUP_7_TEST_CASES[$(get_test_case_id "m47" "A203N")]="true"
+            TEST_SETUP_7_TEST_CASES[$(get_test_case_id "m99" "A203N")]="true"
             ;;
         9)
             TEST_SETUP_9_TEST_CASES[1]="true"

@@ -44,6 +44,11 @@ function run_test_case_id {
         Module=$(echo "${TEST_CASES_MAP[${TestCaseId}]}" | sed 's/carrier_f205_//')
         echo "Module: ${Module}"
         run_test_case_module "${Module}" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+    elif [ "${TestCaseId}" -le "500" ]
+    then
+        Module=$(echo "${TEST_CASES_MAP[${TestCaseId}]}" | sed 's/carrier_a203n_//')
+        echo "Module: ${Module}"
+        run_test_case_module "${Module}" "A203N" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
     fi
 }
 
@@ -62,13 +67,20 @@ function run_test_case_module {
     local OsNameKernel=${5}
     local OptionalParam=${6}
     local TestCaseId="0"
+    local DeviceName=""
 
     if [ "${CarrierBoard}" = "G204" ]
     then
         echo "Board G204"
+        DeviceName="carrier_g204_TPL"
     elif [ "${CarrierBoard}" = "F205" ]
     then
         echo "Board F205"
+        DeviceName="carrier_f205_TPL"
+    elif [ "${CarrierBoard}" = "A203N" ]
+    then
+        echo "Board A203N"
+        DeviceName="carrier_a203n_TPL"
     else
         echo "Board undefined"
         return "${ERR_VALUE}"
@@ -82,12 +94,7 @@ function run_test_case_module {
         return "${ERR_VALUE}"
     fi
 
-    if [ "${CarrierBoard}" = "G204" ]
-    then
-        "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "carrier_g204_TPL" -module "${Module}" -moduleno "${ModuleNo}"
-    else
-        "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "carrier_f205_TPL" -module "${Module}" -moduleno "${ModuleNo}"
-    fi
+    "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}" -id "${TestCaseId}" -os "${OsNameKernel}" -dname "${DeviceName}" -module "${Module}" -moduleno "${ModuleNo}"
 }
 ############################################################################
 # run_test_case specified by user
