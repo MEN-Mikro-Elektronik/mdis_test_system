@@ -270,7 +270,6 @@ function runTests {
     # Make all scripts executable
     run_cmd_on_remote_pc "chmod +x ${GitTestCommonDirPath}/*"
     run_cmd_on_remote_pc "chmod +x ${GitTestTargetDirPath}/*"
-    run_cmd_on_remote_pc "chmod +x ${GitTestHostDirPath}/*"
 
     # Run Test script - now scripts from remote device should be run
     make_visible_in_log "TEST CASE - ${St_Test_Configuration} ${TEST_SETUP}"
@@ -289,6 +288,22 @@ function runTests {
     # Test scripts have not been downloaded into remote yet.
 }
 
+function copyTestSources {
+    local TestSourcesDir="${MyDir}/../../../mdis_test_system"
+    local TargetTestSourcesDir="${MainTestDirectoryPath}/${MainTestDirectoryName}/${TestSourcesDirectoryName}"
+
+    sshpass -p "${MenPcPassword}" ssh mdis-setup${TEST_SETUP} "rm -rf ${TargetTestSourcesDir} && mkdir -p ${TargetTestSourcesDir}"
+    if [ ! $? -eq 0 ]; then
+        echo " Could not create test sources dir in mdis-setup${TEST_SETUP}"
+        exit
+    fi
+    sshpass -p "${MenPcPassword}" scp -r ${TestSourcesDir}/Target ${TestSourcesDir}/Common mdis-setup${TEST_SETUP}:${TargetTestSourcesDir}
+    if [ ! $? -eq 0 ]; then
+        echo " Could not copy test sources to mdis-setup${TEST_SETUP}"
+        exit
+    fi
+}
+
 # MAIN start here
 create_test_cases_map
 
@@ -298,6 +313,8 @@ then
     echo "mdis-setup${TEST_SETUP} is not responding"
     exit
 fi
+
+copyTestSources
 
 cat "${MyDir}/../../Common/Conf.sh" > tmp.sh
 echo "VERBOSE_LEVEL=${VERBOSE_LEVEL}" >> tmp.sh
