@@ -3,6 +3,31 @@ MyDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${MyDir}"/../Common/Conf.sh
 
 ############################################################################
+# Configure and MDIS project (system.dsc and Makefile),
+# then perform make and make install.
+# If error occurs stop and exit with proper error code
+#
+# parameters:
+# $1    Log Prefix
+# $2    Test Setup
+function setup_and_install {
+    local LogPrefix="${1}"
+    local TestSetup="${2}"
+    echo "${LogPrefix}function setup_and_install for setup: ${TestSetup}"
+
+    echo "Current directory: ${PWD}"
+    if [ -f "${MyDir}/Config/St_Test_Setup_${TestSetup}/Makefile" ] && [ -f "${MyDir}/Config/St_Test_Setup_${TestSetup}/system.dsc" ]
+    then
+        run_as_root cp "${MyDir}/Config/St_Test_Setup_${TestSetup}/*" .
+    else
+        echo "Could not find a valid MDIS project at ${MyDir}/Config/St_Test_Setup_${TestSetup}"
+        exit ${ERR_NOEXIST}
+    fi
+
+    make_install "${LogPrefix}"
+}
+
+############################################################################
 # Run system_scan.sh, then perform make and make install.
 # If error occurs stop and exit with proper error code
 #
@@ -85,10 +110,19 @@ function mdis_prepare {
     local LogPrefix="${2}"
     cd "${DirectoryName}" || exit "${ERR_NOEXIST}"
 
-    # Scan, make and make install 
-    if ! scan_and_install "${LogPrefix}"
+    if [ ${TEST_SETUP} -eq "7" ]
     then
-        return "${CmdResult}"
+        # setup mdis project, make and make install 
+        if ! setup_and_install "${LogPrefix}" "${TEST_SETUP}"
+        then
+            return "${CmdResult}"
+        fi
+    else
+        # Scan, make and make install 
+        if ! scan_and_install "${LogPrefix}"
+        then
+            return "${CmdResult}"
+        fi
     fi
 
     # Check if any error exists in output files

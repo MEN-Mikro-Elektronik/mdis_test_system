@@ -37,25 +37,18 @@ function m99_description {
     echo "    To see error codes definition please check Conf.sh"
 }
 
-############################################################################
-# run m99 test
-#
-# parameters:
-# $1    LogFile
-# $2    LogPrefix
-# $3    M-Module number
-function m99_test {
+function m99_sw_description {
+    local ModuleNo=${1}
+    local ModuleLogPath=${2}
+
+    m99_description ${ModuleNo} ${ModuleLogPath}
+}
+
+
+function m99_run_test {
     local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
-    local m99_latency_PID
-
-    debug_print "${LogPrefix} Step1: modprobe men_ll_m99" "${LogFile}"
-    if ! do_modprobe men_ll_m99
-    then
-        debug_print "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m99" "${LogFile}" 
-        return "${ERR_VALUE}"
-    fi
 
     # Run m99_latency in background.
     debug_print "${LogPrefix} Step2: run m99_latency m99_${ModuleNo}" "${LogFile}"
@@ -85,3 +78,53 @@ function m99_test {
 
     return "${ERR_OK}"
 }
+
+
+############################################################################
+# run m99 test
+#
+# parameters:
+# $1    LogFile
+# $2    LogPrefix
+# $3    M-Module number
+function m99_test {
+    local LogFile=${1}
+    local LogPrefix=${2}
+    local ModuleNo=${3}
+    local m99_latency_PID
+
+    debug_print "${LogPrefix} Step1: modprobe men_ll_m99" "${LogFile}"
+    if ! do_modprobe men_ll_m99
+    then
+        debug_print "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m99" "${LogFile}" 
+        return "${ERR_VALUE}"
+    fi
+
+    m99_run_test ${LogFile} ${LogPrefix} ${ModuleNo}
+    return "$?"
+}
+
+############################################################################
+# run m99_sw test
+#
+# parameters:
+# $1    LogFile
+# $2    LogPrefix
+# $3    M-Module number
+function m99_sw_test {
+    local LogFile=${1}
+    local LogPrefix=${2}
+    local ModuleNo=${3}
+    local m99_latency_PID
+
+    debug_print "${LogPrefix} Step1: modprobe men_ll_m99_sw" "${LogFile}"
+    if ! do_modprobe men_ll_m99_sw
+    then
+        debug_print "${LogPrefix}  ERR_VALUE: could not modprobe men_ll_m99_sw" "${LogFile}" 
+        return "${ERR_VALUE}"
+    fi
+
+    m99_run_test ${LogFile} ${LogPrefix} ${ModuleNo}
+    return "$?"
+}
+
