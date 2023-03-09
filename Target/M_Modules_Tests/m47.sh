@@ -38,24 +38,17 @@ function m47_description {
     echo "    To see error codes definition please check Conf.sh"
 }
 
-############################################################################
-# run m47 test
-#
-# parameters:
-# $1    LogFile
-# $2    LogPrefix
-# $3    M-Module number
-function m47_test {
+function m47_sw_description {
+    local ModuleNo=${1}
+    local ModuleLogPath=${2}
+
+    m47_description ${ModuleNo} ${ModuleLogPath}
+}
+
+function m47_run_test {
     local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
-
-    debug_print "${LogPrefix} Step1: modprobe men_ll_m47" "${LogFile}"
-    if ! do_modprobe men_ll_m47
-    then
-        debug_print "${LogPrefix} ERR_VALUE: could not modprobe men_ll_m47" "${LogFile}"
-        return "${ERR_VALUE}"
-    fi
 
     # Run m47_simp
     debug_print "${LogPrefix} Step2: run m47_simp m47_${ModuleNo}" "${LogFile}"
@@ -76,4 +69,50 @@ function m47_test {
     fi
 
     return "${ERR_OK}"
+}
+
+############################################################################
+# run m47 test
+#
+# parameters:
+# $1    LogFile
+# $2    LogPrefix
+# $3    M-Module number
+function m47_test {
+    local LogFile=${1}
+    local LogPrefix=${2}
+    local ModuleNo=${3}
+
+    debug_print "${LogPrefix} Step1: modprobe men_ll_m47" "${LogFile}"
+    if ! do_modprobe men_ll_m47
+    then
+        debug_print "${LogPrefix} ERR_VALUE: could not modprobe men_ll_m47" "${LogFile}"
+        return "${ERR_VALUE}"
+    fi
+
+    m47_run_test ${LogFile} ${LogPrefix} ${ModuleNo}
+    return "$?"
+}
+
+############################################################################
+# run m47_sw test
+#
+# parameters:
+# $1    LogFile
+# $2    LogPrefix
+# $3    M-Module number
+function m47_sw_test {
+    local LogFile=${1}
+    local LogPrefix=${2}
+    local ModuleNo=${3}
+
+    debug_print "${LogPrefix} Step1: modprobe men_ll_m47_sw" "${LogFile}"
+    if ! do_modprobe men_ll_m47_sw
+    then
+        debug_print "${LogPrefix} ERR_VALUE: could not modprobe men_ll_m47_sw" "${LogFile}"
+        return "${ERR_VALUE}"
+    fi
+
+    m47_run_test ${LogFile} ${LogPrefix} ${ModuleNo}
+    return "$?"
 }

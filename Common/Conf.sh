@@ -258,6 +258,15 @@ function get_test_case_id {
         m199_pci)
             TestCaseId=$((baseId+23))
             ;;
+        m33_sw)
+            TestCaseId=$((baseId+24))
+            ;;
+        m47_sw)
+            TestCaseId=$((baseId+25))
+            ;;
+        m99_sw)
+            TestCaseId=$((baseId+26))
+            ;;
         *)
             TestCaseId="9999"
             ;;

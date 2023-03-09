@@ -57,6 +57,10 @@ function carrier_a203n_TPL_test {
     local OsNameKernel="${5}"
 
     local TestCaseResult="${ERR_VALUE}"
+
+    do_modprobe men_pldz002_cham
+    do_modprobe men_mdis_kernel
+
     "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                      -id "${TestCaseId}"\
                                      -os "${OsNameKernel}"\

@@ -39,24 +39,17 @@ function m33_description {
     echo "    To see error codes definition please check Conf.sh"
 }
 
-############################################################################
-# run m33 test
-#
-# parameters:
-# $1    Log file
-# $2    Log prefix
-# $3    M-Module number
-function m33_test {
+function m33_sw_description {
+    local ModuleNo=${1}
+    local ModuleLogPath=${2}
+
+    m33_description ${ModuleNo} ${ModuleLogPath}
+}
+
+function m33_run_test {
     local LogFile=${1}
     local LogPrefix=${2}
     local ModuleNo=${3}
-
-    debug_print "${LogPrefix} Step1: modprobe men_ll_m33" "${LogFile}"
-    if ! do_modprobe men_ll_m33
-    then
-        debug_print "${LogPrefix} ERR_VALUE: could not modprobe men_ll_m33" "${LogFile}"
-        return "${ERR_VALUE}"
-    fi
 
     debug_print "${LogPrefix} Step2: run m33_demo m33_${ModuleNo}" "${LogFile}"
     if ! run_as_root m33_demo m33_"${ModuleNo}" > m33_demo.log
@@ -77,4 +70,50 @@ function m33_test {
     fi
 
     return "${ERR_OK}"
+}
+
+############################################################################
+# run m33 test
+#
+# parameters:
+# $1    Log file
+# $2    Log prefix
+# $3    M-Module number
+function m33_test {
+    local LogFile=${1}
+    local LogPrefix=${2}
+    local ModuleNo=${3}
+
+    debug_print "${LogPrefix} Step1: modprobe men_ll_m33" "${LogFile}"
+    if ! do_modprobe men_ll_m33
+    then
+        debug_print "${LogPrefix} ERR_VALUE: could not modprobe men_ll_m33" "${LogFile}"
+        return "${ERR_VALUE}"
+    fi
+
+    m33_run_test ${LogFile} ${LogPrefix} ${ModuleNo}
+    return "$?"
+}
+
+############################################################################
+# run m33_sw test
+#
+# parameters:
+# $1    Log file
+# $2    Log prefix
+# $3    M-Module number
+function m33_sw_test {
+    local LogFile=${1}
+    local LogPrefix=${2}
+    local ModuleNo=${3}
+
+    debug_print "${LogPrefix} Step1: modprobe men_ll_m33_sw" "${LogFile}"
+    if ! do_modprobe men_ll_m33_sw
+    then
+        debug_print "${LogPrefix} ERR_VALUE: could not modprobe men_ll_m33_sw" "${LogFile}"
+        return "${ERR_VALUE}"
+    fi
+
+    m33_run_test ${LogFile} ${LogPrefix} ${ModuleNo}
+    return "$?"
 }
