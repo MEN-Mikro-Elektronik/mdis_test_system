@@ -343,6 +343,7 @@ case "${TestTypeDev}" in
 esac
 
 if [ ${PrintTerminalResults} -eq "1" ]; then
+    echo "${LogPrefix} Test_Result for ${TestCaseName}: ${TestCaseResult}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
     echo "${LogPrefix} Test_Result: ${TestCaseResult}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
     echo "${LogPrefix} Test_ID: ${TestCaseId}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
     echo "${LogPrefix} Test_Setup: ${TEST_SETUP}" | tee -a "${TestCaseLogName}" "${ResultsSummaryTmp}" 2>&1
