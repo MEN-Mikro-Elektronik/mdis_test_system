@@ -395,17 +395,25 @@ function automatic_driver_test {
                                 Retval=$?
                                 if [ ${Retval} -eq 0 ]
                                 then 
-                                        echo "${Makefile} PASSED_CONDITIONALY" >> "${STR_RESULT_FILE}"
-                                        echo "${Makefile} PASSED_CONDITIONALY" 
+                                        echo "${Makefile} PASSED_WITH_WARNINGS" >> "${STR_RESULT_FILE}"
+                                        echo "${Makefile} PASSED_WITH_WARNINGS"
                                         echo "${Makefile}" >> "${1}_${MakefilesCompilationListFailed}"
                                 else
                                         echo "${Makefile} PASSED" >> "${STR_RESULT_FILE}"
                                         echo "${Makefile} PASSED"
                                 fi
                         else
-                                echo "${Makefile} FAILED" >> "${STR_RESULT_FILE}"
-                                echo "${Makefile} FAILED"
-                                echo "${Makefile}" >> "${1}_${MakefilesCompilationListFailed}"
+                                grep "This module is not supported by MDIS" "${STR_RESULT_DIR}/${Makefile}.log" >/dev/null
+                                RetVal=$?
+                                if [ ${RetVal} -eq 0 ]
+                                then
+                                        echo "${Makefile} PASSED_NOT_SUPPORTED" >> "${STR_RESULT_FILE}"
+                                        echo "${Makefile} PASSED_NOT_SUPPORTED"
+                                else
+                                        echo "${Makefile} FAILED" >> "${STR_RESULT_FILE}"
+                                        echo "${Makefile} FAILED"
+                                        echo "${Makefile}" >> "${1}_${MakefilesCompilationListFailed}"
+                                fi
                         fi
                 fi
 
