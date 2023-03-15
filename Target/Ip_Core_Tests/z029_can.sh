@@ -233,7 +233,7 @@ function can_test_ll_z15_stress {
     fi
     debug_print "${LogPrefix}run mscan_concurrent > mscan_concurrent.log &" "${LogFile}"
     # Currently can number is fixed within mscan_concurrent (can_7 can8)
-    if ! run_as_root $(stdbuf -o0 mscan_concurrent > mscan_concurrent.log &)
+    if ! run_as_root "stdbuf -o0 mscan_concurrent > mscan_concurrent.log &"
     then
         debug_print "${LogPrefix}  ERR_VALUE :could not run mscan_concurrent" "${LogFile}"
         return "${ERR_VALUE}"

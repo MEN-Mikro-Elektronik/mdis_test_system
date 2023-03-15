@@ -59,13 +59,13 @@ function m72_test {
     fi
 
     # Run m72_out in background.
-    if ! run_as_root $(stdbuf -oL m72_out m72_"${ModuleNo}" 0 < /dev/null > m72_out.log &)
+    if ! run_as_root "stdbuf -oL m72_out m72_"${ModuleNo}" 0 < /dev/null > m72_out.log &"
     then
         debug_print "${LogPrefix} Could not run m72_out" "${LogFile}"
     fi
 
     # Here output from m72_out should be 0
-    if ! run_as_root $(stdbuf -oL m72_single m72_"${ModuleNo}" 1 < /dev/null > m72_single_run.log &)
+    if ! run_as_root "stdbuf -oL m72_single m72_"${ModuleNo}" 1 < /dev/null > m72_single_run.log &"
     then
         debug_print "${LogPrefix} Could not run m72_single" "${LogFile}"
     fi
