@@ -52,7 +52,7 @@ function m99_run_test {
 
     # Run m99_latency in background.
     debug_print "${LogPrefix} Step2: run m99_latency m99_${ModuleNo}" "${LogFile}"
-    if ! run_as_root $(stdbuf -oL m99_latency m99_1 < /dev/null > m99_latency.log &)
+    if ! run_as_root "stdbuf -oL m99_latency m99_1 < /dev/null > m99_latency.log &"
     then
         debug_print "${LogPrefix} Could not run m99_latency" "${LogFile}"
     fi
