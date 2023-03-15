@@ -9,7 +9,7 @@ fi
 # $1     command to run
 function run_as_root {
     if [ "${#}" -gt "0" ]; then
-        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' -- ${@}
+        echo "${MenPcPassword}" | sudo -S --prompt=$'\r' -- sh -c "${*}"
     fi
 }
 
