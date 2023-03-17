@@ -148,7 +148,7 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             if [ "${IsMemLeakOS}" -gt 0 ]; then
                 run_test_case_board "151" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # G229 stress test
             else
-                run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" "G025A03" # SMB2_TEST @ G25A03
+                run_test_case_board "1" "1" "${TestSummaryDirectory}" "${OsNameKernel}" "G028" # SMB2_TEST @ G28
                 run_test_case_board "103" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
                 run_test_case_module "m81" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
                 run_test_case_module "m72" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"

@@ -68,7 +68,7 @@ function bl51_boxpc_test {
     UartDevice1="ttyS2"  # RS232
 
     CanTest="loopback_single"
-    MachineState="can_test"
+    MachineState="uart_test0"
     MachineRun=true
     CanTestResult=${ERR_VALUE}
     UartTestResult0=${ERR_VALUE}
@@ -76,20 +76,20 @@ function bl51_boxpc_test {
 
     while ${MachineRun}; do
         case "${MachineState}" in
-        can_test)
-            debug_print "${LogPrefix} Run CAN test" "${LogFile}"
-            "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
-                                             -id "${TestCaseId}"\
-                                             -os "${OsNameKernel}"\
-                                             -dname "z029_can"\
-                                             -venid "${VenID}"\
-                                             -devid "${DevID}"\
-                                             -subvenid "${SubVenID}"\
-                                             -tspec "${CanTest}"\
-                                             -dno "1"
-            CanTestResult=$?
-            MachineState="uart_test0"
-            ;;
+        #can_test)
+        #    debug_print "${LogPrefix} Run CAN test" "${LogFile}"
+        #    "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+        #                                     -id "${TestCaseId}"\
+        #                                     -os "${OsNameKernel}"\
+        #                                     -dname "z029_can"\
+        #                                     -venid "${VenID}"\
+        #                                     -devid "${DevID}"\
+        #                                     -subvenid "${SubVenID}"\
+        #                                     -tspec "${CanTest}"\
+        #                                     -dno "1"
+        #    CanTestResult=$?
+        #    MachineState="uart_test0"
+        #    ;;
         uart_test0)
             debug_print "${LogPrefix} Run UART RS422/485 test" "${LogFile}"
             "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\

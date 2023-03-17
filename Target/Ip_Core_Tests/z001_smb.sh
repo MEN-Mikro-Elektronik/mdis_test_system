@@ -58,10 +58,51 @@ function z001_smb_test {
 #    local DevID=${4}
 #    local SubVenID=${5}
 #    local BoardInSystem=${6}
-#    local TestType=${7}
-    debug_print "${LogPrefix} z001_smb fixed on G25A with G229 board" "${LogFile}"
-    smb_test_lx_z001 "${LogFile}" "${LogPrefix}" "DBZIB" "0x51"
-    return $?
+    local TestType=${7}
+
+    case "${TestType}" in
+        smb_detect)
+            debug_print "${LogPrefix} z001_smb detect new smb" "${LogFile}"
+            smb_test_lx_z001_detect "${LogFile}" "${LogPrefix}"
+            CmdResult=$?
+            ;;
+        smb)
+            debug_print "${LogPrefix} z001_smb fixed on G28 with G229 board" "${LogFile}"
+            smb_test_lx_z001 "${LogFile}" "${LogPrefix}" "DBZIB" "0x51"
+            CmdResult=$?
+            ;;
+        *)
+            echo "${LogPrefix} No valid test name: ${TestType}" "${LogFile}"
+            ;;
+    esac
+
+    return "${CmdResult}"
+}
+
+############################################################################
+# Test Z001_SMB IP core with men_lx_z001: Detect new smb i2c device present
+#
+# parameters:
+# $1      Log file
+# $2      Log prefix
+function smb_test_lx_z001_detect {
+    local LogFile=${1}
+    local LogPrefix=${2}
+
+    if ! do_modprobe men_lx_z001
+    then
+        debug_print "${LogPrefix} ERR_MODPROBE: could not modprobe men_lx_z001" "${LogFile}"
+        return "${ERR_MODPROBE}"
+    fi
+
+    SMBUS_ID_LINEs="$(grep "16Z001-[0-1]\+[[:space:]]BAR[0-9]\+[[:space:]]offs[[:space:]]0x[0-9]\+" "i2c_bus_list_test.log")"
+    if -z "${SMBUS_ID_LINE}"
+    then
+        debug_print "${LogPrefix} ERR_VALUE: smb i2c bus not found" "${LogFile}"
+        return "${ERR_VALUE}"
+    fi
+
+    return "${ERR_OK}"
 }
 
 ############################################################################
