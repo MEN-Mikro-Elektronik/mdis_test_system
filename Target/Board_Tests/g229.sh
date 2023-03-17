@@ -91,25 +91,25 @@ function g229_test {
                                              -venid "${VenID}"\
                                              -devid "${DevID}"\
                                              -subvenid "${SubVenID}"\
-                                             -tspec "${CanTest}"\
+                                             -tspec "smb_detect"\
                                              -dno "1"
             SmbTestResult=$?
-            MachineState="gpio_z127_test"
+            MachineState="can_test"
             ;;
-        # can_test)
-        #    debug_print "${LogPrefix} Run CAN test" "${LogFile}"
-        #    "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
-        #                                     -id "${TestCaseId}"\
-        #                                     -os "${OsNameKernel}"\
-        #                                     -dname "z029_can"\
-        #                                     -venid "${VenID}"\
-        #                                     -devid "${DevID}"\
-        #                                     -subvenid "${SubVenID}"\
-        #                                     -tspec "${CanTest}"\
-        #                                     -dno "1"
-        #    CanTestResult=$?
-        #    MachineState="gpio_z127_test"
-        #    ;;
+        can_test)
+           debug_print "${LogPrefix} Run CAN test" "${LogFile}"
+           "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+                                            -id "${TestCaseId}"\
+                                            -os "${OsNameKernel}"\
+                                            -dname "z029_can"\
+                                            -venid "${VenID}"\
+                                            -devid "${DevID}"\
+                                            -subvenid "${SubVenID}"\
+                                            -tspec "${CanTest}"\
+                                            -dno "1"
+           CanTestResult=$?
+           MachineState="gpio_z127_test"
+           ;;
         gpio_z127_test)
             debug_print "${LogPrefix} Run GPIO z127 test" "${LogFile}"
             "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
@@ -133,7 +133,7 @@ function g229_test {
                                              -venid "${VenID}"\
                                              -devid "${DevID}"\
                                              -subvenid "${SubVenID}"\
-                                             -tspec "${CanTest}"\
+                                             -tspec "hsuart"\
                                              -dno "1"
             UartTestResult=$?
             MachineState="Break"
