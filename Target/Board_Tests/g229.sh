@@ -150,7 +150,11 @@ function g229_test {
         esac
     done
 
-    if [ "${SmbTestResult}" = "${ERR_OK}" ] && [ "${GpioZ127TestResult}" = "${ERR_OK}" ] && [ "${UartTestResult}" = "${ERR_OK}" ]; then
+    if [ "${SmbTestResult}" = "${ERR_OK}" ] && \
+       [ "${CanTestResult}" = "${ERR_OK}" ] && \
+       [ "${GpioZ127TestResult}" = "${ERR_OK}" ] && \
+       [ "${UartTestResult}" = "${ERR_OK}" ]
+    then
         return "${ERR_OK}"
     else
         return "${ERR_VALUE}"
