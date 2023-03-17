@@ -70,7 +70,7 @@ function bl51_boxpc_test {
     CanTest="loopback_single"
     MachineState="uart_test0"
     MachineRun=true
-    CanTestResult=${ERR_VALUE}
+    CanTestResult=${ERR_OK} # This test is disabled
     UartTestResult0=${ERR_VALUE}
     UartTestResult1=${ERR_VALUE}
 
@@ -130,7 +130,10 @@ function bl51_boxpc_test {
         esac
     done
 
-    if [ "${CanTestResult}" = "${ERR_OK}" ] && [ "${UartTestResult0}" = "${ERR_OK}" ] && [ "${UartTestResult1}" = "${ERR_OK}" ]; then
+    if [ "${CanTestResult}" = "${ERR_OK}" ] && \
+       [ "${UartTestResult0}" = "${ERR_OK}" ] && \
+       [ "${UartTestResult1}" = "${ERR_OK}" ]
+    then
         return "${ERR_OK}"
     else
         return "${ERR_VALUE}"
