@@ -612,7 +612,7 @@ function uart_test_tty {
     fi
     sleep 1
     # Save background process PID
-    CatEchoTestPID=$(ps aux | grep "cat /dev/${tty1}" | awk 'NR==1 {print $2}')
+    CatEchoTestPID=$(pgrep -xf "cat /dev/${tty1}")
 
     # Send data into port
     if ! echo "${EchoTestMessage}" | sudo tee "/dev/${tty0}"
@@ -628,7 +628,7 @@ function uart_test_tty {
         debug_print "${LogPrefix} Could not chmod o+rw on ${tty0}" "${LogFile}"
     fi
 
-    if ! run_as_root kill "${CatEchoTestPID}"
+    if ! run_as_root kill -9 "${CatEchoTestPID}"
     then
         print "${LogPrefix} Could not kill cat backgroung process ${CatEchoTestPID} on ${tty1}" "${LogFile}"
     fi
