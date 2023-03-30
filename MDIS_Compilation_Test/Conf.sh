@@ -50,7 +50,7 @@ GitMdisCommitSha=""
 #               |--Commit_xxxx
 #               `--Commit_xxxx
 #
-MainTestDirectoryPath="/media/tests/MDIS_Test"
+MainTestDirectoryPath="${$HOME}/MDIS_Test"
 MdisSourcesDirectoryName="13MD05-90" 
 MdisSourcesDirectoryInstall="13MD05-90_Install"
 MainTestDirectoryName="MDIS_Compilation"
