@@ -132,13 +132,11 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
         2)
             run_test_case_module "m43n" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_module "m11" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
-            run_test_case_module "m66" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
-            run_test_case_module "m31" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
-            run_test_case_module "m32" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_module "m58" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
-            run_test_case_module "m35n" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
-            run_test_case_module "m62n" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case_module "m32" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_module "m57" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case_module "m62n" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
+            run_test_case_board "105" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # F206 board with Z055 HDLC core
             ;;
         3)
             run_test_case_module "m35n" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
