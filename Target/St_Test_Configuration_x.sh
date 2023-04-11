@@ -137,6 +137,7 @@ echo "${LogPrefix} Test Setup: ${TEST_SETUP}"
             run_test_case_module "m57" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_module "m62n" "F205" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
             run_test_case_board "105" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # F206 board with Z055 HDLC core
+            run_test_case_board "106" "1" "${TestSummaryDirectory}" "${OsNameKernel}" # F401 board with Z051 DAC core
             ;;
         3)
             run_test_case_module "m35n" "G204" "1" "${TestSummaryDirectory}" "${OsNameKernel}"
