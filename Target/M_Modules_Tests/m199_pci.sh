@@ -53,7 +53,7 @@ function m199_pci_test {
 
     # This carrier board is indentified as d203_1 so we copy
     # the previous file.
-    update_desc_file "d203_1.bin" "${MyDir}/Config/St_Test_Setup_5/d203_1.bin" $LogFile $LogPrefix
+    update_desc_file "d203_1.bin" "${MyDir}/Config/St_Test_Setup_${TEST_SETUP}/d203_1.bin" $LogFile $LogPrefix
 
     # Run the parent test
     debug_print "${LogPrefix} Run parent m199 test..." "${LogFile}"

@@ -110,7 +110,7 @@ function mdis_prepare {
     local LogPrefix="${2}"
     cd "${DirectoryName}" || exit "${ERR_NOEXIST}"
 
-    if [ ${TEST_SETUP} -eq "7" ]
+    if [ ${TEST_SETUP} -eq "6" ]
     then
         # setup mdis project, make and make install 
         if ! setup_and_install "${LogPrefix}" "${TEST_SETUP}"
