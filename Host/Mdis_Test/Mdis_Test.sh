@@ -50,10 +50,6 @@ function print_test_list {
     create_test_setup_test_cases_map "5"
     create_test_setup_test_cases_map "6"
     create_test_setup_test_cases_map "7"
-    create_test_setup_test_cases_map "8"
-    create_test_setup_test_cases_map "9"
-    create_test_setup_test_cases_map "10"
-    create_test_setup_test_cases_map "11"
 
     echo "" > /tmp/test_cases_list.txt
     for K in "${!TEST_CASES_MAP[@]}"
@@ -81,18 +77,6 @@ function print_test_list {
         fi
         if [ "${TEST_SETUP_7_TEST_CASES[${K}]}" = "true" ]; then
             TestSetupList+="7,"
-        fi
-        if [ "${TEST_SETUP_8_TEST_CASES[${K}]}" = "true" ]; then
-            TestSetupList+="8,"
-        fi
-        if [ "${TEST_SETUP_9_TEST_CASES[${K}]}" = "true" ]; then
-            TestSetupList+="9,"
-        fi
-        if [ "${TEST_SETUP_10_TEST_CASES[${K}]}" = "true" ]; then
-            TestSetupList+="10,"
-        fi
-        if [ "${TEST_SETUP_11_TEST_CASES[${K}]}" = "true" ]; then
-            TestSetupList+="11,"
         fi
         if [ "${TestSetupList}" = "" ]; then
             TestSetupList+="not used"

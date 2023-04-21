@@ -282,62 +282,55 @@ declare -a TEST_SETUP_4_TEST_CASES
 declare -a TEST_SETUP_5_TEST_CASES
 declare -a TEST_SETUP_6_TEST_CASES
 declare -a TEST_SETUP_7_TEST_CASES
-declare -a TEST_SETUP_8_TEST_CASES
-declare -a TEST_SETUP_9_TEST_CASES
-declare -a TEST_SETUP_10_TEST_CASES
-declare -a TEST_SETUP_11_TEST_CASES
 # Create test setup test cases map:
 function create_test_setup_test_cases_map {
     local Setup="${1}"
     case "${Setup}" in
+        1)
+            TEST_SETUP_1_TEST_CASES[$(get_test_case_id "m43n" "F205")]="true"
+            TEST_SETUP_1_TEST_CASES[$(get_test_case_id "m11" "F205")]="true"
+            TEST_SETUP_1_TEST_CASES[$(get_test_case_id "m66" "F205")]="true"
+            TEST_SETUP_1_TEST_CASES[$(get_test_case_id "m31" "F205")]="true"
+            TEST_SETUP_1_TEST_CASES[$(get_test_case_id "m32" "F205")]="true"
+            TEST_SETUP_1_TEST_CASES[$(get_test_case_id "m58" "F205")]="true"
+            TEST_SETUP_1_TEST_CASES[$(get_test_case_id "m35n" "F205")]="true"
+            TEST_SETUP_1_TEST_CASES[$(get_test_case_id "m62n" "F205")]="true"
+            TEST_SETUP_1_TEST_CASES[$(get_test_case_id "m57" "F205")]="true"
+            ;;
         2)
-            TEST_SETUP_2_TEST_CASES[$(get_test_case_id "m43n" "F205")]="true"
-            TEST_SETUP_2_TEST_CASES[$(get_test_case_id "m11" "F205")]="true"
-            TEST_SETUP_2_TEST_CASES[$(get_test_case_id "m66" "F205")]="true"
-            TEST_SETUP_2_TEST_CASES[$(get_test_case_id "m31" "F205")]="true"
-            TEST_SETUP_2_TEST_CASES[$(get_test_case_id "m32" "F205")]="true"
-            TEST_SETUP_2_TEST_CASES[$(get_test_case_id "m58" "F205")]="true"
-            TEST_SETUP_2_TEST_CASES[$(get_test_case_id "m35n" "F205")]="true"
-            TEST_SETUP_2_TEST_CASES[$(get_test_case_id "m62n" "F205")]="true"
-            TEST_SETUP_2_TEST_CASES[$(get_test_case_id "m57" "F205")]="true"
+            TEST_SETUP_2_TEST_CASES[105]="true"
+            TEST_SETUP_2_TEST_CASES[$(get_test_case_id "m35n" "G204")]="true"
+            TEST_SETUP_2_TEST_CASES[$(get_test_case_id "m36n" "G204")]="true"
             ;;
         3)
-            TEST_SETUP_5_TEST_CASES[105]="true"
-            TEST_SETUP_3_TEST_CASES[$(get_test_case_id "m35n" "G204")]="true"
-            TEST_SETUP_3_TEST_CASES[$(get_test_case_id "m36n" "G204")]="true"
+            TEST_SETUP_3_TEST_CASES[1]="true"
+            TEST_SETUP_3_TEST_CASES[103]="true"
+            TEST_SETUP_3_TEST_CASES[$(get_test_case_id "m81" "G204")]="true"
+            TEST_SETUP_3_TEST_CASES[$(get_test_case_id "m72" "G204")]="true"
             ;;
         4)
-            TEST_SETUP_4_TEST_CASES[1]="true"
-            TEST_SETUP_4_TEST_CASES[103]="true"
-            TEST_SETUP_4_TEST_CASES[$(get_test_case_id "m81" "G204")]="true"
-            TEST_SETUP_4_TEST_CASES[$(get_test_case_id "m72" "G204")]="true"
+            TEST_SETUP_4_TEST_CASES[100]="true"
+            TEST_SETUP_4_TEST_CASES[104]="true"
+            TEST_SETUP_4_TEST_CASES[$(get_test_case_id "m82" "G204")]="true" #x2
+            TEST_SETUP_4_TEST_CASES[$(get_test_case_id "m99" "F205")]="true"
+            TEST_SETUP_4_TEST_CASES[$(get_test_case_id "m199" "F205")]="true"
+            TEST_SETUP_4_TEST_CASES[$(get_test_case_id "m199_pci" "F205")]="true"
             ;;
         5)
-            TEST_SETUP_1_TEST_CASES[100]="true"
-            TEST_SETUP_1_TEST_CASES[104]="true"
-            TEST_SETUP_5_TEST_CASES[$(get_test_case_id "m82" "G204")]="true" #x2
-            TEST_SETUP_5_TEST_CASES[$(get_test_case_id "m99" "F205")]="true"
-            TEST_SETUP_5_TEST_CASES[$(get_test_case_id "m199" "F205")]="true"
-            TEST_SETUP_5_TEST_CASES[$(get_test_case_id "m199_pci" "F205")]="true"
+            TEST_SETUP_5_TEST_CASES[1]="true"
+            TEST_SETUP_5_TEST_CASES[2]="true"
             ;;
         6)
-            TEST_SETUP_6_TEST_CASES[1]="true"
-            TEST_SETUP_6_TEST_CASES[2]="true"
+            TEST_SETUP_6_TEST_CASES[$(get_test_case_id "m33" "A203N")]="true"
+            TEST_SETUP_6_TEST_CASES[$(get_test_case_id "m47" "A203N")]="true"
+            TEST_SETUP_6_TEST_CASES[$(get_test_case_id "m99" "A203N")]="true"
             ;;
         7)
-            TEST_SETUP_7_TEST_CASES[$(get_test_case_id "m33" "A203N")]="true"
-            TEST_SETUP_7_TEST_CASES[$(get_test_case_id "m47" "A203N")]="true"
-            TEST_SETUP_7_TEST_CASES[$(get_test_case_id "m99" "A203N")]="true"
-            ;;
-        9)
-            TEST_SETUP_9_TEST_CASES[1]="true"
-            TEST_SETUP_9_TEST_CASES[2]="true"
-            TEST_SETUP_9_TEST_CASES[3]="true"
-            TEST_SETUP_9_TEST_CASES[4]="true"
-            TEST_SETUP_9_TEST_CASES[501]="true"
-            ;;
-        11)
-            TEST_SETUP_11_TEST_CASES[700]="true"
+            TEST_SETUP_7_TEST_CASES[1]="true"
+            TEST_SETUP_7_TEST_CASES[2]="true"
+            TEST_SETUP_7_TEST_CASES[3]="true"
+            TEST_SETUP_7_TEST_CASES[4]="true"
+            TEST_SETUP_7_TEST_CASES[501]="true"
             ;;
         *)
             echo "TEST SETUP OR TEST ID IS NOT SET PROPERLY"
