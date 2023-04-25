@@ -36,8 +36,53 @@ function z051_dac_description {
     echo "    To see error codes definition please check Conf.sh"
 }
 
+function z051_io_dac_description {
+    local ModuleNo=${1}
+    local ModuleLogPath=${2}
+
+    z051_dac_description ${ModuleNo} ${ModuleLogPath}
+}
+
 ############################################################################
 # Function checks if DAC is working correctly - write
+#
+# parameters:
+# $1    Log file
+# $2    Log prefix
+# $3    DeviceName
+function z051_dac_run_test {
+    local LogFile=${1}
+    local LogPrefix=${2}
+    local VenID=${3}
+    local DevID=${4}
+    local SubVenID=${5}
+    local BoardInSystem=${6}
+    local TestType=${7}
+
+    MezzChamDevName="MezzChamDevName.txt"
+    obtain_device_list_chameleon_device "${VenID}" "${DevID}" "${SubVenID}" "${MezzChamDevName}" "${BoardInSystem}" "${LogFile}" "${LogPrefix}"
+
+    DeviceName=$(grep "^dac" "${MezzChamDevName}" | awk '{print $1}')
+
+    debug_print "${LogPrefix} Set DAC output with Sawtooth wave(s)" "${LogFile}"
+
+    # Test Setting a Sawtooth wave -- check if device was opened, and closed successfully
+    local channel=2 # Channels (value 2 selects 0 AND 1)
+    local value=-1  # Output value (-1 for sawtooth wave)
+    local delay=0   # Output delay
+    local step=1    # Sawtooth step width
+    local time=1000 # Time to generate wave for (ms)
+    debug_print "${LogPrefix} Step2: run z51_simp ${DeviceName} ${channel} ${value} ${delay} ${step} ${time}" "${LogFile}"
+    if ! run_as_root z51_simp "${DeviceName} ${channel} ${value} ${delay} ${step} ${time}"  >> "z51_simp_${DeviceName}.txt" 2>&1
+    then
+        debug_print "${LogPrefix} ERR_RUN :could not run z51_simp ${DeviceName} ${channel} ${value} ${delay} ${step} ${time}" "${LogFile}"
+        return "${ERR_VALUE}"
+    fi
+    return "${ERR_OK}"
+}
+
+############################################################################
+# Entry point for testing IP Core Z051 DAC in MEMORY-MAPPED FPGA
 #
 # parameters:
 # $1    Log file
@@ -46,26 +91,48 @@ function z051_dac_description {
 function z051_dac_test {
     local LogFile=${1}
     local LogPrefix=${2}
-    local DeviceName=${3}
+    local VenID=${3}
+    local DevID=${4}
+    local SubVenID=${5}
+    local BoardInSystem=${6}
+    local TestType=${7}
 
-    debug_print "${LogPrefix} Set DAC output with Sawtooth wave(s)" "${LogFile}"
-
+    debug_print "${LogPrefix} Step1: modprobe men_ll_z51" "${LogFile}"
     if ! do_modprobe men_ll_z51
     then
         debug_print "${LogPrefix} ERR_MODPROBE :could not modprobe men_ll_z51" "${LogFile}"
         return "${ERR_MODPROBE}"
     fi
 
-    # Test Setting a Sawtooth wave -- check if device was opened, and closed successfully
-    local channel=2 # Channels (value 2 selects 0 AND 1)
-    local value=-1  # Output value (-1 for sawtooth wave)
-    local delay=0   # Output delay
-    local step=1    # Sawtooth step width
-    local time=1000 # Time to generate wave for (ms)
-    if ! run_as_root z51_simp "${DeviceName} ${channel} ${value} ${delay} ${step} ${time}"  >> "z51_simp_${DeviceName}.txt" 2>&1
+    z051_dac_run_test ${LogFile} ${LogPrefix} ${VenID} ${DevId} ${SubVenID} ${BoardInSystem} ${TestType}
+
+    return "$?"
+}
+
+############################################################################
+# Entry point for testing IP Core Z051 DAC in IO-MAPPED FPGA
+#
+# parameters:
+# $1    Log file
+# $2    Log prefix
+# $3    DeviceName
+function z051_io_dac_test {
+    local LogFile=${1}
+    local LogPrefix=${2}
+    local VenID=${3}
+    local DevID=${4}
+    local SubVenID=${5}
+    local BoardInSystem=${6}
+    local TestType=${7}
+
+    debug_print "${LogPrefix} Step1: modprobe men_ll_z51_io" "${LogFile}"
+    if ! do_modprobe men_ll_z51_io
     then
-        debug_print "${LogPrefix} ERR_RUN :could not run z51_simp "${DeviceName} ${channel} ${value} ${delay} ${step} ${time}" "${LogFile}"
-        return "${ERR_VALUE}"
+        debug_print "${LogPrefix} ERR_MODPROBE :could not modprobe men_ll_z51_io" "${LogFile}"
+        return "${ERR_MODPROBE}"
     fi
-    return "${ERR_OK}"
+
+    z051_dac_run_test "${LogFile}" "${LogPrefix}" "${VenID}" "${DevID}" "${SubVenID}" "${BoardInSystem}" "${TestType}"
+
+    return "$?"
 }

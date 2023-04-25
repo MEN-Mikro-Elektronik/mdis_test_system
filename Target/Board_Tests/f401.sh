@@ -36,7 +36,7 @@ function f401_description {
 
     if [ ! -z "${LongDescription}" ]
     then
-        z051_dac_description
+        z051_io_dac_description
     fi
 }
 
@@ -58,6 +58,11 @@ function f401_test {
     local LogPrefix=${5}
     local BoardInSystem=${6}
 
+
+    VenID="0x1172"
+    DevID="0x000a"
+    SubVenID="0x4d45"
+
     # Board in this Test Case always have
     MachineState="z051_dac_test"
     MachineRun=true
@@ -69,7 +74,10 @@ function f401_test {
             "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
-                                             -dname "z051_dac"\
+                                             -dname "z051_io_dac"\
+                                             -venid "${VenID}"\
+                                             -devid "${DevID}"\
+                                             -subvenid "${SubVenID}"\
                                              -dno "1"
             TestResult=$?
             MachineState="Break"

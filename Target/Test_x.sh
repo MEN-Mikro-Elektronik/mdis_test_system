@@ -32,6 +32,7 @@ source "${MyDir}"/Board_Tests/g215.sh
 source "${MyDir}"/Board_Tests/g229.sh
 source "${MyDir}"/Board_Tests/g229_stress.sh
 source "${MyDir}"/Board_Tests/f223.sh
+source "${MyDir}"/Board_Tests/f401.sh
 source "${MyDir}"/Board_Tests/carriers_a203n.sh
 source "${MyDir}"/Board_Tests/carriers_f205.sh
 source "${MyDir}"/Board_Tests/carriers_g204.sh
