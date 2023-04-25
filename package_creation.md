@@ -71,9 +71,9 @@ $ git describe --tags "$(git rev-list --tags --max-count=1)"
 
 $ git tag -a *13Z025-90_01_19* -m "Tag created for MDIS release 13MD05-90_02_*04*"
 
-11.4. Push tag to remote
+11.4. Push new tag to remote
 
-$ git push --tags
+$ git push origin *13Z025-90_01_19*
 
 11.5. Go back to previous directory
 
@@ -95,9 +95,9 @@ $ git push --set-upstream origin release-13MD05-90_02\_*04*\_b1
 
 $ git tag -a 13MD05-90_02\_*04*\_b1 -m "Beta 1 version for 13MD05-90_02\_*04*"
 
-16. Push tag to remote
+16. Push new tag to remote
 
-$ git push --tags
+$ git push origin 13MD05-90_02\_*04*\_b1
 
 17. Go to the directory below
 
@@ -177,9 +177,9 @@ $ git describe --tags "$(git rev-list --tags --max-count=1)"
 
 $ git tag -a 13MD05-90_02\_*04* -m "Release 13MD05-90_02\_*04*"
 
-10. Push tag to remote
+10. Push new tag to remote
 
-$ git push --tags
+$ git push origin 13MD05-90_02\_*04*
 
 11. Go to the directory below
 
