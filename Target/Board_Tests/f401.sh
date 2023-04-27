@@ -2,6 +2,7 @@
 MyDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${MyDir}/../../Common/Conf.sh"
 source "${MyDir}/../St_Functions.sh"
+source "${MyDir}/Ip_Core_Tests/z050_bioc.sh"
 source "${MyDir}/Ip_Core_Tests/z051_dac.sh"
 
 ############################################################################
@@ -64,7 +65,7 @@ function f401_test {
     SubVenID="0x4d45"
 
     # Board in this Test Case always have
-    MachineState="z051_dac_test"
+    MachineState="z050_bioc_test"
     MachineRun=true
 
     while ${MachineRun}; do
@@ -75,6 +76,19 @@ function f401_test {
                                              -id "${TestCaseId}"\
                                              -os "${OsNameKernel}"\
                                              -dname "z051_io_dac"\
+                                             -venid "${VenID}"\
+                                             -devid "${DevID}"\
+                                             -subvenid "${SubVenID}"\
+                                             -dno "1"
+            TestResult=$?
+            MachineState="z050_bioc_test"
+            ;;
+        z050_bioc_test)
+            debug_print "${LogPrefix} Run z050_bioc test" "${LogFile}"
+            "${MyDir}/Test_x.sh" -dir "${TestSummaryDirectory}"\
+                                             -id "${TestCaseId}"\
+                                             -os "${OsNameKernel}"\
+                                             -dname "z050_io_bioc"\
                                              -venid "${VenID}"\
                                              -devid "${DevID}"\
                                              -subvenid "${SubVenID}"\
