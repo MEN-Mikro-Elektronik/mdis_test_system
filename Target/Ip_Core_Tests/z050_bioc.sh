@@ -59,7 +59,7 @@ function z050_bioc_run_test {
     obtain_device_list_chameleon_device "${VenID}" "${DevID}" "${SubVenID}" "${MezzChamDevName}" "${BoardInSystem}" "${LogFile}" "${LogPrefix}"
 
     # TODO: Hardcoded bioc number for F401 multifunction board
-    DeviceName=$(grep "^bioc_3" "${MezzChamDevName}" | awk '{print $1}')
+    DeviceName=$(grep "^bioc_2" "${MezzChamDevName}" | awk '{print $1}')
 
     debug_print "${LogPrefix} Step2: run z50_simp ${DeviceName}" "${LogFile}"
     if ! run_as_root z50_simp "${DeviceName}"  >> "z50_simp_${DeviceName}.txt" 2>&1
